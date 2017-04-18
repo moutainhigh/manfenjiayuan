@@ -1,4 +1,4 @@
-package com.mfh.litecashier.service;
+package com.mfh.litecashier.hardware.GreenTags;
 
 
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;

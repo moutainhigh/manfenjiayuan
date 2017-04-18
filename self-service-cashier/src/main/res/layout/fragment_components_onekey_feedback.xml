@@ -36,7 +36,6 @@
                 android:layout_marginTop="@dimen/spacing_micro"
                 android:hint="吐槽开始..."
                 android:textColorHint="@color/material_grey_500"
-                android:maxLength="6"
                 android:gravity="start|top"
                 android:background="@drawable/bg_input_rectange"
                 android:inputType="text"

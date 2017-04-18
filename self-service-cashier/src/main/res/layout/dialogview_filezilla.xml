@@ -119,6 +119,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:textColor="@color/black_70"
+                    android:text="密码"
                     android:textSize="@dimen/textsize_normal"/>
 
                 <EditText

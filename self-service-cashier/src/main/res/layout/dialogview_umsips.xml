@@ -6,6 +6,40 @@
 
     <include layout="@layout/dialogview_headerview"/>
 
+    <!--按键-->
+    <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="?attr/actionBarSize"
+                  android:gravity="center"
+                  android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/button_footer_negative"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectange_gray"
+            android:gravity="center"
+            android:text="签到"
+            android:textColor="@color/material_black"
+            android:textSize="24sp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/button_footer_positive"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectange_primary"
+            android:gravity="center"
+            android:text="确定"
+            android:textColor="@color/material_white"
+            android:textSize="24sp"/>
+
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,11 +54,11 @@
 
 
             <TextView
+                style="@style/singleline_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:text="通讯参数"
-                style="@style/singleline_text"
                 />
 
             <LinearLayout
@@ -32,12 +66,12 @@
                 android:layout_height="44dp">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="主机IP"
                     android:textColor="@color/black_70"
-                    style="@style/singleline_text"
                     />
 
 
@@ -60,11 +94,11 @@
                 android:layout_marginTop="@dimen/spacing_normal">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:text="主机端口号"
                     android:textColor="@color/black_70"
-                    style="@style/singleline_text"
                     />
 
                 <EditText
@@ -78,12 +112,12 @@
             </LinearLayout>
 
             <TextView
+                style="@style/singleline_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:gravity="center_vertical"
                 android:text="商户参数"
-                style="@style/singleline_text"
                 />
 
 
@@ -93,12 +127,12 @@
                 android:layout_height="44dp">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     android:text="商户号"
                     android:textColor="@color/black_70"
-                    style="@style/singleline_text"
                     />
 
                 <EditText
@@ -119,11 +153,11 @@
                 android:layout_marginTop="@dimen/spacing_normal">
 
                 <TextView
+                    style="@style/singleline_text"
                     android:layout_width="90dp"
                     android:layout_height="wrap_content"
                     android:text="终端编号"
                     android:textColor="@color/black_70"
-                    style="@style/singleline_text"
                     />
 
                 <EditText
@@ -169,39 +203,5 @@
             android:layout_centerInParent="true"
             android:visibility="gone"/>
     </RelativeLayout>
-
-    <!--按键-->
-    <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="?attr/actionBarSize"
-                  android:gravity="center"
-                  android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/button_footer_negative"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectange_gray"
-            android:gravity="center"
-            android:text="签到"
-            android:textColor="@color/material_black"
-            android:textSize="24sp"
-            android:visibility="gone"/>
-
-        <Button
-            android:id="@+id/button_footer_positive"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="@drawable/btn_rectange_primary"
-            android:gravity="center"
-            android:text="确定"
-            android:textColor="@color/material_white"
-            android:textSize="24sp"/>
-
-    </LinearLayout>
 
 </LinearLayout>

@@ -173,7 +173,7 @@
         android:text=""
         android:textColor="@color/material_white"
         android:textSize="20sp"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
     <com.mfh.framework.uikit.compound.BadgeViewButton
@@ -200,7 +200,7 @@
         android:text=""
         android:textColor="@color/material_white"
         android:textSize="20sp"
-        android:visibility="visible"
+        android:visibility="gone"
         />
 
 

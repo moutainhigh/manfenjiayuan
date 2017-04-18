@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.goods;
+package com.mfh.litecashier.ui.fragment.goods.frontend;
 
 
 import android.os.Bundle;
@@ -34,6 +34,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
+import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryGoodsEvent;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,10 +48,10 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 /**
- * POS-本地前台类目
+ * POS-前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class LocalFrontCategoryFragment extends BaseFragment {
+public class FrontendCategoryGoodsFragment extends BaseFragment {
     @BindView(R.id.tab_category_goods)
     TopSlidingTabStrip mCategoryGoodsTabStrip;
     @BindView(R.id.viewpager_category_goods)
@@ -62,8 +63,8 @@ public class LocalFrontCategoryFragment extends BaseFragment {
     private ModifyLocalCategoryDialog mModifyLocalCategoryDialog = null;
     private TextInputDialog mTextInputDialog = null;
 
-    public static LocalFrontCategoryFragment newInstance(Bundle args) {
-        LocalFrontCategoryFragment fragment = new LocalFrontCategoryFragment();
+    public static FrontendCategoryGoodsFragment newInstance(Bundle args) {
+        FrontendCategoryGoodsFragment fragment = new FrontendCategoryGoodsFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -142,7 +143,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
                 ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(index);
                 if (viewPageInfo != null) {
                     ZLogger.d(StringUtils.decodeBundle(viewPageInfo.args));
-                    updateCategoryInfo(viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID));
+                    updateCategoryInfo(viewPageInfo.args.getLong(FrontendGoodsFragment.KEY_CATEGORY_ID));
                 } else {
                     ZLogger.d("no tabs");
                 }
@@ -166,7 +167,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
             ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
             if (viewPageInfo != null) {
-                oldCategoryId = viewPageInfo.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
+                oldCategoryId = viewPageInfo.args.getLong(FrontendGoodsFragment.KEY_CATEGORY_ID);
             }
             ZLogger.d(String.format("old id=%d, index=%d", oldCategoryId, oldIndex));
 
@@ -175,10 +176,10 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
             for (PosLocalCategoryEntity category : curCategoryList) {
                 Bundle args = new Bundle();
-                args.putLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID, category.getId());
+                args.putLong(FrontendGoodsFragment.KEY_CATEGORY_ID, category.getId());
 
                 mTabs.add(new ViewPageInfo(category.getName(), category.getName(),
-                        LocalFrontCategoryGoodsFragment.class, args));
+                        FrontendGoodsFragment.class, args));
 //            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), FrontCategoryGoodsFragment.class, args));
             }
             categoryGoodsPagerAdapter.removeAll();
@@ -190,7 +191,7 @@ public class LocalFrontCategoryFragment extends BaseFragment {
             for (int i = 0; i < tabCount; i++) {
                 ViewPageInfo tab = categoryGoodsPagerAdapter.getTab(i);
                 if (tab != null) {
-                    Long categoryId = tab.args.getLong(LocalFrontCategoryGoodsFragment.KEY_CATEGORY_ID);
+                    Long categoryId = tab.args.getLong(FrontendGoodsFragment.KEY_CATEGORY_ID);
                     ZLogger.d(String.format("check id=%d, index=%d", categoryId, i));
                     if (ObjectsCompact.equals(oldCategoryId, categoryId)) {
                         newCategoryId = categoryId;

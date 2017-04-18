@@ -22,7 +22,16 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="start|center_vertical"
-        android:text="单价"
+        android:text="原价"
+        android:textSize="12sp"/>
+    <TextView
+        android:id="@+id/tv_customer_price"
+        style="@style/mfh_textview_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="start|center_vertical"
+        android:text="会员价"
         android:textSize="12sp"/>
 
 

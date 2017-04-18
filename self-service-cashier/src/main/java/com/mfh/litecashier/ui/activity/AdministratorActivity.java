@@ -384,6 +384,8 @@ public class AdministratorActivity extends BaseActivity {
                 "单据", R.mipmap.ic_admin_menu_receipt));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_ANALYSIS,
                 "统计", R.mipmap.ic_admin_menu_analysis));
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_RECONCILE,
+                "统计", R.mipmap.ic_admin_menu_reconcile));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_CASHQUOTA,
                 "授信", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_GOODSFLOW,
@@ -394,9 +396,9 @@ public class AdministratorActivity extends BaseActivity {
                 "恢复出厂设置", R.mipmap.ic_admin_factorydatareset));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SYSTEM_UPGRADE,
                 "系统升级", R.mipmap.ic_admin_system_upgrade));
+        functionalList.add(new ResMenu(ResMenu.CANARY_MENU_ORDERFLOW,
+                "流水", R.mipmap.ic_admin_menu_orderflow));
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-            functionalList.add(new ResMenu(ResMenu.CANARY_MENU_ORDERFLOW,
-                    "流水", R.mipmap.ic_admin_menu_orderflow));
             functionalList.add(new ResMenu(ResMenu.CANARY_MENU_GOODS,
                     "商品档案", R.mipmap.ic_admin_menu_inventory));
             functionalList.add(new ResMenu(ResMenu.CANARY_MENU_MESSAGE_MGR,

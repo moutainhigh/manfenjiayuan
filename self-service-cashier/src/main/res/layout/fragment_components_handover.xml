@@ -1,13 +1,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/material_white"
-    android:baselineAligned="false"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/material_white"
+              android:baselineAligned="false"
+              android:orientation="vertical">
 
     <include
         android:id="@+id/frame_top"
-        layout="@layout/dialogview_headerview" />
+        layout="@layout/dialogview_headerview"/>
 
     <!--门店-->
     <LinearLayout
@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="门店：" />
+            android:text="门店："/>
 
         <!--收银员-->
         <TextView
@@ -36,7 +36,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="交班人：" />
+            android:text="交班人："/>
 
 
         <!--交班时间-->
@@ -47,7 +47,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="交班时间：" />
+            android:text="交班时间："/>
 
     </LinearLayout>
 
@@ -67,7 +67,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="营业额合计：" />
+            android:text="营业额合计："/>
 
         <!--账户新增-->
         <TextView
@@ -77,7 +77,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="账户新增：" />
+            android:text="账户新增："/>
 
 
         <!--现金收取-->
@@ -88,7 +88,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="现金收取：" />
+            android:text="现金收取："/>
     </LinearLayout>
 
 
@@ -96,11 +96,11 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginEnd="64dp"
-        android:layout_weight="1"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="@dimen/spacing_normal"
+        android:layout_marginEnd="@dimen/spacing_4x"
+        android:layout_marginStart="@dimen/spacing_4x"
+        android:layout_marginTop="@dimen/spacing_normal"
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,18 +112,18 @@
                 android:id="@+id/frame_header_goods_list"
                 layout="@layout/itemview_analysis_acc_header"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize" />
+                android:layout_height="?attr/actionBarSize"/>
 
             <!--商品列表-->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="308dp">
+                android:layout_height="wrap_content">
                 <!--空视图-->
                 <TextView
                     android:id="@+id/empty_view"
                     style="@style/mfh_textview_text"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="暂无数据"
                     android:visibility="gone"/>
@@ -132,7 +132,7 @@
                 <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                     android:id="@+id/order_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"/>
 
             </FrameLayout>
 
@@ -141,17 +141,17 @@
                 layout="@layout/itemview_analysis_acc_header"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:layout_marginTop="8dp" />
+                android:layout_marginTop="8dp"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="280dp">
+                android:layout_height="wrap_content">
                 <!--空视图-->
                 <TextView
                     android:id="@+id/paytype_empty_view"
                     style="@style/mfh_textview_text"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="暂无数据"
                     android:visibility="gone"/>
@@ -160,7 +160,7 @@
                 <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                     android:id="@+id/paytype_order_list"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="wrap_content"/>
 
             </FrameLayout>
 
@@ -169,6 +169,6 @@
 
 
     <!--按键-->
-    <include layout="@layout/view_dialog_footer" />
+    <include layout="@layout/view_dialog_footer"/>
 
 </LinearLayout>

@@ -13,7 +13,7 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
-import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.ScaleProvider;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
@@ -28,7 +28,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.ui.activity.SplashActivity;
@@ -184,7 +184,7 @@ public class AppHelper {
         SharedPrefesManagerFactory.clear(SerialManager.PREF_NAME_SERIAL);
         SharedPrefesManagerFactory.clear(SMScaleSyncManager2.PREF_SMSCALE);
         SharedPrefesManagerFactory.clear(GreenTagsApi.PREF_GREENTAGS);
-        SharedPrefesManagerFactory.clear(ScaleAgent.PREF_NAME);
+        SharedPrefesManagerFactory.clear(ScaleProvider.PREF_NAME);
 
         //删除无效文件
         clearRedunantData(true);

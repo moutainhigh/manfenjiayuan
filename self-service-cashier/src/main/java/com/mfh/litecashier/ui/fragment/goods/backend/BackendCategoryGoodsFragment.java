@@ -1,8 +1,9 @@
-package com.mfh.litecashier.ui.fragment.goods;
+package com.mfh.litecashier.ui.fragment.goods.backend;
 
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -29,6 +30,9 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
+import com.mfh.litecashier.ui.fragment.goods.FrontCategoryGoodsEvent;
+import com.mfh.litecashier.ui.fragment.goods.IImportGoodsView;
+import com.mfh.litecashier.ui.fragment.goods.ImportGoodsPresenter;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,11 +43,11 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
- * 收银－－前台类目
- * 从商品库导入商品到pos前台类目
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * 从平台商品库导入商品到pos前台类目
+ *
+ * Created by bingshanguxue on 15/8/30.
  */
-public class FrontCategoryFragment extends BaseFragment {
+public class BackendCategoryGoodsFragment extends BaseFragment implements IImportGoodsView {
 
     public static final String EXTRA_CATEGORY_ID_POS = "posFrontCategoryId";//从哪个pos前台类目进来到
 
@@ -58,8 +62,11 @@ public class FrontCategoryFragment extends BaseFragment {
     private Long posFrontCategoryId;//pos本地前台类目
     private List<CategoryOption> curCategoryList;//当前子类目
 
-    public static FrontCategoryFragment newInstance(Bundle args) {
-        FrontCategoryFragment fragment = new FrontCategoryFragment();
+    private ImportGoodsPresenter mImportGoodsPresenter;
+
+
+    public static BackendCategoryGoodsFragment newInstance(Bundle args) {
+        BackendCategoryGoodsFragment fragment = new BackendCategoryGoodsFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -72,6 +79,13 @@ public class FrontCategoryFragment extends BaseFragment {
         return R.layout.fragment_front_category;
     }
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mImportGoodsPresenter = new ImportGoodsPresenter(this);
+    }
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
@@ -96,7 +110,7 @@ public class FrontCategoryFragment extends BaseFragment {
                     reload();
                 }
                 else if (id == R.id.action_submit) {
-                    submit();
+                    submitStep1();
                 }
                 return true;
             }
@@ -166,7 +180,7 @@ public class FrontCategoryFragment extends BaseFragment {
             args.putString("categoryId", category.getCode());
 
             mTabs.add(new ViewPageInfo(category.getValue(), category.getValue(),
-                    FrontCategoryGoodsFragment.class, args));
+                    BackendGoodsFragment.class, args));
 //            mTabs.add(new ViewPageInfo(category.getNameCn(), category.getNameCn(), FrontCategoryGoodsFragment.class, args));
         }
         categoryGoodsPagerAdapter.removeAll();
@@ -186,9 +200,9 @@ public class FrontCategoryFragment extends BaseFragment {
     }
 
     /**
-     * 添加商品到类目
+     * 导入商品到类目 - step1
      */
-    private void submit() {
+    private void submitStep1() {
         if (!NetworkUtils.isConnect(MfhApplication.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;
@@ -197,7 +211,6 @@ public class FrontCategoryFragment extends BaseFragment {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在发送请求...", false);
 
         List<PosCategoryGoodsTempEntity> entities = PosCategoryGodosTempService.getInstance().queryAll();
-
         if (entities == null || entities.size() < 1) {
             hideProgressDialog();
             DialogUtil.showHint("请先选择商品");
@@ -218,13 +231,18 @@ public class FrontCategoryFragment extends BaseFragment {
             proSkuIds.append(entity.getProSkuId());
         }
 
-        importFromCenterSkus(productIds.toString(), proSkuIds.toString());
+        if (mImportGoodsPresenter != null) {
+            mImportGoodsPresenter.importFromCenterSkus(posFrontCategoryId, productIds.toString(), proSkuIds.toString());
+        } else {
+            hideProgressDialog();
+        }
+//        submitStep2(productIds.toString(), proSkuIds.toString());
     }
 
     /**
-     * 建档
-     * */
-    private void importFromCenterSkus(final String productIds, String proSkuIds) {
+     * 导入商品到类目 - step2
+     */
+    private void submitStep2(final String productIds, String proSkuIds) {
         NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
                 NetProcessor.Processor<String>>(
                 new NetProcessor.Processor<String>() {
@@ -279,4 +297,24 @@ public class FrontCategoryFragment extends BaseFragment {
                 productIds, submitRC);
     }
 
+    @Override
+    public void onIImportGoodsViewProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+    }
+
+    @Override
+    public void onIImportGoodsViewError(String errorMsg) {
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+
+    }
+
+    @Override
+    public void onIImportGoodsViewSuccess() {
+        DialogUtil.showHint("导入商品成功");
+        hideProgressDialog();
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+
+    }
 }

@@ -10,7 +10,6 @@ import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.v1.CashierAgent;
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.TextDrawable;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -20,7 +19,6 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.bean.wrapper.HangupOrder;
-import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -246,23 +244,6 @@ public class CashierHelper {
         }
 
         return sb.toString();
-    }
-
-    /**
-     * 更新客显信息
-     */
-    public static void broadcastCashierOrderInfo(int cmdType, CashierOrderInfo cashierOrderInfo) {
-        CashierDesktopObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
-
-//        if (!SharedPreferencesUltimate.getBoolean(SharedPreferencesUltimate.PREF_KEY_PAD_CUSTOMERDISPLAY_ENABLED, false)) {
-//            ZLogger.d("PAD客显功能未打开");
-//            return;
-//        }
-//
-//        CashierOrderInfoWrapper cashierOrderInfoWrapper = new CashierOrderInfoWrapper();
-//        cashierOrderInfoWrapper.setCmdType(cmdType);
-//        cashierOrderInfoWrapper.setCashierOrderInfo(cashierOrderInfo);
-        // TODO: 13/12/2016 双屏异显
     }
 
 }

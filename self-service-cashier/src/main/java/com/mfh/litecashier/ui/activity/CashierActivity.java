@@ -20,6 +20,7 @@ import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.service.TtsService;
 import com.mfh.litecashier.utils.GlobalInstance;
 
@@ -29,7 +30,10 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,6 +42,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 
 import android_serialport_api.ComBean;
 import android_serialport_api.SerialHelper;
+import android_serialport_api.SerialPortFinder;
 
 
 /**
@@ -46,6 +51,7 @@ import android_serialport_api.SerialHelper;
  */
 public abstract class CashierActivity extends BaseActivity {
     private DispQueueThread mDispQueueThread;//刷新显示线程
+    private SerialPortFinder mSerialPortFinder;//串口设备搜索
     protected SerialControl comDisplay, comPrint, comScale;//串口
 
     private long lastScaleTriggle = System.currentTimeMillis();
@@ -482,6 +488,26 @@ public abstract class CashierActivity extends BaseActivity {
      * JOOYTEC: devices:[/dev/ttyGS3, /dev/ttyGS2, /dev/ttyGS1, /dev/ttyGS0, /dev/ttyS3, /dev/ttyS1, /dev/ttyS0, /dev/ttyFIQ0]
      */
     public void setControls() {
+        mSerialPortFinder = new SerialPortFinder();
+
+        String[] entryValues = mSerialPortFinder.getAllDevicesPath();
+        List<String> devicesPath = new ArrayList<>();
+        if (entryValues != null) {
+            Collections.addAll(devicesPath, entryValues);
+        }
+        ZLogger.d("devicePath:" + devicesPath.toString());
+        SerialManager.getInstance().setComDevicesPath(devicesPath);//保存devices
+
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
+            String[] devices = mSerialPortFinder.getAllDevices();
+            List<String> allDevices2 = new ArrayList<>();
+            if (devices != null) {
+                Collections.addAll(allDevices2, devices);
+            }
+            ZLogger.d("devices:" + allDevices2.toString());
+        }
+
+
         if (PrinterAgent.isEnabled()) {
             CloseComPort(comPrint);
             OpenComPort(comPrint);

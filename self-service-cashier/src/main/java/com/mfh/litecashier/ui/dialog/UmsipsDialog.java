@@ -29,7 +29,7 @@ import com.mfh.framework.pay.umsips.TransType;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.utils.CashierHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 

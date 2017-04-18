@@ -22,7 +22,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MEntityWrapper;
-import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.AnalysisHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -124,13 +124,15 @@ public class HandoverFragment extends BaseProgressFragment {
     @OnClick(R.id.button_footer_positive)
     public void doConfirmHandover() {
         // 保存交接班时间和班次
-        String cursor = TimeUtil.format(handOverBill.getEndDate(),
-                TimeCursor.FORMAT_YYYYMMDDHHMM);
-        SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_LAST_HANDOVER_DATETIME, cursor);
+        if (handOverBill != null) {
+            String cursor = TimeUtil.format(handOverBill.getEndDate(),
+                    TimeCursor.FORMAT_YYYYMMDDHHMMSS);
+            SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_LAST_HANDOVER_DATETIME, cursor);
 
-        SharedPreferencesUltimate.setLastHandoverShiftId(handOverBill.getShiftId());
-        //打印交接单单据
-        PrinterFactory.getPrinterManager().printHandoverBill(handOverBill);
+            SharedPreferencesUltimate.setLastHandoverShiftId(handOverBill.getShiftId());
+            //打印交接单单据
+            PrinterFactory.getPrinterManager().printHandoverBill(handOverBill);
+        }
 
         getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
@@ -176,11 +178,11 @@ public class HandoverFragment extends BaseProgressFragment {
         accListAdapter = new AnalysisOrderAdapter(CashierApp.getAppContext(), null);
         accListAdapter.setOnAdapterListener(new AnalysisOrderAdapter.OnAdapterListener() {
 
-                                                  @Override
-                                                  public void onDataSetChanged() {
+                                                @Override
+                                                public void onDataSetChanged() {
 //                                                      onLoadFinished();
-                                                  }
-                                              }
+                                                }
+                                            }
 
         );
         accRecyclerView.setAdapter(accListAdapter);
@@ -194,7 +196,7 @@ public class HandoverFragment extends BaseProgressFragment {
             handOverBill = AnalysisHelper.createHandOverBill();
         }
 
-        tvHeaderTitle.setText(String.format("交接班 (班次：%d)", handOverBill.getShiftId()));
+        tvHeaderTitle.setText(String.format("交接班 (第 %d 班)", handOverBill.getShiftId()));
         tvOfficeName.setText(String.format("门店：%s", handOverBill.getOfficeName()));
         tvHumanName.setText(String.format("交班人：%s", handOverBill.getHumanName()));
         tvHandoverDateTime.setText(String.format("交班时间：%s",
@@ -247,7 +249,7 @@ public class HandoverFragment extends BaseProgressFragment {
         options.put("startTime", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
         options.put("endTime", TimeUtil.format(handOverBill.getEndDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        RxHttpManager.getInstance().autoShiftAnalysis(options,
+        AnalysisHttpManager.getInstance().autoShiftAnalysis(options,
                 new Subscriber<String>() {
 
                     @Override
@@ -257,7 +259,7 @@ public class HandoverFragment extends BaseProgressFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        onLoadError("启动交接班统计失败：" + e.toString());
+                        onLoadError(e.getMessage());
                         btnSubmit.setEnabled(false);
                     }
 
@@ -285,17 +287,18 @@ public class HandoverFragment extends BaseProgressFragment {
         Map<String, String> options = new HashMap<>();
         options.put("wrapper", "true");
         options.put("shiftId", String.valueOf(handOverBill.getShiftId()));
-        options.put("aggDate", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        options.put("aggDate", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDD));
         options.put("createdBy", String.valueOf(MfhLoginService.get().getHumanId()));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        RxHttpManager.getInstance().analysisAggShiftList(options,
+        AnalysisHttpManager.getInstance().analysisAggShiftList(options,
                 new MQuerySubscriber<MEntityWrapper<AggItem>>(new PageInfo(1, 50)) {
 
                     @Override
                     public void onError(Throwable e) {
-                        onLoadError("查询日结经营分析数据失败:" + e.toString());
-                        btnSubmit.setEnabled(false);                        }
+                        onLoadError(e.getMessage());
+                        btnSubmit.setEnabled(false);
+                    }
 
                     @Override
                     public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<AggItem>> dataList) {
@@ -315,8 +318,8 @@ public class HandoverFragment extends BaseProgressFragment {
 
             List<AggItem> aggItems = new ArrayList<>();
 
-            if (dataList != null && dataList.size() > 0){
-                for (MEntityWrapper<AggItem> entityWrapper : dataList){
+            if (dataList != null && dataList.size() > 0) {
+                for (MEntityWrapper<AggItem> entityWrapper : dataList) {
                     AggItem aggItem = entityWrapper.getBean();
                     Map<String, String> caption = entityWrapper.getCaption();
                     aggItem.setBizTypeCaption(caption.get("bizType"));
@@ -349,16 +352,16 @@ public class HandoverFragment extends BaseProgressFragment {
         Map<String, String> options = new HashMap<>();
         options.put("wrapper", "true");
         options.put("shiftId", String.valueOf(handOverBill.getShiftId()));
-        options.put("aggDate", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        options.put("aggDate", TimeUtil.format(handOverBill.getStartDate(), TimeUtil.FORMAT_YYYYMMDD));
         options.put("createdBy", String.valueOf(MfhLoginService.get().getHumanId()));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        RxHttpManager.getInstance().accAnalysisAggShiftList(options,
+        AnalysisHttpManager.getInstance().accAnalysisAggShiftList(options,
                 new MQuerySubscriber<MEntityWrapper<AccItem>>(new PageInfo(1, 50)) {
 
                     @Override
                     public void onError(Throwable e) {
-                        onLoadError("查询交接班流水分析数据失败：" + e.toString());
+                        onLoadError(e.getMessage());
                         btnSubmit.setEnabled(false);
                     }
 

@@ -14,16 +14,15 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PosType;
-import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -232,8 +231,6 @@ public class DailysettlePreviewDialog extends CommonDialog {
 //                                "</p>",
 //                        orderEntities.size()));
 
-
-
                 //流水分析
                 Map<Integer, List<PosOrderEntity>> subTypeMap = new HashMap<>();
                 OrderPayInfo orderPayInfo = new OrderPayInfo();
@@ -255,6 +252,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
                     orderPayInfo.setPaidAmount(orderPayInfo.getPaidAmount() + payInfo.getPaidAmount());
                     orderPayInfo.setChange(orderPayInfo.getChange() + payInfo.getChange());
                     orderPayInfo.setRuleDiscount(orderPayInfo.getRuleDiscount() + payInfo.getRuleDiscount());
+                    orderPayInfo.setCouponDiscount(orderPayInfo.getCouponDiscount() + payInfo.getCouponDiscount());
                     orderPayInfo.setCouponsIds(String.format("%s,%s",
                             orderPayInfo.getCouponsIds(), payInfo.getCouponsIds()));
                     orderPayInfo.setRuleIds(String.format("%s,%s",
@@ -266,7 +264,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
                     }
                     orderPayInfo.setPayWays(payWays);
 
-                    ZLogger.d(JSONObject.toJSONString(orderPayInfo));
+//                    ZLogger.d(JSONObject.toJSONString(orderPayInfo));
                 }
                 sbHtml.append("<table border=\"0\">\n");
                 sbHtml.append("<tr>\n" +
@@ -297,22 +295,24 @@ public class DailysettlePreviewDialog extends CommonDialog {
                 List<PayWay> payWays = orderPayInfo.getPayWays();
                 if (payWays != null && payWays.size() > 0) {
                     for (PayWay payWay : payWays) {
-                        if (WayType.CASH.equals(payWay.getPayType())) {
+                        Integer payWayType = payWay.getAmountType();
+                        if (PayWayType.TYPE_CASH.equals(payWayType)) {
                             cash += payWay.getAmount();
                             cash2 += 1;
-                        } else if (WayType.ALI_F2F.equals(payWay.getPayType())) {
+                        } else if (PayWayType.TYPE_ALIPAY_F2F.equals(payWayType)) {
                             ali += payWay.getAmount();
                             ali2 += 1;
-                        } else if (WayType.WX_F2F.equals(payWay.getPayType())) {
+                        } else if (PayWayType.TYPE_WEPAY_F2F.equals(payWayType)) {
                             wx += payWay.getAmount();
                             wx2 += 1;
-                        } else if (WayType.VIP.equals(payWay.getPayType())) {
+                        } else if (PayWayType.TYPE_VIP.equals(payWayType)) {
                             account += payWay.getAmount();
                             account2 += 1;
-                        } else if (WayType.BANKCARD.equals(payWay.getPayType())) {
+                        } else if (PayWayType.TYPE_BANKCARD.equals(payWayType)) {
                             bank += payWay.getAmount();
                             bank2 += 1;
-                        } else if (WayType.RULES.equals(payWay.getPayType())) {
+                        } else if (PayWayType.TYPE_VIP_COUPONS.equals(payWayType)
+                                || PayWayType.TYPE_VIP_DISCOUNT.equals(payWayType)) {
                             coupon += payWay.getAmount();
                             coupon2 += 1;
                         }

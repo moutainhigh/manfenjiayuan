@@ -301,7 +301,7 @@ public class ValidateManager {
                             //设置时间
                             try {
                                 boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
-                                ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
+                                ZLogger.df(String.format("修改系统时间 %b: %s", isSuccess,
                                         TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
                             } catch (Exception e) {
                                 ZLogger.ef("修改系统时间失败:" + e.toString());

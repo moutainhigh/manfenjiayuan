@@ -19,13 +19,15 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.companyInfo.CompanyInfoApiImpl;
 import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.api.invOrder.InvOrderApi;
-import com.mfh.framework.api.invSendOrder.InvSendOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.InvSendOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -41,7 +43,9 @@ import com.mfh.litecashier.event.PurchaseShopcartSyncEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -171,45 +175,46 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
         }
         jsonObject.put("items", items);
 
-        InvSendOrderApiImpl.askSendOrder(jsonObject.toJSONString(), sendOrderRespCallback);
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSendOrderHttpManager.getInstance().askSendOrder(options,
+                new MValueSubscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df("采购订单创建失败: " + e.toString());
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                        btnSubmit.setEnabled(true);
+
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+                        ZLogger.df("新建采购订单成功,清空购物车..." + data);
+
+                        PurchaseHelper.getInstance().clear(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL);
+                        showProgressDialog(ProgressDialog.STATUS_DONE);
+                        btnSubmit.setEnabled(true);
+
+                        //刷新购物车
+                        EventBus.getDefault().post(new PurchaseShopcartSyncEvent(PurchaseShopcartSyncEvent.EVENT_ID_ORDER_SUCCESS));
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                getActivity().setResult(Activity.RESULT_OK);
+                                getActivity().finish();
+                            }
+                        }, 1000);
+                    }
+
+                });
     }
-
-    NetCallBack.NetTaskCallBack sendOrderRespCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("采购订单创建失败: " + errMsg);
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    btnSubmit.setEnabled(true);
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":{"val":"158"}}
-                    /**
-                     *
-                     * */
-                    ZLogger.df("新建采购订单成功,清空购物车...");
-                    PurchaseHelper.getInstance().clear(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL);
-                    showProgressDialog(ProgressDialog.STATUS_DONE);
-                    btnSubmit.setEnabled(true);
-
-                    //刷新购物车
-                    EventBus.getDefault().post(new PurchaseShopcartSyncEvent(PurchaseShopcartSyncEvent.EVENT_ID_ORDER_SUCCESS));
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            getActivity().setResult(Activity.RESULT_OK);
-                            getActivity().finish();
-                        }
-                    }, 1000);
-                }
-            }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
 
     /**
      * 初始化订单列表

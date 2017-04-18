@@ -1,4 +1,4 @@
-package com.mfh.litecashier.service;
+package com.mfh.litecashier.hardware.GreenTags;
 
 
 import android.os.AsyncTask;
@@ -13,7 +13,6 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.century.GreenTagsApi;

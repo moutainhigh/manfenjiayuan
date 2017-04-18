@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.goods;
+package com.mfh.litecashier.ui.fragment.goods.backend;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
  * 前台类目商品
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  */
-public class FrontCategoryGoodsAdapter
-        extends RegularAdapter<FrontCategoryGoods, FrontCategoryGoodsAdapter.MenuOptioinViewHolder> {
+public class BackendGoodsAdapter
+        extends RegularAdapter<FrontCategoryGoods, BackendGoodsAdapter.MenuOptioinViewHolder> {
 
-    public FrontCategoryGoodsAdapter(Context context, List<FrontCategoryGoods> entityList) {
+    public BackendGoodsAdapter(Context context, List<FrontCategoryGoods> entityList) {
         super(context, entityList);
     }
 

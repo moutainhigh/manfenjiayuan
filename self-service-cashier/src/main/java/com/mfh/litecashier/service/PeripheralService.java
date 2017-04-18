@@ -11,12 +11,12 @@ import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.scale.AHScaleHelper;
 import com.bingshanguxue.cashier.hardware.scale.DS781A;
 import com.bingshanguxue.cashier.hardware.scale.SMScaleHelper;
-import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.ScaleProvider;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.utils.GlobalInstance;
 
 import java.io.IOException;
@@ -111,8 +111,8 @@ public class PeripheralService extends Service {
          * 电子秤配置发生改变
          * */
         public void onScaleUpdated(){
-            if (ScaleAgent.isEnabled()) {
-                init(comScale, ScaleAgent.getPort(), ScaleAgent.getBaudrate());
+            if (ScaleProvider.isEnabled()) {
+                init(comScale, ScaleProvider.getPort(), ScaleProvider.getBaudrate());
             }
             else{
                 close(comScale);
@@ -173,7 +173,7 @@ public class PeripheralService extends Service {
 
         comDisplay = new SerialControl(PoslabAgent.getPort(), PoslabAgent.getBaudrate());
         comPrint = new SerialControl(PrinterAgent.getPort(), PrinterAgent.getBaudrate());
-        comScale = new SerialControl(ScaleAgent.getPort(), ScaleAgent.getBaudrate());
+        comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate());
         setControls();
 
         if (comMode == 1){
@@ -281,8 +281,8 @@ public class PeripheralService extends Service {
         else{
             close(comDisplay);
         }
-        if (devicesPath.contains(ScaleAgent.getPort()) && ScaleAgent.isEnabled()) {
-            init(comScale, ScaleAgent.getPort(), ScaleAgent.getBaudrate());
+        if (devicesPath.contains(ScaleProvider.getPort()) && ScaleProvider.isEnabled()) {
+            init(comScale, ScaleProvider.getPort(), ScaleProvider.getBaudrate());
         }
         else{
             close(comScale);
@@ -429,22 +429,27 @@ public class PeripheralService extends Service {
 
         Long rightNow = System.currentTimeMillis();
 
-        if (ScaleAgent.isEnabled()) {
+        if (ScaleProvider.isEnabled()) {
             //接收到串口数据
-            if (port.equals(ScaleAgent.getPort())) {
-                if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_ACS_P215) {
+            if (port.equals(ScaleProvider.getPort())) {
+                lastScaleTriggle = rightNow;
+                if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
                     Double netWeight = AHScaleHelper.parseACSP215(comBean.bRec);
                     if (netWeight != null) {
                         GlobalInstance.getInstance().setNetWeight(netWeight);
+                    } else {
+                        GlobalInstance.getInstance().reset();
                     }
-                } else if (ScaleAgent.getScaleType() == ScaleAgent.SCALE_TYPE_DS_781A) {
+                } else if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_DS_781A) {
                     DS781A ds781A = SMScaleHelper.parseData(comBean.bRec);
                     if (ds781A != null) {
                         GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
+                    } else {
+                        GlobalInstance.getInstance().reset();
                     }
+                } else {
+                    GlobalInstance.getInstance().reset();
                 }
-
-                lastScaleTriggle = rightNow;
             }
         }
         else{
@@ -470,15 +475,15 @@ public class PeripheralService extends Service {
             @Override
             public void run() {
                 Long rightNow = System.currentTimeMillis();
-                if (ScaleAgent.isEnabled()) {
+                if (ScaleProvider.isEnabled()) {
                     Long interval1 = rightNow - lastScaleTriggle;
                     if (interval1 > MINUTE) {
                         ZLogger.df(String.format("(%s)超过1分钟没有收到电子秤串口消息，自动重新打开串口",
-                                ScaleAgent.getPort()));
+                                ScaleProvider.getPort()));
                         GlobalInstance.getInstance().setNetWeight(0D);
 
 
-                        init(comScale, ScaleAgent.getPort(), ScaleAgent.getBaudrate());
+                        init(comScale, ScaleProvider.getPort(), ScaleProvider.getBaudrate());
                         lastScaleTriggle = rightNow;
                     }
                 }

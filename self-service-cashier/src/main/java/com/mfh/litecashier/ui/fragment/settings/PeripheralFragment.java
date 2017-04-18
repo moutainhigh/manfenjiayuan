@@ -11,7 +11,7 @@ import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.SerialPortEvent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterModel;
-import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.ScaleProvider;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -95,8 +95,8 @@ public class PeripheralFragment extends BaseFragment {
         toggleScale.init(new ToggleSettingItem.OnViewListener() {
             @Override
             public void onToggleChanged(boolean isChecked) {
-                if (ScaleAgent.isEnabled() != isChecked) {
-                    ScaleAgent.setEnabled(isChecked);
+                if (ScaleProvider.isEnabled() != isChecked) {
+                    ScaleProvider.setEnabled(isChecked);
                     EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SCALE, ""));
                 }
 
@@ -205,19 +205,19 @@ public class PeripheralFragment extends BaseFragment {
                     int id = v.getId();
                     selectScaleDialog.dismiss();
 
-                    int scaleType = ScaleAgent.getScaleType();
+                    int scaleType = ScaleProvider.getScaleType();
                     switch (id) {
                         case R.id.tv_option_1:
-                            if (scaleType != ScaleAgent.SCALE_TYPE_ACS_P215){
-                                ScaleAgent.setScaleType(ScaleAgent.SCALE_TYPE_ACS_P215);
-                                toggleScale.setSubTitle(ScaleAgent.getScaleName());
+                            if (scaleType != ScaleProvider.SCALE_TYPE_ACS_P215){
+                                ScaleProvider.setScaleType(ScaleProvider.SCALE_TYPE_ACS_P215);
+                                toggleScale.setSubTitle(ScaleProvider.getScaleName());
                                 EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SCALE, ""));
                             }
                             break;
                         case R.id.tv_option_2:
-                            if (scaleType != ScaleAgent.SCALE_TYPE_DS_781A){
-                                ScaleAgent.setScaleType(ScaleAgent.SCALE_TYPE_DS_781A);
-                                toggleScale.setSubTitle(ScaleAgent.getScaleName());
+                            if (scaleType != ScaleProvider.SCALE_TYPE_DS_781A){
+                                ScaleProvider.setScaleType(ScaleProvider.SCALE_TYPE_DS_781A);
+                                toggleScale.setSubTitle(ScaleProvider.getScaleName());
                                 EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.UPDATE_PORT_SCALE, ""));
                             }
                             break;
@@ -332,8 +332,8 @@ public class PeripheralFragment extends BaseFragment {
         try {
             togglePrinter.setSubTitle(PrinterAgent.getPrinterName());
             togglePrinter.setChecked(PrinterAgent.isEnabled());
-            toggleScale.setSubTitle(ScaleAgent.getScaleName());
-            toggleScale.setChecked(ScaleAgent.isEnabled());
+            toggleScale.setSubTitle(ScaleProvider.getScaleName());
+            toggleScale.setChecked(ScaleProvider.isEnabled());
             umsipsRs232SettingsItem.setSubTitle(SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_UMSIPS_TERMID));
             tsiLedDisplay.setChecked(PoslabAgent.isEnabled());
 

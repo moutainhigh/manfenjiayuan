@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.goods;
+package com.mfh.litecashier.ui.fragment.goods.frontend;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -21,9 +21,9 @@ import butterknife.OnClick;
 
 /**
  * 前台类目商品
- * Created by Nat.ZZN on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
-public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class FrontendGoodsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public enum ITEM_TYPE {
         ITEM_TYPE_GOODS,
@@ -48,7 +48,7 @@ public class LocalFrontCategoryGoodsAdapter2 extends RecyclerView.Adapter<Recycl
         this.adapterListener = adapterListener;
     }
 
-    public LocalFrontCategoryGoodsAdapter2(Context context, List<LocalFrontCategoryGoods> entityList) {
+    public FrontendGoodsAdapter(Context context, List<LocalFrontCategoryGoods> entityList) {
         this.entityList = entityList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);

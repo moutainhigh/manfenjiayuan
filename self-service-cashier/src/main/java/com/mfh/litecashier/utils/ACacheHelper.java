@@ -11,7 +11,7 @@ public class ACacheHelper {
     public static final String CK_FRONT_CATEGORY_ID = "CK_FRONT_CATEGORY_ID";//前台类目，format:CACHE_KEY_FRONT_CATEGORY_1111，其中1111是类目的id
     public static final String CK_FRONT_CATEGORY_GOODS = "CK_FRONT_CATEGORY_GOODS";//前台类目商品，format:CACHE_KEY_FRONT_CATEGORY_GOODS_1111_222，其中1111是类目的id
     //后台类目树
-    public static final String CK_STOCKGOODS_CATEGORY = "CK_STOCKGOODS_CATEGORY";//商品后台类目
+    public static final String CK_BACKEND_CATEGORY_TREE = "CK_STOCKGOODS_CATEGORY";//商品后台类目
     //订单流水
     public static final String CK_ORDERFLOW_STORE = "CK_ORDERFLOW_STORE";// 线下门店
     public static final String CK_ORDERFLOW_ONLINE = "CK_ORDERFLOW_ONLINE";// 线上订单

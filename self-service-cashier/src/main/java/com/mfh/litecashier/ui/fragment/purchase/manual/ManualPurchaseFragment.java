@@ -43,7 +43,7 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.PurchaseShopcartGoodsWrapper;
+import com.manfenjiayuan.business.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
@@ -52,14 +52,14 @@ import com.mfh.litecashier.presenter.PurchasePresenter;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
-import com.mfh.litecashier.ui.adapter.CommodityCategoryAdapter;
+import com.mfh.litecashier.categoty.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.dialog.SelectGoodsSupplyDialog;
 import com.mfh.litecashier.ui.dialog.SelectInvCompanyInfoDialog;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
-import com.mfh.litecashier.ui.fragment.purchase.intelligent.IIntelligentPurchaseView;
-import com.mfh.litecashier.ui.fragment.purchase.intelligent.IntelligentPurchasePresenter;
+import com.manfenjiayuan.business.intelligent.IIntelligentPurchaseView;
+import com.manfenjiayuan.business.intelligent.IntelligentPurchasePresenter;
 import com.mfh.litecashier.ui.view.IPurchaseView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.ui.widget.InputSearchView;
@@ -899,11 +899,11 @@ public class ManualPurchaseFragment extends BaseProgressFragment
      */
     private boolean readCategoryInfoCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
-        String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_STOCKGOODS_CATEGORY);
+        String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_BACKEND_CATEGORY_TREE);
         List<CategoryOption> cacheData = JSONArray.parseArray(cacheStr, CategoryOption.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载缓存数据(%s): %d个后台商品类目",
-                    ACacheHelper.CK_STOCKGOODS_CATEGORY, cacheData.size()));
+                    ACacheHelper.CK_BACKEND_CATEGORY_TREE, cacheData.size()));
             initCategoryList(cacheData, true);
 
             return true;
@@ -949,7 +949,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
     public void intelligentPurchase() {
         CompanyInfo companyInfo = searchParams.getCompanyInfo();
         if (companyInfo != null) {
-            mIntelligentPurchasePresenter.loadGoodsList(companyInfo.getId());
+            mIntelligentPurchasePresenter.autoAskSendOrder(companyInfo.getId());
         } else {
             selectPlatformProvider();
         }

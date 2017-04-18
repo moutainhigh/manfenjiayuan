@@ -18,10 +18,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.storeIn.IStoreInView;
+import com.manfenjiayuan.business.storeIn.StoreInPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.StoreType;
@@ -29,21 +30,15 @@ import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import rx.Subscriber;
 
 /**
  * 商品建档并入库
@@ -58,7 +53,8 @@ import rx.Subscriber;
  * </ul>
  * Created by Nat.ZZN(bingshanguxue) on 15/09/24.
  */
-public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements IScGoodsSkuView {
+public class ScSkuGoodsStoreInFragment extends BaseProgressFragment
+        implements IScGoodsSkuView, IStoreInView {
 
     public static final String EXTRY_KEY_BARCODE = "barcode";
 
@@ -95,6 +91,8 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
     private String barcode;
     private ScGoodsSku purchaseGoods;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
+    private StoreInPresenter mStoreInPresenter;
+
     private ArrayAdapter<CharSequence> unitAdapter0;
     private ArrayAdapter<CharSequence> unitAdapter1;
 
@@ -115,6 +113,7 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         super.onCreate(savedInstanceState);
 
         mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mStoreInPresenter = new StoreInPresenter(this);
     }
 
     @Override
@@ -486,32 +485,25 @@ public class ScSkuGoodsStoreInFragment extends BaseProgressFragment implements I
         item.put("tenantSku", tenantSku);
         jsonArray.add(item);
 
-        Map<String, String> options = new HashMap<>();
-        options.put("jsonStr", jsonArray.toJSONString());
-        options.put("storeType", String.valueOf(StoreType.SUPERMARKET));
-        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-        ScGoodsSkuHttpManager.getInstance().storeIn(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.df("商品建档失败: " + e.toString());
-                onLoadError(e.toString());
-                btnSubmit.setEnabled(true);
-            }
-
-            @Override
-            public void onNext(String s) {
-                onLoadFinished();
-                //商品建档成功，后台发送消息更新商品库
-                getActivity().setResult(Activity.RESULT_OK);
-                getActivity().finish();
-            }
-        });
+        mStoreInPresenter.storeIn(jsonArray.toJSONString(), StoreType.SUPERMARKET);
     }
 
+    @Override
+    public void onIStoreInViewProcess() {
+
+    }
+
+    @Override
+    public void onIStoreInViewError(String errorMsg) {
+        onLoadError(errorMsg);
+        btnSubmit.setEnabled(true);
+    }
+
+    @Override
+    public void onIStoreInViewSuccess() {
+        onLoadFinished();
+        //商品建档成功，后台发送消息更新商品库
+        getActivity().setResult(Activity.RESULT_OK);
+        getActivity().finish();
+    }
 }

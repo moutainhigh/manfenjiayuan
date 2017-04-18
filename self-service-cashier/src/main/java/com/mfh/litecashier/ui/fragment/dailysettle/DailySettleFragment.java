@@ -12,9 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.vector_uikit.OptionalLabel;
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
@@ -24,7 +22,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MEntityWrapper;
-import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.AnalysisHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -56,7 +54,7 @@ import rx.Subscriber;
  * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
  */
 public class DailySettleFragment extends BaseProgressFragment {
-    @BindView(R.id.tv_header_title)
+    @BindView(R.id.tv_title)
     TextView tvHeaderTitle;
 
     @BindView(R.id.tv_officename)
@@ -84,8 +82,8 @@ public class DailySettleFragment extends BaseProgressFragment {
     @BindView(R.id.paytype_empty_view)
     TextView payTypeEmptyView;
 
-    @BindView(R.id.button_header_close)
-    ImageButton btnClose;
+//    @BindView(R.id.button_close)
+//    ImageButton btnClose;
     @BindView(R.id.fab_print)
     ImageButton fabPrint;
 
@@ -124,7 +122,8 @@ public class DailySettleFragment extends BaseProgressFragment {
         autoDateEnd();
     }
 
-    @OnClick(R.id.button_header_close)
+
+    @OnClick(R.id.button_close)
     public void finishActivity() {
         getActivity().setResult(Activity.RESULT_CANCELED);
         getActivity().finish();
@@ -274,7 +273,8 @@ public class DailySettleFragment extends BaseProgressFragment {
     /**
      * 启动日结统计
      */
-    private void autoDateEnd() {
+    @OnClick(R.id.button_refresh)
+    public void autoDateEnd() {
         onLoadProcess("正在统计日结数据");
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
@@ -285,7 +285,7 @@ public class DailySettleFragment extends BaseProgressFragment {
         Map<String, String> options = new HashMap<>();
         options.put("date", TimeUtil.format(mDailysettleInfo.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDD));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        RxHttpManager.getInstance().autoDateEnd(options,
+        AnalysisHttpManager.getInstance().autoDateEnd(options,
                 new Subscriber<String>() {
 
                     @Override
@@ -295,7 +295,7 @@ public class DailySettleFragment extends BaseProgressFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        onLoadError("启动日结统计失败：" + e.toString());
+                        onLoadError(e.getMessage());
                     }
 
                     @Override
@@ -325,13 +325,12 @@ public class DailySettleFragment extends BaseProgressFragment {
 //        params.put("createdBy", MfhLoginService.get().getCurrentGuId());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-
-        RxHttpManager.getInstance().analysisAggDateList(options,
+        AnalysisHttpManager.getInstance().analysisAggDateList(options,
                 new MQuerySubscriber<MEntityWrapper<AggItem>>(new PageInfo(1, 50)) {
 
                     @Override
                     public void onError(Throwable e) {
-                        onLoadError("查询日结经营分析数据失败：" + e.toString());
+                        onLoadError(e.getMessage());
                     }
 
                     @Override
@@ -399,12 +398,12 @@ public class DailySettleFragment extends BaseProgressFragment {
         options.put("aggDate", TimeUtil.format(mDailysettleInfo.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDD));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        RxHttpManager.getInstance().analysisAccDateList(options,
+        AnalysisHttpManager.getInstance().analysisAccDateList(options,
                 new MQuerySubscriber<MEntityWrapper<AccItem>>(new PageInfo(1, 50)) {
 
                     @Override
                     public void onError(Throwable e) {
-                        onLoadError("查询日结流水分析数据失败：" + e.toString());
+                        onLoadError(e.getMessage());
                     }
 
                     @Override
@@ -422,33 +421,6 @@ public class DailySettleFragment extends BaseProgressFragment {
     /**
      * 保存流水分析数据
      */
-    private void saveAccData(RspQueryResult<AccItem> rs) {
-        try {
-            Double cash = 0D;
-            List<AccItem> accItems = new ArrayList<>();
-            if (rs != null && rs.getReturnNum() > 0) {
-                for (EntityWrapper<AccItem> wrapper : rs.getRowDatas()) {
-                    AccItem accItem = wrapper.getBean();
-                    accItem.setPayTypeCaption(wrapper.getPropCaption("payType"));
-                    accItems.add(accItem);
-
-                    if (accItem.getPayType().equals(WayType.CASH)) {
-                        cash = accItem.getAmount();
-                    }
-                }
-            }
-
-            mDailysettleInfo.setAccItems(accItems);
-            mDailysettleInfo.setCash(cash);
-            mDailysettleInfo.setUpdatedDate(new Date());
-
-            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
-
-            refresh();
-        } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
-        }
-    }
     private void saveAccData2(List<MEntityWrapper<AccItem>> dataList) {
         try {
             Double cash = 0D;

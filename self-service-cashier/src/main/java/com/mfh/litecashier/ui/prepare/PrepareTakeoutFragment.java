@@ -22,7 +22,6 @@ import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -177,8 +176,8 @@ public class PrepareTakeoutFragment extends BaseFragment {
                     .queryAllBy(String.format("posTradeNo = '%s'", posTradeNo));
 
             Double bcount = 0D, amount = 0D;
-            if (mShopcartEntities != null && mShopcartEntities.size() > 0){
-                for (CashierShopcartEntity entity : mShopcartEntities){
+            if (mShopcartEntities != null && mShopcartEntities.size() > 0) {
+                for (CashierShopcartEntity entity : mShopcartEntities) {
                     bcount += entity.getBcount();
                     amount += entity.getFinalAmount();
                 }
@@ -195,20 +194,19 @@ public class PrepareTakeoutFragment extends BaseFragment {
         btnSubmit.setEnabled(false);
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "组货中...", true);
 
-        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS,
-                mBizSubTypeWrapper.getSubType(), posTradeNo, outterTradeNo,
+        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(mBizSubTypeWrapper.getSubType(),
+                posTradeNo, outterTradeNo,
                 PosOrderEntity.ORDER_STATUS_FINISH, mShopcartEntities);
 
         hideProgressDialog();
 
-        if (cashierOrderInfo != null){
+        if (cashierOrderInfo != null) {
             Intent data = new Intent();
             data.putExtra("isTakeOutOrder", true);
             data.putExtra("posTradeNo", posTradeNo);
             getActivity().setResult(Activity.RESULT_OK, data);
             getActivity().finish();
-        }
-        else{
+        } else {
             DialogUtil.showHint("组货失败");
         }
     }

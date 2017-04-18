@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.R;
@@ -49,7 +49,7 @@ public class SettingsAccountFragment extends BaseFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+        TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer != null){
             Glide.with(getContext())
                     .load(hostServer.getLogopicUrl())
@@ -75,7 +75,7 @@ public class SettingsAccountFragment extends BaseFragment {
                 , MfhLoginService.get().getCurOfficeId(), MfhLoginService.get().getCurOfficeName())
                 + String.format("\n租户: %d", MfhLoginService.get().getSpid())
                 + String.format("\n仓储编号: %s", MfhLoginService.get().getCurStockId())
-                + String.format("\n营业员: %s", MfhLoginService.get().getHumanName());
+                + String.format("\n收银员: %s", MfhLoginService.get().getHumanName());
         tvCurOfficeId.setText(oficeInfo);
 
         tvAccountSyncInterval.setText(String.format("账号同步间隔：%ds", SharedPreferencesUltimate.getSyncCompanyHumanInterval()));

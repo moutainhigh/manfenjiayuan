@@ -42,7 +42,8 @@ public class AnalysisHelper {
         int lastHandoverShiftId = SharedPreferencesUltimate.getLastHandoverShiftId();
         ZLogger.d(String.format(Locale.getDefault(),
                 "创建交接班订单--last shiftId：%d, datetime：%s",
-                lastHandoverShiftId, TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(lastHandoverDate)));
+                lastHandoverShiftId,
+                TimeUtil.format(lastHandoverDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
 
         //当前交接班时间
         Date currentHandoverDate = new Date();

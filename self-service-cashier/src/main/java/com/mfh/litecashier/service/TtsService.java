@@ -15,7 +15,7 @@ import com.iflytek.cloud.SpeechError;
 import com.iflytek.cloud.SpeechSynthesizer;
 import com.iflytek.cloud.SynthesizerListener;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -206,7 +206,7 @@ public class TtsService extends Service {
                 // 注：有的开发者在onCreate方法中创建完合成对象之后马上就调用startSpeaking进行合成，
                 // 正确的做法是将onCreate中的startSpeaking调用移至这里
 //                播放欢迎语音
-                HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+                TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
                 if (hostServer != null) {
                     if (mTtsBinder != null){
                         mTtsBinder.cloudSpeak(String.format("欢迎使用%s智能收银系统", hostServer.getSaasName()));

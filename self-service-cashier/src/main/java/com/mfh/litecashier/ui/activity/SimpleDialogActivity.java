@@ -14,7 +14,7 @@ import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
 import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
-import com.mfh.litecashier.ui.goodsflow.GoodsFlowFragment;
+import com.mfh.litecashier.ui.fragment.components.OneKeyFeedbackFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
@@ -26,6 +26,8 @@ import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragment;
 import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
+import com.mfh.litecashier.ui.goodsflow.BackendCategoryListFragment;
+import com.mfh.litecashier.ui.goodsflow.GoodsFlowFragment;
 
 import butterknife.BindView;
 
@@ -51,8 +53,11 @@ public class SimpleDialogActivity extends BaseActivity {
 
     public static final int FT_TENANT_POSCATEGORYLIST = 0x12;//租户pos前台类目
     public static final int FT_GOODS_FLOW = 0x13;//商品流水
-
+    public static final int FT_BACKEND_CATEGORY = 0x14;//后台类目
     public static final int FT_PREPAREABLE_ORDER = 0x21;//买手接单
+
+
+    public static final int FT_ONEKEY_FEEDBACK = 0x31;//一键反馈
 
 
     private int serviceType = 0;
@@ -326,6 +331,19 @@ public class SimpleDialogActivity extends BaseActivity {
             }
             break;
 
+            case FT_BACKEND_CATEGORY: {
+                BackendCategoryListFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = BackendCategoryListFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = BackendCategoryListFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
             case FT_GOODS_FLOW: {
                 GoodsFlowFragment fragment;
                 Intent intent = this.getIntent();
@@ -339,6 +357,22 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
+
+            case FT_ONEKEY_FEEDBACK: {
+                OneKeyFeedbackFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = OneKeyFeedbackFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = OneKeyFeedbackFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            default:
+                break;
         }
     }
 }

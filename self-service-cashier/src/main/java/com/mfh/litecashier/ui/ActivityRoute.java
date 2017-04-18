@@ -163,7 +163,19 @@ public class ActivityRoute {
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
 //        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
 
+    /**
+     * 后台类目
+     */
+    public static void redirect2BackendCategory(Context context) {
+//        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_BACKEND_CATEGORY);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
+        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
     }
 
     /**

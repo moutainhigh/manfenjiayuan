@@ -20,10 +20,10 @@ import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -245,7 +245,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                     if (payWays != null && payWays.size() > 0){
                         for (PayWay payWay : payWays){
                             sbHtml.append(String.format("<div><font color=#000000>%s：%.2f</font></div>\n" ,
-                                    WayType.name(payWay.getPayType()), payWay.getAmount()));
+                                    PayWayType.getWayTypeName(payWay.getAmountType()), payWay.getAmount()));
                         }
 
 //                    sbHtml.append(String.format("<div><font color=#000000>付款：%.2f</font></div>\n" ,

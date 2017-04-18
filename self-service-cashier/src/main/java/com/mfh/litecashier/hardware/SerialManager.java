@@ -1,8 +1,8 @@
-package com.mfh.litecashier.com;
+package com.mfh.litecashier.hardware;
 
 import com.bingshanguxue.cashier.hardware.led.PoslabAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
-import com.bingshanguxue.cashier.hardware.scale.ScaleAgent;
+import com.bingshanguxue.cashier.hardware.scale.ScaleProvider;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
@@ -82,7 +82,7 @@ public class SerialManager {
         //打印机的串口被固定占用，不可以更改
         occupies.remove(PrinterAgent.getPort());
         //电子秤的串口被固定占用，不可以更改
-        occupies.remove(ScaleAgent.getPort());
+        occupies.remove(ScaleProvider.getPort());
         //LED客显的串口被固定占用，不可以更改
         occupies.remove(PoslabAgent.getPort());
 

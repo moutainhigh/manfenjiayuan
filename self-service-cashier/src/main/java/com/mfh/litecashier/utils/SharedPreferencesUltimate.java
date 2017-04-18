@@ -171,11 +171,13 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
         Date date = new Date();
 
         String lastCursor = getLastHandoverDateTimeStr();
+
+//        TimeUtil.parse(lastCursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS)
         //与当前时间相比，取最小当时间
         if (!StringUtils.isEmpty(lastCursor)) {
             //得到指定模范的时间
             try {
-                date = TimeCursor.InnerFormat.parse(lastCursor);
+                date = TimeCursor.FORMAT_YYYYMMDDHHMMSS.parse(lastCursor);
             } catch (ParseException e) {
 //            e.printStackTrace();
                 ZLogger.e(e.toString());

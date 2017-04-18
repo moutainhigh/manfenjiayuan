@@ -11,7 +11,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
 import com.mfh.litecashier.ui.fragment.components.MessageMgrFragment;
 import com.mfh.litecashier.ui.fragment.components.StockDetailFragment;
-import com.mfh.litecashier.ui.fragment.goods.FrontCategoryFragment;
+import com.mfh.litecashier.ui.fragment.goods.backend.BackendCategoryGoodsFragment;
 import com.mfh.litecashier.ui.fragment.order.OrderFragment;
 
 /**
@@ -94,7 +94,7 @@ public class FragmentActivity extends BaseActivity {
         switch (fragmentType) {
             case FT_ADDMORE_LOCALFRONTGOODS: {
                 Intent intent = this.getIntent();
-                FrontCategoryFragment fragment = FrontCategoryFragment.newInstance(intent.getExtras());
+                BackendCategoryGoodsFragment fragment = BackendCategoryGoodsFragment.newInstance(intent.getExtras());
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
                         .replace(R.id.fragment_container, fragment)

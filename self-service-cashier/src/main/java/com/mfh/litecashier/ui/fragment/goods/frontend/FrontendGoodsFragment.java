@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.goods;
+package com.mfh.litecashier.ui.fragment.goods.frontend;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,6 +42,10 @@ import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
+import com.mfh.litecashier.ui.fragment.goods.IImportGoodsView;
+import com.mfh.litecashier.ui.fragment.goods.ImportGoodsPresenter;
+import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryGoodsEvent;
+import com.mfh.litecashier.ui.fragment.goods.backend.BackendCategoryGoodsFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,10 +65,10 @@ import rx.schedulers.Schedulers;
 
 /**
  * POS-本地前台类目商品
- * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
+ * Created by bingshanguxue on 15/8/31.
  */
-public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFrontCategoryGoods>
-        implements IScGoodsSkuView {
+public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGoods>
+        implements IScGoodsSkuView, IImportGoodsView {
 
     public static final String KEY_CATEGORY_ID = "categoryId";
 
@@ -76,7 +80,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
     View emptyView;
 
     GridLayoutManager linearLayoutManager;
-    private LocalFrontCategoryGoodsAdapter2 adapter;
+    private FrontendGoodsAdapter adapter;
 
     private Long categoryId;
     private String tempBarcode;
@@ -86,6 +90,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
 
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
+    private ImportGoodsPresenter mImportGoodsPresenter;
 
     @Override
     protected int getLayoutResId() {
@@ -101,6 +106,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 40);
 
         mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mImportGoodsPresenter = new ImportGoodsPresenter(this);
     }
 
     @Override
@@ -198,8 +204,8 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             }
         });
 
-        adapter = new LocalFrontCategoryGoodsAdapter2(CashierApp.getAppContext(), null);
-        adapter.setOnAdapterListener(new LocalFrontCategoryGoodsAdapter2.OnAdapterListener() {
+        adapter = new FrontendGoodsAdapter(CashierApp.getAppContext(), null);
+        adapter.setOnAdapterListener(new FrontendGoodsAdapter.OnAdapterListener() {
             @Override
             public void onDataSetChanged() {
                 onLoadFinished();
@@ -291,22 +297,24 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
                                         productEntities1.size(), entity.getCataItemId()));
 
                                 PosProductEntity entity1 = productEntities1.get(0);
-                                LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
-                                goods.setType(0);
-                                goods.setId(entity1.getId());
-                                goods.setProSkuId(entity1.getProSkuId());
-                                goods.setProductId(entity1.getProductId());
-                                goods.setBarcode(entity1.getBarcode());
-                                goods.setName(entity1.getName());
-                                goods.setSkuName(entity1.getSkuName());
-                                goods.setShortName(entity1.getShortName());
-                                goods.setProviderId(entity1.getProviderId());
-                                goods.setCostPrice(entity1.getCostPrice());
-                                goods.setUnit(entity1.getUnit());
-                                goods.setPriceType(entity1.getPriceType());
-                                goods.setProdLineId(entity1.getProdLineId());
-                                goods.setStatus(entity1.getStatus());
-                                productEntities.add(goods);
+//                                LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
+//                                goods.setType(0);
+//                                goods.setId(entity1.getId());
+//                                goods.setProSkuId(entity1.getProSkuId());
+//                                goods.setProductId(entity1.getProductId());
+//                                goods.setBarcode(entity1.getBarcode());
+//                                goods.setName(entity1.getName());
+//                                goods.setSkuName(entity1.getSkuName());
+//                                goods.setShortName(entity1.getShortName());
+//                                goods.setProviderId(entity1.getProviderId());
+//                                goods.setCostPrice(entity1.getCostPrice());
+//                                goods.setCustomerPrice(entity1.getCustomerPrice());
+//                                goods.setUnit(entity1.getUnit());
+//                                goods.setPriceType(entity1.getPriceType());
+//                                goods.setProdLineId(entity1.getProdLineId());
+//                                goods.setNeedWait(entity1.getNeedWait());
+//                                goods.setStatus(entity1.getStatus());
+                                productEntities.add(LocalFrontCategoryGoods.create(entity1));
                             } else {
                                 ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
                             }
@@ -454,7 +462,7 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
 
         Bundle extras = new Bundle();
         extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ADDMORE_LOCALFRONTGOODS);
-        extras.putLong(FrontCategoryFragment.EXTRA_CATEGORY_ID_POS, categoryId);
+        extras.putLong(BackendCategoryGoodsFragment.EXTRA_CATEGORY_ID_POS, categoryId);
         UIHelper.startActivity(getActivity(), FragmentActivity.class, extras);
     }
 
@@ -524,7 +532,12 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
             ActivityRoute.redirect2StoreIn(getActivity(), tempBarcode);
         } else {
             ZLogger.df("查询成功，准备导入商品到类目中");
-            importFromCenterSkus(String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
+            if (mImportGoodsPresenter != null) {
+                mImportGoodsPresenter.importFromCenterSkus(categoryId, String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
+            } else {
+                hideProgressDialog();
+            }
+//            importFromCenterSkus(String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
         }
     }
 
@@ -793,4 +806,21 @@ public class LocalFrontCategoryGoodsFragment extends BaseListFragment<LocalFront
         });
     }
 
+    @Override
+    public void onIImportGoodsViewProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+    }
+
+    @Override
+    public void onIImportGoodsViewError(String errorMsg) {
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+
+    }
+
+    @Override
+    public void onIImportGoodsViewSuccess() {
+        showProgressDialog(ProgressDialog.STATUS_DONE, "导入商品成功", true);
+//        hideProgressDialog();
+    }
 }

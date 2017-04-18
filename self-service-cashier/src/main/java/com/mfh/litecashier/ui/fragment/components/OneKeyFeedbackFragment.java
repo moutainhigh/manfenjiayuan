@@ -23,6 +23,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.core.utils.ZipUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.ClientLogHttpManager;
 import com.mfh.framework.rxapi.http.ResHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
@@ -122,10 +123,12 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
     }
 
     /**
-     * 打印订单
+     * 提交反馈
      */
     @OnClick(R.id.ib_submit)
     public void submit() {
+        DeviceUtils.hideSoftInput(getContext(), etContent);
+
         String feedback = etContent.getText().toString();
         if (StringUtils.isEmpty(feedback)) {
             DialogUtil.showHint("请输入反馈内容");
@@ -142,18 +145,18 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
             if (!zipFile.exists()) {
                 zipFile.createNewFile();
             }
+            //由于日志文件太大，所以这里只压缩最新的日志文件上传
             ZipUtils.zipFiles(FileUtil.getSavePath(ZLogger.CRASH_FOLDER_PATH),
                     zipFile);
+//            String time = ZLogger.DATE_FORMAT.format(new Date());
+//            String fileName = time + ".log";
+//            ZipUtils.zipFile(FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName), zipFile);
 
             Map<String, String> options = new HashMap<>();
 //                options.put("fileToUpload", zipFile.toString());
 //                ZLogger.d(zipFile.toString());
             options.put("responseType", "1");
             options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-            String time = ZLogger.DATE_FORMAT.format(new Date());
-            String fileName = time + ".log";
-            ZLogger.d("fileName: " + fileName);
 
             File file = FileUtil.getSaveFile("", ONE_KEY_FEEDBACK_ZIP);//FileUtil.getSaveFile(ZLogger.CRASH_FOLDER_PATH, fileName);
             if (!file.exists()) {
@@ -197,6 +200,8 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
         Map<String, String> options = new HashMap<>();
 
         JSONObject jsonObject = new JSONObject();
+        JSONObject stackObject = new JSONObject();
+        stackObject.put("terminalId", SharedPrefesManagerFactory.getTerminalId());
         StringBuilder sb = new StringBuilder();
         sb.append("\n" +
                 "一键反馈: \n");
@@ -207,11 +212,12 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
             sb.append(String.format("附件编号： %d\n",
                     attachmentId));
         }
-        jsonObject.put("stackInformation", sb.toString());
+        stackObject.put("feedback", sb.toString());
+        jsonObject.put("stackInformation", stackObject.toJSONString());
         jsonObject.put("hardwareInformation", String.format("%s %s", Build.MANUFACTURER, Build.MODEL));
         jsonObject.put("androidLevel", String.format("%s(API %d)", Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
         jsonObject.put("loginName", MfhLoginService.get().getLoginName());
-        jsonObject.put("softVersion", SystemUtils.getVersionName(MfhApplication.getAppContext()));
+        jsonObject.put("softVersion", SystemUtils.getVersion(MfhApplication.getAppContext()));
         jsonObject.put("errorTime", TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
 
         options.put("jsonStr", jsonObject.toJSONString());
