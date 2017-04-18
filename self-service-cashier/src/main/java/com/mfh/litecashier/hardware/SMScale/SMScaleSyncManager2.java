@@ -7,10 +7,10 @@ import android.os.Environment;
 
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.utils.Encoding;
 import com.mfh.framework.core.utils.FileUtil;
@@ -20,13 +20,18 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
+import com.opencsv.CSVReader;
 import com.opencsv.CSVWriter;
+import com.opencsv.bean.ColumnPositionMappingStrategy;
+import com.opencsv.bean.CsvToBean;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -84,7 +89,7 @@ public class SMScaleSyncManager2 extends FTPManager {
      * </ol>
      */
     public static String[] TEMPLATE_COLUMNS = new String[]{"商品编号", "单价",
-            "项目编号", "条码标志位1和2", "分类", "品名信息", "称重标志"};
+            "项目编号", "条码标志位1和2", "分类", "品名信息", "称重标志", "特殊信息", "销售日期"};
     public static String FLAG_F12 = "02";
 
     public static String[] ENCODING_CHARSET_SET = new String[]{Encoding.CHARSET_GBK, Encoding.CHARSET_UTF_8};
@@ -109,11 +114,11 @@ public class SMScaleSyncManager2 extends FTPManager {
         FTP_PORT = SharedPrefesManagerFactory
                 .getInt(PREF_SMSCALE, PK_I_SMSCALE_PORT, 21);
         FTP_USER = SharedPrefesManagerFactory
-                .getString(PREF_SMSCALE, PK_S_SMSCALE_USERNAME, "");
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_USERNAME, FTP_USER);
         FTP_PASS = SharedPrefesManagerFactory
-                .getString(PREF_SMSCALE, PK_S_SMSCALE_PASSWORD, "");
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_PASSWORD, FTP_PASS);
         ENCODING_CHARSET = SharedPrefesManagerFactory
-                .getString(PREF_SMSCALE, PK_S_SMSCALE_ENCODING, "");
+                .getString(PREF_SMSCALE, PK_S_SMSCALE_ENCODING, ENCODING_CHARSET);
     }
 
     /**
@@ -195,7 +200,7 @@ public class SMScaleSyncManager2 extends FTPManager {
      */
     public synchronized void sync() {
         if (!SharedPreferencesUltimate
-                .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, false)){
+                .getBoolean(SharedPreferencesUltimate.PK_B_SYNC_SMSCALE_FTP_ENABLED, false)) {
             syncFailed("请在设置中打开同步商品库到电子秤同步开关。");
             return;
         }
@@ -230,70 +235,37 @@ public class SMScaleSyncManager2 extends FTPManager {
             this.startCursor = startCursor;
             this.file = SMScaleSyncManager2.getCSVFile2();
             //同步生鲜／水果／水台商品到电子秤
-            this.sqlWhere = String.format("(cateType = '%d' or cateType = '%d'" +
-                    " or cateType = '%d') " +
-                            "and updatedDate >= '%s'",
-                    CateApi.BACKEND_CATE_BTYPE_FRESH,
-                    CateApi.BACKEND_CATE_BTYPE_FRUIT,
-                    CateApi.BACKEND_CATE_BTYPE_WARTER,
-                    startCursor);
+//            this.sqlWhere = String.format("(cateType = '%d' or cateType = '%d'" +
+//                            " or cateType = '%d') " +
+//                            "and updatedDate >= '%s'",
+//                    CateApi.BACKEND_CATE_BTYPE_FRESH,
+//                    CateApi.BACKEND_CATE_BTYPE_FRUIT,
+//                    CateApi.BACKEND_CATE_BTYPE_WARTER,
+//                    startCursor);
+            this.sqlWhere = String.format("updatedDate >= '%s'", startCursor);
         }
 
         @Override
         protected Boolean doInBackground(String... params) {
             try {
                 pageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-                List<PosProductEntity> goodsList = PosProductService.get()
-                        .queryAllAsc(sqlWhere, pageInfo);
-                if (goodsList == null || goodsList.size() < 1) {
-                    syncFinished(String.format("没有商品需要写入CSV文件(%s)", startCursor));
-                    return false;
-                }
-                syncProcess(String.format("查询到 %d 个商品需要同步，" +
-                                "当前页数 %d/%d,每页最多 %d 个商品(%s)",
-                        pageInfo.getTotalCount(), pageInfo.getPageNo(), pageInfo.getTotalPage(),
-                        pageInfo.getPageSize(), startCursor));
 
                 CSVWriter csvWriter;
+                ZLogger.d("csv文件编码是:" + ENCODING_CHARSET);
                 if (StringUtils.isEmpty(ENCODING_CHARSET)) {
-                    csvWriter = new CSVWriter(new FileWriter(file));
+                    csvWriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(file),
+                            FTPManager.ENCODING_CHARSET));
+//                    csvWriter = new CSVWriter(new FileWriter(file));
                 } else {
                     csvWriter = new CSVWriter(new OutputStreamWriter(new FileOutputStream(file),
                             ENCODING_CHARSET));
                 }
 
-                List<String[]> allElements = new ArrayList<>();
-//        PLU号码,单价,品名信息,称重标识（1非称重，0称重）,标签格式,分类,表示位（F1，F2)
-                allElements.add(TEMPLATE_COLUMNS);
-
-                for (PosProductEntity goods : goodsList) {
-                    //保存最大时间游标
-                    if (newCursor == null || goods.getUpdatedDate() == null
-                            || newCursor.compareTo(goods.getUpdatedDate()) <= 0) {
-                        newCursor = goods.getUpdatedDate();
-                    }
-
-                    String plu = goods.getBarcode();
-                    Double costPrice = goods.getCostPrice();
-                    //过滤掉无效的商品
-                    if (StringUtils.isEmpty(plu) || costPrice == null) {
-                        continue;
-                    }
-                    //商品名称太长无法打印（打印空白）
-                    if (plu.length() > 8) {
-                        plu = plu.substring(0, 8);
-                    }
-                    allElements.add(new String[]{plu,
-                            String.format("%.0f", costPrice * 100),
-                            plu,
-                            FLAG_F12,
-                            String.valueOf(goods.getCateType()),
-                            goods.getSkuName(),
-                            PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
+                List<PosProductEntity> goodsList = PosProductService.get()
+                        .queryAllAsc(sqlWhere, pageInfo);
+                if (!writeProducts(csvWriter, goodsList, true, newCursor)) {
+                    return false;
                 }
-                syncProcess(String.format("开始写入%d个商品到CSV文件", goodsList.size()));
-                csvWriter.writeAll(allElements);
-
 
                 //判断是否还有数据需要同步
                 while (pageInfo.hasNextPage()) {
@@ -301,44 +273,10 @@ public class SMScaleSyncManager2 extends FTPManager {
 
                     List<PosProductEntity> goodsList2 = PosProductService.get()
                             .queryAllAsc(sqlWhere, pageInfo);
-                    if (goodsList2 == null || goodsList2.size() < 1) {
-                        syncFinished(String.format("没有商品需要写入CSV文件(%s)", startCursor));
+
+                    if (!writeProducts(csvWriter, goodsList2, false, newCursor)) {
                         return false;
                     }
-                    syncProcess(String.format("查询到 %d 个商品需要同步，" +
-                                    "当前页数 %d/%d,每页最多 %d 个商品(%s)",
-                            pageInfo.getTotalCount(), pageInfo.getPageNo(), pageInfo.getTotalPage(),
-                            pageInfo.getPageSize(), startCursor));
-
-                    for (PosProductEntity goods : goodsList2) {
-                        //保存最大时间游标
-                        if (newCursor == null || goods.getUpdatedDate() == null
-                                || newCursor.compareTo(goods.getUpdatedDate()) <= 0) {
-                            newCursor = goods.getUpdatedDate();
-                        }
-
-                        String plu = goods.getBarcode();
-                        Double costPrice = goods.getCostPrice();
-                        //过滤掉无效的商品
-                        if (StringUtils.isEmpty(plu) || costPrice == null) {
-                            continue;
-                        }
-                        //商品名称太长无法打印（打印空白）
-                        if (plu.length() > 8) {
-                            plu = plu.substring(0, 8);
-                        }
-                        allElements.add(new String[]{plu,
-                                String.format("%.0f", costPrice * 100),
-                                plu,
-                                FLAG_F12,
-                                String.valueOf(goods.getCateType()),
-                                goods.getSkuName(),
-                                PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1"});
-                    }
-                    syncProcess(String.format("开始写入%d个商品到CSV文件", goodsList2.size()));
-                    csvWriter.writeAll(allElements);
-                    ZLogger.df(String.format("写入CSV文件成功：%s",
-                            TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                 }
 
                 csvWriter.close();
@@ -374,6 +312,76 @@ public class SMScaleSyncManager2 extends FTPManager {
         protected void onProgressUpdate(Void... values) {
             ZLogger.d("onProgressUpdate");
         }
+    }
+
+    /**
+     * 导入商品到文件
+     */
+    private boolean writeProducts(CSVWriter csvWriter, List<PosProductEntity> productEntities,
+                                  boolean isAttachHeader, Date cursor) {
+        if (productEntities == null || productEntities.size() < 1) {
+            syncFinished(String.format("没有商品需要写入CSV文件(%s)", cursor));
+            return false;
+        }
+        syncProcess(String.format("查询到 %d 个商品需要同步", productEntities.size()));
+
+        List<String[]> allElements = new ArrayList<>();
+        if (isAttachHeader) {
+
+//        PLU号码,单价,品名信息,称重标识（1非称重，0称重）,标签格式,分类,表示位（F1，F2)
+            allElements.add(TEMPLATE_COLUMNS);
+        }
+
+        for (PosProductEntity goods : productEntities) {
+            //保存最大时间游标
+            if (cursor == null || goods.getUpdatedDate() == null
+                    || cursor.compareTo(goods.getUpdatedDate()) <= 0) {
+                cursor = goods.getUpdatedDate();
+            }
+
+            String plu = goods.getBarcode();
+            Double costPrice = goods.getCostPrice();//单位kg
+            Double customerPrice = goods.getCustomerPrice();
+            if (customerPrice == null) {
+                customerPrice = 0D;
+            }
+            String skuName = goods.getSkuName();
+            //过滤掉无效的商品
+            if (StringUtils.isEmpty(plu) || plu.length() != 6 || costPrice == null) {
+                continue;
+            }
+            //商品名称太长无法打印（打印空白）
+            if (skuName != null && skuName.length() > 8) {
+                skuName = skuName.substring(0, 8);
+            }
+            // 这里分类固定为2，为了兼容低版本，省去在@Label上配置再次选择类目，
+            // 如果以后对类目有需求，要改成 String.valueOf(goods.getCateType()),
+            if (PriceType.WEIGHT.equals(goods.getPriceType())) {
+                allElements.add(new String[]{plu,
+                        String.format("%.0f", customerPrice * 100),
+                        plu,
+                        FLAG_F12,
+                        "2",
+                        skuName,
+                        PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1",
+                        MUtils.formatDouble(costPrice/2, "0"), ""});
+            } else {
+                allElements.add(new String[]{plu,
+                        String.format("%.0f", customerPrice * 100),
+                        plu,
+                        FLAG_F12,
+                        "2",
+                        skuName,
+                        PriceType.WEIGHT.equals(goods.getPriceType()) ? "0" : "1",
+                        MUtils.formatDouble(costPrice, "0"), ""});
+            }
+
+        }
+        syncProcess(String.format("开始写入%d个商品到CSV文件(%s)",
+                allElements.size(), TimeUtil.format(cursor, TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+        csvWriter.writeAll(allElements);
+
+        return true;
     }
 
     /**
@@ -596,6 +604,84 @@ public class SMScaleSyncManager2 extends FTPManager {
                     public void onNext(String escCommand) {
                     }
                 });
+    }
+
+    @Deprecated
+    private void readCSV2Bean() {
+        File file = SMScaleSyncManager2.getCSVFile2();
+        ColumnPositionMappingStrategy strat = new ColumnPositionMappingStrategy();
+        strat.setType(SMGoods.class);
+        strat.setColumnMapping(SMScaleSyncManager2.TEMPLATE_COLUMNS);
+
+        CsvToBean csv = new CsvToBean();
+        CSVReader reader = null;
+        try {
+            reader = new CSVReader(new FileReader(file));
+//            List list = csv.parse(strat, reader); // list of Order bean
+//            for (SMGoods goods : list.)
+//            ZLogger.d(list.toString());
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
+        String[] nextLine;
+        try {
+            if (reader != null) {
+                while ((nextLine = reader.readNext()) != null) {
+
+                    StringBuilder sb = new StringBuilder();
+                    for (String str : nextLine) {
+                        sb.append("[").append(str).append("]");
+                    }
+                    sb.append("\n");
+                    ZLogger.df(sb.toString());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
+    }
+
+    @Deprecated
+    private void readCSV() {
+        // To ignore Processing of 1st row
+//        CSVReader reader = new CSVReader(new FileReader(ADDRESS_FILE), ',', '\"', 1);
+
+//        CSVReader reader = new CSVReader(new InputStreamReader(getAssets().open("test.csv")));//Specify asset file name
+//        - See more at: http://www.theappguruz.com/blog/parse-csv-file-in-android-example-sample-code#sthash.ubT9iaWd.dpuf
+        File file = SMScaleSyncManager2.getCSVFile2();
+        if (!file.exists()) {
+//            Snackbar.make(tvUrl, "指定的CSV文件不存在", Snackbar.LENGTH_LONG)
+//                    .setAction("Action", null).show();
+            return;
+        }
+
+        CSVReader reader = null;
+        try {
+            reader = new CSVReader(new FileReader(file));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
+        String[] nextLine;
+        try {
+            if (reader != null) {
+                while ((nextLine = reader.readNext()) != null) {
+
+                    StringBuilder sb = new StringBuilder();
+                    for (String str : nextLine) {
+                        sb.append("[").append(str).append("]");
+                    }
+                    sb.append("\n");
+                    ZLogger.df(sb.toString());
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
+        }
     }
 
 }

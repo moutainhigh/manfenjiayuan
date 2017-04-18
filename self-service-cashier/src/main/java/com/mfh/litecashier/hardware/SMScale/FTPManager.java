@@ -24,10 +24,10 @@ public class FTPManager {
 
     public static int FTP_PORT= 21;
 
-    /*********  FTP USERNAME ***********/
+    /**FTP USERNAME, 固定值，添加FileZilla添加用户时需要*/
     public static String FTP_USER = "bingshanguxue";
 
-    /*********  FTP PASSWORD ***********/
+    /**FTP PASSWORD, 固定值，添加FileZilla添加用户时需要*/
     public static String FTP_PASS  ="123456";
 
     public static String ENCODING_CHARSET  = Encoding.CHARSET_GBK;
@@ -38,20 +38,20 @@ public class FTPManager {
     public static void upload2Ftp(File file, FTPDataTransferListener transferListener){
         FTPClient ftpClient = new FTPClient();
         try {
-            if (StringUtils.isEmpty(FTPManager.FTP_HOST)){
+            if (StringUtils.isEmpty(FTP_HOST)){
                 ZLogger.df("未设置ftp hostname");
                 return;
             }
 
-            ZLogger.df(String.format("connect to %s:%d", FTPManager.FTP_HOST, FTPManager.FTP_PORT));
-            ftpClient.connect(FTPManager.FTP_HOST, FTPManager.FTP_PORT);
+            ZLogger.df(String.format("connect to %s:%d", FTP_HOST, FTP_PORT));
+            ftpClient.connect(FTP_HOST, FTP_PORT);
 
-            ZLogger.df(String.format("login %s:%s", FTPManager.FTP_USER, FTPManager.FTP_PASS));
+            ZLogger.df(String.format("login %s:%s", FTP_USER, FTP_PASS));
             //it.sauronsoftware.ftp4j.FTPException [code=530, message= Login authentication failed]
-            ftpClient.login(FTPManager.FTP_USER, FTPManager.FTP_PASS);
+            ftpClient.login(FTP_USER, FTP_PASS);
 
             ftpClient.setType(FTPClient.TYPE_BINARY);
-            ftpClient.changeDirectory("/");
+            ftpClient.changeDirectory("/");//访问根目录
             ftpClient.upload(file, transferListener);
         } catch (IOException | FTPIllegalReplyException | FTPException |
                 FTPDataTransferException | FTPAbortedException e1) {

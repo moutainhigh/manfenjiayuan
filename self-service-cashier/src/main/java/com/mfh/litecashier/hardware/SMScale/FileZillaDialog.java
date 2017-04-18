@@ -47,9 +47,10 @@ public class FileZillaDialog extends CommonDialog {
     private ProgressBar progressBar;
 
 
-    public interface DialogViewClickListener{
+    public interface DialogViewClickListener {
         void onSubmit();
     }
+
     private DialogViewClickListener mDialogViewClickListener;
 
     private FileZillaDialog(Context context, boolean flag, OnCancelListener listener) {
@@ -162,10 +163,9 @@ public class FileZillaDialog extends CommonDialog {
         mSwitchSyncMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b){
+                if (b) {
                     tvSmscaleCursor.setText("");
-                }
-                else{
+                } else {
                     tvSmscaleCursor.setText(SharedPrefesManagerFactory.getString(SMScaleSyncManager2.PREF_SMSCALE,
                             SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, ""));
                 }
@@ -220,7 +220,7 @@ public class FileZillaDialog extends CommonDialog {
     }
 
 
-    public void init(String title, DialogViewClickListener mDialogViewClickListener){
+    public void init(String title, DialogViewClickListener mDialogViewClickListener) {
         this.tvTitle.setText(title);
         this.mDialogViewClickListener = mDialogViewClickListener;
 
@@ -235,6 +235,16 @@ public class FileZillaDialog extends CommonDialog {
         etPort.setText(String.valueOf(SMScaleSyncManager2.FTP_PORT));
         etUsername.setText(SMScaleSyncManager2.FTP_USER);
         etPassword.setText(SMScaleSyncManager2.FTP_PASS);
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
+            etPort.setEnabled(true);
+            etUsername.setEnabled(true);
+            etPassword.setEnabled(true);
+        } else {
+            etPort.setEnabled(false);
+            etUsername.setEnabled(false);
+            etPassword.setEnabled(false);
+        }
+
         switch (SMScaleSyncManager2.PK_S_SMSCALE_ENCODING) {
             case Encoding.CHARSET_GBK:
                 mEncodingSpinner.setSelection(0);
@@ -310,7 +320,7 @@ public class FileZillaDialog extends CommonDialog {
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
 
-        if (mDialogViewClickListener != null){
+        if (mDialogViewClickListener != null) {
             mDialogViewClickListener.onSubmit();
         }
 
