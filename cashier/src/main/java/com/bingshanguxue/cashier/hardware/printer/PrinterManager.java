@@ -751,12 +751,14 @@ public abstract class PrinterManager implements IPrinterManager {
      * <ol>
      * 三行显示
      * <li>text1    text2   text3</li>
-     * <li>         text4   text5</li>
-     * <li>         text6   text7</li>
+     * <li>text4    text5   text6</li>
+     * <li>text7    text8   text9</li>
      * </ol>
      */
-    public void makeOrderItem7(EscCommand esc, String text1, String text2, String text3,
-                               String text4, String text5, String text6, String text7,
+    public void makeOrderItem7(EscCommand esc,
+                               String text1, String text2, String text3,
+                               String text4, String text5, String text6,
+                               String text7, String text8, String text9,
                                boolean bottomLineEnabled) {
         if (esc == null) {
             return;
@@ -767,13 +769,13 @@ public abstract class PrinterManager implements IPrinterManager {
                 Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
                 Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
         esc.addText(String.format("%s%s%s\n",
-                Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
-                Printer.formatShort(text4, 8, Printer.BLANK_GRAVITY.LEFT),
-                Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT)));
+                Printer.formatShort(text4, 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text5, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text6, 8, Printer.BLANK_GRAVITY.LEFT)));
         esc.addText(String.format("%s%s%s\n",
-                Printer.formatShort("", 16, Printer.BLANK_GRAVITY.RIGHT),
-                Printer.formatShort(text6, 8, Printer.BLANK_GRAVITY.LEFT),
-                Printer.formatShort(text7, 8, Printer.BLANK_GRAVITY.LEFT)));
+                Printer.formatShort(text7, 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text8, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text9, 8, Printer.BLANK_GRAVITY.LEFT)));
         if (bottomLineEnabled) {
             esc.addText("--------------------------------\n");//32个
         }

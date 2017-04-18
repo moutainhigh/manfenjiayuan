@@ -78,13 +78,21 @@ public class Printer implements IPrinter {
 //        String formated = raw.trim();
 //        char[] rawChars = raw.trim().toCharArray();
 //        int len = rawChars.length;
-        int len = getLength(raw);
-        String subStr = DataConvertUtil.subString(raw, Math.min(len, maxWidth));//截取字符串 String.valueOf(rawChars, 0, len2)
-        String blankStr = StringUtils.genBlankspace(Math.max(maxWidth - len, 0));
+        int len = 0;
+        //截取字符串
+        String subStr = "";
+
+        if (!StringUtils.isEmpty(raw)) {
+            len = getLength(raw);
+            subStr = DataConvertUtil.subString(raw, Math.min(len, maxWidth));
+        }
+
 //        ZLogger.d(String.format("subString([%s%s]", subStr, blankStr));
         if (len > maxWidth) {
             return subStr;
         } else {
+            String blankStr = StringUtils.genBlankspace(Math.max(maxWidth - len, 0));
+
             //右对齐，在前面补空格
             if (blankGravity == BLANK_GRAVITY.LEFT) {
                 return blankStr + subStr;

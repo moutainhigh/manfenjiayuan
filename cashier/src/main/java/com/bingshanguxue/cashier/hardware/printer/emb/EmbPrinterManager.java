@@ -159,7 +159,7 @@ public class EmbPrinterManager extends PrinterManager {
 
         List<PosOrderItemEntity> posOrderItemEntities = CashierAgent.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntities != null && posOrderItemEntities.size() > 0) {
-            makeOrderItem7(esc, "商品", "数量", "单位", "原价", "小计", "会员价", "小计", true);
+            makeOrderItem7(esc, "商品", "数量", "单位", "", "原价", "小计", "", "会员价", "小计", true);
             esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                     PrinterConstants.Command.ALIGN_LEFT));
@@ -168,9 +168,12 @@ public class EmbPrinterManager extends PrinterManager {
                     needWaitEntities.add(entity);
                 }
                 makeOrderItem7(esc, entity.getSkuName(),
-                        String.format("%.3f", entity.getBcount()), entity.getUnit(),
+                        String.format("%.3f", entity.getBcount()),
+                        entity.getUnit(),
+                        entity.getBarcode(),
                         String.format("%.2f", entity.getFinalPrice()),
                         String.format("%.3f", entity.getFinalAmount()),
+                        "",
                         String.format("%.2f", entity.getCustomerPrice()),
                         String.format("%.3f", MathCompact.mult(entity.getCustomerPrice(), entity.getBcount())),
                         true);

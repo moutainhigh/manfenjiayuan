@@ -19,7 +19,7 @@ public class PrinterFactory {
     /**
      * @param printerModel 打印机型号
      * */
-    public static IPrinterManager getPrinterManager(int printerModel){
+    public static PrinterManager getPrinterManager(int printerModel){
         if (printerModel == PrinterModel.PRINTER_TYPE_COMMON){
             return GPrinterManager.getInstance();
         }
