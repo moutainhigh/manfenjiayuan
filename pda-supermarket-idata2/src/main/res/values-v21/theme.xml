@@ -1,5 +1,15 @@
 <resources>
 
+    <style name="MfhTheme.MiPDA">
+        <!--<item name="windowActionBar">false</item>-->
+        <!--<item name="windowNoTitle">true</item>-->
+        <!--<item name="android:displayOptions">homeAsUp|showTitle|showHome</item>-->
+        <!--<item name="android:windowIsTranslucent">true</item>-->
+        <!-- Customize your theme here. -->
+        <item name="android:listChoiceIndicatorMultiple">@drawable/mfhtheme_btn_check_holo_dark</item>
+        <item name="android:statusBarColor">@color/mfh_statusBarColor</item>
+    </style>
+
     <style name="AppBaseTheme_Light.FullScreen">
         <!--<item name="windowActionBar">false</item>-->
         <item name="windowNoTitle">true</item>

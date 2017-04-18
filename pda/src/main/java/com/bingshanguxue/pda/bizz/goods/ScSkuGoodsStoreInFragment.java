@@ -22,23 +22,21 @@ import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.storeIn.IStoreInView;
+import com.manfenjiayuan.business.storeIn.StoreInPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
-import com.mfh.framework.api.scGoodsSku.ScGoodsSkuApiImpl;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
@@ -57,7 +55,8 @@ import java.util.List;
  * </ol>
  * Created by Nat.ZZN(bingshanguxue) on 15/09/24.
  */
-public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoodsSkuView {
+public class ScSkuGoodsStoreInFragment extends PDAScanFragment
+        implements IScGoodsSkuView, IStoreInView {
 
     public static final String EXTRA_STORE_TYPE = "storeType";
 
@@ -99,6 +98,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
     private Integer storeType = StoreType.SUPERMARKET;
     private ScGoodsSku purchaseGoods;
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
+    private StoreInPresenter mStoreInPresenter;
 
     public static ScSkuGoodsStoreInFragment newInstance(Bundle args) {
         ScSkuGoodsStoreInFragment fragment = new ScSkuGoodsStoreInFragment();
@@ -117,6 +117,7 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         super.onCreate(savedInstanceState);
 
         mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mStoreInPresenter = new StoreInPresenter(this);
     }
 
     @Override
@@ -638,34 +639,28 @@ public class ScSkuGoodsStoreInFragment extends PDAScanFragment implements IScGoo
         item.put("tenantSku", tenantSku);
         jsonArray.add(item);
 
-        ScGoodsSkuApiImpl.storeIn(jsonArray.toJSONString(), storeType, responseCallback);
+        mStoreInPresenter.storeIn(jsonArray.toJSONString(), storeType);
     }
 
-    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("商品建档失败: " + errMsg);
-                    hideProgressDialog();
-                    DialogUtil.showHint("建档失败");
-                    btnSubmit.setEnabled(true);
-                }
 
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-                    DialogUtil.showHint("建档成功");
-                    reload();
+    @Override
+    public void onIStoreInViewProcess() {
 
-                    //更新商品库
-                    DataSyncManager.getInstance().notifyUpdateSku();
-                }
-            }
-            , String.class
-            , MfhApplication.getAppContext()) {
-    };
+    }
 
+    @Override
+    public void onIStoreInViewError(String errorMsg) {
+        hideProgressDialog();
+        DialogUtil.showHint(errorMsg);
+        btnSubmit.setEnabled(true);
+    }
 
+    @Override
+    public void onIStoreInViewSuccess() {
+        DialogUtil.showHint("建档成功");
+        reload();
+
+        //更新商品库
+        DataSyncManager.getInstance().notifyUpdateSku();
+    }
 }

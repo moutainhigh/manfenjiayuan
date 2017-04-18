@@ -1,4 +1,4 @@
-package com.manfenjiayuan.pda_supermarket.ui.store;
+package com.manfenjiayuan.pda_supermarket.ui.store.invIo;
 
 import android.app.Activity;
 import android.content.DialogInterface;
@@ -22,25 +22,28 @@ import com.bingshanguxue.pda.database.service.InvIoGoodsService;
 import com.bingshanguxue.pda.dialog.CommitInvIoOrderDialog;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.SecondaryActivity;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvIoOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 
 /**
@@ -291,49 +294,43 @@ public class CreateInvIoOrderFragment extends BaseFragment {
 
             items.add(item);
         }
+        JSONObject jsonStr = new JSONObject();
+        jsonStr.put("orderType", orderType);
+        jsonStr.put("storeType", storeType);
+        jsonStr.put("items", items);
 
-        InvIoOrderApi.createIoOrder(orderType, storeType, items, responseCallback);
-    }
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonStr.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-    private NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("新建出入库订单失败: " + errMsg);
-//                    {"code":"1","msg":"132079网点有仓储单正在处理中...","version":"1","data":null}
-                    //查询失败
-//                        animProgress.setVisibility(View.GONE);
-//                    DialogUtil.showHint("新建退货单失败" + errMsg);
-                    showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                }
+        InvIoOrderHttpManager.getInstance().createIoOrder(options,
+                new MValueSubscriber<String>() {
 
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-//                        animProgress.setVisibility(View.GONE);
-                    InvIoGoodsService.get().clear();
-                    goodsAdapter.setEntityList(null);
-                    hideProgressDialog();
-                    /**
-                     * 新建退货单成功，更新采购单列表
-                     * */
-                    ZLogger.df("新建出入库订单成功:");
-                    if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-
-                        doCommitTask(retValue.getValue());
-                    } else {
-                        DialogUtil.showHint("订单创建成功");
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df("新建出入库订单失败: " + e.toString());
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
                     }
-                }
-            }
-            , String.class
-            , MfhApplication.getAppContext()) {
-    };
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+                        InvIoGoodsService.get().clear();
+                        goodsAdapter.setEntityList(null);
+                        hideProgressDialog();
+                        ZLogger.df("新建出入库订单成功:");
+                        if (orderType == InvIoOrderApi.ORDER_TYPE_OUT) {
+                            doCommitTask(data);
+                        } else {
+                            DialogUtil.showHint("订单创建成功");
+                            getActivity().setResult(Activity.RESULT_OK);
+                            getActivity().finish();
+                        }
+                    }
+
+                });
+
+    }
 
     private CommitInvIoOrderDialog commitDialog = null;
 
@@ -363,8 +360,7 @@ public class CreateInvIoOrderFragment extends BaseFragment {
                     hideProgressDialog();
                     return;
                 }
-                InvIoOrderApi.commitOrder(orderId, null,
-                        vehicle, commitRC);
+                commitOrder(orderId, vehicle);
             }
 
         });
@@ -373,42 +369,43 @@ public class CreateInvIoOrderFragment extends BaseFragment {
         }
     }
 
+    private void commitOrder(String orderId, String vehicle) {
+        Map<String, String> options = new HashMap<>();
+        options.put("orderId", orderId);
+//        if (transHumanId != null) {
+//            params.put("transHumanId", String.valueOf(transHumanId));
+//        }
+        options.put("vehicle", vehicle);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-    private NetCallBack.NetTaskCallBack commitRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("提交出入库订单失败: " + errMsg);
-//                    {"code":"1","msg":"132079网点有仓储单正在处理中...","version":"1","data":null}
-                    //查询失败
-//                        animProgress.setVisibility(View.GONE);
-//                    DialogUtil.showHint("新建退货单失败" + errMsg);
-                    DialogUtil.showHint(errMsg);
-                    hideProgressDialog();
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                }
+        InvIoOrderHttpManager.getInstance().commitOrder(options,
+                new Subscriber<String>() {
 
-                @Override
-                public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-//                        animProgress.setVisibility(View.GONE);
-                    /**
-                     * 新建退货单成功，更新采购单列表
-                     * */
-                    ZLogger.df("提交出入库订单成功:");
-                    DialogUtil.showHint("提交订单成功");
-                    hideProgressDialog();
-                    getActivity().setResult(Activity.RESULT_OK);
-                    getActivity().finish();
-                }
-            }
-            , String.class
-            , MfhApplication.getAppContext()) {
-    };
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df("提交出入库订单失败: " + e.toString());
+                        DialogUtil.showHint(e.getMessage());
+                        hideProgressDialog();
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.df("提交出入库订单成功:" + s);
+                        DialogUtil.showHint("提交订单成功");
+                        hideProgressDialog();
+                        getActivity().setResult(Activity.RESULT_OK);
+                        getActivity().finish();
+                    }
+
+                });
+    }
 
     /**
      * 验货

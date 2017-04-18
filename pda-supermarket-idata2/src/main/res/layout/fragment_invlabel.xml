@@ -57,6 +57,16 @@
                 app:startTextGravity="end"
                 app:startTextWidth="90dp"/>
 
+            <!--会员价-->
+            <com.bingshanguxue.vector_uikit.widget.TextLabelView
+                android:id="@+id/label_customerPrice"
+                style="@style/mfh_textlabelview"
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                app:startText="@string/label_customer_price_colon"
+                app:startTextGravity="end"
+                app:startTextWidth="90dp"/>
+
             <!--商品积分-->
             <com.bingshanguxue.vector_uikit.widget.TextLabelView
                 android:id="@+id/label_costScore"

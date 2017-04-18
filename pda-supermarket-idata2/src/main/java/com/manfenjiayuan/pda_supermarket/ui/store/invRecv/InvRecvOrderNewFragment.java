@@ -45,6 +45,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.bean.InvSendIoOrderBody;
 import com.mfh.framework.rxapi.http.InvSendIoOrderHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
@@ -153,7 +154,7 @@ public class InvRecvOrderNewFragment extends BaseFragment
                 // Handle the menu item
                 int id = item.getItemId();
                 if (id == R.id.action_submit) {
-                    submit();
+                    submitStep1();
                 }
                 return true;
             }
@@ -350,7 +351,7 @@ public class InvRecvOrderNewFragment extends BaseFragment
     /**
      * 签收
      */
-    public void submit() {
+    public void submitStep1() {
         if (companyInfo == null) {
             DialogUtil.showHint("请选择发货方！");
             hideProgressDialog();
@@ -411,7 +412,7 @@ public class InvRecvOrderNewFragment extends BaseFragment
                         dialog.dismiss();
 
                         //由于商品明细可以修改，所以这里不直接对订单做收货，而是新建一个收货单
-                        doSignWork(jsonStrObject, null);
+                        submitStep2(jsonStrObject, null);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 
@@ -423,7 +424,7 @@ public class InvRecvOrderNewFragment extends BaseFragment
     }
 
 
-    public void doSignWork(JSONObject jsonStrObject, Long otherOrderId) {
+    public void submitStep2(JSONObject jsonStrObject, Long otherOrderId) {
         onReceiveOrderProcess();
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
@@ -438,6 +439,12 @@ public class InvRecvOrderNewFragment extends BaseFragment
         options.put("checkOk", "true");
         options.put("jsonStr", jsonStrObject.toJSONString());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        //{"code":"1","msg":"缺少jsonStr参数!","data":null,"version":1}
+        InvSendIoOrderBody body = new InvSendIoOrderBody();
+        body.setOtherOrderId(otherOrderId);
+        body.setCheckOk("true");
+        body.setJsonStr(jsonStrObject.toJSONString());
         InvSendIoOrderHttpManager.getInstance().createRecOrder(options,
                 new MValueSubscriber<String>() {
                     @Override

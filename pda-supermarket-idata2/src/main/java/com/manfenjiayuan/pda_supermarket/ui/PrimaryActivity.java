@@ -21,16 +21,19 @@ import com.manfenjiayuan.pda_supermarket.ui.rider.InstockOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.rider.InstockScOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.rider.SendOrderFragmnt;
 import com.manfenjiayuan.pda_supermarket.ui.store.BindGoods2TagFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvIoOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossOrderFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvReceiveOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.CreateInvReturnOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.InvLabelFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.InvSendOrderNewFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.cashier.CashierFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invIo.CreateInvIoOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invIo.InvIoConvertFromFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invRecv.InvRecvOrderConvertFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invRecv.InvRecvOrderNewFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invcheck.InvCheckListFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.invconvert.InvConvertFromFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossListFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossOrderListFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossStockFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
@@ -50,15 +53,15 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     //门店
     public static final int FRAGMENT_TYPE_PACKAGE = 0x03;
     public static final int FT_INV_CHECKORDER_STOCKTAKE = 0x04;//盘点订单列表
-    public static final int FT_CREATE_INV_RECEIVEORDER = 0x05;//新建采购收货单
+    public static final int FT_INV_RECVORDER_NEW = 0x05;//新建采购收货单
     public static final int FT_INV_RECVORDER_CONVERT = 0x06;//收货转换
     public static final int FT_CREATE_INV_RETURNORDER = 0x07;//退货
     public static final int FT_INV_LOSSORDER_NEW = 0x08;//报损
-    public static final int FT_INV_LOSSORDER_STOCKTAKE = 0x09;//报损盘点
-    public static final int FT_INV_CONVERT = 0x0A;//库存转换
-    public static final int FT_INVIO_IN = 0x0B;//入库
-    public static final int FT_INVIO_OUT = 0x0C;//出库
-    public static final int FT_PRINT_PRICETAGS = 0x0D;//价签
+    public static final int FT_INV_LOSSORDER_LIST = 0x09;//报损盘点
+    public static final int FT_INV_LOSSORDER_STOCKTAKE = 0x0A;//报损盘点
+    public static final int FT_INV_CONVERT = 0x0B;//库存转换
+    public static final int FT_INVIO_IN = 0x0C;//入库
+    public static final int FT_INVIO_OUT = 0x0D;//出库
     public static final int FT_OFFICE_LIST = 0x0E;//网店租户列表
     public static final int FT_SHELVES_LIST = 0x0F;//盘点区域
     public static final int FT_STORE_IN = 0x10;//商品建档
@@ -66,6 +69,8 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
     public static final int FRAGMENT_TYPE_GOODS = 0x12;
     public static final int FT_SCORDER_DETAIL = 0x13;//商城订单详情
     public static final int FT_BIND_GOODS_2_TAGS = 0x14;//货架绑定商品
+    public static final int FT_PRINT_PRICETAGS = 0x15;//价签
+    public static final int FT_INV_SENDORDER_NEW = 0x16;//订货
     //买手
     public static final int FT_BUY_SCORDER = 0x20;//买手——线上订单
     public static final int FT_BUY_PREAPARE = 0x21;//买手-组货
@@ -173,13 +178,24 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-        } else if (fragmentType == FT_CREATE_INV_RECEIVEORDER) {
-            CreateInvReceiveOrderFragment fragment;
+        } else if (fragmentType == FT_INV_RECVORDER_NEW) {
+            InvRecvOrderNewFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = CreateInvReceiveOrderFragment.newInstance(intent.getExtras());
+                fragment = InvRecvOrderNewFragment.newInstance(intent.getExtras());
             } else {
-                fragment = CreateInvReceiveOrderFragment.newInstance(null);
+                fragment = InvRecvOrderNewFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (fragmentType == FT_INV_RECVORDER_CONVERT) {
+            InvRecvOrderConvertFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvRecvOrderConvertFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvRecvOrderConvertFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -218,34 +234,45 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (fragmentType == FT_INV_LOSSORDER_NEW) {
-            InvLossOrderFragment fragment;
+            InvLossFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = InvLossOrderFragment.newInstance(intent.getExtras());
+                fragment = InvLossFragment.newInstance(intent.getExtras());
             } else {
-                fragment = InvLossOrderFragment.newInstance(null);
+                fragment = InvLossFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        } else if (fragmentType == FT_INV_LOSSORDER_LIST) {
+            InvLossOrderListFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvLossOrderListFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvLossOrderListFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (fragmentType == FT_INV_LOSSORDER_STOCKTAKE) {
-            InvLossListFragment fragment;
+            InvLossStockFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = InvLossListFragment.newInstance(intent.getExtras());
+                fragment = InvLossStockFragment.newInstance(intent.getExtras());
             } else {
-                fragment = InvLossListFragment.newInstance(null);
+                fragment = InvLossStockFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (fragmentType == FT_INV_CONVERT) {
-            InvConvertFromFragment fragment;
+            InvIoConvertFromFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = InvConvertFromFragment.newInstance(intent.getExtras());
+                fragment = InvIoConvertFromFragment.newInstance(intent.getExtras());
             } else {
-                fragment = InvConvertFromFragment.newInstance(null);
+                fragment = InvIoConvertFromFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
@@ -430,6 +457,17 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                 fragment = ScOrderFragment.newInstance(intent.getExtras());
             } else {
                 fragment = ScOrderFragment.newInstance(null);
+            }
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                 .commit();
+        }else if (fragmentType == FT_INV_SENDORDER_NEW) {
+            InvSendOrderNewFragment fragment;
+            Intent intent = this.getIntent();
+            if (intent != null) {
+                fragment = InvSendOrderNewFragment.newInstance(intent.getExtras());
+            } else {
+                fragment = InvSendOrderNewFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

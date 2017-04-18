@@ -31,6 +31,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.igexin.push.core.g.R;
+
 /**
  * 我的收货地址
  * Created by bingshanguxue on 6/28/16.
@@ -49,10 +51,10 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
 
     private ReciaddrPresenter mReciaddrPresenter;
 
-    public static AddressListFragment newInstance(Bundle args){
+    public static AddressListFragment newInstance(Bundle args) {
         AddressListFragment fragment = new AddressListFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -83,8 +85,7 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
         toolbar.setTitle("选择地址");
         if (animType == ANIM_TYPE_NEW_FLOW) {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_close);
-        }
-        else{
+        } else {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back);
         }
         toolbar.setNavigationOnClickListener(
@@ -116,16 +117,16 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case ARCode.ARC_MGR_ADDRESS:{
+        switch (requestCode) {
+            case ARCode.ARC_MGR_ADDRESS: {
 //                if (resultCode == Activity.RESULT_OK){
 //
 //                }
                 reload();
             }
             break;
-            case ARCode.ARC_ADD_ADDRESS:{
-                if (resultCode == Activity.RESULT_OK){
+            case ARCode.ARC_ADD_ADDRESS: {
+                if (resultCode == Activity.RESULT_OK) {
                     reload();
                 }
             }
@@ -185,7 +186,7 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
 
     /**
      * 管理收货地址
-     * */
+     */
     public void redirect2AddrMgr() {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -194,11 +195,12 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
         intent.putExtras(extras);
         startActivityForResult(intent, ARCode.ARC_MGR_ADDRESS);
     }
+
     /**
      * 新增收货地址
-     * */
+     */
     @OnClick(R.id.button_add_address)
-    public void redirect2AddAddress(){
+    public void redirect2AddAddress() {
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_ADD_ADDRESS);
@@ -251,13 +253,12 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
                                                   public void onItemClick(View view, int position) {
 
                                                       Reciaddr reciaddr = goodsListAdapter.getEntity(position);
-                                                      if (reciaddr != null){
+                                                      if (reciaddr != null) {
                                                           Intent data = new Intent();
                                                           data.putExtra("reciaddr", reciaddr);
                                                           getActivity().setResult(Activity.RESULT_OK, data);
                                                           getActivity().finish();
-                                                      }
-                                                      else{
+                                                      } else {
                                                           getActivity().setResult(Activity.RESULT_CANCELED);
                                                           getActivity().finish();
                                                       }
@@ -279,7 +280,6 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
     }
 
 
-
     @Override
     public void onIReciaddrViewProcess() {
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
@@ -288,7 +288,7 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
 
     @Override
     public void onIReciaddrViewError(String errorMsg) {
-        if (!StringUtils.isEmpty(errorMsg)){
+        if (!StringUtils.isEmpty(errorMsg)) {
             ZLogger.df(errorMsg);
         }
 

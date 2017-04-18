@@ -1,5 +1,7 @@
 package com.bingshanguxue.pda.bizz.goods;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
@@ -9,6 +11,8 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.pda.PDAScanFragment;
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.bizz.ARCode;
+import com.bingshanguxue.pda.bizz.FragmentActivity;
 import com.bingshanguxue.pda.dialog.ActionDialog;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
@@ -16,12 +20,14 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.presenter.InvSkuBizPresenter;
 import com.manfenjiayuan.business.view.IInvSkuBizView;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invSkuStore.InvSkuBizBean;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.core.utils.RegularUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
@@ -29,7 +35,7 @@ import com.mfh.framework.uikit.widget.ViewPageInfo;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 /**
@@ -129,6 +135,19 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IInvSkuBizVie
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case ARCode.ARC_INVSKUBIZ_GOODS_LIST: {
+                if (resultCode == Activity.RESULT_OK) {
+                    onIInvSkuBizViewSuccess((InvSkuBizBean) data.getSerializableExtra("invSkuBizBean"));
+                }
+            }
+            break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onScanCode(String code) {
         if (!isAcceptBarcodeEnabled) {
             return;
@@ -180,9 +199,22 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IInvSkuBizVie
             return;
         }
 
+
         if (mScGoodsSkuPresenter != null) {
-            curBarcode = barcode;
-            mScGoodsSkuPresenter.getBeanByBizKeys(barcode);
+
+            if (RegularUtils.matcher(barcode, RegularUtils.PATTERN_BARCODE)) {
+                curBarcode = barcode;
+                mScGoodsSkuPresenter.getBeanByBizKeys(barcode);
+            } else {
+                Bundle extras = new Bundle();
+//                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+                extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_INVSKUBIZ_GOODS);
+                extras.putString(InvSkuBizGoodsListFragment.EXTRA_SKUNAME, barcode);
+                Intent intent = new Intent(getActivity(), FragmentActivity.class);
+                intent.putExtras(extras);
+                startActivityForResult(intent, ARCode.ARC_INVSKUBIZ_GOODS_LIST);
+            }
+
         } else {
             refresh(null, false);
         }
@@ -279,5 +311,10 @@ public class ScGoodsSkuFragment extends PDAScanFragment implements IInvSkuBizVie
                 refresh(null, false);
             }
         }
+    }
+
+    @Override
+    public void onIInvSkuBizViewSuccess(PageInfo pageInfo, List<InvSkuBizBean> dataList) {
+
     }
 }

@@ -31,6 +31,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 
 /**
@@ -165,8 +166,14 @@ public class InvSendIoOrderPayDialog extends CommonDialog {
         etPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    DeviceUtils.hideSoftInput(MfhApplication.getAppContext(), etPassword);
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
+                        DeviceUtils.showSoftInput(getContext(), etPassword);
+                    }
+                    else{
+                        DeviceUtils.hideSoftInput(getContext(), etPassword);
+                    }
                 }
                 etPassword.requestFocus();
                 etPassword.setSelection(etPassword.length());

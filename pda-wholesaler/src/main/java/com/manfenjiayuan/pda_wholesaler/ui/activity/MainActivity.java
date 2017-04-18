@@ -310,7 +310,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                 "货架号", R.mipmap.ic_shelves));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_WHOLESALER_PICKING_GOODS,
                 "发货", R.mipmap.ic_packing_goods));
-        menus.add(new HomeMenu(HomeMenu.OPTION_ID_DISTRIBUTION,
+        menus.add(new HomeMenu(HomeMenu.OPTION_ID_RECVORDER_NEW,
                 "收货", R.mipmap.ic_receive_goods));
         menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
                 "退货", R.mipmap.ic_return_goods));
@@ -361,7 +361,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_INVENTORY_CHECK);
             PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_DISTRIBUTION) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_RECVORDER_NEW) == 0) {
             Bundle extras = new Bundle();
 //                extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
             extras.putInt(SecondaryActivity.EXTRA_KEY_FRAGMENT_TYPE,

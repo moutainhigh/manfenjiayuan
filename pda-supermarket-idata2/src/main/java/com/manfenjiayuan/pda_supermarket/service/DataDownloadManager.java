@@ -119,7 +119,6 @@ public class DataDownloadManager extends DataSyncManager {
         sync(DataDownloadManager.POSPRODUCTS | DataDownloadManager.POSPRODUCTS_SKU);
     }
 
-
     public void sync(int step) {
         queue |= step;
         if (bSyncInProgress) {
@@ -568,6 +567,7 @@ public class DataDownloadManager extends DataSyncManager {
                         } else {
                             ZLogger.d("当前登录用户不具有买手能力");
                         }
+                        //todo
                         processQueue();
                     }
                 });

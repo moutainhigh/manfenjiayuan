@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.bingshanguxue.vector_uikit.ProfileView;
 import com.bingshanguxue.vector_uikit.SettingsItem;
 import com.bingshanguxue.vector_uikit.ToggleSettingItem;
@@ -18,6 +19,7 @@ import com.manfenjiayuan.business.ui.HybridActivity;
 import com.manfenjiayuan.im.IMConfig;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
+import com.manfenjiayuan.pda_supermarket.service.DataDownloadManager;
 import com.manfenjiayuan.pda_supermarket.service.DemoPushService;
 import com.mfh.framework.anlaysis.AnalysisAgent;
 import com.mfh.framework.anlaysis.AppInfo;
@@ -57,6 +59,8 @@ public class MyFragment extends BaseFragment {
     ToggleSettingItem itemCameraSweep;
     @BindView(R.id.item_softinput)
     ToggleSettingItem itemSoftInput;
+    @BindView(R.id.item_posgoods)
+    SettingsItem itemPosGoods;
     @BindView(R.id.item_terminal)
     SettingsItem terminalSettingsItem;
     @BindView(R.id.item_upgrade)
@@ -212,6 +216,34 @@ public class MyFragment extends BaseFragment {
                 getActivity().finish();
             }
         });
+    }
+
+    /**
+     * 商品库恢复出厂设置
+     */
+    @OnClick(R.id.item_posgoods)
+    public void syncGoods() {
+        showConfirmDialog("同步商品库到最新版本，同步过程中会先删除历史数据，可能会影响正常收银，确定要同步吗？",
+                "全量更新", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+
+                        showProgressDialog(ProgressDialog.STATUS_DONE, "请稍候...", true);
+
+                        // 强制同步
+                        SharedPrefesManagerUltimate.setSyncProductsStartcursor("");
+
+                        DataDownloadManager.get().syncProducts();
+                    }
+                }, "点错了", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
     }
 
     /**

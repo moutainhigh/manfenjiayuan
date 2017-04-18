@@ -64,6 +64,18 @@
                 app:subText=""
                 app:text="设备编号"/>
 
+            <!--商品-->
+            <com.bingshanguxue.vector_uikit.SettingsItem
+                android:id="@+id/item_posgoods"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                app:position="center"
+                app:src="@mipmap/ic_upgrade"
+                app:subText=""
+                app:subTextSize="12sp"
+                app:text="商品库"
+                app:textSize="14sp"/>
+
             <!--版本-->
             <com.bingshanguxue.vector_uikit.SettingsItem
                 android:id="@+id/item_upgrade"

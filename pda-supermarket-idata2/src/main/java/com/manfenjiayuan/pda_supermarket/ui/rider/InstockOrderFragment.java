@@ -45,19 +45,26 @@ import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.ScOrderHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 
 /**
@@ -363,7 +370,29 @@ public class InstockOrderFragment extends PDAScanFragment implements IScOrderVie
             }
         }
 
-        ScOrderApiImpl.updateCommitInfo(mScOrder.getId(), jsonArray.toJSONString(), updateCommitInfoRC);
+        Map<String, String> options = new HashMap<>();
+        options.put("id", String.valueOf(mScOrder.getId()));
+        options.put("jsonStr", jsonArray.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ScOrderHttpManager.getInstance().updateCommitInfo(options,
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        onSubmitError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.df("发货并通知骑手:" + s);
+                        submitStep2();
+
+                    }
+                });
     }
 
     NetCallBack.NetTaskCallBack updateCommitInfoRC = new NetCallBack.NetTaskCallBack<String,

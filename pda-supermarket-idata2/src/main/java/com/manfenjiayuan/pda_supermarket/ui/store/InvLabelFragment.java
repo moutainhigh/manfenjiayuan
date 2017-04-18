@@ -17,6 +17,7 @@ import com.manfenjiayuan.business.view.IInvSkuBizView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.common.QueryBarcodeFragment;
+import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.InvSkuLabelApi;
@@ -31,6 +32,8 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -254,5 +257,10 @@ public class InvLabelFragment extends QueryBarcodeFragment implements IInvSkuBiz
         }
 
         refreshPackage(data);
+    }
+
+    @Override
+    public void onIInvSkuBizViewSuccess(PageInfo pageInfo, List<InvSkuBizBean> dataList) {
+
     }
 }

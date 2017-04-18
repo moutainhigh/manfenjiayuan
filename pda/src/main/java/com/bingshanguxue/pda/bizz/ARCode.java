@@ -23,5 +23,8 @@ public class ARCode {
     public static final int ARC_ACCEPT_PREPAREORDER = 0x15;//买手-抢单
     public static final int ARC_RIDER_INSTOCK_PAY = 0x16;//骑手-妥投—补差价
 
+    public static final int ARC_PRODUCT_CONVERT_LIST = 0x17;//商品转换规则列表
+    public static final int ARC_INVSKUBIZ_GOODS_LIST= 0x18;//商品列表
+
 
 }

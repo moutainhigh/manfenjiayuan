@@ -43,6 +43,8 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -50,7 +52,9 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -497,7 +501,19 @@ public class InvRecvInspectFragment extends PDAScanFragment
             return;
         }
 
-        mScProductPricePresenter.findProductSku(barcode, null);
+        Map<String, String> options = new HashMap<>();
+        if (!StringUtils.isEmpty(barcode)) {
+            options.put("barcode", barcode);
+        }
+//            options.put("priceMask", "0");
+//            options.put("includeSub", "true");
+//        if (pageInfo != null) {
+//            options.put("page", Integer.toString(pageInfo.getPageNo()));
+//            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+//        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        mScProductPricePresenter.findProductSku(options, null);
     }
 
     @Override

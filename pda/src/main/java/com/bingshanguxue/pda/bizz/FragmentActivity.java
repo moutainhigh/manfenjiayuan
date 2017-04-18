@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.bingshanguxue.pda.R;
+import com.bingshanguxue.pda.bizz.goods.InvSkuBizGoodsListFragment;
 import com.bingshanguxue.pda.bizz.invrecv.InspectProductSkuFragment;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
@@ -21,6 +22,7 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";
 
     public static final int FT_INSPECT_PRODUCT_SKU = 0x01;//平台商品档案
+    public static final int FT_INVSKUBIZ_GOODS = 0x02;//商品档案列表
 
 
     private int fragmentType = 0;
@@ -111,6 +113,20 @@ public class FragmentActivity extends BaseActivity implements BackHandledInterfa
                         .add(R.id.fragment_container, fragment).show(fragment)
                         .commit();
             }
+            break;
+            case FT_INVSKUBIZ_GOODS: {
+                InvSkuBizGoodsListFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = InvSkuBizGoodsListFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = InvSkuBizGoodsListFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, fragment).show(fragment)
+                        .commit();
+            }
+            break;
         }
     }
 

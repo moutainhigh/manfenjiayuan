@@ -43,6 +43,7 @@
     <dimen name="spacing_micro">4dp</dimen>
     <dimen name="spacing_normal">8dp</dimen>
     <dimen name="spacing_double">16dp</dimen>
+    <dimen name="spacing_3x">24dp</dimen>
     <dimen name="spacing_4x">32dp</dimen>
     <dimen name="spacing_8x">64dp</dimen>
     <dimen name="spacing_huge">72dp</dimen>

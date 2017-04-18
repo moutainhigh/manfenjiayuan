@@ -2,7 +2,6 @@ package com.manfenjiayuan.pda_supermarket.ui;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -12,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import com.igexin.sdk.PushManager;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.ValidateManager;
@@ -24,19 +22,19 @@ import com.bingshanguxue.pda.bizz.home.HomeMenu;
 import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
-import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.mfh.framework.uikit.base.ResultCode;
+import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.business.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
+import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
+import com.manfenjiayuan.pda_supermarket.service.DataDownloadManager;
+import com.manfenjiayuan.pda_supermarket.service.DataUploadManager;
 import com.manfenjiayuan.pda_supermarket.service.DemoPushService;
-import com.manfenjiayuan.pda_supermarket.service.TimeTaskManager;
-import com.manfenjiayuan.pda_supermarket.service.UploadSyncManager;
 import com.manfenjiayuan.pda_supermarket.utils.AlertBeepManager;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
@@ -48,12 +46,10 @@ import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.MfhUserManager;
-import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseActivity;
-import com.mfh.framework.uikit.dialog.CommonDialog;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
-import com.mfh.litecashier.service.DataDownloadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -65,6 +61,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
 
 
 /**
@@ -159,7 +156,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         setupGetui();
 
-
         mBeepManager = new AlertBeepManager(this);
 
 
@@ -172,11 +168,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         loadOffices();
 
         ValidateManager.get().batchValidate();
-//        Beta.checkUpgrade(false, false);
 
         AlarmManagerHelper.registerBuglyUpgrade(this);
-
-        TimeTaskManager.getInstance().start();
     }
 
     @Override
@@ -268,7 +261,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //        super.onBackPressed();
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", true, false);
         isWaitForExit = true;
-        UploadSyncManager.getInstance().sync();
+        DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
     }
 
 
@@ -332,17 +325,20 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     "商品", R.mipmap.ic_goods));
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_STORE_IN,
                     "商品建档", R.mipmap.ic_goods_storein));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_ORDER_GOODS,
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_SENDORDER_NEW,
                     "订货", R.mipmap.ic_order_goods));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_DISTRIBUTION,
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_RECVORDER_NEW,
                     "收货", R.mipmap.ic_receive_goods));
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_RECVORDER_CONVERT,
+                    "转换收货", R.mipmap.ic_invrecvorder_convert));
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
                     "退货", R.mipmap.ic_return_goods));
-
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_OUT,
                     "出库", R.mipmap.ic_stock_out));
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_IN,
                     "入库", R.mipmap.ic_stock_in));
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INV_CONVERT,
+                    "库存转换", R.mipmap.ic_inv_convert));
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_QUERY_BILL,
                     "单据查询", R.mipmap.ic_query_bill));
 
@@ -355,10 +351,11 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER,
                     "报损", R.mipmap.ic_report_loss));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_TAKE,
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INVLOSSORDER_STOCKTAKE,
+                    "报损盘点", R.mipmap.ic_invlossorder_stock));
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INVCHECKORDER_STOCKTAKE,
                     "盘点", R.mipmap.ic_stocktake));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INV_CONVERT,
-                    "库存转换", R.mipmap.ic_inv_convert));
+
 //            menus.add(new HomeMenu(HomeMenu.OPTION_ID_PACKAGE,
 //                    "取包裹", R.mipmap.ic_package));
         }
@@ -399,111 +396,60 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             DialogUtil.showHint("请先登录");
             return;
         }
+
         if (id.compareTo(HomeMenu.OPTION_ID_GOODS) == 0) {
             ActivityRoute.redirect2Goods(MainActivity.this);
-//            Bundle extras = new Bundle();
-////                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-//            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_GOODS);
-//            PrimaryActivity.actionStart(MainActivity.this, extras);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STORE_IN) == 0) {
             ActivityRoute.redirect2StoreIn(MainActivity.this, StoreType.SUPERMARKET);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_PACKAGE) == 0) {
-            Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_PACKAGE);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_TAKE) == 0) {
+        } else if (id.compareTo(HomeMenu.OPTION_ID_INVCHECKORDER_STOCKTAKE) == 0) {
             Office office = DataCacheHelper.getInstance().getCurrentOffice();
             if (office == null) {
                 DialogUtil.showHint("请先选择网点");
                 return;
             }
 
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FRAGMENT_TYPE_INVENTORY_CHECK);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_DISTRIBUTION) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_RECEIVEORDER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_BIND_GOODS_2_TAGS) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_BIND_GOODS_2_TAGS);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_CHECKORDER_STOCKTAKE);
+        } else if (id.compareTo(HomeMenu.OPTION_ID_RECVORDER_NEW) == 0) {
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_RECVORDER_NEW);
+        } else if (id.compareTo(HomeMenu.OPTION_ID_RECVORDER_CONVERT) == 0) {
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_RECVORDER_CONVERT);
+//            ConvertRecvActivity.actionStart(MainActivity.this, null);
+        }else if (id.compareTo(HomeMenu.OPTION_ID_BIND_GOODS_2_TAGS) == 0) {
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_BIND_GOODS_2_TAGS);
         } else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_LOSSORDER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_LOSSORDER_NEW);
         } else if (id.compareTo(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CREATE_INV_RETURNORDER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_CREATE_INV_RETURNORDER);
         } else if (id.compareTo(HomeMenu.OPTION_ID_INV_CONVERT) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_CONVERT);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_CONVERT);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_IN) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_IN);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INVIO_IN);
         } else if (id.compareTo(HomeMenu.OPTION_ID_STOCK_OUT) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INVIO_OUT);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INVIO_OUT);
         } else if (id.compareTo(HomeMenu.OPTION_ID_PRINT_TAGS) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_PRINT_PRICETAGS);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_PRINT_PRICETAGS);
         } else if (id.compareTo(HomeMenu.OPTION_ID_CASHIER) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_CASHIER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_CASHIER);
         } else if (id.compareTo(HomeMenu.OPTION_ID_BUY_PREPARE) == 0) {
             EmbMsgService.getInstance().setAllRead(IMBizType.ORDER_TRANS_NOTIFY);
             menuAdapter.setBadgeNumber(HomeMenu.OPTION_ID_BUY_PREPARE, 0);
 
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_BUY_PREAPARE);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_BUY_PREAPARE);
         } else if (id.compareTo(HomeMenu.OPTION_ID_BUY_SCORDER) == 0) {
             EmbMsgService.getInstance().setAllRead(IMBizType.ORDER_TRANS_NOTIFY);
             menuAdapter.setBadgeNumber(HomeMenu.OPTION_ID_BUY_PREPARE, 0);
 
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_BUY_SCORDER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_BUY_SCORDER);
         } else if (id.compareTo(HomeMenu.OPTION_ID_INSTOCK_SCORDER) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INSTOCK_SCORDER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INSTOCK_SCORDER);
         } else if (id.compareTo(HomeMenu.OPTION_ID_TUOTOU) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_RIDER_INSTOCK);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_RIDER_INSTOCK);
         } else if (id.compareTo(HomeMenu.OPTION_ID_EMBRACE) == 0) {
-            Bundle extras = new Bundle();
-            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INV_RIDER_SEND);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
-        } else if (id.compareTo(HomeMenu.OPTION_ID_ONLINE_ORDER) == 0) {
-            Bundle extras = new Bundle();
-//                    extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-            extras.putInt(PrimaryActivity.EXTRA_KEY_SERVICE_TYPE, PrimaryActivity.FT_INSTOCK_SCORDER);
-            PrimaryActivity.actionStart(MainActivity.this, extras);
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_RIDER_SEND);
+        }  else if (id.compareTo(HomeMenu.OPTION_ID_INVLOSSORDER_STOCKTAKE) == 0) {
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_LOSSORDER_LIST);
+        }  else if (id.compareTo(HomeMenu.OPTION_ID_SENDORDER_NEW) == 0) {
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_SENDORDER_NEW);
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
@@ -603,7 +549,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_FINISHED: {
 //                Beta.checkUpgrade(false, false);
 
-//                DataDownloadManager.get().sync();
+                configMenuOptions();
+                DataDownloadManager.get().launcherSync();
             }
             break;
         }
@@ -633,12 +580,13 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(DataDownloadManager.DataDownloadEvent event) {
-        ZLogger.d(String.format("DataSyncEvent(%d)", event.getEventId()));
+        ZLogger.d(String.format("DataDownloadManager(%d)", event.getEventId()));
         if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             hideProgressDialog();
+            configMenuOptions();
 //            btnSync.stopSync();
             //同步数据结束后开始同步订单
-            UploadSyncManager.getInstance().sync();
+            DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
         }
     }
 
@@ -646,14 +594,14 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
      * 上传数据到云端
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(UploadSyncManager.UploadSyncManagerEvent event) {
+    public void onEventMainThread(DataUploadManager.UploadSyncManagerEvent event) {
         ZLogger.d(String.format("UploadSyncManagerEvent(%d)", event.getEventId()));
-        if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
+        if (event.getEventId() == DataUploadManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_ERROR) {
             if (isWaitForExit) {
                 isWaitForExit = false;
                 AppHelper.closeApp();
             }
-        } else if (event.getEventId() == UploadSyncManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
+        } else if (event.getEventId() == DataUploadManager.UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED) {
             if (isWaitForExit) {
                 isWaitForExit = false;
                 AppHelper.closeApp();

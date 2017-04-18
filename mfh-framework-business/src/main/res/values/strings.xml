@@ -12,4 +12,7 @@
     <string name="username_field_required">用户名不能为空</string>
     <string name="password_field_required">密码不能为空</string>
 
+    <string name="label_customer_price">会员价</string>
+    <string name="label_customer_price_colon">会员价:</string>
+
 </resources>

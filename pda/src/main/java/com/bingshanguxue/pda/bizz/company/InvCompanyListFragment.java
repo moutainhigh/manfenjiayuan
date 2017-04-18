@@ -167,7 +167,6 @@ public class InvCompanyListFragment extends BaseListFragment<CompanyInfo>
         companyAdapter.setOnAdapterListener(new InvCompanyAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
-                //TODO,跳转至详情页
                 Intent data = new Intent();
                 data.putExtra("companyInfo", companyAdapter.getEntity(position));
 
