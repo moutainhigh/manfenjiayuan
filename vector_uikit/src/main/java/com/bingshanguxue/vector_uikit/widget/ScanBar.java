@@ -133,6 +133,8 @@ public class ScanBar extends LinearLayout {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER
                         || event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
                     if (event.getAction() == MotionEvent.ACTION_UP) {
+                        DeviceUtils.hideSoftInput(getContext(), etInput);
+
                         String text = etInput.getText().toString();
                         if (!StringUtils.isEmpty(text) && onViewListener != null) {
                             onViewListener.onKeycodeEnterClick(text);
@@ -206,6 +208,17 @@ public class ScanBar extends LinearLayout {
     public void setInputText(String text){
         etInput.setText(text);
     }
+
+    public void setInputType(int inputType) {
+        if (inputType == EditInputType.BARCODE){
+//            etInput.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_NORMAL);
+        }
+        else{
+            etInput.setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+    }
+
     public boolean isSoftKeyboardEnabled() {
         return softKeyboardEnabled;
     }
