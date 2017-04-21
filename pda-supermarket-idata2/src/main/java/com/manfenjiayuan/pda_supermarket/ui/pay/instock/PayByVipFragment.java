@@ -20,11 +20,9 @@ import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
-import com.mfh.framework.api.account.UserApiImpl;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.scOrder.ScOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -32,13 +30,18 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
+import rx.Subscriber;
 
 
 /**
@@ -141,21 +144,17 @@ public class PayByVipFragment extends BasePayFragment {
                 Bundle extras = intent.getExtras();
                 ZLogger.d(String.format("onReceive.action=%s\nextras:%s",
                         action, StringUtils.decodeBundle(extras)));
-                if (StringUtils.isEmpty(action) || extras == null){
+                if (StringUtils.isEmpty(action) || extras == null) {
                     return;
                 }
 
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_VIP)) {
-                    if (extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
-                        etBarCode.clearInput();
-                        etBarCode.requestFocusEnd();
-                        calculateCharge();
-                    }
-                }
-                else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())){
+                    etBarCode.clearInput();
+                    etBarCode.requestFocusEnd();
+                    calculateCharge();
+                } else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())) {
                     int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
-                    if (payType == wayType){
+                    if (payType == wayType) {
                         onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
                     }
                 }
@@ -172,14 +171,14 @@ public class PayByVipFragment extends BasePayFragment {
         Bundle extras = event.getArgs();
         ZLogger.d(String.format("PayEvent:%d\n%s",
                 action, StringUtils.decodeBundle(extras)));
-        if (extras == null){
+        if (extras == null) {
             return;
         }
 
         switch (event.getAction()) {
             case PayEvent.EVENT_ID_SCAN_PAYCODE: {
                 int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
-                if (payType == wayType){
+                if (payType == wayType) {
                     onScanCode(extras.getString(EXTRA_KEY_SCANCODE));
                 }
             }
@@ -230,6 +229,7 @@ public class PayByVipFragment extends BasePayFragment {
 
     /**
      * 验证会员付款码
+     *
      * @param barcode 扫描的会员付款码，长度为15(000000000712878)
      */
     private void submitStep1(String barcode) {
@@ -244,36 +244,30 @@ public class PayByVipFragment extends BasePayFragment {
             return;
         }
 
-        UserApiImpl.findHumanByHumanId(humanId, findHumanByHumanIdRC);
+        Map<String, String> options = new HashMap<>();
+        options.put("humanId", humanId);
+        SysHttpManager.getInstance().getHumanByIdentity(options,
+                new Subscriber<Human>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        submmitFailed(e.toString());
+                    }
+
+                    @Override
+                    public void onNext(Human human) {
+                        if (human == null) {
+                            submmitFailed("没有查到会员信息");
+                        } else {
+                            submitStep2(human);
+                        }
+                    }
+                });
     }
-
-    private NetCallBack.NetTaskCallBack findHumanByHumanIdRC = new NetCallBack.NetTaskCallBack<Human,
-            NetProcessor.Processor<Human>>(
-            new NetProcessor.Processor<Human>() {
-                @Override
-                public void processResult(final IResponseData rspData) {
-                    Human memInfo = null;
-                    if (rspData != null) {
-                        RspBean<Human> retValue = (RspBean<Human>) rspData;
-                        memInfo = retValue.getValue();
-                    }
-
-                    if (memInfo == null) {
-                        submmitFailed("没有查到会员信息");
-                    } else {
-                        submitStep2(memInfo);
-                    }
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    submmitFailed(errMsg);
-                }
-            }
-            , Human.class
-            , AppContext.getAppContext()) {
-    };
 
     /**
      * 补差额
@@ -316,7 +310,6 @@ public class PayByVipFragment extends BasePayFragment {
             , String.class
             , AppContext.getAppContext()) {
     };
-
 
 
 }

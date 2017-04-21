@@ -2,16 +2,12 @@ package com.bingshanguxue.cashier.v1;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
-import com.bingshanguxue.cashier.model.wrapper.CouponRule;
-import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
-import com.mfh.framework.api.account.Human;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 收银订单
@@ -55,16 +51,14 @@ public class CashierOrderInfo implements java.io.Serializable {
     private Double paidAmount = 0D;
     //支付类型
     private Integer payType = WayType.NA;
-    //找零金额
-    private Double change = 0D;
     //会员
     private Human vipMember;
     //==============支付信息结束======================
 
     //卡券&促销规则（根据订单明细由后台计算）
     private MarketRulesWrapper mOrderMarketRules;
-    //促销or卡券优惠信息
-    private DiscountInfo mDiscountInfo;
+    //后台返回的订单支付相关信息
+    private PayAmount mPayAmount;
 
     public Double getbCount() {
         return bCount;
@@ -114,21 +108,6 @@ public class CashierOrderInfo implements java.io.Serializable {
         mOrderMarketRules = orderMarketRules;
     }
 
-    public DiscountInfo getDiscountInfo() {
-        return mDiscountInfo;
-    }
-
-    public void setDiscountInfo(DiscountInfo discountInfo) {
-        mDiscountInfo = discountInfo;
-    }
-
-    public Double getChange() {
-        return change;
-    }
-
-    public void setChange(Double change) {
-        this.change = change;
-    }
 
 
     public Integer getBizType() {
@@ -209,6 +188,14 @@ public class CashierOrderInfo implements java.io.Serializable {
         this.payType = payType;
     }
 
+    public PayAmount getPayAmount() {
+        return mPayAmount;
+    }
+
+    public void setPayAmount(PayAmount payAmount) {
+        mPayAmount = payAmount;
+    }
+
     /**
      * 保存卡券和促销规则
      */
@@ -221,40 +208,6 @@ public class CashierOrderInfo implements java.io.Serializable {
 //            orderMarketRules.setFinalAmount(finalAmount);
         }
         setOrderMarketRules(orderMarketRules);
-    }
-
-    /**
-     * 保存抵用优惠券,优惠券(代金券)优惠
-     * @param amountArray 优惠金额
-     * @param couponsMap
-     */
-    public boolean saveCouponDiscount(List<PayAmount> amountArray,
-                                      String couponsIds, String rulesIds) {
-        //检查输入参数是否正确
-        if (amountArray == null ||
-                amountArray.size() < 1) {
-            ZLogger.d("输入参数不正确");
-            return false;
-        }
-        ZLogger.d(String.format("保存会员/优惠券优惠金额\n%s", JSON.toJSONString(amountArray)));
-
-        PayAmount payAmount = amountArray.get(0);
-
-        //2016-07-04 这里的促销卡券优惠金额都是后台返回来的，可能单个值或累加值大于应付金额，
-        // 保存的时候应该有所裁剪，否则可能会影响后面的计算结果
-        DiscountInfo discountInfo = getDiscountInfo();
-
-        discountInfo.setRuleDiscountAmount(payAmount.getRuleAmount());
-        discountInfo.setCouponDiscountAmount(payAmount.getCoupAmount());
-        //优惠后实际生效金额（会员+优惠券）
-        discountInfo.setEffectAmount(finalAmount
-                - paidAmount - payAmount.getPayAmount());
-        // TODO: 5/26/16 选中的优惠券和订单可用的优惠券进行二次校验
-        discountInfo.setCouponsIds(couponsIds);
-        discountInfo.setRuleIds(rulesIds);
-        setDiscountInfo(discountInfo);
-
-        return true;
     }
 
     /**

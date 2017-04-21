@@ -28,12 +28,11 @@ import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
-import com.bingshanguxue.cashier.v1.PaymentInfoImpl;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
@@ -110,7 +109,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
             @Override
             public void onKey(int keyCode, String text) {
                 //Press “Enter”
-                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode ==  KeyEvent.KEYCODE_NUMPAD_ADD) {
+                if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ADD) {
                     //条码枪扫描结束后会自动触发回车键
                     query(text);
                 }
@@ -196,6 +195,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
     }
 
     private NumberInputDialog barcodeInputDialog;
+
     /**
      * 显示条码输入界面
      * 相当于扫描条码
@@ -283,11 +283,11 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 
     /**
      * 提交订单
-     * */
-    private void submitOrder(){
+     */
+    private void submitOrder() {
         btnSubmit.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
-        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS, PosType.POS_STANDARD,
+        CashierOrderInfo cashierOrderInfo = CashierAgent.settle(PosType.POS_STANDARD,
                 curOrderTradeNo, null, PosOrderEntity.ORDER_STATUS_PROCESS,
                 productAdapter.getEntityList());
         ZLogger.df(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
@@ -297,26 +297,25 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 //                PosOrderPayEntity.PAY_STATUS_FINISH,
 //                cashierOrderInfo.getFinalAmount(), 0D, 0D - cashierOrderInfo.getFinalAmount(),
 //                null);
-        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(curOrderTradeNo, WayType.CASH,
+        PaymentInfo paymentInfo = PaymentInfo.create(curOrderTradeNo, WayType.CASH,
                 PosOrderPayEntity.PAY_STATUS_FINISH,
                 cashierOrderInfo.getFinalAmount(),
                 cashierOrderInfo.getFinalAmount(), 0D,
                 null);
         ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
-        CashierAgent.updateCashierOrder(cashierOrderInfo.getBizType(), cashierOrderInfo.getPosTradeNo(),
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),
                 cashierOrderInfo.getVipMember(), paymentInfo);
+        PayAmount payAmount = cashierOrderInfo.getPayAmount();
 
-        cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getBizType(),
-                cashierOrderInfo.getPosTradeNo(),cashierOrderInfo.getVipMember());
+        cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getPosTradeNo(), cashierOrderInfo.getVipMember());
         ZLogger.df(String.format("退单成功:%s", JSONObject.toJSONString(cashierOrderInfo)));
 
-        CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+        CashierAgent.updateCashierOrder(cashierOrderInfo, payAmount, PosOrderEntity.ORDER_STATUS_FINISH);
 
         //更新订单信息，同时打开钱箱，退钱给顾客
         PrinterFactory.getPrinterManager().openMoneyBox();
 
-        PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
-                cashierOrderInfo.getPosTradeNo());
+        PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(cashierOrderInfo.getPosTradeNo());
         //同步订单信息
 //        DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
         //打印订单
@@ -352,10 +351,9 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         //添加商品
         if (goods.getPriceType().equals(PriceType.WEIGHT)) {
             final Double weightVal = GlobalInstance.getInstance().getNetWeight();
-            if (weightVal > 0){
+            if (weightVal > 0) {
                 saveGoods2Cashier(curOrderTradeNo, goods, 0 - weightVal);
-            }
-            else{
+            } else {
                 if (changeQuantityDialog == null) {
                     changeQuantityDialog = new DoubleInputDialog(getContext());
                     changeQuantityDialog.setCancelable(true);
@@ -415,9 +413,9 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 
     /**
      * 保存商品到收银台
-     * */
+     */
     private void saveGoods2Cashier(final String orderBarCode, final PosProductEntity goods,
-                                   final Double bCount){
+                                   final Double bCount) {
         Observable.create(new Observable.OnSubscribe<List<CashierShopcartEntity>>() {
             @Override
             public void call(Subscriber<? super List<CashierShopcartEntity>> subscriber) {

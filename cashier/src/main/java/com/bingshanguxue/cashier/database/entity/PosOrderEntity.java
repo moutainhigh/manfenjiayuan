@@ -76,7 +76,7 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
     private String remark = ""; //备注
 
-    //商品零售金额(按商品零售价计算的总金额)，
+    /**商品零售金额(按商品零售价计算的总金额,即商品原价)*/
     private Double retailAmount = 0D;
     //商品成交金额(按商品成交计算的总金额)
     private Double finalAmount = 0D;
@@ -93,6 +93,8 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
     private String outerTradeNo;//外部订单编号
 
     private Long flowId = 0L;//订单流水编号
+
+    private String rpDisAmountMap;
 
     public String getBarCode() {
         return barCode;
@@ -258,5 +260,13 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
 
     public void setFlowId(Long flowId) {
         this.flowId = flowId;
+    }
+
+    public String getRpDisAmountMap() {
+        return rpDisAmountMap;
+    }
+
+    public void setRpDisAmountMap(String rpDisAmountMap) {
+        this.rpDisAmountMap = rpDisAmountMap;
     }
 }

@@ -287,7 +287,7 @@ public class PayByWxpayFragment extends BasePayFragment {
                     @Override
                     public void onError(Throwable e) {
                         ZLogger.df("微信条码支付异常:" + e.toString());
-                        onBarpayFailed(e.toString(), AppHelper.getErrorTextColor(), true);
+                        onBarpayFailed(e.getMessage(), AppHelper.getErrorTextColor(), true);
 
                     }
 
@@ -502,48 +502,53 @@ public class PayByWxpayFragment extends BasePayFragment {
      */
     private void onBarpayFailed(String msg, int color, boolean isException) {
         ZLogger.df("微信条码支付失败:" + msg);
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
+        try {
+            tvProcess.setText(msg);
+            tvProcess.setTextColor(color);
+            progressBar.setVisibility(View.GONE);
 
-        final Bundle args = new Bundle();
-        if (isException) {
-            args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
-                    PaymentInfo.create(outTradeNo, payType,
-                            PosOrderPayEntity.PAY_STATUS_EXCEPTION,
-                            paidAmount, paidAmount, 0D, null));
+            final Bundle args = new Bundle();
+            if (isException) {
+                args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
+                        PaymentInfo.create(outTradeNo, payType,
+                                PosOrderPayEntity.PAY_STATUS_EXCEPTION,
+                                paidAmount, paidAmount, 0D, null));
 
-            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-            btnQueryOrderStatus.setVisibility(View.VISIBLE);
-        } else {
-            args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
-                    PaymentInfo.create(outTradeNo, payType,
-                            PosOrderPayEntity.PAY_STATUS_FAILED,
-                            paidAmount, paidAmount, 0D, null));
+                btnCancelAliBarPay.setVisibility(View.VISIBLE);
+                btnQueryOrderStatus.setVisibility(View.VISIBLE);
+            } else {
+                args.putSerializable(PayActionEvent.KEY_PAYMENT_INFO,
+                        PaymentInfo.create(outTradeNo, payType,
+                                PosOrderPayEntity.PAY_STATUS_FAILED,
+                                paidAmount, paidAmount, 0D, null));
 
-            btnCancelAliBarPay.setVisibility(View.GONE);
-            btnQueryOrderStatus.setVisibility(View.GONE);
-        }
-        args.putString(PayStep1Event.KEY_ERROR_MESSAGE, msg);
-
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
-
-        etBarCode.getText().clear();//清空授权码
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                EventBus.getDefault()
-                        .post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FAILED, args));
-
-                llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
-
-                bPayProcessing = false;
+                btnCancelAliBarPay.setVisibility(View.GONE);
+                btnQueryOrderStatus.setVisibility(View.GONE);
             }
-        }, 2000);
+            args.putString(PayStep1Event.KEY_ERROR_MESSAGE, msg);
+
+            tvCountdown.setText("");
+            payCountDownTimer.cancel();
+            payTimerRunning = false;
+
+            etBarCode.getText().clear();//清空授权码
+
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    EventBus.getDefault()
+                            .post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FAILED, args));
+
+                    llPayInfo.setVisibility(View.VISIBLE);
+                    llPayLoading.setVisibility(View.GONE);
+
+                    bPayProcessing = false;
+                }
+            }, 2000);
+        } catch (Exception e) {
+            ZLogger.ef(e.toString());
+        }
+
     }
 
     /**
@@ -564,12 +569,16 @@ public class PayByWxpayFragment extends BasePayFragment {
 
         @Override
         public void onTick(long millisUntilFinished) {
-            tvCountdown.setText(String.format("%d秒", millisUntilFinished / 1000));
+            if (tvCountdown != null) {
+                tvCountdown.setText(String.format("%d秒", millisUntilFinished / 1000));
+            }
         }
 
         @Override
         public void onFinish() {
-            tvCountdown.setText("");
+            if (tvCountdown != null) {
+                tvCountdown.setText("");
+            }
 //            btnCancelAliBarPay.setVisibility(View.VISIBLE);
         }
     }

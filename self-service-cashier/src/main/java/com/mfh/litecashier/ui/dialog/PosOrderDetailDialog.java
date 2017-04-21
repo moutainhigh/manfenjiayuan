@@ -25,7 +25,7 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.com.SerialManager;
+import com.mfh.litecashier.hardware.SerialManager;
 
 
 /**
@@ -181,7 +181,7 @@ public class PosOrderDetailDialog extends CommonDialog {
         }
 
         mCashierOrderInfo.paid(wayType, amoutVal);
-        CashierAgent.updateCashierOrder(mCashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+        CashierAgent.updateCashierOrder(mCashierOrderInfo, mCashierOrderInfo.getPayAmount(), PosOrderEntity.ORDER_STATUS_FINISH);
 
         // TODO: 6/20/16
         btnSubmit.setEnabled(true);

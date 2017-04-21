@@ -43,6 +43,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
+
 /**
  * 支付
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
@@ -94,7 +95,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
 //        EventBus.getDefault().register(this);
     }
 
-
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
@@ -119,7 +119,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
         } else {
             btnSweep.setVisibility(View.GONE);
         }
-        initTabs();
 
         if (cashierOrderInfo == null) {
             DialogUtil.showHint("订单支付数据错误");
@@ -127,6 +126,8 @@ public class PayStep1Fragment extends BasePayStepFragment {
             getActivity().finish();
         } else {
             reload(cashierOrderInfo);
+
+            initTabs();
         }
     }
 
@@ -251,6 +252,8 @@ public class PayStep1Fragment extends BasePayStepFragment {
                 cashierOrderInfo.getSubject());
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
+        parArgs.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
+                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
 
         mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));
@@ -272,8 +275,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
     private void notifyPayInfoChanged(int page) {
         Intent intent = new Intent();
         Bundle extras = new Bundle();
-        extras.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
-                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
 
         if (page == TAB_ALIPAY) {
             intent.setAction(Constants.BA_HANDLE_AMOUNT_CHANGED_ALIPAY);

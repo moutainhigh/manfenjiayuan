@@ -30,7 +30,7 @@ import com.manfenjiayuan.pda_supermarket.database.entity.CashierShopcartEntity;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderEntity;
 import com.manfenjiayuan.pda_supermarket.database.entity.PosProductEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.CashierShopcartService;
-import com.manfenjiayuan.pda_supermarket.service.UploadSyncManager;
+import com.manfenjiayuan.pda_supermarket.service.DataUploadManager;
 import com.manfenjiayuan.pda_supermarket.ui.store.CashierPayActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
@@ -447,10 +447,13 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
                         WayType.name(cashierOrderInfo.getBizType()), cashierOrderInfo.getPosTradeNo(),
                         JSONObject.toJSONString(cashierOrderInfo)));
 
-                PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
-                        cashierOrderInfo.getPosTradeNo());
-                //同步订单信息
-                UploadSyncManager.getInstance().stepUploadPosOrder(orderEntity);
+//                PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(BizType.POS,
+//                        cashierOrderInfo.getPosTradeNo());
+//                //同步订单信息
+//                UploadSyncManager.getInstance().stepUploadPosOrder(orderEntity);
+
+                DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
+
 
                 subscriber.onNext(null);
                 subscriber.onCompleted();

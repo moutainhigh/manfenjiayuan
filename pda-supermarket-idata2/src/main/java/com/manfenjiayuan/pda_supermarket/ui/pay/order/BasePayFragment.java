@@ -96,6 +96,7 @@ public abstract class BasePayFragment extends BaseFragment {
             orderBarcode = args.getString(EXTRA_KEY_ORDER_BARCODE, "");
             subject = args.getString(EXTRA_KEY_SUBJECT, "");
             body = args.getString(EXTRA_KEY_BODY, "");
+            handleAmount = args.getDouble(EXTRA_KEY_HANDLE_AMOUNT);
         }
     }
 

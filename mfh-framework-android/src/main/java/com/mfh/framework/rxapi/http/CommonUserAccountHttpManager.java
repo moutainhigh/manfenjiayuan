@@ -4,7 +4,10 @@ import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.entity.MValue;
 import com.mfh.framework.rxapi.func.MResponseFunc;
+import com.mfh.framework.rxapi.func.MValueResponseFunc;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +16,6 @@ import retrofit2.http.GET;
 import retrofit2.http.QueryMap;
 import rx.Observable;
 import rx.Subscriber;
-
-import static com.mfh.framework.api.commonuseraccount.CommonUserAccountApi.URL_COMMONUSERACCOUNT;
 
 /**
  * Created by bingshanguxue on 25/01/2017.
@@ -55,7 +56,7 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
          * (若mineCps参数不为空，则相当于支付完毕同时将其废弃，避免再调用一次下面的abandonCouponById接口)
          */
         @GET("commonuseraccount/payDirect")
-        Observable<MResponse<String>> payDirect(@QueryMap Map<String, String> options);
+        Observable<MResponse<MValue<String>>> payDirect(@QueryMap Map<String, String> options);
 
         /**
          * 用户注册,
@@ -116,10 +117,10 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
      * @param bizType         业务类型
      * @param orderId         pos机本地订单号格式（设备编号＋订单编号），还不算后台生成的订单号
      */
-    public void payDirect(Map<String, String> options, Subscriber<String> subscriber) {
+    public void payDirect(Map<String, String> options, MValueSubscriber<String> subscriber) {
         CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
         Observable observable = mfhApi.payDirect(options)
-                .map(new MResponseFunc<String>());
+                .map(new MValueResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
 

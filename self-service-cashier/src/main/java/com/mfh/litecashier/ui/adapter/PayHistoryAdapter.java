@@ -51,17 +51,9 @@ public class PayHistoryAdapter
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         PosOrderPayEntity entity = entityList.get(position);
 
-        String payInfo;
-        if (PosOrderPayEntity.AMOUNT_TYPE_IN.equals(entity.getAmountType())){
-            payInfo = String.format("商户订单号：%s\n支付方式：%s\n收取金额：%.2f\n会员编号：%s\n",
-                    entity.getOutTradeNo(), WayType.name(entity.getPayType()),
-                    entity.getAmount(), entity.getCustomerHumanId());
-        }
-        else{
-            payInfo = String.format("商户订单号：%s\n支付方式：%s\n找零金额：%.2f\n会员编号：%s\n",
-                    entity.getOutTradeNo(), WayType.name(entity.getPayType()),
-                    entity.getAmount(), entity.getCustomerHumanId());
-        }
+        String payInfo = String.format("商户订单号：%s\n支付方式：%s\n金额：%.2f\n会员编号：%s\n",
+                entity.getOutTradeNo(), WayType.name(entity.getPayType()),
+                entity.getAmount(), entity.getCustomerHumanId());
 
         holder.tvPayInfo.setText(payInfo);
         holder.tvPayStatus.setText(PosOrderPayEntity.getPayStatusDesc(entity.getPaystatus()));

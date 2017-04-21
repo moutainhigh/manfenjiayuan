@@ -530,9 +530,10 @@ public class EmbPrinterManager extends PrinterManager {
          * */
         esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_LEFT));
         esc.addText("--------------------------------\n");//32个
-        esc.addText(String.format("账户新增:%.2f\n", handOverBill.getAmount() - handOverBill.getCash()));
+        esc.addText(String.format("账户新增:%.2f\n", handOverBill.getTurnover() - handOverBill.getCash()));
         esc.addText(String.format("现金收取:%.2f\n", handOverBill.getCash()));
-        esc.addText(String.format("营业额合计:%.2f\n", handOverBill.getAmount()));
+        esc.addText(String.format("原价金额:%.2f\n", handOverBill.getOrigionAmount()));
+        esc.addText(String.format("营业额合计:%.2f\n", handOverBill.getTurnover()));
 
         /**
          * 打印 结束语

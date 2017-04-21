@@ -92,6 +92,18 @@
                 app:topText="0.00"
                 app:topTextColor="@color/material_green_500"
                 app:topTextSize="18sp"/>
+            <!--会员优惠-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_promotion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="@string/label_promotion_discount"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="12sp"
+                app:topText="0.00"
+                app:topTextColor="@color/material_green_500"
+                app:topTextSize="18sp"/>
 
             <!--代金券-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
@@ -103,7 +115,7 @@
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="12sp"
                 app:topText="0.00"
-                app:topTextColor="@color/material_red_500"
+                app:topTextColor="@color/material_green_500"
                 app:topTextSize="18sp"/>
 
             <!--积分-->

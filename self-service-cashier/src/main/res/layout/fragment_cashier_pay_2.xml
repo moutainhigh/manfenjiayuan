@@ -9,11 +9,47 @@
     <include layout="@layout/appbar"/>
 
     <!--会员信息-->
-    <include
-        android:id="@+id/view_vip_brief"
-        layout="@layout/include_cashier_pay_header_1"
-        android:layout_width="match_parent"
-        android:layout_height="130dp"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/mfhtheme_maskPrimary"
+                    android:orientation="vertical"
+                    android:padding="@dimen/spacing_double">
+
+        <!--&lt;!&ndash;用户信息：用户名/手机号&ndash;&gt;-->
+        <!--<TextView-->
+            <!--android:id="@+id/tv_vip_brief"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_margin="@dimen/spacing_normal"-->
+            <!--android:text=":"-->
+            <!--android:textColor="@color/material_black"-->
+            <!--android:textSize="@dimen/textsize_normal"/>-->
+
+        <!--头像-->
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
+            android:id="@+id/iv_vip_header"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/chat_tmp_user_head"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+    <!--&lt;!&ndash;头像&ndash;&gt;-->
+    <!--<com.bingshanguxue.vector_uikit.widget.AvatarView-->
+        <!--android:id="@+id/iv_vip_header"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_marginBottom="@dimen/spacing_double"-->
+        <!--android:layout_marginTop="@dimen/spacing_double"-->
+        <!--android:src="@drawable/chat_tmp_user_head"/>-->
+
+    <!--<include-->
+    <!--android:id="@+id/view_vip_brief"-->
+    <!--layout="@layout/include_cashier_pay_header_1"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="130dp"/>-->
 
     <View
         android:layout_width="match_parent"
@@ -51,6 +87,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             app:bottomText="会员优惠"
+            app:bottomTextColor="@color/black_70"
+            app:bottomTextSize="16sp"
+            app:topText="0.00"
+            app:topTextColor="@color/colorPrimary"
+            app:topTextSize="30sp"/>
+        <!--促销优惠-->
+        <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+            android:id="@+id/labelPromotion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:bottomText="@string/label_promotion_discount"
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"

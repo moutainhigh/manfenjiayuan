@@ -19,16 +19,15 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.PosOrderApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
@@ -105,7 +104,7 @@ public class DataUploadManager {
             }
 
             // 要做的事情
-            super.handleMessage(msg);
+             super.handleMessage(msg);
         }
     };
 
@@ -129,7 +128,7 @@ public class DataUploadManager {
         }, 10 * 1000, 10 * 60 * 1000);
     }
 
-    public void cancelTimer() {
+    private void cancelTimer() {
         ZLogger.d("取消定时任务...");
         if (syncPosOrderTimer != null) {
             syncPosOrderTimer.cancel();
@@ -462,22 +461,22 @@ public class DataUploadManager {
      * 生成订单同步数据结构
      */
     private JSONObject wrapperOrder(PosOrderEntity orderEntity) {
-        ZLogger.d(JSONObject.toJSONString(orderEntity));
+        ZLogger.d(String.format("准备同步订单 : %s", JSONObject.toJSONString(orderEntity)));
         JSONObject order = new JSONObject();
 
-        order.put("id", orderEntity.getId());
+        order.put("id", orderEntity.getId());//pos机订单编号
         order.put("barCode", orderEntity.getBarCode());
         order.put("status", orderEntity.getStatus());
-        order.put("remark", orderEntity.getRemark());
-        order.put("bcount", orderEntity.getBcount());
-        order.put("adjPrice", orderEntity.getRetailAmount() - orderEntity.getFinalAmount()); //调价金额
+        order.put("remark", orderEntity.getRemark());//备注
+        order.put("bcount", orderEntity.getBcount());//数量
+        order.put("adjPrice", MathCompact.sub(orderEntity.getRetailAmount(), orderEntity.getFinalAmount())); //调价金额
         order.put("paystatus", orderEntity.getPaystatus());
-        order.put("subType", orderEntity.getSubType());
+        order.put("subType", orderEntity.getSubType());//业务子类型
         order.put("outerNo", orderEntity.getOuterTradeNo());//外部订单编号（外部平台订单组货功能特有）
-        order.put("posId", orderEntity.getPosId());//设备编号
+        order.put("posId", orderEntity.getPosId());//机器编号
         order.put("sellOffice", orderEntity.getSellOffice());//curoffice id
         order.put("sellerId", orderEntity.getSellerId());//spid
-        order.put("humanId", orderEntity.getHumanId());//会员支付
+        order.put("humanId", orderEntity.getHumanId());//会员编号
         //由后台计算折扣
 //        if (orderEntity.getRetailAmount() == 0D) {
 //            order.put("discount", Double.valueOf(String.valueOf(Integer.MAX_VALUE)));
@@ -486,14 +485,13 @@ public class DataUploadManager {
 //                    / orderEntity.getRetailAmount());
 //        }
 
-        order.put("createdBy", orderEntity.getCreatedBy());
-
         //使用订单最后更新日期作为订单生效日期
         Date createdDate = orderEntity.getUpdatedDate();
         if (createdDate == null) {
-            createdDate = new Date();
+            createdDate = orderEntity.getCreatedDate();
         }
         order.put("createdDate", TimeUtil.format(createdDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        order.put("createdBy", orderEntity.getCreatedBy());
 
         //读取订单商品明细
         List<PosOrderItemEntity> orderItemEntities = CashierAgent.fetchOrderItems(orderEntity);
@@ -506,25 +504,41 @@ public class DataUploadManager {
             item.put("barcode", entity.getBarcode());
             item.put("bcount", entity.getBcount());
             item.put("price", entity.getCostPrice());//原价（零售价）
-            item.put("amount", entity.getAmount());
-            item.put("factAmount", entity.getFinalAmount());//订单明细的实际折后销售价格
+            item.put("customerPrice", entity.getCustomerPrice());// 会员价（服务端备存）
+            item.put("amount", entity.getAmount());//商品预设的原始价格
+            item.put("factAmount", entity.getFinalAmount());//订单明细的实际折后销售价格，商品本次销售原价金额(例如抹零)
+            //// TODO: 19/04/2017
+            //saleAmount，根据ruleAmountMap去计算
+            item.put("saleAmount", MathCompact.sub(entity.getFinalAmount(), entity.getVipAmount()));//实际销售金额(扣除了会员优惠后)
+            //该条订单明细流水具体的会员折扣规则优惠情况，可能会有多条会员折扣规则适用，其中key是规则id，value是该规则的产生的优惠金额
+            String ruleAmountMap = entity.getRuleAmountMap();
+            if (ruleAmountMap != null) {
+                item.put("ruleAmountMap", JSONObject.parse(ruleAmountMap));
+            }
 //            item.put("cateType", entity.getCateType());//按类目进行账务清分
             item.put("prodLineId", entity.getProdLineId());//按产品线进行账务清分
             items.add(item);
         }
         order.put("items", items);
+        String rpDisAmountMap = orderEntity.getRpDisAmountMap();
+        if (rpDisAmountMap != null) {
+            order.put("rpDisAmountMap", JSONObject.parse(rpDisAmountMap));
+        }
 
         //2016-07-01 上传订单支付记录到后台
         OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
         if (payWrapper != null) {
-            order.put("payWays", payWrapper.getPayWays());
-            order.put("disAmount", payWrapper.getRuleDiscount()); //优惠金额
+            //注意这里上传的支付记录不包括现金找零和会员账户余额
+            order.put("payWays", payWrapper.getUploadPayWays());
+            //优惠金额（促销规则+卡券）
+            Double disAmount = payWrapper.getVipDiscount() + payWrapper.getPromotionDiscount() + payWrapper.getCouponDiscount();
+            order.put("disAmount", disAmount);
             //卡券核销
             order.put("couponsIds", payWrapper.getCouponsIds());
             order.put("ruleIds", payWrapper.getRuleIds());
-            order.put("payType", payWrapper.getPayType());
-            Double amount = orderEntity.getFinalAmount() - payWrapper.getRuleDiscount();
-            order.put("amount", amount);//负数表示退单
+            order.put("payType", payWrapper.getPayType());//支付方式
+            Double amount = orderEntity.getFinalAmount() - disAmount;
+            order.put("amount", amount);//订单金额，负数表示退单
             if (amount >= 0.01) {
                 order.put("score", amount / 2);
             } else {
@@ -579,7 +593,8 @@ public class DataUploadManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        onNotifyNext(String.format("上传POS订单失败: %s", e.toString()));
+                        ZLogger.ef(e.toString());
+                        onNotifyNext(String.format("上传POS订单失败: %s", e.getMessage()));
                     }
 
                     @Override
@@ -640,6 +655,7 @@ public class DataUploadManager {
 
                     @Override
                     public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
                         orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_ERROR);
 //                        orderEntity.setUpdatedDate(new Date());
                         PosOrderService.get().saveOrUpdate(orderEntity);

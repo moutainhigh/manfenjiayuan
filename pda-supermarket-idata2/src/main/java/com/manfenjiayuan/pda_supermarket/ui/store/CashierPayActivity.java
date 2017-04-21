@@ -22,9 +22,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 
+
 /**
  * 收银订单支付页面
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class CashierPayActivity extends BaseActivity {
 
@@ -100,8 +101,6 @@ public class CashierPayActivity extends BaseActivity {
 
             cashierOrderInfo = (CashierOrderInfo) intent.getSerializableExtra(EXTRA_KEY_CASHIER_ORDERINFO);
         }
-
-//        cashierOrderInfo = GlobalInstance.getInstance().getCashierOrderInfo();
     }
     /**
      * 显示
@@ -152,72 +151,6 @@ public class CashierPayActivity extends BaseActivity {
                 .commit();
     }
 
-    /**
-     * 取消支付
-     * */
-//    public void cancelSettle() {
-//        // TODO: 7/21/16 这里要做判断，当前是不是正在支付订单，正在支付订单的时候不能关闭窗口
-////        setResult(Activity.RESULT_CANCELED);
-////        finish();
-//        if (cancelPayDialog == null) {
-//            cancelPayDialog = new CommonDialog(this);
-//            cancelPayDialog.setCancelable(true);
-//            cancelPayDialog.setCanceledOnTouchOutside(true);
-//            cancelPayDialog.setMessage("确定要取消支付吗？");
-//        }
-//        cancelPayDialog.setPositiveButton("订单异常", new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                if (curStep == 0){
-//                    if (mPayStep1Fragment != null){
-//                        mPayStep1Fragment.onPayException();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//                else{
-//                    if (mPayStep2Fragment != null){
-//                        mPayStep2Fragment.onPayException();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//            }
-//        });
-//        cancelPayDialog.setNegativeButton("取消支付", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//
-//                if (curStep == 0){
-//                    if (mPayStep1Fragment != null){
-//                        mPayStep1Fragment.onPayCancel();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//                else{
-//                    if (mPayStep2Fragment != null){
-//                        mPayStep2Fragment.onPayCancel();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//            }
-//        });
-//        cancelPayDialog.show();
-//    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayActionEvent event) {
         Bundle args = event.getArgs();
@@ -236,7 +169,5 @@ public class CashierPayActivity extends BaseActivity {
             break;
         }
     }
-
-
 
 }

@@ -3,7 +3,7 @@ package com.bingshanguxue.cashier.database.service;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosOrderPayDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayAmountWrapper;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.comn.bean.PageInfo;
@@ -220,20 +220,26 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
                     PayWayType.TYPE_VIP_BALANCE, changeRemain,
                     status, member, null, null);
 
-            DiscountInfo discountInfo = paymentInfo.getDiscountInfo();
-            if (discountInfo != null) {
+            PayAmountWrapper payAmountWrapper = paymentInfo.getDiscountInfo();
+            if (payAmountWrapper != null) {
                 //会员优惠
-                saveOrUpdate(discountInfo.getOrderId(),
+                saveOrUpdate(payAmountWrapper.getOrderId(),
                         outTradeNo, WayType.RULES,
                         PayWayType.TYPE_VIP_DISCOUNT,
-                        discountInfo.getRuleDiscountAmount(),
-                        status, member, discountInfo.getCouponsIds(), discountInfo.getRuleIds());
+                        payAmountWrapper.getVipAmount(),
+                        status, member, payAmountWrapper.getCouponsIds(), payAmountWrapper.getRuleIds());
+                //促销优惠
+                saveOrUpdate(payAmountWrapper.getOrderId(),
+                        outTradeNo, WayType.RULES,
+                        PayWayType.TYPE_VIP_PROMOTION,
+                        payAmountWrapper.getPromotionAmount(),
+                        status, member, payAmountWrapper.getCouponsIds(), payAmountWrapper.getRuleIds());
                 //优惠券
-                saveOrUpdate(discountInfo.getOrderId(),
+                saveOrUpdate(payAmountWrapper.getOrderId(),
                         outTradeNo, WayType.RULES,
                         PayWayType.TYPE_VIP_COUPONS,
-                        discountInfo.getCouponDiscountAmount(),
-                        status, member, discountInfo.getCouponsIds(), discountInfo.getRuleIds());
+                        payAmountWrapper.getCoupAmount(),
+                        status, member, payAmountWrapper.getCouponsIds(), payAmountWrapper.getRuleIds());
             }
         } else if ((payType & WayType.WX_F2F) == WayType.WX_F2F) {
             amountType = PayWayType.TYPE_WEPAY_F2F;

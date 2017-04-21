@@ -77,10 +77,16 @@ public class CashierDesktopObservable extends Observable {
     }
 
     public Double getBcount() {
+        if (bcount == null) {
+            return 0D;
+        }
         return bcount;
     }
 
     public Double getAmount() {
+        if (amount == null) {
+            return 0D;
+        }
         return amount;
     }
 

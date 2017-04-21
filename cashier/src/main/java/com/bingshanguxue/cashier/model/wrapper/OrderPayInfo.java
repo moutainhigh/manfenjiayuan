@@ -13,14 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 订单支付信息
  * Created by bingshanguxue on 7/4/16.
  */
 public class OrderPayInfo implements Serializable {
     private Integer payType = WayType.NA;
     private List<PayWay> payWays = new ArrayList<>();//具体支付明细
+    private List<PayWay> uploadPayWays = new ArrayList<>();
     private Double paidAmount = 0D;//已支付金额(订单实际金额)
-    private Double change = 0D;//找零
-    private Double ruleDiscount = 0D;//促销优惠
+    private Double change = 0D;//找零金额
+    private Double promotionDiscount = 0D;//促销优惠
+    private Double vipDiscount = 0D;//会员优惠
     private String ruleIds = "";
     private Double couponDiscount = 0D;//优惠券
     private String couponsIds = "";
@@ -52,7 +55,7 @@ public class OrderPayInfo implements Serializable {
     }
 
     public Double getChange() {
-        if (change == null){
+        if (change == null) {
             return 0D;
         }
         return change;
@@ -62,19 +65,38 @@ public class OrderPayInfo implements Serializable {
         this.change = change;
     }
 
-    public Double getRuleDiscount() {
-        if (ruleDiscount == null){
+    public Double getPromotionDiscount() {
+        if (promotionDiscount == null) {
             return 0D;
         }
-        return ruleDiscount;
+        return promotionDiscount;
     }
 
-    public void setRuleDiscount(Double ruleDiscount) {
-        this.ruleDiscount = ruleDiscount;
+    public void setPromotionDiscount(Double promotionDiscount) {
+        this.promotionDiscount = promotionDiscount;
+    }
+
+    public Double getVipDiscount() {
+        if (vipDiscount == null) {
+            return 0D;
+        }
+        return vipDiscount;
+    }
+
+    public void setVipDiscount(Double vipDiscount) {
+        this.vipDiscount = vipDiscount;
+    }
+
+    public String getRuleIds() {
+        return ruleIds;
+    }
+
+    public void setRuleIds(String ruleIds) {
+        this.ruleIds = ruleIds;
     }
 
     public Double getCouponDiscount() {
-        if (couponDiscount == null){
+        if (couponDiscount == null) {
             return 0D;
         }
         return couponDiscount;
@@ -92,13 +114,6 @@ public class OrderPayInfo implements Serializable {
         this.couponsIds = couponsIds;
     }
 
-    public String getRuleIds() {
-        return ruleIds;
-    }
-
-    public void setRuleIds(String ruleIds) {
-        this.ruleIds = ruleIds;
-    }
 
     public List<PayWay> getPayWays() {
         return payWays;
@@ -108,11 +123,19 @@ public class OrderPayInfo implements Serializable {
         this.payWays = payWays;
     }
 
+    public List<PayWay> getUploadPayWays() {
+        return uploadPayWays;
+    }
+
+    public void setUploadPayWays(List<PayWay> uploadPayWays) {
+        this.uploadPayWays = uploadPayWays;
+    }
+
     /**
      * 统计支付记录
      */
     public static OrderPayInfo deSerialize(Long orderId) {
-        if(orderId == null){
+        if (orderId == null) {
             return null;
         }
 
@@ -127,8 +150,9 @@ public class OrderPayInfo implements Serializable {
      */
     public static OrderPayInfo deSerialize(List<PosOrderPayEntity> payEntities) {
         Integer payType = WayType.NA;
-        Double paidAmount = 0D, change = 0D, ruleDiscount = 0D, couponDiscount = 0D;
+        Double paidAmount = 0D, change = 0D, ruleDiscount = 0D, promotionAmount = 0D, couponDiscount = 0D;
         List<PayWay> payWays = new ArrayList<>();
+        List<PayWay> uploadPayWays = new ArrayList<>();
         StringBuilder couponsIds = new StringBuilder();
         StringBuilder ruleIds = new StringBuilder();
 
@@ -147,34 +171,53 @@ public class OrderPayInfo implements Serializable {
 
             if (PayWayType.TYPE_CASH.equals(amountType)) {
                 paidAmount += amount;
-            } if (PayWayType.TYPE_CASH_CHANGE.equals(amountType)) {
+                uploadPayWays.add(payWay);
+            }
+            if (PayWayType.TYPE_CASH_CHANGE.equals(amountType)) {
                 change += amount;
             } else if (PayWayType.TYPE_ALIPAY_F2F.equals(amountType)) {
                 paidAmount += amount;
+                uploadPayWays.add(payWay);
             } else if (PayWayType.TYPE_BANKCARD.equals(amountType)) {
                 paidAmount += amount;
+                uploadPayWays.add(payWay);
             } else if (PayWayType.TYPE_VIP.equals(amountType)) {
                 paidAmount += amount;
-            } else if (PayWayType.TYPE_VIP_DISCOUNT.equals(amountType)) {
-                ruleDiscount += payEntity.getAmount();
+                uploadPayWays.add(payWay);
+            } else if (PayWayType.TYPE_VIP_COUPONS.equals(amountType)) {
+                couponDiscount += payEntity.getAmount();
                 if (!StringUtils.isEmpty(payEntity.getCouponsIds())) {
                     if (couponsIds.length() > 0) {
                         couponsIds.append(",");
                     }
                     couponsIds.append(payEntity.getCouponsIds());
                 }
-            }else if (PayWayType.TYPE_VIP_COUPONS.equals(amountType)) {
-                couponDiscount += payEntity.getAmount();
+                uploadPayWays.add(payWay);
+            } else if (PayWayType.TYPE_VIP_DISCOUNT.equals(amountType)) {
+                ruleDiscount += payEntity.getAmount();
                 if (!StringUtils.isEmpty(payEntity.getRuleIds())) {
                     if (ruleIds.length() > 0) {
                         ruleIds.append(",");
                     }
                     ruleIds.append(payEntity.getRuleIds());
                 }
-            }else if (PayWayType.TYPE_WEPAY_F2F.equals(amountType)) {
+                //因为会员折扣那块不能算支付类型，不提交
+//                uploadPayWays.add(payWay);
+            } else if (PayWayType.TYPE_VIP_PROMOTION.equals(amountType)) {
+                promotionAmount += payEntity.getAmount();
+//                if (!StringUtils.isEmpty(payEntity.getRuleIds())) {
+//                    if (promotionRuleIds.length() > 0) {
+//                        promotionRuleIds.append(",");
+//                    }
+//                    promotionRuleIds.append(payEntity.getRuleIds());
+//                }
+                uploadPayWays.add(payWay);
+            } else if (PayWayType.TYPE_WEPAY_F2F.equals(amountType)) {
                 paidAmount += amount;
+                uploadPayWays.add(payWay);
             } else if (PayWayType.TYPE_THIRD_PARTY.equals(amountType)) {
                 paidAmount += amount;
+                uploadPayWays.add(payWay);
             }
         }
 
@@ -184,38 +227,19 @@ public class OrderPayInfo implements Serializable {
         wrapper.setPayType(payType);
         wrapper.setPaidAmount(paidAmount);
         wrapper.setChange(change);
-        wrapper.setRuleDiscount(ruleDiscount);
+        wrapper.setVipDiscount(ruleDiscount);
+        wrapper.setRuleIds(ruleIds.toString());
+        wrapper.setPromotionDiscount(promotionAmount);
         wrapper.setCouponDiscount(couponDiscount);
         wrapper.setCouponsIds(couponsIds.toString());
-        wrapper.setRuleIds(ruleIds.toString());
         wrapper.setPayWays(payWays);
+        wrapper.setUploadPayWays(uploadPayWays);
         return wrapper;
 
 //        return new OrderPayInfo(payType, payWays, paidAmount, change,
 //                ruleDiscount, couponsIds.toString(), ruleIds.toString());
     }
 
-
-    public static Map<Integer, PayWay> getPayWays(Long orderId) {
-        Map<Integer, PayWay> payWayMap = new HashMap<>();
-        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderId);
-
-        List<PayWay> payWays = payWrapper != null ? payWrapper.getPayWays() : null;
-        if (payWays != null && payWays.size() > 0) {
-            for (PayWay payWay : payWays) {
-                Integer amountType = payWay.getAmountType();
-                if (payWayMap.containsKey(amountType)) {
-                    PayWay temp = payWayMap.get(amountType);
-                    temp.setAmount(MathCompact.sub(temp.getAmount(), payWay.getAmount()));
-                    payWayMap.put(amountType, temp);
-                } else {
-                    payWayMap.put(amountType, payWay);
-                }
-            }
-        }
-
-        return payWayMap;
-    }
 
     public static Map<Integer, PayWay> getPayWays(OrderPayInfo orderPayInfo) {
         Map<Integer, PayWay> payWayMap = new HashMap<>();

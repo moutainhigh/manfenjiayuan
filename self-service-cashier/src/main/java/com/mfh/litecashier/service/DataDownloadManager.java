@@ -13,7 +13,7 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.HostServer;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.PageInfo;
@@ -65,8 +65,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.mfh.framework.api.category.CateApi.CATEGORY_TENANT_ID;
-
 
 /**
  * POS--同步频率较高，商品档案发生变化就会触发一次同步
@@ -90,8 +88,8 @@ public class DataDownloadManager {
     public static final int TENANT_SAASINFO = 128;//租户信息
 
 
-    public static final int LAUNCHER = 255;//应用启动
-    public static final int MANUAL = 60;//手动点击同步
+    public static final int LAUNCHER = 255;//应用启动(所有数据都同步)
+    public static final int MANUAL = 124;//手动点击同步（仅同步商品）
 
     private int queue = NA;//默认同步所有数据
     private int currentStep = NA;//当前步骤
@@ -115,7 +113,7 @@ public class DataDownloadManager {
         }
     }
 
-    private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
+    private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 60;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
     private PageInfo mPosSkuPageInfo = new PageInfo(1, DataManagerHelper.MAX_SYNC_PAGESIZE);
@@ -211,10 +209,11 @@ public class DataDownloadManager {
     public void sync(int step) {
         queue |= step;
 
-        if ((currentStep & step) == step) {
-            ZLogger.df(String.format(Locale.US, "正在同步%d，跳过该步骤，并将该步骤加到队列中", step));
-        } else {
+        if (currentStep == NA) {
+            ZLogger.df(String.format(Locale.US, "当前无任务在执行，立刻启动 %d", step));
             processQueue();
+        } else {
+            ZLogger.df(String.format(Locale.US, "正在执行任务%d，跳过并将该步骤加到队列中", currentStep));
         }
     }
 
@@ -231,22 +230,22 @@ public class DataDownloadManager {
             return;
         }
 
-        if ((queue & TENANT_SAASINFO) == TENANT_SAASINFO) {
+        if ((queue & TENANT_SAASINFO) == TENANT_SAASINFO && currentStep != TENANT_SAASINFO) {
             getSaasInfo();
-        } else if ((queue & HUMAN_ABILITY) == HUMAN_ABILITY) {
+        } else if ((queue & HUMAN_ABILITY) == HUMAN_ABILITY && currentStep != HUMAN_ABILITY) {
             queryPrivList();
-        } else if ((queue & COMPANY_HUMAN) == COMPANY_HUMAN) {
+        } else if ((queue & COMPANY_HUMAN) == COMPANY_HUMAN && currentStep != COMPANY_HUMAN) {
             findCompUserPwdInfoStep1();
-        } else if ((queue & POSPRODUCTS) == POSPRODUCTS) {
-            downLoadPosProductStep1();
-        } else if ((queue & POSPRODUCTS_SKU) == POSPRODUCTS_SKU) {
-            findShopOtherBarcodesStep1();
-        } else if ((queue & FRONTENDCATEGORY) == FRONTENDCATEGORY) {
-            getTopFrontId();
-        } else if ((queue & FRONTENDCATEGORY_GOODS) == FRONTENDCATEGORY_GOODS) {
-            downLoadProductCatalog();
-        } else if ((queue & BACKENDCATEGORYINFO) == BACKENDCATEGORYINFO) {
+        } else if ((queue & BACKENDCATEGORYINFO) == BACKENDCATEGORYINFO && currentStep != BACKENDCATEGORYINFO) {
             listBackendCategoryStep1();
+        } else if ((queue & POSPRODUCTS) == POSPRODUCTS && currentStep != POSPRODUCTS) {
+            downLoadPosProductStep1();
+        } else if ((queue & POSPRODUCTS_SKU) == POSPRODUCTS_SKU && currentStep != POSPRODUCTS_SKU) {
+            findShopOtherBarcodesStep1();
+        } else if ((queue & FRONTENDCATEGORY) == FRONTENDCATEGORY && currentStep != FRONTENDCATEGORY) {
+            getTopFrontId();
+        } else if ((queue & FRONTENDCATEGORY_GOODS) == FRONTENDCATEGORY_GOODS && currentStep != FRONTENDCATEGORY_GOODS) {
+            downLoadProductCatalog();
         } else {
             onNotifyCompleted("没有下载任务待执行");
         }
@@ -336,6 +335,8 @@ public class DataDownloadManager {
             return;
         }
 
+        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
+
         Map<String, String> options = new HashMap<>();
         options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));//部门编号
         options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));//公司编号
@@ -394,6 +395,8 @@ public class DataDownloadManager {
 
                 //更新游标
                 SharedPreferencesUltimate.setSyncProductsCursor(cussor);
+                ZLogger.df(String.format("更新商品档案游标（%s）",
+                        SharedPreferencesUltimate.getSyncProductsCursor()));
 
                 subscriber.onNext(startCursor);
                 subscriber.onCompleted();
@@ -963,7 +966,7 @@ public class DataDownloadManager {
         options.put("catePosition", String.valueOf(CateApi.CATE_POSITION_BACKEND));
         options.put("deep", "2");//层级
 //        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
-        options.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
+//        options.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
         ScCategoryInfoHttpManager.getInstance().comnQuery(options, new Subscriber<CategoryQueryInfo>() {
             @Override
             public void onCompleted() {
@@ -1002,7 +1005,7 @@ public class DataDownloadManager {
             }
         }
         ACache.get(CashierApp.getAppContext(), ACacheHelper.CACHE_NAME)
-                .put(ACacheHelper.CK_STOCKGOODS_CATEGORY, cacheArrays.toJSONString());
+                .put(ACacheHelper.CK_BACKEND_CATEGORY_TREE, cacheArrays.toJSONString());
 
         //通知刷新数据
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_BACKEND_CATEGORYINFO_UPDATED));
@@ -1018,7 +1021,7 @@ public class DataDownloadManager {
         queue ^= TENANT_SAASINFO;
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
-        HostServer hostServer = GlobalInstanceBase.getInstance().getHostServer();
+        TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer != null) {
             RxHttpManager.getInstance().getSaasInfo(hostServer.getSaasId(),
                     new Subscriber<SassInfo>() {

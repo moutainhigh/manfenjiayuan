@@ -21,6 +21,7 @@ import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -143,12 +144,9 @@ public class PayByVipFragment extends BasePayFragment {
                 }
 
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_VIP)) {
-                    if (extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
-                        etBarCode.clearInput();
-                        etBarCode.requestFocusEnd();
-                        calculateCharge();
-                    }
+                    etBarCode.clearInput();
+                    etBarCode.requestFocusEnd();
+                    calculateCharge();
                 }
                 else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())){
                     int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
@@ -192,6 +190,8 @@ public class PayByVipFragment extends BasePayFragment {
                     public void onKey(int keyCode, String text) {
                         //Press “Enter”
                         if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            DeviceUtils.hideSoftInput(getContext(), etBarCode);
+
                             submitOrder();
                         }
                     }

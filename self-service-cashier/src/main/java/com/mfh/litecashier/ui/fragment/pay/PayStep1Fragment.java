@@ -23,7 +23,7 @@ import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
@@ -159,7 +159,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
     protected void refresh() {
         if (cashierOrderInfo != null) {
             //显示应付款
-            Double handleAmount = CashierOrderInfoImpl.getUnpayAmount(cashierOrderInfo);
+            Double handleAmount = CashierProvider.getUnpayAmount(cashierOrderInfo);
 
             ZLogger.df(String.format("刷新收银信息，应收金额:%f\n%s", handleAmount,
                     JSONObject.toJSONString(cashierOrderInfo)));
@@ -195,7 +195,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
 
-                        CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+                        CashierAgent.updateCashierOrder(cashierOrderInfo, null, PosOrderEntity.ORDER_STATUS_FINISH);
 
                         onPayFinished();
                     }
@@ -294,7 +294,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
         parArgs.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
-                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
+                CashierProvider.getHandleAmount(cashierOrderInfo));
 
         mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));

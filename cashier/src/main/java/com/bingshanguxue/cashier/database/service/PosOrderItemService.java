@@ -145,12 +145,13 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
         entity.setAmount(entity.getBcount() * goods.getCostPrice());
         //成交金额
         entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+        entity.setVipAmount(0D);
+        entity.setRuleAmountMap(null);
         entity.setUpdatedDate(new Date());
 
         saveOrUpdate(entity);
         ZLogger.df(String.format("保存or更新订单明细:%s\n%s",
                 goods.getBarcode(), JSON.toJSONString(entity)));
     }
-
 
 }

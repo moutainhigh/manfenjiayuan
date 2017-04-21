@@ -2,9 +2,6 @@ package com.manfenjiayuan.pda_supermarket.cashier;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.pda_supermarket.bean.MarketRules;
-import com.manfenjiayuan.pda_supermarket.bean.OrderMarketRules;
-import com.manfenjiayuan.pda_supermarket.bean.RuleBean;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.CouponRule;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.DiscountInfo;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.LastOrderInfo;
@@ -16,13 +13,16 @@ import com.manfenjiayuan.pda_supermarket.database.logic.PosOrderItemService;
 import com.manfenjiayuan.pda_supermarket.database.logic.PosOrderService;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
+import com.mfh.framework.api.pmcstock.MarketRules;
+import com.mfh.framework.api.pmcstock.RuleBean;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.api.scOrder.ScOrderItem;
 import com.mfh.framework.core.utils.ObjectsCompact;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -75,26 +75,6 @@ public class CashierAgent {
     }
 
     /**
-     * 上一订单信息
-     * */
-    public static LastOrderInfo genLastOrderInfo(PosOrderEntity orderEntity){
-        LastOrderInfo lastOrderInfo = null;
-
-        if (orderEntity != null) {
-            OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-
-            lastOrderInfo = new LastOrderInfo();
-            lastOrderInfo.setPayType(lastOrderInfo.getPayType() | payWrapper.getPayType());
-            lastOrderInfo.setFinalAmount(lastOrderInfo.getFinalAmount() + orderEntity.getFinalAmount());
-            lastOrderInfo.setbCount(lastOrderInfo.getbCount() + orderEntity.getBcount());
-            lastOrderInfo.setDiscountAmount(lastOrderInfo.getDiscountAmount() + payWrapper.getRuleDiscount());
-            lastOrderInfo.setChangeAmount(lastOrderInfo.getChangeAmount() + payWrapper.getChange());
-        }
-
-        return lastOrderInfo;
-    }
-
-    /**
      * 订单结算（后台拆分订单）
      *
      * @param orderBarCode     订单交易流水条码
@@ -107,6 +87,7 @@ public class CashierAgent {
         PosOrderEntity orderEntity = fetchOrderEntity(bizType, orderBarCode);
         if (orderEntity == null) {
             orderEntity = new PosOrderEntity();
+//            orderEntity.setFlowId(CashierDesktopObservable.getInstance().getNextFlowId());
             orderEntity.setSellerId(MfhLoginService.get().getSpid());// 需要登录
             orderEntity.setBizType(bizType);
             orderEntity.setBarCode(orderBarCode);
@@ -124,8 +105,8 @@ public class CashierAgent {
                 orderEntity.getId(), JSONObject.toJSONString(orderEntity)));
 
         //保存or更新订单明细
-        PosOrderItemService.get().deleteBy(String.format("orderBarCode = '%s'",
-                orderBarCode));
+        PosOrderItemService.get().deleteBy(String.format("orderBarCode = '%s' or orderId = '%d'",
+                orderBarCode, orderEntity.getId()));
         if (shopcartEntities != null && shopcartEntities.size() > 0) {
             for (CashierShopcartEntity goods : shopcartEntities) {
                 PosOrderItemService.get().saveOrUpdate(orderEntity.getBarCode(),
@@ -163,6 +144,7 @@ public class CashierAgent {
             List<PosOrderItemEntity> orderItemEntityList = fetchOrderItems(orderEntity);
             if (orderItemEntityList != null && orderItemEntityList.size() > 0) {
                 for (PosOrderItemEntity itemEntity : orderItemEntityList) {
+                    ZLogger.d("商品明细：" + JSONObject.toJSONString(itemEntity));
                     bCount += itemEntity.getBcount();
                     retailAmount += itemEntity.getAmount();
                     finalAmount += itemEntity.getFinalAmount();
@@ -374,7 +356,6 @@ public class CashierAgent {
             return false;
         }
 
-        orderEntity.setUpdatedDate(new Date());
         orderEntity.setRetailAmount(cashierOrderInfo.getRetailAmount());
         orderEntity.setFinalAmount(cashierOrderInfo.getFinalAmount());
         orderEntity.setDiscountAmount(cashierOrderInfo.getAdjustAmount());//折扣价
@@ -471,7 +452,7 @@ public class CashierAgent {
     /**
      * 获取规则ID列表，逗号分隔
      */
-    public static String getRuleIds(OrderMarketRules mOrderMarketRules) {
+    public static String getRuleIds(MarketRulesWrapper mOrderMarketRules) {
         if (mOrderMarketRules == null) {
             return "";
         }

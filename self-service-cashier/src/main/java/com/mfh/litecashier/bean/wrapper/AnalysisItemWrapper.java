@@ -11,6 +11,8 @@ public class AnalysisItemWrapper implements java.io.Serializable{
     private Double orderNum = 0D;//订单数量
     private Double turnover = 0D;//金额
     private Double grossProfit = 0D;//毛利
+    private Double origionAmount = 0D;//原价金额
+
 
     private boolean isShowIndex;//是否显示序号
 
@@ -58,5 +60,16 @@ public class AnalysisItemWrapper implements java.io.Serializable{
 
     public void setGrossProfit(Double grossProfit) {
         this.grossProfit = grossProfit;
+    }
+
+    public Double getOrigionAmount() {
+        if (origionAmount == null){
+            return 0D;
+        }
+        return origionAmount;
+    }
+
+    public void setOrigionAmount(Double origionAmount) {
+        this.origionAmount = origionAmount;
     }
 }

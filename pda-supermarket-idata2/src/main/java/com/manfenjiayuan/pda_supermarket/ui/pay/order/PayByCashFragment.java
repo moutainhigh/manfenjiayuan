@@ -25,6 +25,7 @@ import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -107,6 +108,7 @@ public class PayByCashFragment extends BasePayFragment {
                     public void onKey(int keyCode, String text) {
                         //Press “Enter”
                         if (keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_NUMPAD_ENTER) {
+                            DeviceUtils.hideSoftInput(getContext(), inlvPaidMoney);
                             submitOrder();
                         }
                     }
@@ -145,13 +147,10 @@ public class PayByCashFragment extends BasePayFragment {
                 }
 
                 if (action.equals(Constants.BA_HANDLE_AMOUNT_CHANGED)) {
-                    if (extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
-                        inlvPaidMoney.setInput("");
-                        onActiveMode();
+                    inlvPaidMoney.setInput("");
+                    onActiveMode();
 
-                        calculateCharge();
-                    }
+                    calculateCharge();
                 }
             }
         };

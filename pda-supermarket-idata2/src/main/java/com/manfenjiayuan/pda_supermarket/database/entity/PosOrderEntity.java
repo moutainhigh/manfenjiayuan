@@ -62,6 +62,7 @@ public class PosOrderEntity extends MfhEntity<Long> implements ILongId {
      */
     public static final int SYNC_STATUS_NONE = 0;//初始状态
     public static final int SYNC_STATUS_SYNCED = 1;//结束状态
+    public static final int SYNC_STATUS_ERROR = 2;//异常
     private int syncStatus = SYNC_STATUS_NONE;//同步参数：0，未同步；1已同步
 
     /**

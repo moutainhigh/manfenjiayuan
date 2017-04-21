@@ -821,6 +821,8 @@ public abstract class PrinterManager implements IPrinterManager {
 
         Double vipDiscount = getPayWayAmount(PayWayType.TYPE_VIP_DISCOUNT, payWayMap);
         payWayMap.remove(PayWayType.TYPE_VIP_DISCOUNT);
+        Double vipPromotion = getPayWayAmount(PayWayType.TYPE_VIP_PROMOTION, payWayMap);
+        payWayMap.remove(PayWayType.TYPE_VIP_PROMOTION);
         Double vipCoupons = getPayWayAmount(PayWayType.TYPE_VIP_COUPONS, payWayMap);
         payWayMap.remove(PayWayType.TYPE_VIP_COUPONS);
         Double cashAmount = getPayWayAmount(PayWayType.TYPE_CASH, payWayMap);
@@ -835,6 +837,9 @@ public abstract class PrinterManager implements IPrinterManager {
         esc.addText(String.format("%s%s\n",
                 Printer.formatShort("会员优惠:", 24, Printer.BLANK_GRAVITY.LEFT),
                 Printer.formatShort(String.format("%.3f", vipDiscount), 8, Printer.BLANK_GRAVITY.LEFT)));
+        esc.addText(String.format("%s%s\n",
+                Printer.formatShort("促销优惠:", 24, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(String.format("%.3f", vipPromotion), 8, Printer.BLANK_GRAVITY.LEFT)));
         esc.addText(String.format("%s%s\n",
                 Printer.formatShort("优惠券:", 24, Printer.BLANK_GRAVITY.LEFT),
                 Printer.formatShort(String.format("%.3f", vipCoupons), 8, Printer.BLANK_GRAVITY.LEFT)));
@@ -867,8 +872,7 @@ public abstract class PrinterManager implements IPrinterManager {
                     Printer.formatShort(String.format("%s:",
                             PayWayType.getWayTypeName(PayWayType.TYPE_VIP_BALANCE)),
                             24, Printer.BLANK_GRAVITY.LEFT),
-                    Printer.formatShort(String.format("%.3f",
-                            MathCompact.sub(vipBalanceAmount, vipAmount)),
+                    Printer.formatShort(String.format("%.2f", vipBalanceAmount),
                             8, Printer.BLANK_GRAVITY.LEFT)));
         } else {
             for (Integer key : payWayMap.keySet()) {

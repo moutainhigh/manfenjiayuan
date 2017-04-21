@@ -47,8 +47,11 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -58,11 +61,16 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
+
+import static com.igexin.push.core.g.R;
 
 
 /**
@@ -720,35 +728,6 @@ public class OrderCreateFragment extends BaseFragment {
             return;
         }
 
-        //保存
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<PayAmount,
-                NetProcessor.Processor<PayAmount>>(
-                new NetProcessor.Processor<PayAmount>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-//                        java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"14.0"}}
-//                        {"code":"0","msg":"查询成功!","version":"1","data":[6.0,6.0]}
-
-                        RspBean<PayAmount> retValue = (RspBean<PayAmount>) rspData;
-                        refreshOrderPayAmout(retValue.getValue());
-                        hideProgressDialog();
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.ef(errMsg);
-                        refreshMarketRule(null);
-                        refreshOrderPayAmout(null);
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-                }
-                , PayAmount.class
-                , AppContext.getAppContext()) {
-        };
-//
-
         String couponIds = mMarketRuleBrief != null ?
                 ObjectsCompact.splitLong(mMarketRuleBrief.getCouponIds(), ",") : null;
         String ruleIds = mMarketRuleBrief != null ?
@@ -760,8 +739,39 @@ public class OrderCreateFragment extends BaseFragment {
         jsonstr.put("discount", 1);
         jsonstr.put("items", productsInfo);
 
-        CommonUserAccountApiImpl.getPayAmountByOrderInfo(2, jsonstr.toJSONString(),
-                couponIds, ruleIds, responseCallback);
+        Map<String, String> options = new HashMap<>();
+        options.put("version", "2");
+        options.put("jsonStr", jsonstr.toJSONString());
+        if (!StringUtils.isEmpty(couponIds)){
+            options.put("couponsIds", couponIds);
+        }
+        if (!StringUtils.isEmpty(ruleIds)){
+            options.put("ruleIds", ruleIds);
+        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        CommonUserAccountHttpManager.getInstance().getPayAmountByOrderInfo(options,
+                new Subscriber<PayAmount>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
+                        refreshMarketRule(null);
+                        refreshOrderPayAmout(null);
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                    }
+
+                    @Override
+                    public void onNext(PayAmount payAmount) {
+                        refreshOrderPayAmout(payAmount);
+                        hideProgressDialog();
+                    }
+
+                });
     }
 
 }

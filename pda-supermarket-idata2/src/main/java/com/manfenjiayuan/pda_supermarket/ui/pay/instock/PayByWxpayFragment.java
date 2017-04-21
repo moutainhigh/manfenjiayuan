@@ -39,15 +39,25 @@ import com.mfh.framework.api.scOrder.ScOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
+
+import static com.mfh.framework.api.pay.PayApi.WXPAY_CHANNEL_ID;
 
 
 /**
@@ -221,12 +231,9 @@ public class PayByWxpayFragment extends BasePayFragment {
                 }
 
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_WX)) {
-                    if (extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
-                        etBarCode.clearInput();
-                        etBarCode.requestFocusEnd();
-                        calculateCharge();
-                    }
+                    etBarCode.clearInput();
+                    etBarCode.requestFocusEnd();
+                    calculateCharge();
                 }
                 else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())){
                     int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
@@ -279,61 +286,65 @@ public class PayByWxpayFragment extends BasePayFragment {
                         paidAmount, paidAmount, 0D));
         EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS, args));
 
-        //TODO,调用微信支付接口
-//        {"code":"0","msg":"操作成功!","version":"1","data":{"code":"40004","msg":"错误码：ACQ.CONTEXT_INCONSISTENT错误描述：支付失败，商户订单号重复，请收银员取消本笔交易并重新收款。[CONTEXT_INCONSISTENT]"}}
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+
+
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", generateOrderInfo(lastPaidAmount, authCode).toJSONString());
+        options.put("bizType", bizType);
+        options.put("chId", WXPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        RxHttpManager.getInstance().wepayBarPay(options,
+                new Subscriber<MResponse<String>>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("微信条码支付:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
-                        switch (rspBody.getRetCode()) {
+                    public void onError(Throwable e) {
+                        ZLogger.df("微信条码支付异常:" + e.toString());
+                        onBarpayFailed(e.toString(), AppHelper.getErrorTextColor(), true);
+
+                    }
+
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null){
+                            ZLogger.df("微信条码支付失败");
+                            onBarpayFailed("微信条码支付失败，无响应", AppHelper.getErrorTextColor(), false);
+                            return;
+                        }
+                        ZLogger.df(String.format("微信条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        switch (stringMResponse.getCode()) {
+                            //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
-                            case "0": {
+                            case 0: {
                                 submitStep2();
                             }
                             break;
-                            //{"code":"1","msg":"支付等待:需要用户输入支付密码","version":"1","data":""}
+                            //下单成功等待用户输入密码
+                            //{"code":"1","msg":" order success pay inprocess","version":"1","data":""}
                             //订单创建成功支付处理中(验密支付)
                             //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
-                            // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户微信钱包在线则会唤起微信钱包的快捷收银台，
+                            // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
                             // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
-                            case "1": {
+                            case 1: {
                                 queryOrder(outTradeNo, lastPaidAmount);
                             }
                             break;
-                            //{"code":"1","msg":"bizType参数不能为空!","version":"1","data":null}
-                            //{"code":"-1","msg":"参数错误:缺少参数","version":"1","data":""}
-                            //{"code":"-1","msg":"支付失败:请扫描微信支付被扫条码/二维码","version":"1","data":""}
                             ////交易创建失败
                             //40004--错误码：ACQ.INVALID_PARAMETER错误描述：支付失败，交易参数异常，请顾客刷新付款码后重新收款。如再次收款失败，请联系管理员处理。[INVALID_PARAMETER]
                             //40004--错误码：ACQ.PAYMENT_AUTH_CODE_INVALID错误描述：支付失败，获取顾客账户信息失败，请顾客刷新付款码后重新收款，如再次收款失败，请联系管理员处理。[SOUNDWAVE_PARSER_FAIL]
                             default: {//-1
-                                onBarpayFailed(rspBody.getReturnInfo(), AppHelper.getErrorTextColor(), false);
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
 //                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FE5000"), true);
 //                                queryOrder(outTradeNo, lastPaidAmount);
                             }
                             break;
                         }
                     }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //当商户后台、网络、服务器等出现异常，商户系统最终未接收到支付通知
-                        onBarpayFailed(errMsg, AppHelper.getErrorTextColor(), true);
-                    }
-                }
-                , EmptyEntity.class
-                , AppContext.getAppContext()) {
-        };
-
-        PayApi.wxBarPay(generateOrderInfo(lastPaidAmount, authCode).toJSONString(),
-                bizType, payRespCallback);
+                });
     }
 
     /**

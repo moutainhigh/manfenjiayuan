@@ -1,11 +1,16 @@
 package com.bingshanguxue.cashier.database.entity;
 
+import android.util.ArrayMap;
+
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
+import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
-import com.mfh.framework.api.abs.MfhEntity;
 import com.mfh.framework.core.utils.StringUtils;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * POS--销售订单明细
@@ -53,6 +58,10 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     //2016-08-01，新增产品线编号清分
     private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
     private Integer needWait = 0;
+    //2017-04-18 营业额统计方式调整
+    /**该条订单明细流水具体的会员折扣规则优惠情况，可能会有多条会员折扣规则适用，其中key是规则id，value是该规则的产生的优惠金额*/
+    private String ruleAmountMap;
+    private Double vipAmount = 0D;//会员优惠金额
 
     public String getOrderBarCode() {
         return orderBarCode;
@@ -255,5 +264,21 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
 
     public void setNeedWait(Integer needWait) {
         this.needWait = needWait;
+    }
+
+    public String getRuleAmountMap() {
+        return ruleAmountMap;
+    }
+
+    public void setRuleAmountMap(String ruleAmountMap) {
+        this.ruleAmountMap = ruleAmountMap;
+    }
+
+    public Double getVipAmount() {
+        return vipAmount;
+    }
+
+    public void setVipAmount(Double vipAmount) {
+        this.vipAmount = vipAmount;
     }
 }

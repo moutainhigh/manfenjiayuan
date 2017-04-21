@@ -12,12 +12,12 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.bean.CoupBean;
-import com.manfenjiayuan.pda_supermarket.bean.MarketRules;
-import com.manfenjiayuan.pda_supermarket.bean.OrderMarketRules;
-import com.manfenjiayuan.pda_supermarket.bean.RuleBean;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.CouponRule;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.cashier.MarketRulesWrapper;
+import com.mfh.framework.api.pmcstock.CoupBean;
+import com.mfh.framework.api.pmcstock.MarketRules;
+import com.mfh.framework.api.pmcstock.RuleBean;
 import com.mfh.framework.core.utils.ObjectsCompact;
 
 import java.util.ArrayList;
@@ -282,7 +282,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    public void digest(List<OrderMarketRules> orderMarketRules) {
+    public void digest(List<MarketRulesWrapper> orderMarketRules) {
         List<CouponRule> couponRules = merge(orderMarketRules);
         setEntityList(couponRules);
     }
@@ -290,7 +290,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     /**
      * 保存卡券和促销规则
      */
-    public List<CouponRule> merge(List<OrderMarketRules> orderMarketRulesList) {
+    public List<CouponRule> merge(List<MarketRulesWrapper> orderMarketRulesList) {
         List<CouponRule> couponRules = new ArrayList<>();
 
         //遍历拆分订单
@@ -298,13 +298,10 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ZLogger.d("orderMarketRulesList无效");
             return null;
         }
-        for (OrderMarketRules orderMarketRules : orderMarketRulesList) {
-            //遍历卡券和促销规则
-            Long splitOrderId = orderMarketRules.getSplitOrderId();
-            Double finalAmount = orderMarketRules.getFinalAmount();
+        for (MarketRulesWrapper orderMarketRules : orderMarketRulesList) {
+
             List<MarketRules> marketRulesList = orderMarketRules.getResults();
-            if (splitOrderId == null ||
-                    marketRulesList == null || marketRulesList.size() <= 0) {
+            if (marketRulesList == null || marketRulesList.size() <= 0) {
                 ZLogger.d("marketRulesList无效");
                 continue;
             }
@@ -326,7 +323,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 List<CoupBean> coupBeans = marketRules.getCoupBeans();
                 if (coupBeans != null && coupBeans.size() > 0) {
                     for (CoupBean coup : coupBeans) {
-                        mergeCoupon(couponRules, coup, splitOrderId, finalAmount);
+                        mergeCoupon(couponRules, coup);
                     }
                 }
             }
@@ -381,8 +378,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         ZLogger.df(JSON.toJSONString(entity));
     }
 
-    private void mergeCoupon(List<CouponRule> source, CoupBean coupon,
-                             Long splitOrderId, Double finalAmount) {
+    private void mergeCoupon(List<CouponRule> source, CoupBean coupon){
         CouponRule entity = new CouponRule();
         entity.setId(coupon.getId());
         entity.setType(CouponRule.TYPE_COUPON);
@@ -391,40 +387,28 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         entity.setDiscount(coupon.getDiscount());
         entity.setCouponsId(coupon.getMyCouponsId());
         entity.setSelected(false);
-        entity.setAmount(finalAmount);
-        entity.setSplitOrderId(splitOrderId);
 
-        List<Long> spilitOrderIds = new ArrayList<>();
-        if (!spilitOrderIds.contains(splitOrderId)) {
-            spilitOrderIds.add(splitOrderId);
-        }
 
-        if (source != null && source.size() > 0) {
-            for (CouponRule couponRule : source) {
+        if (source != null && source.size() > 0){
+            for (CouponRule couponRule : source){
                 //删除重复的记录
                 if (CouponRule.TYPE_COUPON.equals(couponRule.getType()) &&
                         coupon.getId().equals(couponRule.getId()) &&
-                        coupon.getMyCouponsId().equals(couponRule.getCouponsId())) {
-                    spilitOrderIds.addAll(couponRule.getSplitOrderIds());
+                        coupon.getMyCouponsId().equals(couponRule.getCouponsId())){
 
-                    if (finalAmount.compareTo(couponRule.getAmount()) > 0) {
-                        entity.setAmount(couponRule.getAmount());
-                        entity.setSplitOrderId(couponRule.getSplitOrderId());
-                    }
+                    //// TODO: 14/10/2016 这里可能会有问题，目的应该是相同的卡券仅显示一个，但是其他信息应该替换掉。
+                    // TODO: 14/10/2016 由于不考虑本地拆分订单，所以这里应该也只有一份关联订单编号
                     source.remove(couponRule);
                     break;
                 }
             }
         }
 
-        entity.setSplitOrderIds(spilitOrderIds);
-
-        if (source != null) {
+        if (source != null){
             source.add(entity);
         }
         ZLogger.df(JSON.toJSONString(entity));
     }
-
 
     /**
      * 按订单拆分，获取选中的优惠券
@@ -457,6 +441,10 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
 
         return selectCouponsMap;
+    }
+
+    public List<CouponRule> getEntityList() {
+        return entityList;
     }
 
     public void setVipScore(Double score) {

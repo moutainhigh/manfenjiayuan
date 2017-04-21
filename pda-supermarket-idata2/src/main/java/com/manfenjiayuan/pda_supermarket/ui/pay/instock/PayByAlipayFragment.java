@@ -38,15 +38,25 @@ import com.mfh.framework.api.scOrder.ScOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
+
+import static com.mfh.framework.api.pay.PayApi.ALIPAY_CHANNEL_ID;
 
 
 /**
@@ -238,12 +248,9 @@ public class PayByAlipayFragment extends BasePayFragment {
                 }
 
                 if (intent.getAction().equals(Constants.BA_HANDLE_AMOUNT_CHANGED_ALIPAY)) {
-                    if (extras.containsKey(EXTRA_KEY_HANDLE_AMOUNT)) {
-                        handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT, 0);
-                        etBarCode.setInput("");
-                        etBarCode.requestFocusEnd();
-                        calculateCharge();
-                    }
+                    etBarCode.setInput("");
+                    etBarCode.requestFocusEnd();
+                    calculateCharge();
                 } else if (Constants.BA_HANDLE_SCANBARCODE.equals(intent.getAction())) {
                     int wayType = extras.getInt(EXTRA_KEY_WAYTYPE, WayType.NA);
                     if (payType == wayType) {
@@ -314,25 +321,41 @@ public class PayByAlipayFragment extends BasePayFragment {
                 PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
                         PosOrderPayEntity.PAY_STATUS_PROCESS,
                         paidAmount, paidAmount, 0D));
-
         EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS, args));
 
-        //TODO,调用支付宝支付接口
-//        {"code":"0","msg":"操作成功!","version":"1","data":{"code":"40004","msg":"错误码：ACQ.CONTEXT_INCONSISTENT错误描述：支付失败，商户订单号重复，请收银员取消本笔交易并重新收款。[CONTEXT_INCONSISTENT]"}}
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", generateOrderInfo(lastPaidAmount, authCode).toJSONString());
+        options.put("bizType", bizType);
+        options.put("chId", ALIPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        RxHttpManager.getInstance().alipayBarPay(options,
+                new Subscriber<MResponse<String>>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
-                        switch (rspBody.getRetCode()) {
+                    public void onError(Throwable e) {
+                        ZLogger.df("支付宝条码支付异常:" + e.toString());
+                        onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.toString(),
+                                AppHelper.getErrorTextColor(), true);
+                    }
+
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null){
+                            ZLogger.df("支付宝支付失败");
+                            onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED,
+                                    "支付宝支付失败，无响应", AppHelper.getErrorTextColor(), false);
+                            return;
+                        }
+                        ZLogger.df(String.format("支付宝条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        switch (stringMResponse.getCode()) {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
-                            case "0": {
+                            case 0: {
                                 submitStep2();
                             }
                             break;
@@ -342,7 +365,7 @@ public class PayByAlipayFragment extends BasePayFragment {
                             //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
                             // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
                             // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
-                            case "1": {
+                            case 1: {
                                 queryOrder(outTradeNo, lastPaidAmount);
                             }
                             break;
@@ -351,29 +374,14 @@ public class PayByAlipayFragment extends BasePayFragment {
                             //40004--错误码：ACQ.PAYMENT_AUTH_CODE_INVALID错误描述：支付失败，获取顾客账户信息失败，请顾客刷新付款码后重新收款，如再次收款失败，请联系管理员处理。[SOUNDWAVE_PARSER_FAIL]
                             default: {//-1
                                 onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED,
-                                        rspBody.getReturnInfo(), AppHelper.getErrorTextColor(), false);
+                                        stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
 //                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FE5000"), true);
 //                                queryOrder(outTradeNo, lastPaidAmount);
                             }
                             break;
                         }
                     }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //当商户后台、网络、服务器等出现异常，商户系统最终未接收到支付通知
-                        ZLogger.df("支付宝条码支付异常:" + errMsg);
-                        onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, errMsg,
-                                AppHelper.getErrorTextColor(), true);
-                    }
-                }
-                , EmptyEntity.class
-                , AppContext.getAppContext()) {
-        };
-
-        PayApi.aliBarPay(generateOrderInfo(lastPaidAmount, authCode).toJSONString(),
-                bizType, payRespCallback);
+                });
     }
 
     /**

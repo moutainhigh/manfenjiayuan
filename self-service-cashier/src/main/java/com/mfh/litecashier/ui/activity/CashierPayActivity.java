@@ -24,12 +24,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * 收银订单支付页面
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class CashierPayActivity extends BaseActivity {
 
     public static final String EXTRA_KEY_CASHIER_ORDERINFO = "cashierOrderInfo";
-//    public static final String EXTRA_KEY_IS_CLEAR_ORDER = "isClearOrder";
 
     private PayStep1Fragment mPayStep1Fragment;
     private PayStep2Fragment mPayStep2Fragment;

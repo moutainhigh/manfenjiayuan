@@ -20,7 +20,7 @@ import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -369,11 +369,11 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
             ZLogger.df("订单不存在");
         }
         CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(orderEntity, null);
-        Double handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
+        Double handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
         ZLogger.df("handleAmount=" + handleAmount);
         if (handleAmount < 0.01) {
             //修改订单支付信息（支付金额，支付状态）
-            CashierAgent.updateCashierOrder(cashierOrderInfo, PosOrderEntity.ORDER_STATUS_FINISH);
+            CashierAgent.updateCashierOrder(cashierOrderInfo, null, PosOrderEntity.ORDER_STATUS_FINISH);
 
             DataUploadManager.getInstance().stepUploadPosOrder(orderEntity);
         }

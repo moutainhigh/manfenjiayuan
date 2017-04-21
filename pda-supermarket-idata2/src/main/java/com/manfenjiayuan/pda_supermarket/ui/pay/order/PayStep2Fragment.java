@@ -423,6 +423,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
     @OnClick(R.id.fab_submit)
     public void submitOrder() {
         btnSubmit.setEnabled(false);
+//        DeviceUtils.hideSoftInput(getContext(), etBarCode);
 
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);

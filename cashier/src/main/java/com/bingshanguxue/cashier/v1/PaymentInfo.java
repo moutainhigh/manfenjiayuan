@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.v1;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.DiscountInfo;
+import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.WayType;
 
 import java.io.Serializable;
@@ -16,16 +16,21 @@ public class PaymentInfo implements Serializable {
     private int status = PosOrderPayEntity.PAY_STATUS_INIT;//支付状态
     /**
      * 当前订单批次流水总的应付金额，用于计算拆分订单实际分配的支付金额。（包括优惠券优惠）
-     * */
+     */
     private Double payableAmount = 0D;
-    /**实际支付金额到账户的钱*/
+    /**
+     * 实际支付金额到账户的钱
+     */
     private Double paidAmount = 0D;
-    /**找零金额*/
+    /**
+     * 找零金额
+     */
     private Double change = 0D;
     /**
      * 优惠信息（促销规则和优惠券优惠，如果优惠不为null,需要将优惠记录也另存为一条支付记录）
-     * 多个拆分订单*/
-    private DiscountInfo mDiscountInfo = null;
+     * 多个拆分订单
+     */
+    private PayAmount mPayAmount = null;
 
     public String getOutTradeNo() {
         return outTradeNo;
@@ -85,20 +90,20 @@ public class PaymentInfo implements Serializable {
         this.change = change;
     }
 
-    public DiscountInfo getDiscountInfo() {
-        return mDiscountInfo;
+    public PayAmount getDiscountInfo() {
+        return mPayAmount;
     }
 
-    public void setDiscountInfo(DiscountInfo discountInfo) {
-        mDiscountInfo = discountInfo;
+    public void setDiscountInfo(PayAmount discountInfo) {
+        mPayAmount = discountInfo;
     }
 
     /**
      * 订单支付记录
      */
     public static PaymentInfo create(String outTradeNo, int payType, int status,
-                                             Double payableAmount, Double paidAmount, Double change,
-                                             DiscountInfo discountInfo) {
+                                     Double payableAmount, Double paidAmount, Double change,
+                                     PayAmount discountInfo) {
         PaymentInfo paymentInfo = new PaymentInfo();
         paymentInfo.setOutTradeNo(outTradeNo);
         paymentInfo.setPayType(payType);

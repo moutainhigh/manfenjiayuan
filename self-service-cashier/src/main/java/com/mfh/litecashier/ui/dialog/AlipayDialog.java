@@ -21,33 +21,44 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.PayStatus;
+import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
+import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
-import com.mfh.framework.api.pay.PayApi;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.EmptyEntity;
+import com.mfh.litecashier.utils.AppHelper;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
+
+import rx.Subscriber;
+
+import static com.mfh.framework.api.pay.PayApi.ALIPAY_CHANNEL_ID;
 
 
 /**
@@ -380,8 +391,64 @@ public class AlipayDialog extends CommonDialog {
         PosTopupService.get().saveOrUpdate(mQuickPayInfo, outTradeNo,
                 WayType.ALI_F2F, PayStatus.PROCESS);
 
-        PayApi.aliBarPay(jsonStr.toJSONString(),
-                String.valueOf(mQuickPayInfo.getBizType()), payRespCallback);
+
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonStr.toJSONString());
+        options.put("bizType", String.valueOf(mQuickPayInfo.getBizType()));
+        options.put("chId", ALIPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        RxHttpManager.getInstance().alipayBarPay(options,
+                new Subscriber<MResponse<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df("支付宝条码支付异常:" + e.toString());
+                        onBarpayFailed(e.getMessage(),
+                                AppHelper.getErrorTextColor(), true);
+                    }
+
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null){
+                            ZLogger.df("支付宝支付失败");
+                            onBarpayFailed("支付宝支付失败，无响应", AppHelper.getErrorTextColor(), false);
+                            return;
+                        }
+                        ZLogger.df(String.format("支付宝条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        switch (stringMResponse.getCode()) {
+                            //{"code":"0","msg":"Success","version":"1","data":""}
+                            //10000--业务处理成功（订单支付成功）
+                            case 0: {
+                                onBarpayFinished(outTradeNo, "支付成功", Color.parseColor("#FE5000"));
+                            }
+                            break;
+                            //下单成功等待用户输入密码
+                            //{"code":"1","msg":" order success pay inprocess","version":"1","data":""}
+                            //订单创建成功支付处理中(验密支付)
+                            //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
+                            // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
+                            // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
+                            case 1: {
+                                queryOrder(outTradeNo);
+                            }
+                            break;
+                            ////交易创建失败
+                            //40004--错误码：ACQ.INVALID_PARAMETER错误描述：支付失败，交易参数异常，请顾客刷新付款码后重新收款。如再次收款失败，请联系管理员处理。[INVALID_PARAMETER]
+                            //40004--错误码：ACQ.PAYMENT_AUTH_CODE_INVALID错误描述：支付失败，获取顾客账户信息失败，请顾客刷新付款码后重新收款，如再次收款失败，请联系管理员处理。[SOUNDWAVE_PARSER_FAIL]
+                            default: {//-1
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
+//                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FE5000"), true);
+//                                queryOrder(outTradeNo, lastPaidAmount);
+                            }
+                            break;
+                        }
+                    }
+                });
     }
 
     /**
