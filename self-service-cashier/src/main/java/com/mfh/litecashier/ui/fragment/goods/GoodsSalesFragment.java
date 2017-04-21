@@ -9,22 +9,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.mfh.comn.bean.EntityWrapper;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductAggDate;
-import com.mfh.framework.api.ScApi;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.entity.MEntityWrapper;
+import com.mfh.framework.rxapi.http.ProductAggDateHttpManager;
+import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -207,7 +209,10 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
         }
 
         mPageInfo = new PageInfo(-1, 30);
-        load(proSkuId, mPageInfo);
+        Map<String, String> rMaps = new HashMap<>();
+        rMaps.put("proSkuId", String.valueOf(proSkuId));
+        rMaps.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        load(rMaps, mPageInfo);
         mPageInfo.setPageNo(1);
     }
 
@@ -229,35 +234,61 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
 
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();
-            load(proSkuId, mPageInfo);
+            Map<String, String> rMaps = new HashMap<>();
+            rMaps.put("proSkuId", String.valueOf(proSkuId));
+            rMaps.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+            load(rMaps, mPageInfo);
         } else {
             ZLogger.d("加载销量，已经是最后一页。");
             onLoadFinished();
         }
     }
 
-    private void load(Long proSkuId, PageInfo pageInfo){
-        NetCallBack.QueryRsCallBack queryRsCallBack = new NetCallBack.QueryRsCallBack<>(
-                new NetProcessor.QueryRsProcessor<ProductAggDate>(pageInfo) {
+    private void load(Map<String, String> rMaps, PageInfo pageInfo){
+
+        Map<String, String> options = new HashMap<>();
+        if (rMaps != null) {
+            options.putAll(rMaps);
+        }
+        options.put("wrapper", "true");
+//        options.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+//        options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+
+        if (pageInfo != null){
+            options.put("page", Integer.toString(pageInfo.getPageNo()));
+            options.put("rows", Integer.toString(pageInfo.getPageSize()));
+        }
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        ProductAggDateHttpManager.getInstance().list(options,
+                new MQuerySubscriber<MEntityWrapper<ProductAggDate>>(pageInfo) {
+
                     @Override
-                    public void processQueryResult(RspQueryResult<ProductAggDate> rs) {
-                        //此处在主线程中执行。
+                    public void onQueryNext(PageInfo pageInfo, List<MEntityWrapper<ProductAggDate>> dataList) {
+                        super.onQueryNext(pageInfo, dataList);
+
                         mPageInfo = pageInfo;
-                        List<ProductAggDate> entityList = new ArrayList<>();
-                        if (rs != null) {
-                            for (EntityWrapper<ProductAggDate> wrapper : rs.getRowDatas()) {
-                                entityList.add(wrapper.getBean());
+
+                        List<ProductAggDate> productAggDates = new ArrayList<>();
+                        if (dataList != null) {
+                            for (MEntityWrapper<ProductAggDate> wrapper : dataList) {
+                                ProductAggDate productAggDate = wrapper.getBean();
+
+                                Map<String, String> caption = wrapper.getCaption();
+                                if (caption != null) {
+                                    productAggDate.setTenantSkuIdWrapper(caption.get("tenantSkuId"));
+                                }
+                                productAggDates.add(productAggDate);
                             }
                         }
-
-                        if (mPageInfo.getPageNo() == 1) {
+                        if (mPageInfo == null || mPageInfo.getPageNo() == 1) {
                             if (goodsAdapter != null) {
-                                goodsAdapter.setEntityList(entityList);
+                                goodsAdapter.setEntityList(productAggDates);
                             }
                         } else {
-                            if (entityList.size() > 0) {
+                            if (productAggDates.size() > 0) {
                                 if (goodsAdapter != null) {
-                                    goodsAdapter.appendEntityList(entityList);
+                                    goodsAdapter.appendEntityList(productAggDates);
                                 }
                             }
                         }
@@ -266,13 +297,11 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.d("加载商品销量数据失败:" + errMsg);
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        ZLogger.e("加载商品销量数据失败:" + e.toString());
                         onLoadFinished();
                     }
-                }, ProductAggDate.class, MfhApplication.getAppContext());
-
-        ScApi.productAggDateList(proSkuId, pageInfo, queryRsCallBack);
+                });
     }
 }

@@ -12,6 +12,8 @@ public class ProductAggDate implements Serializable{
     private Double productNum = 0D;//商品数量
     private Double turnover = 0D;//营业额
 
+    private String tenantSkuIdWrapper;//名称
+
     public Date getAggDate() {
         return aggDate;
     }
@@ -40,5 +42,13 @@ public class ProductAggDate implements Serializable{
 
     public void setTurnover(Double turnover) {
         this.turnover = turnover;
+    }
+
+    public String getTenantSkuIdWrapper() {
+        return tenantSkuIdWrapper;
+    }
+
+    public void setTenantSkuIdWrapper(String tenantSkuIdWrapper) {
+        this.tenantSkuIdWrapper = tenantSkuIdWrapper;
     }
 }

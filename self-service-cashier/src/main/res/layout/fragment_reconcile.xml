@@ -1,0 +1,105 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/dialogview_headerview"/>
+
+    <LinearLayout
+        android:id="@+id/ll_brief_1"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_below="@+id/frame_top"
+        android:background="@color/mfhtheme_maskPrimary"
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_double">
+
+        <!--类别-->
+        <com.bingshanguxue.vector_uikit.OptionalLabel
+            android:id="@+id/label_category"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            app:mLabelView_inputHint=""
+            app:mLabelView_inputTextColor="@color/black"
+            app:mLabelView_inputTextColorHint="@color/black_35"
+            app:mLabelView_inputTextSize="16sp"
+            app:mLabelView_rightImageButtonEnabled="false"
+            />
+
+        <!--时间-->
+        <com.bingshanguxue.vector_uikit.OptionalLabel
+            android:id="@+id/label_updatedate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:layout_weight="1"
+            app:mLabelView_inputHint=""
+            app:mLabelView_inputTextColor="@color/black"
+            app:mLabelView_inputTextColorHint="@color/black_35"
+            app:mLabelView_inputTextSize="16sp"
+            app:mLabelView_rightImageButtonEnabled="false"/>
+
+        <Button
+            android:id="@+id/button_search"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:background="@drawable/btn_rectange_green"
+            android:gravity="center"
+            android:text="查询"
+            android:textColor="@color/material_white"
+            android:textSize="18sp"/>
+
+    </LinearLayout>
+
+    <!--头部-->
+    <include
+        android:id="@+id/frame_header_goods_list"
+        layout="@layout/itemview_reconcile_header"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_below="@+id/ll_brief_1"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"/>
+
+    <!--商品列表-->
+    <!--android:layout_height="308dp"-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frame_header_goods_list"
+        android:layout_marginEnd="@dimen/spacing_4x"
+        android:layout_marginStart="@dimen/spacing_4x">
+        <!--空视图-->
+        <TextView
+            android:id="@+id/empty_view"
+            style="@style/mfh_textview_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="暂无数据"
+            android:visibility="gone"/>
+
+        <!--订单列表-->
+        <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+            android:id="@+id/goods_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </FrameLayout>
+
+    <ImageButton
+        android:id="@+id/fab_print"
+        style="@style/FloatImageButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="@dimen/spacing_double"
+        android:src="@mipmap/ic_print_white"/>
+
+</RelativeLayout>
