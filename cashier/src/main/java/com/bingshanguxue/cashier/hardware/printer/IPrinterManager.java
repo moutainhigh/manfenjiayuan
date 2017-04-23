@@ -1,6 +1,7 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
+import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.pmcstock.GoodsItem;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
@@ -75,5 +76,14 @@ public interface IPrinterManager {
      * 商品流水
      * */
     void printGoodsFlow(List<GoodsItem> goodsItems);
+
+    /**
+     * 对账流水
+     *
+     * @param subType 产品线名称
+     * @param aggDateStr 对账日期
+     * @param goodsItems 商品明细
+     * */
+    void printReconcile(String subType, String aggDateStr, List<ProductAggDate> goodsItems);
 
 }

@@ -15,6 +15,7 @@ import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pmcstock.GoodsItem;
@@ -31,6 +32,7 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -993,6 +995,104 @@ public class GPrinterManager extends PrinterManager {
 //        printAndLineFeed(esc, 3);
 
         return esc;
+    }
+
+
+    @Override
+    public EscCommand makeHeaderEsc(String title, HashMap<String, String> headers) {
+        EscCommand esc = new EscCommand();
+        printAndLineFeed(esc, 2);
+
+        /**打印 标题*/
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);//设置打印居中
+        esc.addText(title + "\n");
+
+        //打印表头内容
+        if (headers != null && headers.size() > 0) {
+            for (String key : headers.keySet()) {
+                prepareHeader1(esc, key, headers.get(key), false);
+            }
+        }
+
+        printAndLineFeed(esc, 1);
+        return esc;
+    }
+
+    @Override
+    public EscCommand makeFooterEsc(HashMap<String, String> footers) {
+        EscCommand esc = new EscCommand();
+
+        //打印表头内容
+        if (footers != null && footers.size() > 0) {
+            for (String key : footers.keySet()) {
+                preparefooter1(esc, key, footers.get(key), false);
+            }
+        }
+
+        printAndLineFeed(esc, 1);
+        return esc;
+    }
+
+
+    @Override
+    public EscCommand makeReconcileHeaderEsc(String title, HashMap<String, String> headers) {
+        EscCommand esc = new EscCommand();
+        printAndLineFeed(esc, 2);
+
+
+        /**打印 标题*/
+        esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
+        esc.addText(title + "\n");
+
+        //打印表头内容
+        if (headers != null && headers.size() > 0) {
+            for (String key : headers.keySet()) {
+                prepareHeader1(esc, key, headers.get(key), false);
+            }
+        }
+
+        printAndLineFeed(esc, 1);
+
+        prepareContent1(esc, "商品", "小计", "营业额", true);
+
+        return esc;
+    }
+    @Override
+    public List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems) {
+        if (goodsItems == null) {
+            return null;
+        }
+
+        List<EscCommand> commands = new ArrayList<>();
+
+        EscCommand esc = new EscCommand();
+        esc.addUserCommand(EmbPrinter.initPrinter());
+
+        Double turnOver = 0D;
+        int len = goodsItems.size();
+        for (int i = 0; i < len; i++) {
+            ProductAggDate goodsItem = goodsItems.get(i);
+
+            turnOver += goodsItem.getTurnover();
+            prepareContent1(esc, goodsItem.getTenantSkuIdWrapper(),
+                    String.format("%.2f", goodsItem.getProductNum()),
+                    String.format("%.2f", goodsItem.getTurnover()), true);
+
+            if (i == len - 1) {
+                prepareContent1(esc, "", "销售额合计：",
+                        String.format("%.2f", turnOver), false);
+                printAndLineFeed(esc, 2);
+                addFooter(esc);
+                commands.add(esc);
+
+                esc = new EscCommand();
+            } else if (i != 0 && i % 20 == 0) {
+                commands.add(esc);
+                esc = new EscCommand();
+            }
+        }
+
+        return commands;
     }
 
     @Override

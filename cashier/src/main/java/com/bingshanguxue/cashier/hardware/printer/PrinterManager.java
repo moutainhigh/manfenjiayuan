@@ -12,6 +12,7 @@ import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.business.GlobalInstanceBase;
 import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.constant.BizType;
@@ -24,7 +25,10 @@ import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -522,6 +526,116 @@ public abstract class PrinterManager implements IPrinterManager {
 
 
     @Override
+    public void printReconcile(final String subType, final String aggDateStr,
+                               final List<ProductAggDate> goodsItems) {
+        Observable.create(new Observable.OnSubscribe<List<EscCommand>>() {
+            @Override
+            public void call(Subscriber<? super List<EscCommand>> subscriber) {
+                List<EscCommand> escCommands = new ArrayList<>();
+
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("门店：", MfhLoginService.get().getCurOfficeName());
+                headers.put("对账日期：", aggDateStr);
+                headers.put("产品线：", subType);
+//                escCommands.add(makeHeaderEsc("产品线对账单", headers));
+                escCommands.add(makeReconcileHeaderEsc("产品线对账单", headers));
+                escCommands.addAll(makeReconcileEsc(goodsItems));
+                subscriber.onNext(escCommands);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<EscCommand>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<EscCommand> escCommands) {
+                        Printer.print(escCommands);
+                    }
+                });
+    }
+    public abstract EscCommand makeReconcileHeaderEsc(String title, HashMap<String, String> headers);
+    public abstract List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems);
+
+
+    /**小票头*/
+    public abstract EscCommand makeHeaderEsc(String title, HashMap<String, String> headers);
+    /**
+     * 小票头 打印样式
+     * <ol>
+     * <li>text1：text2</li>
+     * </ol>
+     */
+    public void prepareHeader1(EscCommand esc,
+                              String text1, String text2,
+                              boolean bottomLineEnabled) {
+        if (esc == null) {
+            return;
+        }
+
+        esc.addText(String.format("%s%s\n",
+                Printer.formatShort(text1, 8, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text2, 24, Printer.BLANK_GRAVITY.LEFT)));
+        if (bottomLineEnabled) {
+            esc.addText("--------------------------------\n");//32个
+        }
+    }
+    /**
+     * 小票头 打印样式
+     * <ol>
+     * <li>text1：text2</li>
+     * </ol>
+     */
+    public void prepareContent1(EscCommand esc,
+                               String text1, String text2, String text3,
+                               boolean bottomLineEnabled) {
+        if (esc == null) {
+            return;
+        }
+
+        esc.addText(String.format("%s%s%s\n",
+                Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text3, 8, Printer.BLANK_GRAVITY.LEFT)));
+        if (bottomLineEnabled) {
+            esc.addText("--------------------------------\n");//32个
+        }
+    }
+    /**小票尾*/
+    public abstract EscCommand makeFooterEsc(HashMap<String, String> footers);
+    /**
+     * 小票头 打印样式
+     * <ol>
+     * <li>text1：text2</li>
+     * </ol>
+     */
+    public void preparefooter1(EscCommand esc,
+                               String text1, String text2,
+                               boolean bottomLineEnabled) {
+        if (esc == null) {
+            return;
+        }
+
+        esc.addText(String.format("%s%s\n",
+                Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
+                Printer.formatShort(text2, 16, Printer.BLANK_GRAVITY.LEFT)));
+        if (bottomLineEnabled) {
+            esc.addText("--------------------------------\n");//32个
+        }
+    }
+
+
+    @Override
     public void printTestPage() {
         Observable.create(new Observable.OnSubscribe<EscCommand>() {
             @Override
@@ -744,6 +858,8 @@ public abstract class PrinterManager implements IPrinterManager {
             ZLogger.ef(e.toString());
         }
     }
+
+
 
 
     /**

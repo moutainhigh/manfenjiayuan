@@ -15,6 +15,7 @@ import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.mobile.MobileApi;
@@ -32,6 +33,7 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -124,7 +126,7 @@ public class EmbPrinterManager extends PrinterManager {
             return null;
         }
 
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             ZLogger.d(JSONObject.toJSONString(posOrderEntity));
         }
         EscCommand esc = new EscCommand();
@@ -155,7 +157,8 @@ public class EmbPrinterManager extends PrinterManager {
 
         /**打印 商品明细*/
         printAndLineFeed(esc, 1);
-        List<PosOrderItemEntity> needWaitEntities = new ArrayList<>();;
+        List<PosOrderItemEntity> needWaitEntities = new ArrayList<>();
+        ;
 
         List<PosOrderItemEntity> posOrderItemEntities = CashierAgent.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntities != null && posOrderItemEntities.size() > 0) {
@@ -164,7 +167,7 @@ public class EmbPrinterManager extends PrinterManager {
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                     PrinterConstants.Command.ALIGN_LEFT));
             for (PosOrderItemEntity entity : posOrderItemEntities) {
-                if (entity.getNeedWait().equals(1)){
+                if (entity.getNeedWait().equals(1)) {
                     needWaitEntities.add(entity);
                 }
                 makeOrderItem7(esc, entity.getSkuName(),
@@ -202,7 +205,7 @@ public class EmbPrinterManager extends PrinterManager {
         addFooter(esc);
         printAndLineFeed(esc, 3);//打印并且走纸3行
 
-        if (waitReceiptEnabled && needWaitEntities.size() > 0){
+        if (waitReceiptEnabled && needWaitEntities.size() > 0) {
 
             printAndLineFeed(esc, 2);//打印并且走纸3行
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
@@ -213,7 +216,7 @@ public class EmbPrinterManager extends PrinterManager {
 
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                     PrinterConstants.Command.ALIGN_LEFT));
-            for (PosOrderItemEntity entity : needWaitEntities){
+            for (PosOrderItemEntity entity : needWaitEntities) {
                 makeOrderItem1(esc, entity.getSkuName(),
                         MUtils.formatDouble(null, null, entity.getBcount(), "", "", entity.getUnit()),
                         MUtils.formatDouble(entity.getFinalAmount(), ""));
@@ -221,12 +224,13 @@ public class EmbPrinterManager extends PrinterManager {
 
             printAndLineFeed(esc, 5);//打印并且走纸3行
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
-                    PrinterConstants.Command.ALIGN_CENTER));              esc.addText("厨房联\n");
+                    PrinterConstants.Command.ALIGN_CENTER));
+            esc.addText("厨房联\n");
             esc.addText("--------------------------------\n");//32个
 
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
                     PrinterConstants.Command.ALIGN_LEFT));
-            for (PosOrderItemEntity entity : needWaitEntities){
+            for (PosOrderItemEntity entity : needWaitEntities) {
                 makeOrderItem1(esc, entity.getSkuName(),
                         MUtils.formatDouble(null, null, entity.getBcount(), "", "", entity.getUnit()),
                         MUtils.formatDouble(entity.getFinalAmount(), ""));
@@ -237,7 +241,6 @@ public class EmbPrinterManager extends PrinterManager {
 
         return esc;
     }
-
 
 
     @Override
@@ -326,7 +329,6 @@ public class EmbPrinterManager extends PrinterManager {
 
         return esc;
     }
-
 
 
     @Override
@@ -885,7 +887,7 @@ public class EmbPrinterManager extends PrinterManager {
 
     /**
      * 组货打印配送单
-     * */
+     */
     @Override
     public EscCommand makeSendOrderEsc(ScOrder scOrder) {
         if (scOrder == null) {
@@ -1057,6 +1059,108 @@ public class EmbPrinterManager extends PrinterManager {
         return esc;
     }
 
+    @Override
+    public EscCommand makeHeaderEsc(String title, HashMap<String, String> headers) {
+        EscCommand esc = new EscCommand();
+        esc.addUserCommand(EmbPrinter.initPrinter());
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2));
+
+        /**打印 标题*/
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        esc.addText(title + "\n");
+
+        //打印表头内容
+        if (headers != null && headers.size() > 0) {
+            for (String key : headers.keySet()) {
+                prepareHeader1(esc, key, headers.get(key), false);
+            }
+        }
+
+        printAndLineFeed(esc, 1);
+        return esc;
+    }
+
+    @Override
+    public EscCommand makeFooterEsc(HashMap<String, String> footers) {
+        EscCommand esc = new EscCommand();
+        esc.addUserCommand(EmbPrinter.initPrinter());
+//        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2));
+
+        //打印表头内容
+        if (footers != null && footers.size() > 0) {
+            for (String key : footers.keySet()) {
+                preparefooter1(esc, key, footers.get(key), false);
+            }
+        }
+
+        printAndLineFeed(esc, 1);
+        return esc;
+    }
+
+
+    @Override
+    public EscCommand makeReconcileHeaderEsc(String title, HashMap<String, String> headers) {
+        EscCommand esc = new EscCommand();
+        esc.addUserCommand(EmbPrinter.initPrinter());
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.PRINT_AND_WAKE_PAPER_BY_LINE, 2));
+
+        /**打印 标题*/
+        esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN, PrinterConstants.Command.ALIGN_CENTER));
+        esc.addText(title + "\n");
+
+        //打印表头内容
+        if (headers != null && headers.size() > 0) {
+            for (String key : headers.keySet()) {
+                prepareHeader1(esc, key, headers.get(key), false);
+            }
+        }
+
+        printAndLineFeed(esc, 1);
+
+        prepareContent1(esc, "商品", "小计", "营业额", true);
+
+        return esc;
+    }
+
+    @Override
+    public List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems) {
+        if (goodsItems == null) {
+            return null;
+        }
+
+        List<EscCommand> commands = new ArrayList<>();
+
+        EscCommand esc = new EscCommand();
+        esc.addUserCommand(EmbPrinter.initPrinter());
+
+        Double turnOver = 0D;
+        int len = goodsItems.size();
+        for (int i = 0; i < len; i++) {
+            ProductAggDate goodsItem = goodsItems.get(i);
+
+            turnOver += goodsItem.getTurnover();
+            prepareContent1(esc, goodsItem.getTenantSkuIdWrapper(),
+                    String.format("%.2f", goodsItem.getProductNum()),
+                    String.format("%.2f", goodsItem.getTurnover()), true);
+
+            if (i == len - 1) {
+                prepareContent1(esc, "", "销售额合计：",
+                        String.format("%.2f", turnOver), false);
+                printAndLineFeed(esc, 2);
+                addFooter(esc);
+                commands.add(esc);
+
+                esc = new EscCommand();
+                esc.addUserCommand(EmbPrinter.initPrinter());
+            } else if (i != 0 && i % 20 == 0) {
+                commands.add(esc);
+                esc = new EscCommand();
+                esc.addUserCommand(EmbPrinter.initPrinter());
+            }
+        }
+
+        return commands;
+    }
 
 
     @Override
@@ -1166,6 +1270,7 @@ public class EmbPrinterManager extends PrinterManager {
             return null;
         }
     }
+
     @Override
     public void makeTestTemp(EscCommand esc, String name, String price, String bcount, String amount) {
         if (esc == null) {

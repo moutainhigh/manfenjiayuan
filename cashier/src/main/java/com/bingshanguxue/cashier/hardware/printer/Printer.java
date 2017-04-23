@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -155,6 +156,14 @@ public class Printer implements IPrinter {
     public static  void print(EscCommand escCommand, int printTimes) {
         if (escCommand != null && printTimes > 0) {
             for (int i = 0 ; i < printTimes; i++){
+                print(escCommand);
+            }
+        }
+    }
+
+    public static  void print(List<EscCommand> escCommands) {
+        if (escCommands != null && escCommands.size() > 0) {
+            for (EscCommand escCommand : escCommands) {
                 print(escCommand);
             }
         }
