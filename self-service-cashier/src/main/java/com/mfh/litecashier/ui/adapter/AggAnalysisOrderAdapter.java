@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.AnalysisItemWrapper;
@@ -42,7 +41,7 @@ public class AggAnalysisOrderAdapter
 
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_agg_analysis_order, parent, false));
+        return new ProductViewHolder(mLayoutInflater.inflate(R.layout.itemview_analysis_agg, parent, false));
     }
 
     @Override
@@ -56,10 +55,11 @@ public class AggAnalysisOrderAdapter
             holder.tvIndex.setText("");
         }
         holder.tvBizType.setText(entity.getCaption());
-        holder.tvQuantity.setText(String.format(Locale.getDefault(), "%.2f", entity.getOrderNum()));
-        holder.tvAmount.setText(String.format(Locale.getDefault(), "%.2f", entity.getTurnover()));
-        holder.tvGrossMargin.setText(MUtils.retrieveFormatedGrossMargin(entity.getTurnover(),
-                entity.getGrossProfit()));
+//        holder.tvQuantity.setText(String.format(Locale.getDefault(), "%.2f", entity.getOrderNum()));
+        holder.tvTurnOver.setText(String.format(Locale.getDefault(), "%.2f", entity.getTurnover()));
+//        holder.tvGrossMargin.setText(MUtils.retrieveFormatedGrossMargin(entity.getTurnover(),
+//                entity.getGrossProfit()));
+        holder.tvSalesBalance.setText(String.format(Locale.getDefault(), "%.2f", entity.getSalesBalance()));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -67,12 +67,12 @@ public class AggAnalysisOrderAdapter
         TextView tvIndex;
         @BindView(R.id.tv_biztype)
         TextView tvBizType;
-        @BindView(R.id.tv_quantity)
-        TextView tvQuantity;
-        @BindView(R.id.tv_amount)
-        TextView tvAmount;
-        @BindView(R.id.tv_gross_margin)
-        TextView tvGrossMargin;
+        @BindView(R.id.tv_turnover)
+        TextView tvTurnOver;
+//        @BindView(R.id.tv_grossProfitMargin)
+//        TextView tvGrossMargin;
+        @BindView(R.id.tv_salesBalance)
+        TextView tvSalesBalance;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);

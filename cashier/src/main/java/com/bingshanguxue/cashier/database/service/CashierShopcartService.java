@@ -6,11 +6,12 @@ import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.Date;
@@ -110,11 +111,12 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
 
     /**
      * 添加新商品到收银台
+     *
      * @param orderBarCode
      * @param goods
      * @param bCount
      * @param
-     * */
+     */
     public void append(String orderBarCode, PosProductEntity goods,
                        Double bCount) {
         append(orderBarCode, 100D, goods, bCount);
@@ -122,13 +124,14 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
 
     /**
      * 添加新商品到收银台
-     * @param orderBarCode 订单条码
+     *
+     * @param orderBarCode  订单条码
      * @param orderDiscount 订单折扣
-     * @param goods 商品
-     * @param bCount 商品数量
-     * */
+     * @param goods         商品
+     * @param bCount        商品数量
+     */
     public void append(String orderBarCode, Double orderDiscount, PosProductEntity goods,
-                             Double bCount) {
+                       Double bCount) {
         if (StringUtils.isEmpty(orderBarCode)) {
             ZLogger.d("订单条码不能为空");
             return;
@@ -138,17 +141,18 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             return;
         }
 
-        if (SharedPrefesManagerFactory.isSuperPermissionGranted() && !BizConfig.RELEASE){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             ZLogger.d(String.format("添加商品到收银台:\n"
-                    + "orderBarcode=%s\n"
-                    + "orderDiscount=%.0f%%\n"
-                    + "bCount=%.3f\n"
-                    + "goods=%s" ,
+                            + "orderBarcode=%s\n"
+                            + "orderDiscount=%.0f%%\n"
+                            + "bCount=%.3f\n"
+                            + "goods=%s",
                     orderBarCode, orderDiscount, bCount, JSONObject.toJSONString(goods)));
         }
         String sqlWhere = String.format("posTradeNo = '%s' and barcode = '%s'",
                 orderBarCode, goods.getBarcode());
 
+        Date rightNow = TimeUtil.getCurrentDate();
         CashierShopcartEntity shopcartEntity;
         List<CashierShopcartEntity> shopcartEntities = queryAllBy(sqlWhere);
         if (shopcartEntities != null && shopcartEntities.size() > 0) {
@@ -157,7 +161,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             shopcartEntity.setBcount(shopcartEntity.getBcount() + bCount);
         } else {
             shopcartEntity = new CashierShopcartEntity();
-            shopcartEntity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+            shopcartEntity.setCreatedDate(rightNow);//使用当前日期，表示加入购物车信息
             shopcartEntity.setPosTradeNo(orderBarCode);
             shopcartEntity.setBcount(bCount);
             shopcartEntity.setGoodsId(goods.getId());
@@ -168,20 +172,19 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
             shopcartEntity.setShortName(goods.getShortName());
             shopcartEntity.setSkuName(goods.getSkuName());
             shopcartEntity.setUnit(goods.getUnit());
-            shopcartEntity.setCostPrice(goods.getCostPrice());
-            shopcartEntity.setCustomerPrice(goods.getCustomerPrice());
-
             shopcartEntity.setProviderId(goods.getProviderId());
             shopcartEntity.setPriceType(goods.getPriceType());
             shopcartEntity.setProdLineId(goods.getProdLineId());
             shopcartEntity.setNeedWait(goods.getNeedWait());
 
-            //默认会员价使用标准单价计算，可以在后面售价时修改。
-            if (shopcartEntity.getCostPrice() != null && orderDiscount != null){
-                shopcartEntity.setFinalPrice(shopcartEntity.getCostPrice() * orderDiscount / 100);
-            }
-            else{
-                shopcartEntity.setFinalPrice(shopcartEntity.getCostPrice());
+            shopcartEntity.setCostPrice(goods.getCostPrice());
+            shopcartEntity.setCustomerPrice(goods.getCustomerPrice());
+            if (orderDiscount != null) {
+                shopcartEntity.setFinalPrice(MathCompact.mult(goods.getCostPrice(), orderDiscount / 100));
+                shopcartEntity.setFinalCustomerPrice(MathCompact.mult(goods.getCustomerPrice(), orderDiscount / 100));
+            } else {
+                shopcartEntity.setFinalPrice(goods.getCostPrice());
+                shopcartEntity.setFinalCustomerPrice(goods.getCustomerPrice());
             }
         }
 
@@ -189,12 +192,12 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
         shopcartEntity.setAmount(shopcartEntity.getBcount() * shopcartEntity.getCostPrice());
         //成交金额
         shopcartEntity.setFinalAmount(shopcartEntity.getBcount() * shopcartEntity.getFinalPrice());
-        shopcartEntity.setUpdatedDate(new Date());
+        shopcartEntity.setUpdatedDate(rightNow);
 
         saveOrUpdate(shopcartEntity);
     }
 
-    public CashierShopcartEntity getEntityBy(String sqlWhere){
+    public CashierShopcartEntity getEntityBy(String sqlWhere) {
         CashierShopcartEntity shopcartEntity = null;
         List<CashierShopcartEntity> shopcartEntities = queryAllBy(sqlWhere);
         if (shopcartEntities != null && shopcartEntities.size() > 0) {
@@ -206,19 +209,21 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
 
     /**
      * 加载订单明细
-     * */
-    public void readOrderItems(String orderBarCode, List<PosOrderItemEntity> itemEntities){
+     */
+    public void readOrderItems(String orderBarCode, List<PosOrderItemEntity> itemEntities) {
         //清空购物车中旧数据
         CashierShopcartService.getInstance()
                 .deleteBy(String.format("posTradeNo = '%s'", orderBarCode));
 
-        if (itemEntities == null || itemEntities.size() <= 0){
+        if (itemEntities == null || itemEntities.size() <= 0) {
             return;
         }
 
-        for (PosOrderItemEntity goods : itemEntities){
+        for (PosOrderItemEntity goods : itemEntities) {
             String sqlWhere = String.format("posTradeNo = '%s' and barcode = '%s'",
                     orderBarCode, goods.getBarcode());
+
+            Date rightNow = TimeUtil.getCurrentDate();
 
             CashierShopcartEntity shopcartEntity;
             List<CashierShopcartEntity> shopcartEntities = queryAllBy(sqlWhere);
@@ -228,7 +233,7 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
                 shopcartEntity.setBcount(shopcartEntity.getBcount() + goods.getBcount());
             } else {
                 shopcartEntity = new CashierShopcartEntity();
-                shopcartEntity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+                shopcartEntity.setCreatedDate(rightNow);//使用当前日期，表示加入购物车信息
                 shopcartEntity.setPosTradeNo(orderBarCode);
                 shopcartEntity.setBcount(goods.getBcount());
                 shopcartEntity.setGoodsId(goods.getId());
@@ -248,14 +253,14 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
                 shopcartEntity.setCostPrice(goods.getCostPrice());
                 shopcartEntity.setCustomerPrice(goods.getCustomerPrice());
                 shopcartEntity.setFinalPrice(goods.getFinalPrice());
+                shopcartEntity.setFinalCustomerPrice(goods.getFinalCustomerPrice());
             }
 
             //标准价金额
             shopcartEntity.setAmount(shopcartEntity.getBcount() * goods.getCostPrice());
             //成交金额
             shopcartEntity.setFinalAmount(shopcartEntity.getBcount() * shopcartEntity.getFinalPrice());
-
-            shopcartEntity.setUpdatedDate(new Date());
+            shopcartEntity.setUpdatedDate(rightNow);
 
             saveOrUpdate(shopcartEntity);
             ZLogger.d(JSONObject.toJSONString(shopcartEntity));
@@ -264,12 +269,13 @@ public class CashierShopcartService extends BaseService<CashierShopcartEntity, S
 
     /**
      * 批量打折
-     * */
-    public void batchDiscount(String posTradeNo,  Double discount){
+     */
+    public void batchDiscount(String posTradeNo, Double discount) {
         List<CashierShopcartEntity> entities = queryAllBy(String.format("posTradeNo = '%s'", posTradeNo));
-        if (entities != null && entities.size() > 0){
-            for (CashierShopcartEntity entity : entities){
-                entity.setFinalPrice(entity.getCostPrice() * discount / 100);
+        if (entities != null && entities.size() > 0) {
+            for (CashierShopcartEntity entity : entities) {
+                entity.setFinalPrice(MathCompact.mult(entity.getCostPrice(), discount / 100));
+                entity.setFinalCustomerPrice(MathCompact.mult(entity.getCustomerPrice(), discount / 100));
                 entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
                 saveOrUpdate(entity);
             }

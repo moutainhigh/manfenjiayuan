@@ -196,7 +196,7 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
                     @Override
                     public void onValue(String data) {
                         super.onValue(data);
-                        ZLogger.df("新建采购订单成功,清空购物车..." + data);
+                        ZLogger.d("新建采购订单成功,清空购物车..." + data);
 
                         PurchaseHelper.getInstance().clear(PurchaseOrderEntity.PURCHASE_TYPE_MANUAL);
                         showProgressDialog(ProgressDialog.STATUS_DONE);

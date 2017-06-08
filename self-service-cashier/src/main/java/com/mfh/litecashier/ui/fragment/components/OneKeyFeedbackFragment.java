@@ -32,7 +32,6 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.R;
 
 import java.io.File;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -218,7 +217,7 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
         jsonObject.put("androidLevel", String.format("%s(API %d)", Build.VERSION.RELEASE, Build.VERSION.SDK_INT));
         jsonObject.put("loginName", MfhLoginService.get().getLoginName());
         jsonObject.put("softVersion", SystemUtils.getVersion(MfhApplication.getAppContext()));
-        jsonObject.put("errorTime", TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        jsonObject.put("errorTime", TimeUtil.format(TimeUtil.getCurrentDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS));
 
         options.put("jsonStr", jsonObject.toJSONString());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
@@ -232,7 +231,7 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df(e.toString());
+                        ZLogger.ef(e.toString());
                         hideProgressDialog();
 
                     }
@@ -240,8 +239,8 @@ public class OneKeyFeedbackFragment extends BaseProgressFragment {
                     @Override
                     public void onValue(Long data) {
                         super.onValue(data);
-                        DialogUtil.showHint("反馈成功");
                         hideProgressDialog();
+                        DialogUtil.showHint("反馈成功");
                         finishActivity();
                     }
                 });

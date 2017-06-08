@@ -48,10 +48,9 @@ public class AnalysisOrderAdapter
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
         AnalysisItemWrapper entity = entityList.get(position);
 
-        if (entity.isShowIndex()){
+        if (entity.isShowIndex()) {
             holder.tvIndex.setText(String.valueOf(position + 1));
-        }
-        else{
+        } else {
             holder.tvIndex.setText("");
         }
         holder.tvBizType.setText(entity.getCaption());

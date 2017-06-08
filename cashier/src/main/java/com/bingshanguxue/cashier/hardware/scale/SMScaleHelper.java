@@ -1,6 +1,6 @@
 package com.bingshanguxue.cashier.hardware.scale;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
@@ -39,7 +39,7 @@ public class SMScaleHelper {
     public static DS781A parseData(byte[] data) {
         if (data == null) {
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-                ZLogger.df("解析寺冈电子秤串口数据失败，空数据");
+                ZLogger.d("解析寺冈电子秤串口数据失败，空数据");
             }
             return null;
         }
@@ -107,7 +107,7 @@ public class SMScaleHelper {
         try {
             if (data == null) {
                 if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-                    ZLogger.df("解析寺冈电子秤串口数据失败，空数据");
+                    ZLogger.d("解析寺冈电子秤串口数据失败，空数据");
                 }
                 return null;
             }
@@ -419,7 +419,7 @@ public class SMScaleHelper {
             String sUnitPrice = DataConvertUtil.ByteArrToHex(bUnitPrice, "");
             String sTotalPrice = DataConvertUtil.ByteArrToHex(bTotalPrice, "");
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-                ZLogger.df(String.format("netWeight:%s, tareWeight=%s, unitPrice=%s, totalPrice=%s",
+                ZLogger.d(String.format("netWeight:%s, tareWeight=%s, unitPrice=%s, totalPrice=%s",
                     sNetWeight, sTareWeight, sUnitPrice, sTotalPrice));
             }
 
@@ -428,7 +428,7 @@ public class SMScaleHelper {
             String sUnitPrice2 = DataConvertUtil.hexStr2Str(sUnitPrice);
             String sTotalPrice2 = DataConvertUtil.hexStr2Str(sTotalPrice);
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-                ZLogger.df(String.format("netWeight:%s, tareWeight=%s, unitPrice=%s, totalPrice=%s",
+                ZLogger.d(String.format("netWeight:%s, tareWeight=%s, unitPrice=%s, totalPrice=%s",
                     sNetWeight2, sTareWeight2, sUnitPrice2, sTotalPrice2));
             }
 
@@ -438,7 +438,7 @@ public class SMScaleHelper {
             ds781A.setUnitPrice(sUnitPrice2 != null ? Double.parseDouble(sUnitPrice2) : null);
             ds781A.setTotalPrice(sTotalPrice2 != null ? Double.parseDouble(sTotalPrice2) : null);
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-                ZLogger.df(JSON.toJSONString(ds781A));
+                ZLogger.df(JSONObject.toJSONString(ds781A));
             }
 
             return ds781A;

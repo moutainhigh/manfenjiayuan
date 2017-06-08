@@ -43,6 +43,26 @@
             android:textSize="@dimen/textsize_normal"
             android:maxLines="1"/>
     </LinearLayout>
+    <!--会员成交价-->
+    <LinearLayout
+        android:id="@+id/ll_finalCustomerPrice"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tv_finalCustomerPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableEnd="@mipmap/ic_marker_edit"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="成交价"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"
+            android:maxLines="1"/>
+    </LinearLayout>
     <!--折扣-->
     <LinearLayout
         android:id="@+id/ll_discount"

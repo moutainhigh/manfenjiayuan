@@ -16,6 +16,7 @@ import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CategoryInfo;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -230,6 +231,7 @@ public class TenantCategoryListFragment extends BaseListFragment<CategoryInfo>
             mInvCompanyPresenter.list(CateApi.DOMAIN_TYPE_PROD, CateApi.POS,
                     CateApi.CATE_POSITION_FRONT, 1, tenantId, mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购订单，已经是最后一页。");
             onLoadFinished();
         }

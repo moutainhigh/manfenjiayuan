@@ -1,8 +1,9 @@
 package com.mfh.litecashier.ui.fragment.purchase.manual;
 
 import com.alibaba.fastjson.JSON;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.manfenjiayuan.business.bean.wrapper.PurchaseShopcartGoodsWrapper;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.litecashier.database.entity.PurchaseGoodsEntity;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 import com.mfh.litecashier.database.logic.PurchaseGoodsService;
@@ -74,26 +75,27 @@ public class PurchaseHelper {
         }
 
         //保存订单
+        Date rightNow = TimeUtil.getCurrentDate();
         PurchaseOrderEntity orderEntity = PurchaseOrderService.getInstance()
                 .fetchOrder(purchaseType, goods.getSupplyId());
         if (orderEntity == null){
             orderEntity = new PurchaseOrderEntity();
-            orderEntity.setCreatedDate(new Date());
+            orderEntity.setCreatedDate(rightNow);
             orderEntity.setPurchaseType(purchaseType);
             orderEntity.setProviderId(goods.getSupplyId());
         }
         orderEntity.setProviderName(goods.getSupplyName());
         orderEntity.setIsPrivate(goods.getIsPrivate());
-        orderEntity.setUpdatedDate(new Date());
+        orderEntity.setUpdatedDate(rightNow);
         PurchaseOrderService.getInstance().saveOrUpdate(orderEntity);
-        ZLogger.df(String.format("保存or更新采购订单：\n%s", JSON.toJSONString(orderEntity)));
+        ZLogger.d(String.format("保存or更新采购订单：\n%s", JSON.toJSONString(orderEntity)));
 
         //更新订单明细
         PurchaseGoodsEntity goodsEntity = PurchaseGoodsService.getInstance()
                 .fetchGoods(purchaseType, goods.getSupplyId(), goods.getChainSkuId());
         if (goodsEntity == null){
             goodsEntity = new PurchaseGoodsEntity();
-            goodsEntity.setCreatedDate(new Date());
+            goodsEntity.setCreatedDate(rightNow);
             goodsEntity.setPurchaseType(purchaseType);
             goodsEntity.setProviderId(goods.getSupplyId());
             goodsEntity.setChainSkuId(goods.getChainSkuId());
@@ -104,9 +106,9 @@ public class PurchaseHelper {
         goodsEntity.setQuantityCheck(goods.getQuantityCheck());
         goodsEntity.setBuyPrice(goods.getBuyPrice());//不能为空
         goodsEntity.setBarcode(goods.getBarcode());
-        goodsEntity.setUpdatedDate(new Date());
+        goodsEntity.setUpdatedDate(rightNow);
         PurchaseGoodsService.getInstance().saveOrUpdate(goodsEntity);
-        ZLogger.df(String.format("保存or更新采购商品：\n%s", JSON.toJSONString(goodsEntity)));
+        ZLogger.d(String.format("保存or更新采购商品：\n%s", JSON.toJSONString(goodsEntity)));
 
         // 整理
         if (isNeedArrange){

@@ -17,6 +17,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.mfh.framework.api.invCompany.InvCompanyPresenter;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -243,6 +244,7 @@ public class SelectInvCompanyInfoFragment extends BaseFragment
 
             mInvCompanyPresenter.list(mPageInfo, labelShortcode.getInputString());
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载批发商，已经是最后一页。");
             onLoadFinished();
         }

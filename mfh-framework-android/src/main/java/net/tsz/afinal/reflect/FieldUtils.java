@@ -373,11 +373,13 @@ public class FieldUtils {
 		         clazz.isPrimitive();
 	}
 	
-	@SuppressLint("SimpleDateFormat")
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//	@SuppressLint("SimpleDateFormat")
+//    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	private static Date stringToDateTime(String strDate) {
 		if (strDate != null) {
 			try {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 				return sdf.parse(strDate);
 			} catch (ParseException e) {
 				e.printStackTrace();

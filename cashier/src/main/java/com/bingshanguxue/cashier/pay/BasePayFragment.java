@@ -100,7 +100,7 @@ public abstract class BasePayFragment extends BaseFragment {
      * */
     public void generateOutTradeNo(){
         outTradeNo = CashierFactory.genTradeNo(orderId, true);
-        ZLogger.df(String.format("%s支付－交易编号：%s", WayType.getWayTypeName(payType), outTradeNo));
+        ZLogger.d(String.format("%s支付－交易编号：%s", WayType.getWayTypeName(payType), outTradeNo));
     }
 
     /**

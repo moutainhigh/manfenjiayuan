@@ -16,6 +16,7 @@ import com.manfenjiayuan.business.view.IScProcuctPriceView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.sc.productPrice.ProductSku;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.core.utils.StringUtils;
@@ -275,6 +276,7 @@ public class BackendGoodsFragment extends BaseListFragment<FrontCategoryGoods>
             onLoadStart();
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载类目商品，已经是最后一页。");
             onLoadFinished();
         }

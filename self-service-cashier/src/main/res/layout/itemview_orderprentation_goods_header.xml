@@ -52,7 +52,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="start|center_vertical"
-        android:text="小计"
+        android:text="会员价小计"
         android:textSize="12sp"/>
 
 </LinearLayout>

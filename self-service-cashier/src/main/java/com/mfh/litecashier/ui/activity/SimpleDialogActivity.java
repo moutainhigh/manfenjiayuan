@@ -15,6 +15,7 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
 import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
 import com.mfh.litecashier.ui.fragment.components.OneKeyFeedbackFragment;
+import com.mfh.litecashier.ui.fragment.topup.TransferFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
@@ -28,6 +29,8 @@ import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragme
 import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
 import com.mfh.litecashier.ui.goodsflow.BackendCategoryListFragment;
 import com.mfh.litecashier.ui.goodsflow.GoodsFlowFragment;
+import com.mfh.litecashier.ui.reconcile.ProdLineListFragment;
+import com.mfh.litecashier.ui.reconcile.ReconcileFragment;
 
 import butterknife.BindView;
 
@@ -50,11 +53,15 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FT_PAY_HISTORY = 0x09;//支付记录
     public static final int FT_GOODS_SALESHISTORY = 0x10;//商品销量记录
     public static final int FT_EXCHANGE_SCORE = 0x11;//积分兑换
+    public static final int FT_CUSTOMER_TOPUP = 0x12;//会员充值
 
-    public static final int FT_TENANT_POSCATEGORYLIST = 0x12;//租户pos前台类目
-    public static final int FT_GOODS_FLOW = 0x13;//商品流水
-    public static final int FT_BACKEND_CATEGORY = 0x14;//后台类目
+    public static final int FT_TENANT_POSCATEGORYLIST = 0x13;//租户pos前台类目
+    public static final int FT_GOODS_FLOW = 0x14;//商品流水
+    public static final int FT_BACKEND_CATEGORY = 0x15;//后台类目
     public static final int FT_PREPAREABLE_ORDER = 0x21;//买手接单
+    public static final int FT_RECONCILE = 0x22;//对账
+    public static final int FT_PROD_LINE_LIST = 0x23;//产品线列表
+
 
 
     public static final int FT_ONEKEY_FEEDBACK = 0x31;//一键反馈
@@ -67,6 +74,7 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int DT_NORMAL = 0x01;//正常
     public static final int DT_MIDDLE = 0x02;//中等
     public static final int DT_VERTICIAL_FULLSCREEN = 0x03;//全屏
+
     private int dialogType = DT_NORMAL;
 
     public static final String EXTRA_KEY_TITLE = "title";
@@ -303,6 +311,20 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
+            case FT_CUSTOMER_TOPUP: {
+                TransferFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = TransferFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = TransferFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
             case FT_TENANT_POSCATEGORYLIST: {
                 TenantCategoryListFragment fragment;
                 Intent intent = this.getIntent();
@@ -357,7 +379,6 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-
             case FT_ONEKEY_FEEDBACK: {
                 OneKeyFeedbackFragment fragment;
                 Intent intent = this.getIntent();
@@ -365,6 +386,32 @@ public class SimpleDialogActivity extends BaseActivity {
                     fragment = OneKeyFeedbackFragment.newInstance(intent.getExtras());
                 } else {
                     fragment = OneKeyFeedbackFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_RECONCILE: {
+                ReconcileFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = ReconcileFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = ReconcileFragment.newInstance(null);
+                }
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+            break;
+            case FT_PROD_LINE_LIST: {
+                ProdLineListFragment fragment;
+                Intent intent = this.getIntent();
+                if (intent != null) {
+                    fragment = ProdLineListFragment.newInstance(intent.getExtras());
+                } else {
+                    fragment = ProdLineListFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)

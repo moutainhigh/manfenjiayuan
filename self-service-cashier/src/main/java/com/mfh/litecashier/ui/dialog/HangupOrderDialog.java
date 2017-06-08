@@ -11,13 +11,12 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.mfh.framework.api.constant.BizType;
+import com.bingshanguxue.cashier.model.wrapper.HangupOrder;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.wrapper.HangupOrder;
 import com.mfh.litecashier.ui.adapter.HangupDialogAdapter;
-import com.mfh.litecashier.utils.CashierHelper;
 
 
 /**
@@ -77,8 +76,9 @@ public class HangupOrderDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
 //        WindowManager m = getWindow().getWindowManager();
 //        Display d = m.getDefaultDisplay();
 //        WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -128,11 +128,6 @@ public class HangupOrderDialog extends CommonDialog {
 //        this.dialogType = type;
         this.mListener = callback;
 
-//        List<PosOrderEntity> orderEntityList = PosOrderService.get()
-//                .queryAllBy(String.format("status = '%d' and sellerId = '%d'",
-//                                PosOrderEntity.ORDER_STATUS_HANGUP, MfhLoginService.get().getSpid()),
-//                        PosOrderDao.ORDER_BY_UPDATEDATE_DESC);
-
-        productAdapter.setEntityList(CashierHelper.mergeHangupOrders(BizType.POS));
+        productAdapter.setEntityList(CashierProvider.fetchHangupOrders());
     }
 }

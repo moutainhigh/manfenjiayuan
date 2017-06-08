@@ -16,6 +16,7 @@ import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -285,6 +286,7 @@ onLoadFinished();
             mPageInfo.moveToNext();
             invReturnOrderPresenter.loadOrders(mPageInfo, status, null, null);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购退货订单，已经是最后一页。");
             onLoadFinished();
         }

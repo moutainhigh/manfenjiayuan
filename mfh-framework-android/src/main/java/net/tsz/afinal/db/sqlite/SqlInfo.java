@@ -43,7 +43,7 @@ public class SqlInfo {
 	
 	public void addValue(Object obj){
 		if(bindArgs == null)
-			bindArgs = new LinkedList<Object>();
+			bindArgs = new LinkedList<>();
 		
 		bindArgs.add(obj);
 	}

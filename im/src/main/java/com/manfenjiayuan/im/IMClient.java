@@ -4,13 +4,21 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSON;
 import com.manfenjiayuan.im.bean.BizMsgParamWithSession;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspBean;
+import com.manfenjiayuan.im.utils.IMFactory;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import rx.Subscriber;
+
+import static com.mfh.framework.api.ApiParams.PARAM_KEY_CHANNEL_ID;
+import static com.mfh.framework.api.ApiParams.PARAM_KEY_JSESSIONID;
+import static com.mfh.framework.api.ApiParams.PARAM_KEY_JSONSTR;
+import static com.mfh.framework.api.ApiParams.PARAM_KEY_QUEUENAME;
 
 /**
  * SDK的入口，主要完成登录，退出，连接管理等功能。也是获取其他模块的入口
@@ -40,8 +48,8 @@ public class IMClient {
 
     /**
      * 初始化
-     * */
-    public void init(Context context){
+     */
+    public void init(Context context) {
         this.mContext = context;
         this.groupManager = new IMGroupManager();
         this.chatManager = new IMChatManager();
@@ -55,8 +63,8 @@ public class IMClient {
     /**
      * 注册消息桥(需要登录)
      */
-    public void registerBridge(){
-        if (!MfhLoginService.get().haveLogined()){
+    public void registerBridge() {
+        if (!MfhLoginService.get().haveLogined()) {
             ZLogger.d("注册消息桥失败，未登录。");
             return;
         }
@@ -70,50 +78,50 @@ public class IMClient {
 
     /**
      * 注册消息桥
-     * */
-    public void registerBridge(final Long guid, String clientId){
-        if(guid == null || guid.equals(-1L)){
+     */
+    public void registerBridge(final Long guid, String clientId) {
+        if (guid == null || guid.equals(-1L)) {
             ZLogger.df("注册消息桥失败，guid 无效");
             return;
         }
 
-        if(StringUtils.isEmpty(clientId)){
+        if (StringUtils.isEmpty(clientId)) {
             ZLogger.df("注册消息桥失败，clientId 无效");
             return;
         }
 
-        if (mContext == null){
+        if (mContext == null) {
             ZLogger.df("请先初始化IMClient");
             return;
         }
 
-          NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<BizMsgParamWithSession,
-                NetProcessor.Processor<BizMsgParamWithSession>>(
-                new NetProcessor.Processor<BizMsgParamWithSession>() {
+        Map<String, String> options = new HashMap<>();
+        options.put(PARAM_KEY_CHANNEL_ID, MfhApi.CHANNEL_ID);
+        options.put(PARAM_KEY_QUEUENAME, MfhApi.PARAM_VALUE_QUEUE_NAME_DEF);
+        options.put(PARAM_KEY_JSONSTR, JSON.toJSONString(IMFactory.register(clientId, guid)));
+        options.put(PARAM_KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        IMHttpManager.getInstance().registerMessageBridge("http://mobile.mixicook.com/",
+                options, new Subscriber<BizMsgParamWithSession>() {
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //查询失败
-//                        animProgress.setVisibility(View.GONE);
-                        ZLogger.df("注册消息桥失败" + errMsg);
+                    public void onCompleted() {
+                        ZLogger.d("onCompleted");
                     }
 
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        //{"code":"0","msg":"新增成功!","version":"1","data":{"val":"463"}}
-//                        {"code":"0","msg":"新增成功!","version":"1","data":""}
-//                        animProgress.setVisibility(View.GONE);
-                        RspBean<BizMsgParamWithSession> retValue = (RspBean<BizMsgParamWithSession>) rspData;
-                        ZLogger.df(String.format("注册消息桥成功: %s", JSON.toJSON(retValue.getValue())));
+                    public void onError(Throwable e) {
+//                HTTP 401 Unauthorized
+//                HTTP 500 Internal Server Error
+                        ZLogger.e("注册消息桥失败－－" + e.getMessage());
+                    }
 
+                    @Override
+                    public void onNext(BizMsgParamWithSession bizMsgParamWithSession) {
+                        ZLogger.df(String.format("注册消息桥成功: %s", JSON.toJSON(bizMsgParamWithSession)));
                         IMConfig.updateIdentify(guid);
-                    }
-                }
-                , BizMsgParamWithSession.class
-                , mContext) {
-        };
 
-        IMApi.registerBridge(guid, clientId, responseCallback);
+                    }
+
+                });
     }
 
 

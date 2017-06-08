@@ -119,7 +119,7 @@ public class PrepareActivity extends BaseActivity {
         if (curStep == 1){
             return;
         }
-        ZLogger.df("准备跳转到组货页面");
+//        ZLogger.df("准备跳转到组货页面");
         curStep = 1;
 
         try{
@@ -140,7 +140,7 @@ public class PrepareActivity extends BaseActivity {
             e.printStackTrace();
             ZLogger.ef(e.toString());
         }
-        ZLogger.df("跳转到组货页面end");
+//        ZLogger.df("跳转到组货页面end");
     }
 
     /**
@@ -153,7 +153,7 @@ public class PrepareActivity extends BaseActivity {
         if (curStep == 2){
             return;
         }
-        ZLogger.df("准备跳转到第三方外卖组货页面");
+//        ZLogger.df("准备跳转到第三方外卖组货页面");
         curStep = 2;
 
         try{
@@ -177,13 +177,13 @@ public class PrepareActivity extends BaseActivity {
             e.printStackTrace();
             ZLogger.ef(e.toString());
         }
-        ZLogger.df("跳转到组货页面end");
+//        ZLogger.df("跳转到组货页面end");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PrepareEvent event) {
         Bundle args = event.getArgs();
-        ZLogger.df(String.format("PrepareEvent:%d\n%s",
+        ZLogger.d(String.format("PrepareEvent:%d\n%s",
                 event.getAction(), StringUtils.decodeBundle(args)));
         switch (event.getAction()){
             case PrepareEvent.ACTION_PREPARE:{

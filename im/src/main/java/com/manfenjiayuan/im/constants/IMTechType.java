@@ -5,19 +5,19 @@ package com.manfenjiayuan.im.constants;
  * Created by bingshanguxue on 16/3/2.
  */
 public class IMTechType {
-    public static final String RAW         = "raw";
-    public static final String TEXT        = "text";
-    public static final String VOICE       = "voice";
-    public static final String TUWEN       = "tuwen";
-    public static final String IMAGE       = "image";
-    public static final String EMOTION     = "emotion";
-    public static final String POS         = "position";
-    public static final String VIDEO       = "video";
-    public static final String CARD        = "card";
-    public static final String LINK        = "link";
-    public static final String JSON        = "json";
-    public static final String TEMPLATE    = "templete";
-    public static final String RESOURCE    = "resource";
+    public static final String RAW = "raw";
+    public static final String TEXT = "text";
+    public static final String VOICE = "voice";
+    public static final String TUWEN = "tuwen";
+    public static final String IMAGE = "image";
+    public static final String EMOTION = "emotion";
+    public static final String POS = "position";
+    public static final String VIDEO = "video";
+    public static final String CARD = "card";
+    public static final String LINK = "link";
+    public static final String JSON = "json";
+    public static final String TEMPLATE = "templete";
+    public static final String RESOURCE = "resource";
 
 
     public static String name(String value) {

@@ -161,10 +161,15 @@ public class Printer implements IPrinter {
         }
     }
 
-    public static  void print(List<EscCommand> escCommands) {
+    public static  void print(List<EscCommand> escCommands){
         if (escCommands != null && escCommands.size() > 0) {
             for (EscCommand escCommand : escCommands) {
                 print(escCommand);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }

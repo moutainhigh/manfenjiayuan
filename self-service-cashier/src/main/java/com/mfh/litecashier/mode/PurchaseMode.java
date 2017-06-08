@@ -80,7 +80,7 @@ public class PurchaseMode {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        ZLogger.df("加载采购商品列表失败:" + e.toString());
+                        ZLogger.ef("加载采购商品列表失败:" + e.toString());
 
                         if (listener != null) {
                             listener.onError(e.toString());

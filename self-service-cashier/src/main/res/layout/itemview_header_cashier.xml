@@ -25,6 +25,14 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
+        android:text="会员价"
+        android:gravity="center" />
+
+    <TextView
+        style="@style/mfh_textview_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:text="折扣"
         android:gravity="center" />
 

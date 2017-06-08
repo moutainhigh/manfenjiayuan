@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 自定义ViewPager，解决ViewPagger嵌套使用时不滑动问题。
- * Created by NAT.ZZN on 2015/4/20.
+ * Created by bingshanguxue on 2015/4/20.
  */
 public class HorizontalInnerViewPager extends ViewPager {
     @IntDef({RESUME, PAUSE, DESTROY})
@@ -40,6 +40,7 @@ public class HorizontalInnerViewPager extends ViewPager {
      */
     private ScheduledExecutorService mCarouselTimer;
     private static final long DEFAULT_PERIOD = 1000 * 2;
+    private boolean isTimerEnabled = false;
 
     /**
      * 触摸时按下的点
@@ -144,7 +145,9 @@ public class HorizontalInnerViewPager extends ViewPager {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         shutdownTimer();
-        startupTimer(DEFAULT_PERIOD);
+        if (isTimerEnabled) {
+            startupTimer(DEFAULT_PERIOD);
+        }
     }
 
     @Override
@@ -155,9 +158,9 @@ public class HorizontalInnerViewPager extends ViewPager {
 
     /**
      * 开启定时器
-     * */
-    public void startupTimer(long period){
-        if (mCarouselTimer == null){
+     */
+    public void startupTimer(long period) {
+        if (mCarouselTimer == null) {
             mCarouselTimer = Executors.newSingleThreadScheduledExecutor();
         }
         mCarouselTimer.scheduleAtFixedRate(new Runnable() {
@@ -185,13 +188,22 @@ public class HorizontalInnerViewPager extends ViewPager {
             }
         }, 1000 * 2, period, TimeUnit.MILLISECONDS);
     }
+
     /**
      * 关闭定时器
-     * */
+     */
     public void shutdownTimer() {
         if (mCarouselTimer != null && !mCarouselTimer.isShutdown()) {
             mCarouselTimer.shutdown();
         }
         mCarouselTimer = null;
+    }
+
+    public boolean isTimerEnabled() {
+        return isTimerEnabled;
+    }
+
+    public void setTimerEnabled(boolean timerEnabled) {
+        isTimerEnabled = timerEnabled;
     }
 }

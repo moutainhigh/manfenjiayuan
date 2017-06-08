@@ -14,7 +14,6 @@ import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
@@ -26,6 +25,8 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
@@ -255,44 +256,35 @@ public class FrontendCategoryGoodsFragment extends BaseFragment {
         }
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-        ScCategoryInfoApi.create(parentId, CateApi.DOMAIN_TYPE_PROD,
-                CateApi.CATE_POSITION_FRONT, MfhLoginService.get().getSpid(),
-                nameCn, null, createRC);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("kind", "code");
+        jsonObject.put("domain", String.valueOf(CateApi.DOMAIN_TYPE_PROD));
+        jsonObject.put("nameCn", nameCn);
+        jsonObject.put("catePosition", String.valueOf(CateApi.CATE_POSITION_FRONT));
+        jsonObject.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
+//        jsonObject.put("cateType", String.valueOf(CateApi.POS));
+        jsonObject.put("parentId", parentId);
+
+        ScCategoryInfoHttpManager.getInstance().create(MfhLoginService.get().getCurrentSessionId(),
+                jsonObject, new MValueSubscriber<String>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.df("创建前台类目失败, " + e.getMessage());
+                        hideProgressDialog();
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+
+                        ZLogger.d("新建前台类目成功:" + data);
+                        hideProgressDialog();
+                    }
+
+                });
     }
 
-    private NetCallBack.NetTaskCallBack createRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    ZLogger.df("创建前台类目失败, " + errMsg);
-                    hideProgressDialog();
-                }
-
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //新建类目成功，保存类目信息，并触发同步。
-                    try {
-                        if (rspData != null) {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String result = retValue.getValue();
-                            Long code = Long.valueOf(result);
-                            ZLogger.df("新建前台类目成功:" + code);
-
-                            //后台发送消息触发同步
-//                            DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY);
-                        }
-
-                    } catch (Exception e) {
-                        ZLogger.ef(e.toString());
-                    }
-                    hideProgressDialog();
-                }
-            }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
 
     /**
      * 修改类目名称/删除类目

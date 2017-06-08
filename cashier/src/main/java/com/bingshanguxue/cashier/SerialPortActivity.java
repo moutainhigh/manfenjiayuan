@@ -4,9 +4,9 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 
-import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DataConvertUtil;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,7 +30,8 @@ import android_serialport_api.SerialPortFinder;
  */
 public abstract class SerialPortActivity extends BaseActivity {
     DispQueueThread DispQueue;//刷新显示线程
-    private SerialPortFinder mSerialPortFinder;//串口设备搜索
+    /**串口设备搜索*/
+    private SerialPortFinder mSerialPortFinder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,7 +257,7 @@ public abstract class SerialPortActivity extends BaseActivity {
         }
         ZLogger.d("devicePath:" + allDevices.toString());
       
-        if (!BizConfig.RELEASE){
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
             String[] entryValues2 = mSerialPortFinder.getAllDevices();
             List<String> allDevices2 = new ArrayList<>();
             if (entryValues2 != null) {

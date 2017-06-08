@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/mfhtheme_maskPrimary"
+                android:padding="@dimen/spacing_double">
+
+    <RelativeLayout
+        android:id="@+id/ll_cash"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/tv_curcash"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="余额"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"/>
+
+        <TextView
+            android:id="@+id/tv_topup"
+            style="@style/singleline_text"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/tv_curcash"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@drawable/bg_fab_circle_green"
+            android:gravity="center"
+            android:text="充"
+            android:textColor="@color/material_white"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_score"
+        android:layout_width="140dp"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@+id/ll_cash"
+        android:padding="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/tv_curscore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="积分"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"/>
+
+        <!--挂单-->
+        <TextView
+            android:id="@+id/tv_deduct"
+            style="@style/singleline_text"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_below="@+id/tv_curscore"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:background="@drawable/bg_fab_circle_green"
+            android:gravity="center"
+            android:text="扣"
+            android:textColor="@color/material_white"
+            android:textSize="16sp"
+            android:visibility="gone"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--头像-->
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
+            android:id="@+id/iv_header"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/chat_tmp_user_head"/>
+
+        <TextView
+            android:id="@+id/tv_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_header"
+            android:layout_margin="@dimen/spacing_normal"
+            android:gravity="center"
+            android:text="手机号"
+            android:textColor="@color/material_black"
+            android:textSize="@dimen/textsize_normal"/>
+    </RelativeLayout>
+
+</RelativeLayout>

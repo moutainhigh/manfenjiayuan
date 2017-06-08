@@ -80,7 +80,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
         goodsInfoEXArray.setArrayGoodsInfoEx(arrayOfGoodsInfoEX);
         request.addProperty("goodsInfoExArray", goodsInfoEXArray);
 //        request.addProperty("goodsInfoExArray", new ArrayOfGoodsInfoEX(arrayGoodsInfoEx));
-        ZLogger.df(String.format("request: %s", request.toString()));
+        ZLogger.d(String.format("request: %s", request.toString()));
 
         //Step 2: Create envelope
         SoapSerializationEnvelope envelope = KSoapHelper.getSoapSerializationEnvelope(request);
@@ -106,16 +106,16 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
             //Invole web service
             httpTransportSE.call(GreenTagsApi.SOAP_ACTION_ESLPushGoodsInfoExPack, envelope);
 
-            ZLogger.d(String.format("requestDump: %s", httpTransportSE.requestDump));
-            ZLogger.df(String.format("responseDump: %s", httpTransportSE.responseDump));
+            ZLogger.d(String.format(">>requestDump: %s", httpTransportSE.requestDump));
+            ZLogger.d(String.format("<<responseDump: %s", httpTransportSE.responseDump));
             //Get the response
             SoapObject response1 = (SoapObject) envelope.getResponse();
-            ZLogger.df(String.format("response1: %s",
+            ZLogger.d(String.format("response1: %s",
                     response1 != null ? response1.toString() : "[NULL]"));
 
 //                ESLPushGoodsInfoExPackResponse{}
             SoapObject response2 = (SoapObject) envelope.bodyIn;
-            ZLogger.df(String.format("response2: %s",
+            ZLogger.d(String.format("response2: %s",
                     response2 != null ? response2.toString() : "[NULL]"));
 
 //            if (response2 != null) {
@@ -131,7 +131,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
 
             return new ESLPushGoodsInfoExPackResult(true, startCursor);
         } catch (Exception e) {
-            ZLogger.e(String.format("ESLPushGoodsInfoExPack failed: %s", e.toString()));
+            ZLogger.ef(String.format("ESLPushGoodsInfoExPack failed: %s", e.toString()));
             return new ESLPushGoodsInfoExPackResult(false);
         }
     }
@@ -151,7 +151,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
         goodsInfoEXArray.setArrayGoodsInfoEx(arrayOfGoodsInfoEX);
         request.addProperty("goodsInfoExArray", goodsInfoEXArray);
 //        request.addProperty("goodsInfoExArray", new ArrayOfGoodsInfoEX(arrayGoodsInfoEx));
-        ZLogger.df(String.format("request: %s", request.toString()));
+        ZLogger.d(String.format("request: %s", request.toString()));
 
         //Step 2: Create envelope
         SoapSerializationEnvelope envelope = KSoapHelper.getSoapSerializationEnvelope(request);
@@ -167,7 +167,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
         envelope.addMapping(SOAP_ENTITYEX_NAMESPACE, "ModelType", ModelType.class);
         envelope.addMapping(SOAP_ENTITYEX_NAMESPACE, "ReaderInfoEX", ReaderInfoEX.class);
         envelope.addMapping(SOAP_ENTITYEX_NAMESPACE, "ReaderStatus", ReaderStatus.class);
-        ZLogger.df(String.format("envelope: %s", envelope.toString()));
+        ZLogger.d(String.format("envelope: %s", envelope.toString()));
 
 //        ZHttpTransportSE.getInstance().printDump(envelope);
 
@@ -182,16 +182,16 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
             httpTransportSE.call(GreenTagsApi.SOAP_ACTION_ESLPushGoodsInfoExPack,
                     envelope, headerPropertyArrayList);
 
-            ZLogger.df(String.format("requestDump: %s", httpTransportSE.requestDump));
-            ZLogger.df(String.format("responseDump: %s", httpTransportSE.responseDump));
+            ZLogger.d(String.format(">>requestDump: %s", httpTransportSE.requestDump));
+            ZLogger.d(String.format("<<responseDump: %s", httpTransportSE.responseDump));
             //Get the response
             SoapObject response1 = (SoapObject) envelope.getResponse();
-            ZLogger.df(String.format("response1: %s",
+            ZLogger.d(String.format("response1: %s",
                     response1 != null ? response1.toString() : "[NULL]"));
 
 //                ESLPushGoodsInfoExPackResponse{}
             SoapObject response2 = (SoapObject) envelope.bodyIn;
-            ZLogger.df(String.format("response2: %s",
+            ZLogger.d(String.format("response2: %s",
                     response2 != null ? response2.toString() : "[NULL]"));
 
 //            if (response2 != null) {

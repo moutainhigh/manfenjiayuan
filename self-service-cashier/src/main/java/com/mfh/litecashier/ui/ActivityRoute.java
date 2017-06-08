@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
+import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
+import com.mfh.litecashier.ui.fragment.topup.TransferFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 
 /**
@@ -129,13 +132,34 @@ public class ActivityRoute {
     /**
      * 积分兑换
      * */
-    public static void redirect2ExchangeScore(Context context){
+    public static void redirect2ExchangeScore(Context context, Human human){
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
-                SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+                SimpleDialogActivity.DT_MIDDLE);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleDialogActivity.FT_EXCHANGE_SCORE);
+        if (human != null) {
+            extras.putSerializable(ExchangeScoreFragment.EXTRA_HUMAN,
+                    human);
+        }
+        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
+
+    /**
+     * 会员充值
+     * */
+    public static void redirect2Transfer(Context context, Human human){
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+                SimpleDialogActivity.DT_MIDDLE);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+                SimpleDialogActivity.FT_CUSTOMER_TOPUP);
+        if (human != null) {
+            extras.putSerializable(TransferFragment.EXTRA_HUMAN,
+                    human);
+        }
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
     }
 
@@ -166,6 +190,18 @@ public class ActivityRoute {
     }
 
     /**
+     * 对账
+     */
+    public static void redirect2Reconcile(Context context) {
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_RECONCILE);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
+        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
+
+    /**
      * 后台类目
      */
     public static void redirect2BackendCategory(Context context) {
@@ -189,5 +225,15 @@ public class ActivityRoute {
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
                 SimpleDialogActivity.FT_ONEKEY_FEEDBACK);
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+    }
+
+    /**
+     * 取包裹
+     */
+    public static void packageService(Context context) {
+        Bundle extras = new Bundle();
+        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_STOCK_DETAIL);
+        FragmentActivity.actionStart(context, extras);
     }
 }

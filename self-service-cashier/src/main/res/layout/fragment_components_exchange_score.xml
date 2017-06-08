@@ -2,7 +2,6 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/spacing_double"
                 android:background="@color/material_white"
                 android:baselineAligned="false"
                 android:orientation="vertical">
@@ -11,53 +10,50 @@
         android:id="@+id/frame_top"
         layout="@layout/dialogview_headerview"/>
 
-    <TextView
-        android:id="@+id/tv_score"
+    <!--会员信息-->
+    <com.mfh.litecashier.ui.widget.CustomerView
+        android:id="@+id/customer_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/frame_top"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/spacing_4x"
-        android:drawableBottom="@mipmap/ic_marker_edit"
-        android:drawablePadding="@dimen/spacing_micro"
-        android:gravity="center"
-        android:hint="请输入积分"
-        android:minHeight="56dp"
-        android:text=""
-        android:textColor="#FE5000"
-        android:textSize="90sp"
-        style="@style/singleline_text"
-        />
+        android:layout_height="160dp"
+        android:layout_below="@+id/frame_top"/>
 
-    <EditText
-        android:id="@+id/et_pay_code"
-        style="@style/mfh_edittext_normal"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_score"
-        android:layout_margin="@dimen/spacing_4x"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_exchange"
+        android:layout_below="@+id/customer_view"
         android:gravity="center"
-        android:hint="请扫描支付码"
-        android:inputType="textPassword"
-        android:maxLines="1"
-        android:minHeight="48dp"
-        android:padding="@dimen/spacing_micro"
-        android:textColor="@color/material_black"
-        android:textSize="16sp">
+        android:orientation="horizontal"
+        android:padding="@dimen/spacing_double">
 
-        <requestFocus
-            android:duplicateParentState="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"/>
-    </EditText>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="72dp"
+            android:gravity="center_vertical"
+            android:text="扣除积分"
+            android:textColor="@color/black_70"
+            android:textSize="18sp"/>
+
+        <com.mfh.litecashier.ui.widget.InputNumberLabelView
+            android:id="@+id/label_deductScore"
+            android:layout_width="400dp"
+            android:layout_height="56dp"
+            android:layout_marginStart="@dimen/spacing_double"
+            app:editInputType="number"
+            app:editTextColor="@color/material_black"
+            app:editTextColorHint="@color/mfh_textColorHint"
+            app:inputNumberLabelView_inputHint="积分"
+            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_keyboard_del"/>
+
+    </LinearLayout>
+
 
     <Button
         android:id="@+id/button_exchange"
         style="?android:attr/buttonBarButtonStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/spacing_4x"
         android:background="@drawable/btn_rectange_primary"
         android:gravity="center"
         android:text="立即兑换"

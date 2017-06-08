@@ -51,7 +51,7 @@ public class SerialPortFinder {
 							///dev/rfcomm,/dev/ttyUSB,/dev/ttyGS,/dev/ttymxc
 							if (absolutePath.startsWith(mDeviceRoot)) {
 								//ignore /dev/ttyGS3,/dev/ttyGS2,/dev/ttyGS1,/dev/ttyGS0
-								ZLogger.df("add new device: " + file);
+								ZLogger.d("add new device: " + file);
 								mDevices.add(file);
 							}
 						}

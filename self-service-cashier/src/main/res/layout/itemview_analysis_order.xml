@@ -5,7 +5,7 @@
     android:gravity="center"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp">
+    android:padding="@dimen/spacing_normal">
 
     <TextView
         android:id="@+id/tv_index"
@@ -13,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
+        android:gravity="center_vertical|start"
         android:text="序号" />
 
     <TextView
@@ -21,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:text="业务类型"/>
     <TextView
         android:id="@+id/tv_quantity"
@@ -29,7 +30,7 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_vertical"
+        android:gravity="center_vertical|start"
         android:text="数量" />
 
     <TextView
@@ -38,19 +39,8 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
+        android:gravity="center_vertical|start"
         android:text="金额" />
-
-
-    <TextView
-        style="@style/mfh_form_header_text"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:visibility="invisible"
-        android:text="毛利率"
-        android:maxLines="1"/>
 
 
 </LinearLayout>

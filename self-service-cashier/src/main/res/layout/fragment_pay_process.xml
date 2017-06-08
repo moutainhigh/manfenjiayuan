@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/tv_countdown"
+        style="@style/singleline_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="0秒"
         android:textColor="@color/material_green_500"
         android:textSize="64sp"
-        style="@style/singleline_text"
         />
 
     <LinearLayout
@@ -27,7 +27,7 @@
             android:id="@+id/animProgress"
             style="@style/loading"
             android:layout_width="30dip"
-            android:layout_height="30dip" />
+            android:layout_height="30dip"/>
 
         <TextView
             android:id="@+id/tv_process"
@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="正在发起支付请求"
-            android:textColor="@color/black_60" />
+            android:textColor="@color/black_60"/>
     </LinearLayout>
 
     <LinearLayout
@@ -51,12 +51,14 @@
             android:id="@+id/fab_cancel"
             style="@style/FloatImageButton"
             android:layout_margin="@dimen/spacing_double"
+            android:contentDescription="@null"
             android:src="@mipmap/ic_cancel_white_64"/>
 
         <ImageButton
             android:id="@+id/fab_refresh"
             style="@style/FloatImageButton"
             android:layout_margin="@dimen/spacing_double"
+            android:contentDescription="@null"
             android:src="@mipmap/ic_refresh_white_64"/>
 
     </LinearLayout>

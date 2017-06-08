@@ -1,11 +1,12 @@
 package com.mfh.litecashier.database.logic;
 
 import com.alibaba.fastjson.JSON;
+import com.manfenjiayuan.business.bean.wrapper.PurchaseShopcartGoodsWrapper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
-import com.manfenjiayuan.business.bean.wrapper.PurchaseShopcartGoodsWrapper;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.litecashier.database.dao.PurchaseOrderDao;
 import com.mfh.litecashier.database.entity.PurchaseOrderEntity;
 
@@ -197,19 +198,21 @@ public class PurchaseOrderService extends BaseService<PurchaseOrderEntity, Strin
      * 保存生鲜商品
      * */
     public void addToShopcart(Integer purchaseType, PurchaseShopcartGoodsWrapper goods){
+        Date rightNow = TimeUtil.getCurrentDate();
+
         PurchaseOrderEntity orderEntity = PurchaseOrderService.getInstance()
                 .fetchOrder(purchaseType, goods.getSupplyId());
         if (orderEntity == null){
             orderEntity = new PurchaseOrderEntity();
-            orderEntity.setCreatedDate(new Date());
+            orderEntity.setCreatedDate(rightNow);
             orderEntity.setPurchaseType(purchaseType);
             orderEntity.setProviderId(goods.getSupplyId());
         }
         orderEntity.setProviderName(goods.getSupplyName());
         orderEntity.setIsPrivate(goods.getIsPrivate());
-        orderEntity.setUpdatedDate(new Date());
+        orderEntity.setUpdatedDate(rightNow);
         PurchaseOrderService.getInstance().saveOrUpdate(orderEntity);
-        ZLogger.df(String.format("保存or更新采购订单：\n%s", JSON.toJSONString(orderEntity)));
+        ZLogger.d(String.format("保存or更新采购订单：\n%s", JSON.toJSONString(orderEntity)));
     }
 
 

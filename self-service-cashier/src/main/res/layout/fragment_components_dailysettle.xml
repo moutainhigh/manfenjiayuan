@@ -38,7 +38,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
-            android:text="结算人："/>
+            android:text="帐号："/>
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -67,66 +67,26 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_brief_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_brief_1"
-        android:layout_marginEnd="@dimen/spacing_double"
-        android:layout_marginStart="@dimen/spacing_double"
-        android:orientation="horizontal"
-        android:padding="8dp">
-        <!--营业额合计-->
-        <TextView
-            android:id="@+id/tv_amount"
-            style="@style/mfh_textview_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="营业额合计："/>
-
-        <!--非现金收取-->
-        <TextView
-            android:id="@+id/tv_not_cash"
-            style="@style/mfh_textview_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="非现金收取："/>
-
-        <!--现金收取-->
-        <TextView
-            android:id="@+id/tv_cash"
-            style="@style/mfh_textview_text"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:text="现金收取："/>
-    </LinearLayout>
-
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/ll_brief_2"
+        android:layout_below="@+id/ll_brief_1"
         android:layout_marginBottom="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/spacing_4x"
         android:layout_marginStart="@dimen/spacing_4x"
-        android:layout_marginTop="@dimen/spacing_double"
+        android:layout_marginTop="@dimen/spacing_normal"
         android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/spacing_double"
             android:orientation="vertical">
 
             <!--头部-->
             <include
-                android:id="@+id/frame_header_goods_list"
                 layout="@layout/itemview_analysis_agg_header"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"/>
@@ -154,8 +114,42 @@
 
             </FrameLayout>
 
+            <LinearLayout
+                android:id="@+id/footerview_agg_datalist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal"
+                android:visibility="gone">
+                <!--营业额合计-->
+                <TextView
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5"
+                    android:gravity="center_vertical|end"
+                    android:text="合计："/>
+
+                <!--非现金收取-->
+                <TextView
+                    android:id="@+id/tv_agg_turnover"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"/>
+
+                <!--现金收取-->
+                <TextView
+                    android:id="@+id/tv_agg_salesBalance"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"/>
+            </LinearLayout>
+
             <include
-                android:id="@+id/frame_header_goods_list"
                 layout="@layout/itemview_analysis_acc_header"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -183,6 +177,104 @@
 
             </FrameLayout>
 
+            <LinearLayout
+                android:id="@+id/footerview_acc1_datalist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal"
+                android:visibility="gone">
+                <!--营业额合计-->
+                <TextView
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5"
+                    android:gravity="center_vertical|end"
+                    android:text="合计："/>
+
+                <!--非现金收取-->
+                <TextView
+                    android:id="@+id/tv_acc1_bcount"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"/>
+
+                <!--现金收取-->
+                <TextView
+                    android:id="@+id/tv_acc1_amount"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"/>
+            </LinearLayout>
+
+            <include
+                layout="@layout/itemview_analysis_acc_header"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_marginTop="8dp"/>
+
+            <!--280dp-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <!--空视图-->
+                <TextView
+                    android:id="@+id/acc_datalist2_empty_view"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="暂无数据"
+                    android:visibility="gone"/>
+
+                <!--订单列表-->
+                <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+                    android:id="@+id/acc_datalist2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </FrameLayout>
+
+            <LinearLayout
+                android:id="@+id/footerview_acc2_datalist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/spacing_normal"
+                android:visibility="gone">
+                <!--营业额合计-->
+                <TextView
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2.5"
+                    android:gravity="center_vertical|end"
+                    android:text="合计："/>
+
+                <!--非现金收取-->
+                <TextView
+                    android:id="@+id/tv_acc2_bcount"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"/>
+
+                <!--现金收取-->
+                <TextView
+                    android:id="@+id/tv_acc2_amount"
+                    style="@style/mfh_textview_text"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"/>
+            </LinearLayout>
+
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
@@ -192,6 +284,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_print_white"/>
 
 </RelativeLayout>

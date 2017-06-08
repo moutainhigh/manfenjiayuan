@@ -106,8 +106,8 @@
             <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
                 android:id="@+id/goods_list"
                 android:layout_width="match_parent"
-                android:layout_below="@+id/ll_procuct_header"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_below="@+id/ll_procuct_header"/>
 
             <!--空视图-->
             <ImageView
@@ -125,6 +125,7 @@
         style="@style/FloatImageButton"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/spacing_double"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_checkmark_white_32"/>
 
 

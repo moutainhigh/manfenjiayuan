@@ -39,7 +39,7 @@ public class SerialPort {
 		try{
 			System.loadLibrary("serial_port");
 		}catch (UnsatisfiedLinkError | Exception e1){
-			ZLogger.e("loadLibrary:serial_port failed, " + e1.toString());
+			ZLogger.ef("loadLibrary:serial_port failed, " + e1.toString());
 		}
 	}
 

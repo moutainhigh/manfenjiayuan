@@ -1,6 +1,5 @@
 package com.mfh.framework.api.invSkuStore;
 
-import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
 import com.mfh.framework.network.NetFactory;
@@ -12,17 +11,6 @@ import net.tsz.afinal.http.AjaxParams;
  * Created by bingshanguxue on 7/28/16.
  */
 public class InvSkuStoreApiImpl extends InvSkuStoreApi{
-    /**
-     * 更新商品信息:
-     * /pmcstock/findConpousByOrderInfo?jsonStr={productId:[1,2,3], officeId:.., shopId:..., orderAmount:...} 其中officeId和shopId可以只提供一个，也可以同时为空
-     */
-    public static void update(String jsonStr, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("jsonStr", jsonStr);
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_UPDATE, params, responseCallback);
-    }
-
     /**
      * 当前登录用户更改其本店库
      * 存商品的线上售卖状态,0代表下线，1代表上线
@@ -77,19 +65,4 @@ public class InvSkuStoreApiImpl extends InvSkuStoreApi{
         AfinalFactory.postDefault(URL_INVSKUSTORE_CHANGESKUSTORE, params, responseCallback);
     }
 
-    /**
-     * 当前登录人员，把平台商品导入到本店仓储中
-     * <ol>
-     * 适用场景
-     * <li>需要登录</li>
-     * </ol>
-     */
-    public static void importFromCenterSkus(String proSkuIds,  AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(proSkuIds)){
-            params.put("proSkuIds", proSkuIds);
-        }
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_IMPORT_FROMCENTERSKUS, params, responseCallback);
-    }
 }

@@ -7,16 +7,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.skinloader.listener.ILoaderListener;
 import com.bingshanguxue.skinloader.loader.SkinManager;
 import com.igexin.sdk.PushManager;
-
-import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.manfenjiayuan.business.GlobalInstanceBase;
-import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.business.hostserver.HostServerFragment;
-import com.mfh.framework.uikit.base.ResultCode;
+import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.business.route.RouteActivity;
 import com.manfenjiayuan.im.IMApi;
 import com.manfenjiayuan.im.IMClient;
@@ -29,10 +27,12 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
+import com.mfh.framework.uikit.base.ResultCode;
 import com.mfh.framework.uikit.widget.LoadingImageView;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -43,7 +43,6 @@ import com.mfh.litecashier.utils.AppHelper;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
 
 import butterknife.BindView;
 import rx.Observable;
@@ -51,6 +50,8 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.igexin.push.core.g.R;
 
 
 /**
@@ -111,7 +112,7 @@ public class SplashActivity extends InitActivity {
     public void initPrimary() {
         super.initPrimary();
         ZLogger.df("set database version.");
-        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 22);
+        DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 24);
 
         setupGetui();
     }
@@ -138,14 +139,14 @@ public class SplashActivity extends InitActivity {
 
                 if (SharedPrefesManagerFactory.isAppFirstStart()) {
                     //保存应用启动时间
-                    SharedPrefesManagerFactory.setAppStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(new Date()));
+                    SharedPrefesManagerFactory.setAppStartupDateTime(TimeCursor.FORMAT_YYYYMMDDHHMMSS.format(TimeUtil.getCurrentDate()));
                     SharedPrefesManagerFactory.setAppFirstStart(false);
                 }
 
                 CashierShopcartService.getInstance().clear();//购物车－收银
                 PosCategoryGodosTempService.getInstance().clear();
 
-                AppHelper.clearRedunantData(false);
+                AppHelper.clearRedunantData(CashierApp.getAppContext(), false);
 
                 //加载会话和群组
                 IMClient.getInstance().groupManager().loadAllGroups();

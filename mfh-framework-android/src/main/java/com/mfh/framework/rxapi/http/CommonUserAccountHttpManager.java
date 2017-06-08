@@ -80,6 +80,15 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         @GET("commonuseraccount/getUserAccountByCardId")
         Observable<MResponse<UserAccount>> getUserAccountByCardId(@QueryMap Map<String, String> options);
 
+        /**
+         * pos机上收银员直接使用自己账户给客户充值，注意是自己账户不是公司账户，通过扫码个人会员码找到收银员个人账户；
+         *
+         * /commonuseraccount/transferFromMyAccount?receiveHumanId=1&amount=1.0&payHumanId=&isCash=1,
+         * 其中 receiveHumanId是接收人humanId；payHumanId是收银员自己的humanId(必须等于当前登录用户)；isCash为1； amount是转账金额。
+         */
+        @GET("commonuseraccount/transferFromMyAccount")
+        Observable<MResponse<UserAccount>> transferFromMyAccount(@QueryMap Map<String, String> options);
+
     }
 
     public void getPayAmountByOrderInfos(Map<String, String> options, Subscriber<List<PayAmount>> subscriber) {
@@ -145,5 +154,11 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         toSubscribe(observable, subscriber);
     }
 
+    public void transferFromMyAccount(Map<String, String> options, Subscriber<UserAccount> subscriber) {
+        CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
+        Observable observable = mfhApi.transferFromMyAccount(options)
+                .map(new MResponseFunc<UserAccount>());
+        toSubscribe(observable, subscriber);
+    }
 
 }

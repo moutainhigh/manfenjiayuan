@@ -366,6 +366,7 @@ public class InventoryIOFragment extends BaseFragment {
             onLoadStart();
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载库存批次，已经是最后一页。");
             onLoadFinished();
         }

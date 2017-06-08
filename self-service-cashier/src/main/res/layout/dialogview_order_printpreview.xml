@@ -34,6 +34,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/spacing_double"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_print_white"/>
 
     <ImageButton
@@ -44,6 +45,7 @@
         android:layout_margin="@dimen/spacing_double"
         android:layout_marginBottom="@dimen/spacing_normal"
         android:layout_marginEnd="@dimen/spacing_double"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_sync_data_normal"/>
 
 </RelativeLayout>

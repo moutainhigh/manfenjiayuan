@@ -21,27 +21,30 @@ import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
 import com.bingshanguxue.cashier.v1.CashierProvider;
-import com.mfh.comn.net.ResponseBody;
-import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.http.AliPayHttpManager;
+import com.mfh.framework.rxapi.http.WePayHttpManager;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.EmptyEntity;
 import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.PayHistoryAdapter;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import rx.Subscriber;
 
 
 /**
@@ -215,18 +218,43 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
      * 4. 调用撤销接口API之前，需确认该笔交易目前支付状态。<br>
      */
     private void queryAlipayOrder(final PosOrderPayEntity entity) {
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
+        }
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+        Map<String, String> options = new HashMap<>();
+        options.put("out_trade_no", entity.getOutTradeNo());
+        options.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AliPayHttpManager.getInstance().query(options,
+                new Subscriber<MResponse<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付状态查询:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
+                    public void onError(Throwable e) {
+                        ZLogger.ef("撤单失败:" + e.toString());
+                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                    }
 
-                        switch (rspBody.getRetCode()) {
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null) {
+                            showProgressDialog(ProgressDialog.STATUS_DONE, "支付宝条码支付状态查询，无响应", true);
+                            return;
+                        }
+                        ZLogger.df(String.format("支付宝条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+
+                        switch (stringMResponse.getCode()) {
                             //业务处理成功
                             // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                            case "0":
+                            case 0:
                                 showProgressDialog(ProgressDialog.STATUS_DONE, "支付成功", true);
 
                                 entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
@@ -236,7 +264,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                                 break;
                             //{"code":"-1","msg":"Success","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
-                            case "-1":
+                            case -1:
                                 showProgressDialog(ProgressDialog.STATUS_DONE, "支付异常", true);
 
                                 entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
@@ -259,29 +287,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                                 break;
                         }
                     }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询订单状态失败:" + errMsg);
-                        //TODO 调用支付宝支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
-
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-        PayApi.queryAliBarpayStatus(entity.getOutTradeNo(), payRespCallback);
+                });
     }
 
     /**
@@ -294,18 +300,42 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
      * 4. 调用撤销接口API之前，需确认该笔交易目前支付状态。<br>
      */
     private void queryWxpayOrder(final PosOrderPayEntity entity) {
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
+        }
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+        Map<String, String> options = new HashMap<>();
+        options.put("out_trade_no", entity.getOutTradeNo());
+        options.put("chId", MfhApi.WXPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        WePayHttpManager.getInstance().query(options,
+                new Subscriber<MResponse<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("微信条码支付状态查询:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
+                    public void onError(Throwable e) {
+                        ZLogger.e("查询订单状态失败:" + e.toString());
+                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+                    }
 
-                        //业务处理成功
-                        // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                        switch (rspBody.getRetCode()) {
-                            case "0":
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null) {
+                            showProgressDialog(ProgressDialog.STATUS_ERROR, "微信条码支付失败，无响应", true);
+                            return;
+                        }
+                        ZLogger.df(String.format("微信条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+
+                        switch (stringMResponse.getCode()) {
+                            case 0:
                                 showProgressDialog(ProgressDialog.STATUS_DONE, "支付成功", true);
 
                                 entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_FINISH);
@@ -315,7 +345,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                                 break;
                             //{"code":"-1","msg":"继续查询","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
-                            case "-1": //-1
+                            case -1: //-1
                                 showProgressDialog(ProgressDialog.STATUS_DONE, "支付异常", true);
 
                                 entity.setPaystatus(PosOrderPayEntity.PAY_STATUS_EXCEPTION);
@@ -334,29 +364,7 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
                                 break;
                         }
                     }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询订单状态失败:" + errMsg);
-                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
-
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-        PayApi.queryWxBarpayStatus(entity.getOutTradeNo(), payRespCallback);
+                });
     }
 
 
@@ -366,11 +374,12 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
     private void autoFixOrder(Long orderId){
         PosOrderEntity orderEntity = PosOrderService.get().getEntityById(String.valueOf(orderId));
         if (orderEntity == null) {
-            ZLogger.df("订单不存在");
+            ZLogger.d("订单不存在");
+            return;
         }
-        CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(orderEntity, null);
+        CashierOrderInfo cashierOrderInfo = CashierProvider.createCashierOrderInfo(orderEntity, null);
         Double handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
-        ZLogger.df("handleAmount=" + handleAmount);
+        ZLogger.d("handleAmount=" + handleAmount);
         if (handleAmount < 0.01) {
             //修改订单支付信息（支付金额，支付状态）
             CashierAgent.updateCashierOrder(cashierOrderInfo, null, PosOrderEntity.ORDER_STATUS_FINISH);
@@ -378,6 +387,8 @@ public class PayHistoryFragment extends BaseListFragment<PosOrderPayEntity> {
             DataUploadManager.getInstance().stepUploadPosOrder(orderEntity);
         }
 
-        productAdapter.notifyDataSetChanged();
+        if (productAdapter != null) {
+            productAdapter.notifyDataSetChanged();
+        }
     }
 }

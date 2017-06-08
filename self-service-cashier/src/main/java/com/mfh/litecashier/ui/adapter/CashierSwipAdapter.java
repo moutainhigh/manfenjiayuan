@@ -11,6 +11,7 @@ import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 
@@ -24,17 +25,16 @@ import butterknife.OnClick;
 
 /**
  * <h1>收银商品适</h1>
- * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class CashierSwipAdapter
         extends SwipAdapter<CashierShopcartEntity, CashierSwipAdapter.CashierViewHolder> {
 
     public interface OnAdapterListener {
         void onPriceClicked(int position);
+        void onCustomerPriceClicked(int position);
         void onDiscountClicked(int position);
-
         void onQuantityClicked(int position);
-
         void onDataSetChanged(boolean needScroll);
     }
 
@@ -52,6 +52,8 @@ public class CashierSwipAdapter
         TextView tvName;
         @BindView(R.id.tv_finalPrice)
         TextView tvFinalPrice;
+        @BindView(R.id.tv_finalCustomerPrice)
+        TextView tvFinalCustomerPrice;
         @BindView(R.id.tv_discount)
         TextView tvDiscount;
         @BindView(R.id.tv_quantity)
@@ -86,6 +88,22 @@ public class CashierSwipAdapter
 //            }
             if (adapterListener != null) {
                 adapterListener.onPriceClicked(getAdapterPosition());
+            }
+        }
+
+        /**
+         * 修改会员成交价
+         */
+        @OnClick(R.id.ll_finalCustomerPrice)
+        public void changeFinalCustomerPrice() {
+//            final int position = getAdapterPosition();
+////
+//            final CashierShopcartEntity original = entityList.get(position);
+//            if (original == null) {
+//                return;
+//            }
+            if (adapterListener != null) {
+                adapterListener.onCustomerPriceClicked(getAdapterPosition());
             }
         }
 
@@ -142,9 +160,11 @@ public class CashierSwipAdapter
         try {
             CashierShopcartEntity entity = getEntity(position);
             if (entity != null){
+//                ZLogger.d(JSONObject.toJSONString(entity));
                 // - replace the contents of the view with that element
                 holder.tvName.setText(entity.getSkuName());
                 holder.tvFinalPrice.setText(String.format("%.2f", entity.getFinalPrice()));
+                holder.tvFinalCustomerPrice.setText(String.format("%.2f", entity.getFinalCustomerPrice()));
                 holder.tvDiscount.setText(String.format("%.0f%%",
                         CashierAgent.calculatePriceDiscount(entity.getCostPrice(),
                         entity.getFinalPrice()) * 100));
@@ -154,7 +174,8 @@ public class CashierSwipAdapter
                 } else {
                     holder.tvCount.setText(String.format("%.2f", entity.getBcount()));
                 }
-                holder.tvAmount.setText(String.format("%.2f", entity.getFinalAmount()));
+                //显示会员价小计
+                holder.tvAmount.setText(String.format("%.2f", MathCompact.mult(entity.getFinalCustomerPrice(), entity.getBcount())));
             }
 
         } catch (Exception e) {
@@ -173,12 +194,13 @@ public class CashierSwipAdapter
     @Override
     public void removeEntity(int position) {
         CashierShopcartEntity entity = getEntity(position);
-        if (entity == null){
+        if (entity == null || entity.getId() == null){
             return;
         }
 
         CashierShopcartService.getInstance().deleteById(String.valueOf(entity.getId()));
         //刷新列表
+
         entityList.remove(position);
         notifyItemRemoved(position);
 

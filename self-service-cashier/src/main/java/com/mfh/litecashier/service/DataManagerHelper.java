@@ -30,7 +30,7 @@ public class DataManagerHelper {
         if (!StringUtils.isEmpty(startCursor)) {
             try {
                 Date d1 = TimeCursor.InnerFormat.parse(startCursor);
-                Date rightNow = new Date();
+                Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
                     ZLogger.df(String.format("商品档案同步游标大于当前时间，使用当前时间(%s)。", startCursor));
@@ -55,7 +55,7 @@ public class DataManagerHelper {
         if (!StringUtils.isEmpty(startCursor)) {
             try {
                 Date d1 = TimeCursor.InnerFormat.parse(startCursor);
-                Date rightNow = new Date();
+                Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
                     ZLogger.df(String.format("上次商品和类目关系表更新游标大于当前时间，使用当前时间(%s)。", startCursor));
@@ -82,7 +82,7 @@ public class DataManagerHelper {
             //得到指定模范的时间
             try {
                 Date lastSyncDate = TimeCursor.InnerFormat.parse(lastSyncCursor);
-                Date rightNow = new Date();
+                Date rightNow = TimeUtil.getCurrentDate();
                 if (lastSyncDate.compareTo(rightNow) > 0) {
                     lastSyncCursor = TimeCursor.InnerFormat.format(rightNow);
 //                    SharedPreferencesUltimate.setPosOrderLastUpdate(d2);
@@ -121,7 +121,7 @@ public class DataManagerHelper {
             //得到指定模范的时间
             try {
                 Date d1 = TimeCursor.InnerFormat.parse(startCursor);
-                Date rightNow = new Date();
+                Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
 //                    SharedPreferencesUltimate.setPosOrderLastUpdate(d2);

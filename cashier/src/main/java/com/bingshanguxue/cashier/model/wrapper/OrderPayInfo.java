@@ -3,6 +3,7 @@ package com.bingshanguxue.cashier.model.wrapper;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.api.posorder.PayWay;
 import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.StringUtils;
 

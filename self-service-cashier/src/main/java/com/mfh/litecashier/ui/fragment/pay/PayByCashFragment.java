@@ -46,7 +46,7 @@ public class PayByCashFragment extends BasePayFragment {
     @BindView(R.id.tv_charge)
     FontFitTextView tvCharge;
 
-    private NumberInputDialog barcodeInputDialog = null;
+    private NumberInputDialog priceDialog = null;
 
     @Override
     protected int getLayoutResId() {
@@ -71,7 +71,7 @@ public class PayByCashFragment extends BasePayFragment {
         super.onResume();
 
         //TODO,主动去请求当前价格
-        EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_WAYTYPE_UPDATED, null));
+//        EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_WAYTYPE_UPDATED, null));
     }
 
     @Override
@@ -219,6 +219,9 @@ public class PayByCashFragment extends BasePayFragment {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             ZLogger.df("取消现金支付");
+                            inlvPaidMoney.clear();
+                            inlvPaidMoney.requestFocusEnd();
+
                         }
                     });
         } else {
@@ -262,12 +265,12 @@ public class PayByCashFragment extends BasePayFragment {
      * 相当于扫描条码
      */
     private void showBarcodeKeyboard() {
-        if (barcodeInputDialog == null) {
-            barcodeInputDialog = new NumberInputDialog(getActivity());
-            barcodeInputDialog.setCancelable(true);
-            barcodeInputDialog.setCanceledOnTouchOutside(true);
+        if (priceDialog == null) {
+            priceDialog = new NumberInputDialog(getActivity());
+            priceDialog.setCancelable(true);
+            priceDialog.setCanceledOnTouchOutside(true);
         }
-        barcodeInputDialog.initializeDecimalNumber(EditInputType.PRICE, "现金",
+        priceDialog.initializeDecimalNumber(EditInputType.PRICE, "现金",
                 inlvPaidMoney.getInputString(), 2, "元",
                 new NumberInputDialog.OnResponseCallback() {
                     @Override
@@ -296,14 +299,14 @@ public class PayByCashFragment extends BasePayFragment {
 
                 });
 //        barcodeInputDialog.setMinimumDoubleCheck(0.01D, true);
-        if (!barcodeInputDialog.isShowing()) {
-            barcodeInputDialog.show();
+        if (!priceDialog.isShowing()) {
+            priceDialog.show();
         }
     }
 
     /**
      * 支付成功
-     * */
+     */
     private void onPaidSucceed() {
         PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, payType,
                 PosOrderPayEntity.PAY_STATUS_FINISH,

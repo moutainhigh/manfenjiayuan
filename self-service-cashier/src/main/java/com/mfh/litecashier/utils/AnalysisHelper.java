@@ -46,18 +46,18 @@ public class AnalysisHelper {
                 TimeUtil.format(lastHandoverDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
 
         //当前交接班时间
-        Date currentHandoverDate = new Date();
+        Date rightNow = TimeUtil.getCurrentDate();
 
         HandOverBill handOverBill = new HandOverBill();
         handOverBill.setOfficeName(MfhLoginService.get().getCurOfficeName());
         handOverBill.setHumanName(MfhLoginService.get().getHumanName());
         handOverBill.setStartDate(lastHandoverDate);//TODO,使用登录时间
-        handOverBill.setEndDate(currentHandoverDate);
+        handOverBill.setEndDate(rightNow);
         handOverBill.setAggItems(null);
         handOverBill.setAccItems(null);
 
         //班次
-        if (TimeUtil.isSameDay(lastHandoverDate, currentHandoverDate)){
+        if (TimeUtil.isSameDay(lastHandoverDate, rightNow)){
             ZLogger.d("上一次交班时间和当前时间是同一天，班次编号 ＋1");
             handOverBill.setShiftId(lastHandoverShiftId + 1);
         }
@@ -76,7 +76,7 @@ public class AnalysisHelper {
      * */
     public static DailysettleInfo createDailysettle(String dailySettleDatetime){
         //判断日结日期
-        Date dailySettleDate = new Date();//日结日期
+        Date dailySettleDate = TimeUtil.getCurrentDate();//日结日期
         if (!StringUtils.isEmpty(dailySettleDatetime)){
             try {
                 dailySettleDate = TimeCursor.FORMAT_YYYYMMDDHHMMSS.parse(dailySettleDatetime);
@@ -96,35 +96,54 @@ public class AnalysisHelper {
         DailysettleInfo dailysettleInfo = new DailysettleInfo();
 
         dailysettleInfo.setCreatedDate(dailySettleDate);//日结日期
-        dailysettleInfo.setUpdatedDate(new Date());
+        dailysettleInfo.setUpdatedDate(TimeUtil.getCurrentDate());
         dailysettleInfo.setOfficeId(MfhLoginService.get().getCurOfficeId());
         dailysettleInfo.setOfficeName(MfhLoginService.get().getCurOfficeName());
         dailysettleInfo.setHumanName(MfhLoginService.get().getHumanName());
 
-        ZLogger.df(String.format("新建or更新日结单:\n%s",
+        ZLogger.d(String.format("新建or更新日结单:\n%s",
                 JSON.toJSONString(dailysettleInfo)));
 
         return dailysettleInfo;
     }
 
-    private static AnalysisItemWrapper translateAggItem(AggItem aggItem){
-        AnalysisItemWrapper itemWrapper = new AnalysisItemWrapper();
-        if (aggItem != null){
-            itemWrapper.setCaption(String.format("%s/%s",
-                    aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption()));
-            itemWrapper.setTurnover(aggItem.getTurnover());
-            itemWrapper.setOrderNum(aggItem.getOrderNum());
-            itemWrapper.setGrossProfit(aggItem.getGrossProfit());
-            itemWrapper.setIsShowIndex(true);
+    public static List<AnalysisItemWrapper> wrapperAggItems(List<AggItem> aggItems){
+        List<AnalysisItemWrapper> items = new ArrayList<>();
+
+        if (aggItems != null && aggItems.size() > 0){
+            for (AggItem aggItem : aggItems){
+                AnalysisItemWrapper itemWrapper = new AnalysisItemWrapper();
+                itemWrapper.setCaption(String.format("%s/%s",
+                        aggItem.getBizTypeCaption(), aggItem.getSubTypeCaption()));
+                itemWrapper.setTurnover(aggItem.getTurnover());
+                itemWrapper.setOrderNum(aggItem.getOrderNum());
+                itemWrapper.setOrigionAmount(aggItem.getOrigionAmount());
+                itemWrapper.setGrossProfit(aggItem.getGrossProfit());
+                itemWrapper.setSalesBalance(aggItem.getSalesBalance());
+                itemWrapper.setIsShowIndex(true);
+
+                items.add(itemWrapper);
+            }
         }
-        return itemWrapper;
+
+        return items;
     }
 
-    private static AnalysisItemWrapper genDefaultAnalysisItemWrapper(String caption){
-        AnalysisItemWrapper itemWrapper = new AnalysisItemWrapper();
-        itemWrapper.setCaption(caption);
-        itemWrapper.setIsShowIndex(true);
-        return itemWrapper;
+    public static List<AnalysisItemWrapper> wrapperAccItems( List<AccItem> accItems){
+        List<AnalysisItemWrapper> items = new ArrayList<>();
+
+        if (accItems != null && accItems.size() > 0){
+            for (AccItem accItem : accItems){
+                AnalysisItemWrapper item = new AnalysisItemWrapper();
+                item.setCaption(accItem.getPayTypeCaption());
+                item.setTurnover(accItem.getAmount());
+                item.setOrderNum(accItem.getOrderNum());
+                item.setIsShowIndex(true);
+
+                items.add(item);
+            }
+        }
+        return items;
     }
 
     /**
@@ -135,35 +154,7 @@ public class AnalysisHelper {
             return null;
         }
 
-        return getAggItemsWrapper(dailysettleInfo.getAggItems());
-    }
-
-    public static List<AnalysisItemWrapper> getAggItemsWrapper(List<AggItem> aggItems){
-        List<AnalysisItemWrapper> items = new ArrayList<>();
-
-        if (aggItems != null && aggItems.size() > 0){
-            for (AggItem aggItem : aggItems){
-                items.add(translateAggItem(aggItem));
-            }
-        }
-
-        return items;
-    }
-
-    public static List<AnalysisItemWrapper> getAccAnalysisList( List<AccItem> accItems){
-        List<AnalysisItemWrapper> items = new ArrayList<>();
-
-        if (accItems != null && accItems.size() > 0){
-            for (AccItem accItem : accItems){
-                AnalysisItemWrapper item = new AnalysisItemWrapper();
-                item.setCaption(accItem.getPayTypeCaption());
-                item.setTurnover(accItem.getAmount());
-                item.setOrderNum(accItem.getOrderNum());
-                item.setIsShowIndex(true);
-                items.add(item);
-            }
-        }
-        return items;
+        return wrapperAggItems(dailysettleInfo.getAggItems());
     }
 
     /**
@@ -174,7 +165,18 @@ public class AnalysisHelper {
             return null;
         }
 
-        return getAccAnalysisList(dailysettleInfo.getAccItems());
+        return wrapperAccItems(dailysettleInfo.getAccItems());
+    }
+
+    /**
+     * 获取流水分析数据
+     * */
+    public static List<AnalysisItemWrapper> getAccItemsWrapper2(DailysettleInfo dailysettleInfo){
+        if (dailysettleInfo == null){
+            return null;
+        }
+
+        return wrapperAccItems(dailysettleInfo.getAccItems2());
     }
 
 }

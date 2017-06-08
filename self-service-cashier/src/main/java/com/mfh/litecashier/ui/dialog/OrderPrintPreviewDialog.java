@@ -19,11 +19,11 @@ import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.model.wrapper.PayWay;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
-import com.bingshanguxue.cashier.v1.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.posorder.PayWay;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -122,7 +122,9 @@ public class OrderPrintPreviewDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -200,7 +202,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
 
                     //明细：商品信息
                     sbHtml.append("<p>--------------------------------</p>\n");
-                    List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent
+                    List<PosOrderItemEntity> posOrderItemEntityList = CashierProvider
                             .fetchOrderItems(mPosOrderEntity);
                     if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
                         sbHtml.append("<table border=\"0\">\n");
@@ -231,7 +233,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                     //尾部:订单支付信息
                     sbHtml.append("--------------------------------\n");
                     sbHtml.append(String.format(
-                                    "<div><font color=#000000>合计：%.2f</font></div>\n",
+                            "<div><font color=#000000>合计：%.2f</font></div>\n",
                             mPosOrderEntity.getFinalAmount()));
 //                    sbHtml.append(String.format("<div><font color=#000000>会员/卡券/促销优惠：%.2f</font></div>\n",
 //                            payWrapper.getRuleDiscount()));
@@ -242,9 +244,9 @@ public class OrderPrintPreviewDialog extends CommonDialog {
 //                    sbHtml.append(String.format("<div><font color=#000000>应收：%.2f</font></div>\n",
 //                            payableAmount));
                     List<PayWay> payWays = payWrapper.getPayWays();
-                    if (payWays != null && payWays.size() > 0){
-                        for (PayWay payWay : payWays){
-                            sbHtml.append(String.format("<div><font color=#000000>%s：%.2f</font></div>\n" ,
+                    if (payWays != null && payWays.size() > 0) {
+                        for (PayWay payWay : payWays) {
+                            sbHtml.append(String.format("<div><font color=#000000>%s：%.2f</font></div>\n",
                                     PayWayType.getWayTypeName(payWay.getAmountType()), payWay.getAmount()));
                         }
 
@@ -256,8 +258,8 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                                 payWrapper.getChange()));
                     }
                     sbHtml.append("\n\n\n<div align=\"center\"><font color=#000000>谢谢惠顾</font></div>\n" +
-                                    "<div align=\"center\"><font color=#000000>欢迎下次光临</font></div>\n" +
-                                    "</p>");
+                            "<div align=\"center\"><font color=#000000>欢迎下次光临</font></div>\n" +
+                            "</p>");
                 }
 
                 sbHtml.append("</body>\n" +

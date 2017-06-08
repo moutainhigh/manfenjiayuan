@@ -101,7 +101,7 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
         try{
             return getDao().queryAllBy(strWhere);
         }catch (Exception e){
-            ZLogger.e(e.toString());
+            ZLogger.ef(e.toString());
             return null;
         }
     }
@@ -109,7 +109,7 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
         try{
             return getDao().queryAllBy(strWhere, orderBy);
         }catch (Exception e){
-            ZLogger.e(e.toString());
+            ZLogger.ef(e.toString());
             return null;
         }
     }

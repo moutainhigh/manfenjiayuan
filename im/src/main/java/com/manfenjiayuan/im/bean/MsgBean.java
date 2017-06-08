@@ -30,6 +30,7 @@ import java.util.Date;
 
 /**
  * 消息本身信息
+ *
  * @author zhangyz created on 2014-10-18
  */
 @SuppressWarnings("serial")
@@ -44,11 +45,11 @@ public class MsgBean implements Serializable {
     private String sn;//消息签名
 
     private Object body; //具体消息内容,不能为空
-    
-    @JSONField (format="yyyy-MM-dd HH:mm:ss")  
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date time;//消息创建时间
     private Integer ver = 0;//版本号
-        
+
 //    /**
 //     * 无参构造函数，反序列化时需要
 //     */
@@ -111,11 +112,11 @@ public class MsgBean implements Serializable {
 
     public String getClsName() {
         if (StringUtils.isBlank(clsName)) {
-        	if(body != null){
+            if (body != null) {
                 if (body instanceof EmbBody) {
                     this.setClsName(body.getClass().getName());
                 }
-        	}
+            }
         }
         return clsName;
     }
@@ -164,25 +165,26 @@ public class MsgBean implements Serializable {
         this.zip = zip;
     }
 
-    @JSONField (format="yyyy-MM-dd HH:mm:ss")
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     public Date getTime() {
-		return time;
-	}
+        return time;
+    }
 
-    @JSONField (format="yyyy-MM-dd HH:mm:ss")
-	public void setTime(Date time) {
-		this.time = time;
-	}
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    public void setTime(Date time) {
+        this.time = time;
+    }
 
-	public Object getBody() {
+    public Object getBody() {
         return body;
     }
-    
-	/**
-	 * 设置消息体，自动判断消息技术类型
-	 * @param msgBody
-	 * @author zhangyz created on 2014-10-30
-	 */
+
+    /**
+     * 设置消息体，自动判断消息技术类型
+     *
+     * @param msgBody
+     * @author zhangyz created on 2014-10-30
+     */
     public void setBody(Object body) {
         this.body = body;
     }
@@ -206,6 +208,7 @@ public class MsgBean implements Serializable {
 
     /**
      * 本身自解析body部分
+     *
      * @throws Exception
      * @author zhangyz created on 2014-10-29
      */
@@ -217,24 +220,24 @@ public class MsgBean implements Serializable {
         if (IMTechType.JSON.equals(this.type) && this.clsName != null)
             factBody = JSON.parseObject(jsonString, Class.forName(this.clsName));
         else if (IMTechType.TEXT.equals(this.type) || IMTechType.EMOTION.equals(this.type))
-            factBody = JSON.parseObject(jsonString, TextParam.class); 
+            factBody = JSON.parseObject(jsonString, TextParam.class);
         else if (IMTechType.RAW.equals(this.type))
-            return; 
+            return;
         else if (IMTechType.IMAGE.equals(this.type))
-            factBody = JSON.parseObject(jsonString, ImageParam.class);  
+            factBody = JSON.parseObject(jsonString, ImageParam.class);
         else if (IMTechType.VOICE.equals(this.type))
-            factBody = JSON.parseObject(jsonString, VoiceParam.class);            
+            factBody = JSON.parseObject(jsonString, VoiceParam.class);
         else if (IMTechType.TUWEN.equals(this.type))
-            factBody = JSON.parseObject(jsonString, ImageTextParam.class);                       
+            factBody = JSON.parseObject(jsonString, ImageTextParam.class);
         else if (IMTechType.TEMPLATE.equals(this.type))
-        	factBody = JSON.parseObject(jsonString, TemplateParam.class);                    
+            factBody = JSON.parseObject(jsonString, TemplateParam.class);
         else if (IMTechType.RESOURCE.equals(this.type))
             factBody = JSON.parseObject(jsonString, ResourceParam.class);
         else
             return;
         setBody(factBody);
     }
-    
+
 //    @Override
 //    public String toString(){
 //    	return JSON.toJSONString(this);

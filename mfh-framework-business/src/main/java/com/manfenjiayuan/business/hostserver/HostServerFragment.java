@@ -183,9 +183,7 @@ public class HostServerFragment extends BaseProgressFragment {
 
                     @Override
                     public void onError(String errorMsg) {
-                        ZLogger.ef(errorMsg);
-                        hideProgressDialog();
-                        DialogUtil.showHint(errorMsg);
+                        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
                     }
                 });
     }

@@ -10,45 +10,21 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="@dimen/spacing_double">
+        android:layout_weight="1">
+
+        <com.mfh.litecashier.ui.widget.CustomerView
+            android:id="@+id/customer_view"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_below="@+id/frame_top"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
+            android:layout_below="@+id/customer_view"
             android:orientation="vertical"
-            android:padding="8dp">
-
-            <com.bingshanguxue.vector_uikit.widget.AvatarView
-                android:id="@+id/iv_header"
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/spacing_normal"
-                android:src="@drawable/chat_tmp_user_head"/>
-
-            <TextView
-                android:id="@+id/tv_username"
-                style="@style/singleline_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/spacing_double"
-                android:text=""/>
-
-            <com.bingshanguxue.vector_uikit.widget.TextLabelView
-                android:id="@+id/label_phone"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:layout_marginTop="32dp"
-                app:endTextColor="@color/material_black"
-                app:endTextSize="16sp"
-                app:startText="手机号:"
-                app:startTextColor="@color/material_black"
-                app:startTextGravity="end"
-                app:startTextSize="16sp"
-                app:startTextWidth="80dp"/>
+            android:padding="@dimen/spacing_double">
 
             <com.bingshanguxue.vector_uikit.widget.EditLabelView
                 android:id="@+id/label_cardnumber"

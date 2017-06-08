@@ -106,7 +106,7 @@ public class MsgMgrAdapter
                 entity.getFromGuid(), entity.getFromChannelId(),
                 entity.getFromChannelPointId(), entity.getFromChannelType()));
         holder.tvTo.setText(String.format("接收方：CID(%s)\n" +
-                        "CPID(%s)\n",
+                        "CPID(%s)\n 发送方 CID(%s)\n CPID(%s)\n",
                 entity.getToChannelId(), entity.getToChannelPointId(),
                 entity.getFromChannelPointId(), entity.getFromChannelType()));
         holder.tvBody.setText(String.format("消息内容：%s", entity.getMsgBean()));

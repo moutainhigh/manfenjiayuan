@@ -20,70 +20,56 @@
             android:id="@+id/frame_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/spacing_normal"
+            android:padding="@dimen/spacing_double"
             android:baselineAligned="false"
             android:divider="@drawable/divider_vertical_line_primary"
-            android:dividerPadding="12dp"
+            android:dividerPadding="@dimen/spacing_double"
             android:showDividers="middle">
 
-            <LinearLayout
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_bcount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                app:bottomText="数量"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="#009B4E"
+                app:topTextSize="48sp"/>
 
-                <TextView
-                    android:id="@+id/tv_quantity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/default_amount"
-                    android:textColor="#009B4E"
-                    android:textSize="48sp"
-                    style="@style/singleline_text"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_quantity"
-                    android:textColor="@color/black_70"
-                    android:textSize="16sp" />
-            </LinearLayout>
-
-            <LinearLayout
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+                app:bottomText="原价合计"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="#FE5000"
+                app:topTextSize="48sp"/>
 
-                <TextView
-                    android:id="@+id/tv_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/default_amount_unit"
-                    android:textColor="#FE5000"
-                    android:textSize="48sp"
-                    style="@style/singleline_text"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_amount"
-                    android:textColor="@color/black_70"
-                    android:textSize="16sp" />
-            </LinearLayout>
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/label_customer_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="会员价合计"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="#FE5000"
+                app:topTextSize="48sp"/>
         </LinearLayout>
 
         <!--输入条形码-->
         <com.mfh.litecashier.ui.widget.InputNumberLabelView
             android:id="@+id/inlv_barcode"
-            android:layout_width="match_parent"
+            android:layout_width="400dp"
             android:layout_height="44dp"
             android:layout_below="@+id/frame_price"
-            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/spacing_normal"
             app:editInputType="barcode"
             app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
@@ -96,6 +82,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/inlv_barcode"
+            android:layout_marginTop="@dimen/spacing_normal"
             android:orientation="vertical">
 
             <include
@@ -116,11 +103,37 @@
             style="@style/loading"
             android:layout_width="30dip"
             android:layout_height="30dip"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:visibility="gone" />
     </RelativeLayout>
 
     <!--按键-->
-    <include layout="@layout/view_dialog_footer" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+        <Button
+            android:id="@+id/button_footer_negative"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectange_primary"
+            android:gravity="center"
+            android:text="会员退款"
+            android:textColor="@color/material_white"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/button_footer_positive"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/btn_rectange_orange"
+            android:gravity="center"
+            android:text="非会员退款"
+            android:textColor="@color/material_white"
+            android:textSize="20sp"/>
+    </LinearLayout>
 
 </LinearLayout>

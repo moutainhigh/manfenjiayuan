@@ -56,8 +56,10 @@ public class HandoverFragment extends BaseProgressFragment {
     TextView tvHumanName;
     @BindView(R.id.tv_handover_datetime)
     TextView tvHandoverDateTime;
-    @BindView(R.id.tv_amount)
-    TextView tvAmount;
+    @BindView(R.id.tv_originAmount)
+    TextView tvOrigin;
+    @BindView(R.id.tv_turnover)
+    TextView tvTurnover;
     @BindView(R.id.tv_income)
     TextView tvIncome;
     @BindView(R.id.tv_cash)
@@ -198,23 +200,23 @@ public class HandoverFragment extends BaseProgressFragment {
 
         tvHeaderTitle.setText(String.format("交接班 (第 %d 班)", handOverBill.getShiftId()));
         tvOfficeName.setText(String.format("门店：%s", handOverBill.getOfficeName()));
-        tvHumanName.setText(String.format("交班人：%s", handOverBill.getHumanName()));
+        tvHumanName.setText(String.format("帐号：%s", handOverBill.getHumanName()));
         tvHandoverDateTime.setText(String.format("交班时间：%s",
                 TimeCursor.InnerFormat.format(handOverBill.getEndDate())));
-        tvAmount.setText(String.format("营业额合计：%.2f", handOverBill.getAmount()));
-        tvIncome.setText(String.format("账户新增：%.2f", handOverBill.getAmount() - handOverBill.getCash()));
+        tvOrigin.setText(String.format("原价金额：%.2f", handOverBill.getOrigionAmount()));
+        tvTurnover.setText(String.format("营业额：%.2f", handOverBill.getTurnover()));
+        tvIncome.setText(String.format("账户新增：%.2f", handOverBill.getTurnover() - handOverBill.getCash()));
         tvCash.setText(String.format("现金收取：%.2f", handOverBill.getCash()));
 
         //显示数据
         if (aggListAdapter != null) {
-            aggListAdapter.setEntityList(AnalysisHelper.getAggItemsWrapper(handOverBill.getAggItems()));
+            aggListAdapter.setEntityList(AnalysisHelper.wrapperAggItems(handOverBill.getAggItems()));
         }
 
         //显示数据
         if (accListAdapter != null) {
-            accListAdapter.setEntityList(AnalysisHelper.getAccAnalysisList(handOverBill.getAccItems()));
+            accListAdapter.setEntityList(AnalysisHelper.wrapperAccItems(handOverBill.getAccItems()));
         }
-
     }
 
     @Override
@@ -315,6 +317,8 @@ public class HandoverFragment extends BaseProgressFragment {
 
     private void saveAggData2(List<MEntityWrapper<AggItem>> dataList) {
         try {
+            Double turnOver = 0D;
+            Double origionAmount = 0D;
 
             List<AggItem> aggItems = new ArrayList<>();
 
@@ -325,8 +329,13 @@ public class HandoverFragment extends BaseProgressFragment {
                     aggItem.setBizTypeCaption(caption.get("bizType"));
                     aggItem.setSubTypeCaption(caption.get("subType"));
                     aggItems.add(entityWrapper.getBean());
+
+                    turnOver += aggItem.getTurnover();
+                    origionAmount += aggItem.getOrigionAmount();
                 }
             }
+            handOverBill.setTurnover(turnOver);
+            handOverBill.setOrigionAmount(origionAmount);
             handOverBill.setAggItems(aggItems);
             ZLogger.df(String.format("保存经营分析数据:\n%s", JSON.toJSONString(handOverBill)));
 
@@ -334,7 +343,6 @@ public class HandoverFragment extends BaseProgressFragment {
         } catch (Exception ex) {
             ZLogger.d("保存流水分析数据失败:" + ex.toString());
         }
-
     }
 
     /**

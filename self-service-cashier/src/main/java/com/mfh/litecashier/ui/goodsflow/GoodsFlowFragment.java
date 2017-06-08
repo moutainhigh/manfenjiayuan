@@ -1,6 +1,7 @@
 package com.mfh.litecashier.ui.goodsflow;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.vector_uikit.OptionalLabel;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.pmcstock.GoodsItem;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -28,10 +30,10 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
 import com.mfh.litecashier.ui.dialog.MyDatePickerDialog;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +48,7 @@ import static com.mfh.litecashier.service.DataManagerHelper.MAX_SYNC_PAGESIZE;
  * <h1>商品流水</h1>
  * <p>
  * <p/>
- * Created by Nat.ZZN(bingshanguxue) on 17/02/25.
+ * Created by bingshanguxue on 17/02/25.
  */
 public class GoodsFlowFragment extends BaseProgressFragment {
     @BindView(R.id.tv_header_title)
@@ -73,7 +75,7 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 
     protected PageInfo mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, MAX_SYNC_PAGESIZE);
     private Calendar mCalendar;
-
+    private CategoryOption mCategoryOption;
     private MyDatePickerDialog dateTimePickerDialog = null;
 
     public static GoodsFlowFragment newInstance(Bundle args) {
@@ -92,18 +94,12 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
-//        Bundle args = getArguments();
-//        ZLogger.df(String.format(">>开始日结：%s", StringUtils.decodeBundle(args)));
-//        if (args != null) {
-//            dailySettleDatetime = args.getString(EXTRA_KEY_DATETIME);
-//        }
-
         tvHeaderTitle.setText("商品流水");
         initGoodsRecyclerView();
 
         mCalendar = Calendar.getInstance();
-        mCalendar.setTime(new Date());
-        mCalendar.add(Calendar.DATE, 0 - 1);
+        mCalendar.setTime(TimeUtil.getCurrentDate());
+//        mCalendar.add(Calendar.DATE, 0 - 1);
 //        calendar.set(Calendar.HOUR, 0);
 //        calendar.set(Calendar.MINUTE, 0);
 //        calendar.set(Calendar.SECOND, 0);
@@ -180,6 +176,9 @@ public class GoodsFlowFragment extends BaseProgressFragment {
         goodsRecyclerView.setAdapter(goodsAdapter);
     }
 
+    private String getCategoryId() {
+        return mCategoryOption != null ? mCategoryOption.getCode() : null;
+    }
     /**
      * 重新加载数据
      */
@@ -198,7 +197,8 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
 
-        findGoodsItemList(mPageInfo, TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
+        findGoodsItemList(mPageInfo, getCategoryId(),
+                TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
         mPageInfo.setPageNo(1);
     }
 
@@ -219,8 +219,10 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 
         if (mPageInfo.hasNextPage()) {
             mPageInfo.moveToNext();
-            findGoodsItemList(mPageInfo, TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
+            findGoodsItemList(mPageInfo, getCategoryId(),
+                    TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载线上订单订单流水，已经是最后一页。");
             onLoadFinished();
         }
@@ -251,10 +253,47 @@ public class GoodsFlowFragment extends BaseProgressFragment {
         super.onLoadFinished();
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        ZLogger.d(String.format("requestCode=%d, resultCode=%d, intent=%s",
+                requestCode,
+                resultCode,
+                StringUtils.decodeBundle(intent != null ? intent.getExtras() : null)));
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+
+        switch (requestCode) {
+//            case Constants.ACTIVITY_REQUEST_CHANGE_NICKNAME:
+//                btnItems.get(0).setDetailText(MfhLoginService.get().getHumanName());
+//                break;
+            case 1://相册
+                mCategoryOption = (CategoryOption) intent.getSerializableExtra("CategoryOption");
+                labelCategory.setLabelText(mCategoryOption.getValue());
+                reload();
+                break;
+        }
+
+        super.onActivityResult(requestCode, resultCode, intent);
+    }
+
+
+    @OnClick(R.id.label_category)
+    public void selectCategory() {
+        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FT_BACKEND_CATEGORY);
+        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
+//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
+        Intent intent = new Intent(getActivity(), SimpleDialogActivity.class);
+        intent.putExtras(extras);
+        startActivityForResult(intent, 1);
+    }
+
     @OnClick(R.id.label_updatedate)
     public void changeDate() {
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(TimeUtil.getCurrentDate());
 
         if (dateTimePickerDialog == null) {
             dateTimePickerDialog = new MyDatePickerDialog(getActivity());
@@ -287,8 +326,10 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 
     /**
      * 查询商品
+     *
+     * @param categoryId 后台类目编号
      */
-    private void findGoodsItemList(PageInfo pageInfo, String updatedDate) {
+    private void findGoodsItemList(PageInfo pageInfo, String categoryId, String updatedDate) {
         onLoadProcess("查询商品流水...");
         Map<String, String> options = new HashMap<>();
         if (pageInfo != null) {
@@ -299,6 +340,9 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 //        options.put("sellerId", String.valueOf(MfhLoginService.get().getSpid()));
         //网点
         options.put("sellOffice", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        if (!StringUtils.isEmpty(categoryId)) {
+            options.put("categoryId", categoryId);
+        }
         if (!StringUtils.isEmpty(updatedDate)) {
             options.put("updatedDate", updatedDate);
         }

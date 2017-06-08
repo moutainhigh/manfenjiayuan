@@ -23,26 +23,21 @@ import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
-import com.mfh.comn.net.ResponseBody;
-import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.entity.MResponse;
-import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.http.WePayHttpManager;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.bean.EmptyEntity;
 import com.mfh.litecashier.utils.AppHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,10 +49,9 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-import static com.mfh.framework.api.pay.PayApi.WXPAY_CHANNEL_ID;
-
 /**
  * 微信刷卡支付
+ *
  * @see <a href="https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=5_4">微信刷卡支付支付流程</a>
  * Created by bingshanguxue on 15/8/31.
  */
@@ -173,10 +167,9 @@ public class PayByWxpayFragment extends BasePayFragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    if (SharedPrefesManagerFactory.isSoftInputEnabled()){
+                    if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
                         DeviceUtils.showSoftInput(CashierApp.getAppContext(), etBarCode);
-                    }
-                    else{
+                    } else {
                         DeviceUtils.hideSoftInput(CashierApp.getAppContext(), etBarCode);
                     }
                 }
@@ -241,7 +234,7 @@ public class PayByWxpayFragment extends BasePayFragment {
     @Override
     protected void submitOrder() {
         if (bPayProcessing) {
-            ZLogger.df("正在进行微信支付，不用重复发起请求");
+            ZLogger.d("正在进行微信支付，不用重复发起请求");
             return;
         }
 
@@ -274,10 +267,10 @@ public class PayByWxpayFragment extends BasePayFragment {
         Map<String, String> options = new HashMap<>();
         options.put("jsonStr", generateOrderInfo(lastPaidAmount, authCode).toJSONString());
         options.put("bizType", bizType);
-        options.put("chId", WXPAY_CHANNEL_ID);
+        options.put("chId", MfhApi.WXPAY_CHANNEL_ID);
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        RxHttpManager.getInstance().wepayBarPay(options,
+        WePayHttpManager.getInstance().wepayBarPay(options,
                 new Subscriber<MResponse<String>>() {
                     @Override
                     public void onCompleted() {
@@ -286,15 +279,13 @@ public class PayByWxpayFragment extends BasePayFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df("微信条码支付异常:" + e.toString());
+                        ZLogger.e("微信条码支付异常:" + e.toString());
                         onBarpayFailed(e.getMessage(), AppHelper.getErrorTextColor(), true);
-
                     }
 
                     @Override
                     public void onNext(MResponse<String> stringMResponse) {
-                        if (stringMResponse == null){
-                            ZLogger.df("微信条码支付失败");
+                        if (stringMResponse == null) {
                             onBarpayFailed("微信条码支付失败，无响应", AppHelper.getErrorTextColor(), false);
                             return;
                         }
@@ -341,24 +332,43 @@ public class PayByWxpayFragment extends BasePayFragment {
      * 4. 调用撤销接口API之前，需确认该笔交易目前支付状态。<br>
      */
     private void queryOrder(final String outTradeNo, final Double paidAmount) {
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+        onBarpayProcessing("正在查询订单状态...");
+
+        Map<String, String> options = new HashMap<>();
+        options.put("out_trade_no", outTradeNo);
+        options.put("chId", MfhApi.WXPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        WePayHttpManager.getInstance().query(options,
+                new Subscriber<MResponse<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("微信条码支付状态查询:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
+                    public void onError(Throwable e) {
+                        ZLogger.e("查询订单状态失败:" + e.toString());
+                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+                        onBarpayFailed(e.getMessage(), AppHelper.getErrorTextColor(), true);
+                    }
 
-                        //业务处理成功
-                        // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                        switch (rspBody.getRetCode()) {
-                            case "0":
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null) {
+                            onBarpayFailed("微信条码支付失败，无响应", AppHelper.getErrorTextColor(), false);
+                            return;
+                        }
+                        ZLogger.df(String.format("微信条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+
+                        switch (stringMResponse.getCode()) {
+                            case 0:
                                 onBarpayFinished(paidAmount, "支付成功", AppHelper.getOkTextColor());
                                 break;
                             //{"code":"-1","msg":"继续查询","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
-                            case "-1": //-1
-                                onBarpayFailed(rspBody.getReturnInfo(), AppHelper.getErrorTextColor(), true);
+                            case -1: //-1
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), true);
                                 break;
                             //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
                             //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
@@ -366,29 +376,11 @@ public class PayByWxpayFragment extends BasePayFragment {
                             // 处理失败,交易不存在
                             //40004--"sub_code": "ACQ.TRADE_NOT_EXIST",
                             default: //-2
-                                onBarpayFailed(rspBody.getReturnInfo(), AppHelper.getErrorTextColor(), false);
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
                                 break;
                         }
                     }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询订单状态失败:" + errMsg);
-                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
-                        onBarpayFailed(errMsg, AppHelper.getErrorTextColor(), true);
-                    }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
-
-        onBarpayProcessing("正在查询订单状态...");
-        PayApi.queryWxBarpayStatus(outTradeNo, payRespCallback);
+                });
     }
 
     /**
@@ -400,46 +392,49 @@ public class PayByWxpayFragment extends BasePayFragment {
      */
     private void cancelOrder(String outTradeNo) {
         onBarpayProcessing("正在发送撤单请求...");
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+
+        Map<String, String> options = new HashMap<>();
+        options.put("out_trade_no", outTradeNo);
+        options.put("chId", MfhApi.WXPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        WePayHttpManager.getInstance().cancelOrder(options,
+                new Subscriber<MResponse<String>>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("撤单失败:" + errMsg);
-                        onBarpayFailed(errMsg, AppHelper.getErrorTextColor(), true);
+                    public void onError(Throwable e) {
+                        ZLogger.ef("撤单失败:" + e.toString());
+                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+                        onBarpayFailed(e.getMessage(), AppHelper.getErrorTextColor(), true);
                     }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("微信条码支付取消订单:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
-
-                        //业务处理成功
-                        // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                        if (rspBody.getRetCode().equals("0")) {
-                            onBarpayFailed("订单已取消", AppHelper.getOkTextColor(), false);
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null) {
+                            onBarpayFailed("微信条码支付取消订单，无响应", AppHelper.getErrorTextColor(), false);
+                            return;
                         }
-                        //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
-                        //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
-                        //10000--"trade_status": "TRADE_FINISHED",交易结束，不可退款
-                        // 处理失败,交易不存在
-                        //40004--"sub_code": "ACQ.TRADE_NOT_EXIST",
-                        else {//-1
-                            onBarpayFailed(rspBody.getReturnInfo(),
-                                    AppHelper.getErrorTextColor(), true);
+                        ZLogger.df(String.format("微信条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+
+                        switch (stringMResponse.getCode()) {
+                            case 0:
+                                onBarpayFailed("订单已取消", AppHelper.getOkTextColor(), false);
+                                break;
+                            //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
+                            //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
+                            //10000--"trade_status": "TRADE_FINISHED",交易结束，不可退款
+                            // 处理失败,交易不存在
+                            //40004--"sub_code": "ACQ.TRADE_NOT_EXIST",
+                            default: //-2
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
+                                break;
                         }
                     }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
-
-        PayApi.cancelWxBarpay(outTradeNo, payRespCallback);
-    }
+                });    }
 
     /**
      * 正在取消支付订单

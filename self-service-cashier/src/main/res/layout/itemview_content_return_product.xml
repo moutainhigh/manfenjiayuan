@@ -11,23 +11,51 @@
         style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:gravity="center_vertical"
-
         android:text="商品"/>
 
-    <TextView
-        android:id="@+id/tv_price"
-        style="@style/singleline_text"
-        android:layout_width="80dp"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
 
-        android:text="单价"/>
+    <LinearLayout
+        android:id="@+id/ll_price"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_price"
+            style="@style/singleline_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableEnd="@mipmap/ic_marker_edit"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="原价"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_customer_price"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_customer_price"
+            style="@style/singleline_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableEnd="@mipmap/ic_marker_edit"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:text="会员价"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_quantity"
-        android:layout_width="80dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:gravity="center_vertical">
 
@@ -44,10 +72,20 @@
 
     <TextView
         android:id="@+id/tv_amount"
-        android:layout_width="80dp"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        android:text="小计"
+        android:textColor="@color/mf_red"/>
+    <TextView
+        android:id="@+id/tv_customer_amount"
         style="@style/singleline_text"
-        android:text="价格"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:text="会员价小计"
         android:textColor="@color/mf_red"/>
 </LinearLayout>

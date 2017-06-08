@@ -14,13 +14,15 @@ import com.bingshanguxue.cashier.database.entity.PosTopupEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.v1.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.posorder.BatchInOrder;
+import com.mfh.framework.api.posorder.BatchInOrderItem;
 import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
@@ -34,6 +36,7 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -251,7 +254,6 @@ public class DataUploadManager {
                 topupEntity.getOutTradeNo(), incomeDistributionPageInfo.getPageNo(),
                 incomeDistributionPageInfo.getTotalPage(), incomeDistributionPageInfo.getTotalCount()));
 
-
         if (RxHttpManager.isUseRx) {
             RxHttpManager.getInstance().commintCashAndTrigDateEnd(topupEntity.getOutTradeNo(),
                     new Subscriber<String>() {
@@ -440,19 +442,15 @@ public class DataUploadManager {
 
         List<PosOrderEntity> orderEntities = PosOrderService.get()
                 .queryAllAsc(orderSqlWhere, mOrderPageInfo);
-        ZLogger.df(String.format("查询到 %d 个同步失败的POS订单，" +
+        ZLogger.d(String.format("查询到 %d 个同步失败的POS订单，" +
                         "当前页数 %d/%d,每页最多 %d 个订单",
                 mOrderPageInfo.getTotalCount(), mOrderPageInfo.getPageNo(),
                 mOrderPageInfo.getTotalPage(), mOrderPageInfo.getPageSize()));
 
-        if (orderEntities == null || orderEntities.size() < 1) {
-            onNotifyNext("没有POS订单需要上传。");
-        }
-//        else if (orderEntities.size() == 1) {
-//            stepUploadPosOrder(orderEntities.get(0));
-//        }
-        else {
-            batchUploadPosOrder(orderEntities);
+        if (orderEntities != null && orderEntities.size() > 0) {
+            uploadErrorOrder(orderEntities.get(0));
+        } else {
+            onNotifyNext("没有找到同步失败的已完成订单");
         }
     }
 
@@ -461,7 +459,8 @@ public class DataUploadManager {
      * 生成订单同步数据结构
      */
     private JSONObject wrapperOrder(PosOrderEntity orderEntity) {
-        ZLogger.d(String.format("准备同步订单 : %s", JSONObject.toJSONString(orderEntity)));
+        ZLogger.df(String.format("准备同步订单 : (%d/%s) %s", orderEntity.getId(), orderEntity.getBarCode(),
+                JSONObject.toJSONString(orderEntity)));
         JSONObject order = new JSONObject();
 
         order.put("id", orderEntity.getId());//pos机订单编号
@@ -494,7 +493,7 @@ public class DataUploadManager {
         order.put("createdBy", orderEntity.getCreatedBy());
 
         //读取订单商品明细
-        List<PosOrderItemEntity> orderItemEntities = CashierAgent.fetchOrderItems(orderEntity);
+        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity);
         JSONArray items = new JSONArray();
         for (PosOrderItemEntity entity : orderItemEntities) {
             JSONObject item = new JSONObject();
@@ -504,7 +503,7 @@ public class DataUploadManager {
             item.put("barcode", entity.getBarcode());
             item.put("bcount", entity.getBcount());
             item.put("price", entity.getCostPrice());//原价（零售价）
-            item.put("customerPrice", entity.getCustomerPrice());// 会员价（服务端备存）
+            item.put("customerPrice", entity.getFinalCustomerPrice());// 会员价（服务端备存）
             item.put("amount", entity.getAmount());//商品预设的原始价格
             item.put("factAmount", entity.getFinalAmount());//订单明细的实际折后销售价格，商品本次销售原价金额(例如抹零)
             //// TODO: 19/04/2017
@@ -551,6 +550,97 @@ public class DataUploadManager {
         return order;
     }
 
+    private BatchInOrder wrapper2(PosOrderEntity orderEntity) {
+        ZLogger.d(String.format("准备同步订单 : %s", JSONObject.toJSONString(orderEntity)));
+        BatchInOrder order = new BatchInOrder();
+
+        order.setId(orderEntity.getId());//pos机订单编号
+        order.setBarCode(orderEntity.getBarCode());
+        order.setStatus(orderEntity.getStatus());
+        order.setRemark(orderEntity.getRemark());//备注
+        order.setBcount(orderEntity.getBcount());//数量
+        order.setAdjPrice(MathCompact.sub(orderEntity.getRetailAmount(), orderEntity.getFinalAmount())); //调价金额
+        order.setPaystatus(orderEntity.getPaystatus());
+        order.setSubType(orderEntity.getSubType());//业务子类型
+        order.setOuterNo(orderEntity.getOuterTradeNo());//外部订单编号（外部平台订单组货功能特有）
+        order.setPosId(orderEntity.getPosId());//机器编号
+        order.setSellOffice(orderEntity.getSellOffice());//curoffice id
+        order.setSellerId(orderEntity.getSellerId());//spid
+        order.setHumanId(orderEntity.getHumanId());//会员编号
+        //由后台计算折扣
+//        if (orderEntity.getRetailAmount() == 0D) {
+//            order.put("discount", Double.valueOf(String.valueOf(Integer.MAX_VALUE)));
+//        } else {
+//            order.put("discount", (orderEntity.getRetailAmount() - orderEntity.getDiscountAmount())
+//                    / orderEntity.getRetailAmount());
+//        }
+
+        //使用订单最后更新日期作为订单生效日期
+        Date createdDate = orderEntity.getUpdatedDate();
+        if (createdDate == null) {
+            createdDate = orderEntity.getCreatedDate();
+        }
+        order.setCreatedDate(TimeUtil.format(createdDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
+        order.setCreatedBy(orderEntity.getCreatedBy());
+
+        //读取订单商品明细
+        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity);
+        List<BatchInOrderItem> items = new ArrayList<>();
+        for (PosOrderItemEntity entity : orderItemEntities) {
+            BatchInOrderItem item = new BatchInOrderItem();
+            item.setGoodsId(entity.getGoodsId());
+            item.setProductId(entity.getProductId());
+            item.setSkuId(entity.getProSkuId());
+            item.setBarcode(entity.getBarcode());
+            item.setBcount(entity.getBcount());
+            item.setPrice(entity.getCostPrice());//原价（零售价）
+            item.setCustomerPrice(entity.getFinalCustomerPrice());// 会员价（服务端备存）
+            item.setAmount(entity.getAmount());//商品预设的原始价格
+            item.setFactAmount(entity.getFinalAmount());//订单明细的实际折后销售价格，商品本次销售原价金额(例如抹零)
+            //// TODO: 19/04/2017
+            //saleAmount，根据ruleAmountMap去计算
+            item.setSaleAmount(MathCompact.sub(entity.getFinalAmount(), entity.getVipAmount()));//实际销售金额(扣除了会员优惠后)
+            //该条订单明细流水具体的会员折扣规则优惠情况，可能会有多条会员折扣规则适用，其中key是规则id，value是该规则的产生的优惠金额
+            String ruleAmountMap = entity.getRuleAmountMap();
+            if (ruleAmountMap != null) {
+                item.setRuleAmountMap(JSONObject.parse(ruleAmountMap));
+            }
+//            item.put("cateType", entity.getCateType());//按类目进行账务清分
+            item.setProdLineId(entity.getProdLineId());//按产品线进行账务清分
+            items.add(item);
+        }
+        order.setItems(items);
+        String rpDisAmountMap = orderEntity.getRpDisAmountMap();
+        if (rpDisAmountMap != null) {
+            order.setRpDisAmountMap(JSONObject.parse(rpDisAmountMap));
+        }
+
+        //2016-07-01 上传订单支付记录到后台
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+        if (payWrapper != null) {
+            //注意这里上传的支付记录不包括现金找零和会员账户余额
+            order.setPayWays(payWrapper.getUploadPayWays());
+            //优惠金额（促销规则+卡券）
+            Double disAmount = payWrapper.getVipDiscount() + payWrapper.getPromotionDiscount() + payWrapper.getCouponDiscount();
+            order.setDisAmount(disAmount);
+            //卡券核销
+            order.setCouponsIds(payWrapper.getCouponsIds());
+            order.setRuleIds(payWrapper.getRuleIds());
+            order.setPayType(payWrapper.getPayType());//支付方式
+            Double amount = orderEntity.getFinalAmount() - disAmount;
+            order.setAmount(amount);//订单金额，负数表示退单
+            if (amount >= 0.01) {
+                order.setScore(amount / 2);
+            } else {
+                order.setScore(0D);
+            }
+        } else {
+            order.setAmount(orderEntity.getFinalAmount());//实际支付金额
+        }
+
+        return order;
+    }
+
     /**
      * 批量上传POS订单
      */
@@ -571,6 +661,7 @@ public class DataUploadManager {
         }
 
         Date newCursor = null;
+//        List<BatchInOrder> orders = new ArrayList<>();
         JSONArray orders = new JSONArray();
         for (PosOrderEntity orderEntity : orderEntities) {
             //保存最大时间游标
@@ -636,9 +727,8 @@ public class DataUploadManager {
             return;
         }
 
-        ZLogger.df(String.format("准备上传POS订单(%d/%s)", orderEntity.getId(),
-                orderEntity.getBarCode()));
-
+//        List<BatchInOrder> orders = new ArrayList<>();
+//        orders.add(wrapper2(orderEntity));
         JSONArray orders = new JSONArray();
         orders.add(wrapperOrder(orderEntity));
 
@@ -670,6 +760,65 @@ public class DataUploadManager {
                         PosOrderService.get().saveOrUpdate(orderEntity);
 
                         uploadPosOrders();
+                    }
+                });
+    }
+
+    /**同步单个异常订单，同步完成后的流程和正常订单的流程不一致*/
+    public void uploadErrorOrder(final PosOrderEntity orderEntity) {
+        if (orderEntity == null) {
+            onNotifyNext("订单无效，不需要同步...");
+            return;
+        }
+        if (orderEntity.getStatus() != PosOrderEntity.ORDER_STATUS_FINISH) {
+            onNotifyNext(String.format("订单未完成(%d)，不需要同步...", orderEntity.getStatus()));
+            return;
+        }
+
+        if (!MfhLoginService.get().haveLogined()) {
+            onNotifyCompleted("会话已失效，暂停同步POS订单数据。");
+            return;
+        }
+
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            onNotifyCompleted("网络未连接，暂停同步POS订单数据。");
+            return;
+        }
+
+        JSONArray orders = new JSONArray();
+        orders.add(wrapperOrder(orderEntity));
+//        List<BatchInOrder> orders = new ArrayList<>();
+//        orders.add(wrapper2(orderEntity));
+
+//            Map<String, String> options = new HashMap<>();
+//            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+//            options.put("jsonStr", orders.toJSONString());
+        RxHttpManager.getInstance().batchInOrders(MfhLoginService.get().getCurrentSessionId(),
+                orders,
+                new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
+                        //同步失败两次不会再同步
+                        orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_FATAL);
+//                        orderEntity.setUpdatedDate(new Date());
+                        PosOrderService.get().saveOrUpdate(orderEntity);
+                        uploadErrorPosOrders(true);
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        //修改订单同步状态
+                        orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_SYNCED);
+//                        orderEntity.setUpdatedDate(new Date());
+                        PosOrderService.get().saveOrUpdate(orderEntity);
+
+                        uploadErrorPosOrders(true);
                     }
                 });
     }

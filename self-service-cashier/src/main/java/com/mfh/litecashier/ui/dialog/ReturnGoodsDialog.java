@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
@@ -27,29 +28,44 @@ import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
+import com.manfenjiayuan.business.presenter.CustomerPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.ICustomerView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.presenter.CashierPresenter;
+import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.ui.adapter.ReturnProductAdapter;
 import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.GlobalInstance;
+import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
 import rx.Observer;
@@ -60,16 +76,15 @@ import rx.schedulers.Schedulers;
 
 /**
  * 对话框 -- 退商品
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created bingshanguxue on 15/8/30.
  */
-public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
+public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICustomerView{
 
     private View rootView;
     private TextView tvTitle;
-    private Button btnSubmit;
+    private Button btnVip, btnCash;
     private ImageButton btnClose;
-    private TextView tvQuantity;
-    private TextView tvAmount;
+    private MultiLayerLabel labelBcount, labelAmount, labelCoustomerAmount;
     private InputNumberLabelView inlvBarcode;
     private RecyclerView mRecyclerView;
     private ProgressBar mProgressBar;
@@ -80,6 +95,10 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
     private String curOrderTradeNo;
 
     private CashierPresenter cashierPresenter;
+    private CustomerPresenter mCustomerPresenter;
+
+    private NumberInputDialog customerDialog = null;
+    private DoubleInputDialog changeQuantityDialog = null;
 
     private ReturnGoodsDialog(Context context, boolean flag, OnCancelListener listener) {
         super(context, flag, listener);
@@ -92,13 +111,16 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
 //        ButterKnife.bind(rootView);
 
         cashierPresenter = new CashierPresenter(this);
+        mCustomerPresenter = new CustomerPresenter(this);
 
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
-        tvQuantity = (TextView) rootView.findViewById(R.id.tv_quantity);
-        tvAmount = (TextView) rootView.findViewById(R.id.tv_amount);
+        labelBcount = (MultiLayerLabel) rootView.findViewById(R.id.label_bcount);
+        labelAmount = (MultiLayerLabel) rootView.findViewById(R.id.label_amount);
+        labelCoustomerAmount = (MultiLayerLabel) rootView.findViewById(R.id.label_customer_amount);
         inlvBarcode = (InputNumberLabelView) rootView.findViewById(R.id.inlv_barcode);
-        btnSubmit = (Button) rootView.findViewById(R.id.button_footer_positive);
+        btnVip = (Button) rootView.findViewById(R.id.button_footer_negative);
+        btnCash = (Button) rootView.findViewById(R.id.button_footer_positive);
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.product_list);
         mProgressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
 
@@ -143,12 +165,16 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
             }
         });
 
-
-        btnSubmit.setVisibility(View.VISIBLE);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+        btnVip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submitOrder();
+                payBayCustomerStep1();
+            }
+        });
+        btnCash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                payByCash();
             }
         });
         btnClose.setOnClickListener(new View.OnClickListener() {
@@ -169,12 +195,15 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
         p.height = d.getHeight();
+        p.width = DensityUtil.dip2px(getContext(), 895);
+
 ////        p.width = d.getWidth() * 2 / 3;
 //        p.y = DensityUtil.dip2px(getContext(), 44);
 //
@@ -248,19 +277,20 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
         productAdapter.setOnAdapterListener(new ReturnProductAdapter.OnAdapterListener() {
             @Override
             public void onDataSetChanged(boolean needScroll) {
-                tvQuantity.setText(String.format("%.2f", Math.abs(productAdapter.getBcount())));
-                tvAmount.setText(String.format("%.2f", Math.abs(productAdapter.getFinalAmount())));//成交价
+                labelBcount.setTopText(String.format("%.2f", Math.abs(productAdapter.getBcount())));
+                labelAmount.setTopText(String.format("%.2f", Math.abs(productAdapter.getFinalAmount())));//成交价
+                labelCoustomerAmount.setTopText(String.format("%.2f", Math.abs(productAdapter.getFinalCustomerAmount())));//成交价
 
                 if (needScroll) {
                     //后来者居上
                     mRecyclerView.scrollToPosition(0);
                 }
 
-                if (productAdapter != null && productAdapter.getItemCount() > 0) {
-                    btnSubmit.setEnabled(true);
-                } else {
-                    btnSubmit.setEnabled(false);
-                }
+//                if (productAdapter != null && productAdapter.getItemCount() > 0) {
+//                    btnSubmit.setEnabled(true);
+//                } else {
+//                    btnSubmit.setEnabled(false);
+//                }
             }
         });
 
@@ -282,10 +312,147 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
     }
 
     /**
-     * 提交订单
+     * 会员退款
      */
-    private void submitOrder() {
-        btnSubmit.setEnabled(false);
+    private void payBayCustomerStep1() {
+        if (productAdapter == null || productAdapter.getItemCount() <= 0) {
+            DialogUtil.showHint("商品明细不能为空");
+            return;
+        }
+
+        if (customerDialog == null) {
+            customerDialog = new NumberInputDialog(getContext());
+            customerDialog.setCancelable(false);
+            customerDialog.setCanceledOnTouchOutside(false);
+        }
+
+        customerDialog.initializeBarcode(EditInputType.TEXT, "搜索会员", "会员帐号", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        btnVip.setEnabled(false);
+                        mProgressBar.setVisibility(View.VISIBLE);
+
+                        mCustomerPresenter.getCustomerByOther(value);
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+//                        payBayCustomerStep4();
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+                });
+        if (!customerDialog.isShowing()) {
+            customerDialog.show();
+        }
+    }
+
+    private void payBayCustomerStep2(Long payHumanId, final Double amount) {
+        final CashierOrderInfo cashierOrderInfo = CashierAgent.settle(PosType.POS_STANDARD,
+                curOrderTradeNo, null, PosOrderEntity.ORDER_STATUS_PROCESS,
+                productAdapter.getEntityList(), false);
+        ZLogger.df(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
+
+        PosOrderEntity orderEntity = CashierProvider.fetchOrderEntity(cashierOrderInfo.getPosTradeNo());
+
+        Map<String, String> options = new HashMap<>();
+        options.put("humanId", String.valueOf(payHumanId));
+        options.put("amount", MUtils.formatDouble(amount, ""));
+        options.put("bizType", String.valueOf(BizType.POS));
+        options.put("orderId", CashierFactory.genTradeNo(orderEntity.getId(), true));
+        options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        CommonUserAccountHttpManager.getInstance().payDirect(options,
+                new MValueSubscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        DialogUtil.showHint(e.getMessage());
+                        payBayCustomerStep4();
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+
+                        PaymentInfo paymentInfo = PaymentInfo.create(curOrderTradeNo, WayType.VIP,
+                                PosOrderPayEntity.PAY_STATUS_FINISH,
+                                amount, amount, 0D,
+                                null);
+                        ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
+
+                        payBayCustomerStep3(cashierOrderInfo, paymentInfo);
+                    }
+
+                });
+    }
+
+    private void payBayCustomerStep3(CashierOrderInfo cashierOrderInfo, PaymentInfo paymentInfo) {
+        //2016-07-09 需注意，这里的
+//        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(curOrderTradeNo, WayType.CASH,
+//                PosOrderPayEntity.PAY_STATUS_FINISH,
+//                cashierOrderInfo.getFinalAmount(), 0D, 0D - cashierOrderInfo.getFinalAmount(),
+//                null);
+        PayAmount payAmount = cashierOrderInfo.getPayAmount();
+
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
+        cashierOrderInfo = CashierProvider.createCashierOrderInfo(cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember());
+
+        CashierAgent.updateCashierOrder(cashierOrderInfo, payAmount, PosOrderEntity.ORDER_STATUS_FINISH);
+
+//        //更新订单信息，同时打开钱箱，退钱给顾客
+//        PrinterFactory.getPrinterManager().openMoneyBox();
+
+        PosOrderEntity orderEntity = CashierProvider.fetchOrderEntity(cashierOrderInfo.getPosTradeNo());
+        //同步订单信息
+//        DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
+        //打印订单
+        PrinterFactory.getPrinterManager().printPosOrder(orderEntity);
+
+        //同步订单信息
+        if (SharedPreferencesUltimate.isUploadPosOrderRealtime()) {
+            DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
+        }
+
+        CashierShopcartService.getInstance()
+                .deleteBy(String.format("posTradeNo = '%s'", curOrderTradeNo));
+
+        payBayCustomerStep4();
+    }
+
+    private void payBayCustomerStep4() {
+        DialogUtil.showHint("退款成功");
+        btnVip.setEnabled(true);
+        mProgressBar.setVisibility(View.GONE);
+        dismiss();
+    }
+
+
+    /**
+     * 非会员退款
+     */
+    private void payByCash() {
+        if (productAdapter == null || productAdapter.getItemCount() <= 0) {
+            DialogUtil.showHint("商品明细不能为空");
+            return;
+        }
+        btnCash.setEnabled(false);
         mProgressBar.setVisibility(View.VISIBLE);
         CashierOrderInfo cashierOrderInfo = CashierAgent.settle(PosType.POS_STANDARD,
                 curOrderTradeNo, null, PosOrderEntity.ORDER_STATUS_PROCESS,
@@ -303,33 +470,39 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
                 cashierOrderInfo.getFinalAmount(), 0D,
                 null);
         ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
-        CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),
-                cashierOrderInfo.getVipMember(), paymentInfo);
+
         PayAmount payAmount = cashierOrderInfo.getPayAmount();
 
-        cashierOrderInfo = CashierAgent.makeCashierOrderInfo(cashierOrderInfo.getPosTradeNo(), cashierOrderInfo.getVipMember());
-        ZLogger.df(String.format("退单成功:%s", JSONObject.toJSONString(cashierOrderInfo)));
+        CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember(), paymentInfo);
+        cashierOrderInfo = CashierProvider.createCashierOrderInfo(cashierOrderInfo.getPosTradeNo(),
+                cashierOrderInfo.getVipMember());
 
         CashierAgent.updateCashierOrder(cashierOrderInfo, payAmount, PosOrderEntity.ORDER_STATUS_FINISH);
 
         //更新订单信息，同时打开钱箱，退钱给顾客
         PrinterFactory.getPrinterManager().openMoneyBox();
 
-        PosOrderEntity orderEntity = CashierAgent.fetchOrderEntity(cashierOrderInfo.getPosTradeNo());
+        PosOrderEntity orderEntity = CashierProvider.fetchOrderEntity(cashierOrderInfo.getPosTradeNo());
         //同步订单信息
 //        DataUploadManager.getInstance().stepUploadPosOrder(orderEntities);
         //打印订单
         PrinterFactory.getPrinterManager().printPosOrder(orderEntity);
 
+        //同步订单信息
+        if (SharedPreferencesUltimate.isUploadPosOrderRealtime()) {
+            DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
+        }
+
         CashierShopcartService.getInstance()
                 .deleteBy(String.format("posTradeNo = '%s'", curOrderTradeNo));
 
-        btnSubmit.setEnabled(true);
+
+        DialogUtil.showHint("退款成功");
+        btnCash.setEnabled(true);
         mProgressBar.setVisibility(View.GONE);
         dismiss();
     }
-
-    private DoubleInputDialog changeQuantityDialog = null;
 
     @Override
     public void onFindGoods(final PosProductEntity goods, int packFlag) {
@@ -449,5 +622,25 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView {
                         productAdapter.setEntityList(cashierShopcartEntities);
                     }
                 });
+    }
+
+    @Override
+    public void onICustomerViewLoading() {
+
+    }
+
+    @Override
+    public void onICustomerViewError(int type, String content, String errorMsg) {
+        DialogUtil.showHint(errorMsg);
+        payBayCustomerStep4();
+    }
+
+    @Override
+    public void onICustomerViewSuccess(int type, String content, Human human) {
+        if (human != null) {
+            payBayCustomerStep2(human.getId(), productAdapter.getFinalCustomerAmount());
+        } else {
+            DialogUtil.showHint("未查询到用户");
+        }
     }
 }

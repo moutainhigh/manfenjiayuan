@@ -30,6 +30,7 @@ import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.payOrder.PayOrderApiImpl;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -352,6 +353,7 @@ public class CashQuotaFragment extends BaseProgressFragment {
                 listPayOrder(mPageInfo);
             }
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载类目商品，已经是最后一页。");
             onLoadFinished();
         }

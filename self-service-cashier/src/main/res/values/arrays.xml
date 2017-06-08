@@ -2,7 +2,7 @@
 
 <resources>
 
-    <string-array name="settings_goods_status">
+_    <string-array name="settings_goods_status">
         <item>不限</item>
         <item>出售中</item>
         <item>已下架</item>

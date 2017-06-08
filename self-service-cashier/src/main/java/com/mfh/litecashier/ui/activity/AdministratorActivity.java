@@ -327,13 +327,11 @@ public class AdministratorActivity extends BaseActivity {
      * 日结
      */
     private void dailySettle() {
-//        ZLogger.df(String.format("准备日结：datetime = %s, cancelable = %b", datetime, cancelable));
         Intent intent = new Intent(this, SimpleDialogActivity.class);
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE, SimpleDialogActivity.FRAGMENT_TYPE_DAILY_SETTLE);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE, SimpleDialogActivity.DT_VERTICIAL_FULLSCREEN);
-//        extras.putString(DailySettleFragment.EXTRA_KEY_DATETIME, datetime);
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -385,17 +383,17 @@ public class AdministratorActivity extends BaseActivity {
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_ANALYSIS,
                 "统计", R.mipmap.ic_admin_menu_analysis));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_RECONCILE,
-                "统计", R.mipmap.ic_admin_menu_reconcile));
+                "对账", R.mipmap.ic_admin_menu_reconcile));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_CASHQUOTA,
                 "授信", R.mipmap.ic_admin_menu_cashquota));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_GOODSFLOW,
                 "商品流水", R.mipmap.ic_admin_menu_goodsflow));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SETTINGS,
                 "设置", R.mipmap.ic_admin_menu_settings));
-        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_FACTORYDATA_RESET,
-                "恢复出厂设置", R.mipmap.ic_admin_factorydatareset));
         functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_SYSTEM_UPGRADE,
                 "系统升级", R.mipmap.ic_admin_system_upgrade));
+        functionalList.add(new ResMenu(ResMenu.ADMIN_MENU_FACTORYDATA_RESET,
+                "恢复出厂设置", R.mipmap.ic_admin_factorydatareset));
         functionalList.add(new ResMenu(ResMenu.CANARY_MENU_ORDERFLOW,
                 "流水", R.mipmap.ic_admin_menu_orderflow));
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
@@ -424,6 +422,8 @@ public class AdministratorActivity extends BaseActivity {
             ActivityRoute.redirect2Receipt(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_ANALYSIS) == 0) {
             dailySettle();
+        } else if (id.compareTo(ResMenu.ADMIN_MENU_RECONCILE) == 0) {
+            ActivityRoute.redirect2Reconcile(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_GOODSFLOW) == 0) {
             ActivityRoute.redirect2GoodsFlow(this);
         } else if (id.compareTo(ResMenu.ADMIN_MENU_SETTINGS) == 0) {

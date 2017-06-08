@@ -51,7 +51,7 @@ public class ExpressCompanyAdapter extends ArrayAdapter<HumanCompanyOption> {
         }
 
         HumanCompanyOption entity = getItem(i);
-        viewHolder.tvAddress.setText(entity.getValue());
+        viewHolder.tvAddress.setText(entity != null ? entity.getValue() : "");
         return view;
     }
 

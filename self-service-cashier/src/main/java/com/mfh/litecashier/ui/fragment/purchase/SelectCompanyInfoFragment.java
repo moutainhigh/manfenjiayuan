@@ -18,6 +18,7 @@ import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.companyInfo.CompanyInfoPresenter;
 import com.mfh.framework.api.companyInfo.ICompanyInfoView;
 import com.mfh.framework.api.constant.AbilityItem;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -244,6 +245,7 @@ public class SelectCompanyInfoFragment extends BaseFragment
 
             mCompanyInfoPresenter.findPublicCompanyInfo(mPageInfo, labelShortcode.toString(), AbilityItem.TENANT);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载关联租户，已经是最后一页。");
             onLoadFinished();
         }

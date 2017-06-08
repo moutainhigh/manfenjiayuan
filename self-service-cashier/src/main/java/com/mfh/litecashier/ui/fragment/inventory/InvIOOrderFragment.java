@@ -16,6 +16,7 @@ import com.mfh.comn.net.data.RspQueryResult;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invIoOrder.InvIoOrder;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -414,6 +415,7 @@ public class InvIOOrderFragment extends BaseFragment {
             onLoadStart();
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载库存批次，已经是最后一页。");
             onLoadFinished();
         }

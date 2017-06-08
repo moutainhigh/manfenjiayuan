@@ -19,7 +19,8 @@ public class HandOverBill implements java.io.Serializable{
     private Date endDate;//交接时间
 
     private List<AggItem> aggItems;//经营分析数据
-    private Double amount;//营业额合计
+    private Double turnover;//营业额合计
+    private Double origionAmount;//原价金额
 
     private List<AccItem> accItems;//流水分析数据
     private Double cash;//现金收取
@@ -73,15 +74,27 @@ public class HandOverBill implements java.io.Serializable{
         this.endDate = endDate;
     }
 
-    public Double getAmount() {
-        if (amount == null){
-            amount = 0D;
+
+    public Double getTurnover() {
+        if (turnover == null){
+            turnover = 0D;
         }
-        return amount;
+        return turnover;
     }
 
-    public void setAmount(Double amount) {
-        this.amount = amount;
+    public void setTurnover(Double turnover) {
+        this.turnover = turnover;
+    }
+
+    public Double getOrigionAmount() {
+        if (origionAmount == null){
+            origionAmount = 0D;
+        }
+        return origionAmount;
+    }
+
+    public void setOrigionAmount(Double origionAmount) {
+        this.origionAmount = origionAmount;
     }
 
     public Double getCash() {

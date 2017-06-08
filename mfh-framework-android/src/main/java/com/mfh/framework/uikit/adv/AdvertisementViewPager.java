@@ -192,4 +192,9 @@ public class AdvertisementViewPager extends RelativeLayout
 		mViewPager.shutdownTimer();
 	}
 
+	public void setTimerEnabled(boolean timerEnabled) {
+		mViewPager.setTimerEnabled(timerEnabled);
+	}
+
+
 }

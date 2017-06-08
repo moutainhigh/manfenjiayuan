@@ -31,6 +31,8 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.mfh.litecashier.utils.AppHelper.clearRedunantData;
+
 /**
  * 设置－－通用
  * Created by kun on 15/8/31.
@@ -106,6 +108,8 @@ public class SettingsCommonFragment extends BaseFragment {
                         dialog.dismiss();
 
                         AppHelper.clearCacheData();
+
+                        clearRedunantData(CashierApp.getAppContext(), false);
                     }
                 }, "点错了", new DialogInterface.OnClickListener() {
 

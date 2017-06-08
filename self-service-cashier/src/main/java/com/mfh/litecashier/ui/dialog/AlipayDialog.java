@@ -21,7 +21,6 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
 import com.bingshanguxue.cashier.PayStatus;
-import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
@@ -30,11 +29,11 @@ import com.mfh.comn.net.ResponseBody;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -45,6 +44,7 @@ import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.entity.MResponse;
+import com.mfh.framework.rxapi.http.AliPayHttpManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
@@ -58,7 +58,7 @@ import java.util.Map;
 
 import rx.Subscriber;
 
-import static com.mfh.framework.api.pay.PayApi.ALIPAY_CHANNEL_ID;
+import static com.mfh.framework.api.MfhApi.WXPAY_CHANNEL_ID;
 
 
 /**
@@ -181,7 +181,9 @@ public class AlipayDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
 
 //        WindowManager m = getWindow().getWindowManager();
 //        Display d = m.getDefaultDisplay();
@@ -307,7 +309,7 @@ public class AlipayDialog extends CommonDialog {
      */
     private void submitOrder() {
         if (bPayProcessing) {
-            ZLogger.df("正在进行支付，不用重复发起请求");
+            ZLogger.d("正在进行支付，不用重复发起请求");
             return;
         }
 
@@ -328,62 +330,6 @@ public class AlipayDialog extends CommonDialog {
         bPayProcessing = true;
         onProcessing("正在发送支付请求...");
 
-        //TODO,调用支付宝支付接口
-//        {"code":"0","msg":"操作成功!","version":"1","data":{"code":"40004","msg":"错误码：ACQ.CONTEXT_INCONSISTENT错误描述：支付失败，商户订单号重复，请收银员取消本笔交易并重新收款。[CONTEXT_INCONSISTENT]"}}
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                    }
-
-                    @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付:%s--%s",
-                                rspBody.getRetCode(), rspBody.getReturnInfo()));
-                        switch (rspBody.getRetCode()) {
-                            //{"code":"0","msg":"Success","version":"1","data":""}
-                            //10000--业务处理成功（订单支付成功）
-                            case "0": {
-                                onBarpayFinished(outTradeNo, "支付成功", Color.parseColor("#FE5000"));
-                            }
-                            break;
-                            //下单成功等待用户输入密码
-                            //{"code":"1","msg":" order success pay inprocess","version":"1","data":""}
-                            //{"code":"1","msg":"错误的pos订单号:4_98_1000004_1456788686475","version":"1","data":null}
-                            //订单创建成功支付处理中(验密支付)
-                            //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
-                            // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
-                            // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
-                            case "1": {
-                                queryOrder(outTradeNo);
-                            }
-                            break;
-                            //{"code":"1","msg":"bizType参数不能为空!","version":"1","data":null}
-                            ////交易创建失败
-                            //40004--错误码：ACQ.INVALID_PARAMETER错误描述：支付失败，交易参数异常，请顾客刷新付款码后重新收款。如再次收款失败，请联系管理员处理。[INVALID_PARAMETER]
-                            //40004--错误码：ACQ.PAYMENT_AUTH_CODE_INVALID错误描述：支付失败，获取顾客账户信息失败，请顾客刷新付款码后重新收款，如再次收款失败，请联系管理员处理。[SOUNDWAVE_PARSER_FAIL]
-                            default: {//-1
-                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FF009B4E"), false);
-//                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FE5000"), true);
-//                                queryOrder(outTradeNo, lastPaidAmount);
-                            }
-                            break;
-                        }
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //当商户后台、网络、服务器等出现异常，商户系统最终未接收到支付通知
-                        ZLogger.df("支付宝条码支付异常:" + errMsg);
-                        onBarpayFailed(errMsg, Color.parseColor("#FE5000"), true);
-                    }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
-
         ZLogger.df(String.format("支付宝条码支付：金额:%.2f, 授权码：%s, 业务类型：%s",
                 mQuickPayInfo.getAmount(), authCode, mQuickPayInfo.getBizType()));
         JSONObject jsonStr = generateOrderInfo(mQuickPayInfo.getAmount(), authCode);
@@ -395,7 +341,7 @@ public class AlipayDialog extends CommonDialog {
         Map<String, String> options = new HashMap<>();
         options.put("jsonStr", jsonStr.toJSONString());
         options.put("bizType", String.valueOf(mQuickPayInfo.getBizType()));
-        options.put("chId", ALIPAY_CHANNEL_ID);
+        options.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         RxHttpManager.getInstance().alipayBarPay(options,
@@ -419,7 +365,7 @@ public class AlipayDialog extends CommonDialog {
                             onBarpayFailed("支付宝支付失败，无响应", AppHelper.getErrorTextColor(), false);
                             return;
                         }
-                        ZLogger.df(String.format("支付宝条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        ZLogger.d(String.format("支付宝条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
                         switch (stringMResponse.getCode()) {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
@@ -461,24 +407,46 @@ public class AlipayDialog extends CommonDialog {
      * 4. 调用撤销接口API之前，需确认该笔交易目前支付状态。<br>
      */
     private void queryOrder(final String outTradeNo) {
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
+        onProcessing("正在查询订单状态...");
+
+        Map<String, String> options = new HashMap<>();
+        options.put("out_trade_no", outTradeNo);
+        options.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AliPayHttpManager.getInstance().query(options,
+                new Subscriber<MResponse<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
 
                     @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付状态查询:%s--%s", rspBody.getRetCode(), rspBody.getReturnInfo()));
+                    public void onError(Throwable e) {
+                        ZLogger.ef("支付宝条码支付状态查询:" + e.toString());
+                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+                        onBarpayFailed(e.getMessage(),
+                                AppHelper.getErrorTextColor(), true);
+                    }
 
-                        switch (rspBody.getRetCode()) {
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null) {
+                            onBarpayFailed("支付宝条码支付状态查询，无响应", AppHelper.getErrorTextColor(), true);
+                            return;
+                        }
+                        ZLogger.df(String.format("支付宝条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+
+                        switch (stringMResponse.getCode()) {
                             //业务处理成功
                             // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                            case "0":
-                                onBarpayFinished(outTradeNo, "支付成功", Color.parseColor("#FE5000"));
+                            case 0:
+                                onBarpayFinished(outTradeNo, "支付成功", AppHelper.getOkTextColor());
                                 break;
                             //{"code":"-1","msg":"Success","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
-                            case "-1":
-                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FF009B4E"), true);
+                            case -1:
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), true);
                                 break;
                             //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
                             //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
@@ -486,29 +454,11 @@ public class AlipayDialog extends CommonDialog {
                             // 处理失败,交易不存在
                             //40004--"sub_code": "ACQ.TRADE_NOT_EXIST",
                             default:
-                                onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FF009B4E"), false);
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
                                 break;
                         }
                     }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("查询订单状态失败:" + errMsg);
-                        //TODO 调用支付宝支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
-                        onBarpayFailed(errMsg, Color.parseColor("#FE5000"), true);
-                    }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
-
-        onProcessing("正在查询订单状态...");
-        PayApi.queryAliBarpayStatus(outTradeNo, payRespCallback);
+                });
     }
 
     /**
@@ -536,7 +486,7 @@ public class AlipayDialog extends CommonDialog {
 
                     @Override
                     public void processResult(ResponseBody rspBody) {
-                        ZLogger.df(String.format("支付宝条码支付取消订单:%s--%s",
+                        ZLogger.d(String.format("支付宝条码支付取消订单:%s--%s",
                                 rspBody.getRetCode(), rspBody.getReturnInfo()));
 
                         //业务处理成功
@@ -558,7 +508,48 @@ public class AlipayDialog extends CommonDialog {
                 , CashierApp.getAppContext()) {
         };
 
-        PayApi.cancelAliBarpay(outTradeNo, payRespCallback);
+        Map<String, String> options = new HashMap<>();
+        options.put("out_trade_no", outTradeNo);
+        options.put("chId", MfhApi.ALIPAY_CHANNEL_ID);
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+
+        AliPayHttpManager.getInstance().cancelOrder(options,
+                new Subscriber<MResponse<String>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef("撤单失败:" + e.toString());
+                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+                        onBarpayFailed(e.getMessage(), AppHelper.getErrorTextColor(), true);
+                    }
+
+                    @Override
+                    public void onNext(MResponse<String> stringMResponse) {
+                        if (stringMResponse == null) {
+                            onBarpayFailed("支付宝条码支付取消订单，无响应", AppHelper.getErrorTextColor(), false);
+                            return;
+                        }
+                        ZLogger.df(String.format("支付宝条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+
+                        switch (stringMResponse.getCode()) {
+                            case 0:
+                                onBarpayFailed("订单已取消", AppHelper.getOkTextColor(), false);
+                                break;
+                            //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
+                            //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
+                            //10000--"trade_status": "TRADE_FINISHED",交易结束，不可退款
+                            // 处理失败,交易不存在
+                            //40004--"sub_code": "ACQ.TRADE_NOT_EXIST",
+                            default: //-2
+                                onBarpayFailed(stringMResponse.getMsg(), AppHelper.getErrorTextColor(), false);
+                                break;
+                        }
+                    }
+                });
     }
 
     /**

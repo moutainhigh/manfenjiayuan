@@ -48,11 +48,13 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
 
     /**
      * 发送消息
+     *
      * @param params
      * @param processor
      */
     public void sendMessage(AjaxParams params, NetProcessor.ComnProcessor<EmbMsg> processor) {
-        NetCallBack.SaveCallBackJson call = new NetCallBack.SaveCallBackJson<EmbMsg> (processor, EmbMsg.class){
+        NetCallBack.SaveCallBackJson call = new NetCallBack.SaveCallBackJson<EmbMsg>(
+                processor, EmbMsg.class) {
             @Override
             protected EmbMsg changeJsonToBean(JSONObject json) {
                 return EmbMsg.parseOjbect(json);
@@ -75,18 +77,17 @@ public class EmbMsgNetDao extends BaseNetDao<BizMsgParamWithSession, String> {
     }
 
     public void setMsgMode(int msgMode) {
-        if (msgMode == IMConstants.MSG_MODE_TAX){
+        if (msgMode == IMConstants.MSG_MODE_TAX) {
             daoUrl.setListUrl("/mobile/msg/getSessionItems");
             daoUrl.setCreateUrl("/mobile/msg/sendMsg");
-        }else {
+        } else {
             daoUrl.setListUrl("/mobile/pmc/msg/getSessionItems");
             daoUrl.setCreateUrl("/mobile/pmc/msg/sendMsg");
         }
     }
 
 
-
-    public static void fillDateMsg(JSONObject json, MfhEntity<String> es) throws Exception{
+    public static void fillDateMsg(JSONObject json, MfhEntity<String> es) throws Exception {
         /*es.setCreatedBy(json.getString("createdBy"));
         es.setUpdatedBy(json.getString("updatedBy"));
         String cdTemp = json.getString("createdDate");

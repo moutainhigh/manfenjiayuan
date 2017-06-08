@@ -79,7 +79,7 @@ public class PayByBandcardFragment extends BasePayFragment {
         }
 
         public void getCallBack(String stateCode, String stateTips) {
-            ZLogger.df("stateCode=" + stateCode + "|" + "stateTips=" + stateTips);
+            ZLogger.df("银联支付：stateCode=" + stateCode + "|" + "stateTips=" + stateTips);
         }
     }
 
@@ -282,7 +282,7 @@ public class PayByBandcardFragment extends BasePayFragment {
             public void run() {
                 try {
 //                    isRunningThread = true;
-                    ZLogger.df("正在撤销订单，请稍候......");
+                    ZLogger.d("正在撤销订单，请稍候......");
                     bankDAO = new BankDAO();
                     bankDAO.getCallBack(new BackCall());
                     response = bankDAO.bankall(transCFX, request);
@@ -544,7 +544,7 @@ public class PayByBandcardFragment extends BasePayFragment {
 
                         @Override
                         public void onError(Throwable e) {
-                            ZLogger.df("提交支付记录失败:" + e.toString());
+                            ZLogger.ef("提交支付记录失败:" + e.toString());
                             onBarpayFinished(handleAmount, response.getRspChin());
                         }
 

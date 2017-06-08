@@ -19,24 +19,18 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
+import com.manfenjiayuan.business.presenter.CustomerPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.ICustomerView;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import rx.Subscriber;
 
 /**
  * <p>
@@ -48,7 +42,7 @@ import rx.Subscriber;
  * <p/>
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class QueryBalanceDialog extends CommonDialog {
+public class QueryBalanceDialog extends CommonDialog implements ICustomerView {
 
     private View rootView;
     private ImageButton btnClose;
@@ -60,6 +54,8 @@ public class QueryBalanceDialog extends CommonDialog {
     private Button btnSubmit;
 
     private ProgressBar progressBar;
+    private CustomerPresenter mCustomerPresenter;
+
 
 
 //    private QueryBalanceDialog(Context context, boolean flag, OnCancelListener listener) {
@@ -69,6 +65,9 @@ public class QueryBalanceDialog extends CommonDialog {
     @SuppressLint("InflateParams")
     private QueryBalanceDialog(Context context, int defStyle) {
         super(context, defStyle);
+
+        mCustomerPresenter = new CustomerPresenter(this);
+
         rootView = getLayoutInflater().inflate(R.layout.dialogview_query_balance, null);
 //        ButterKnife.bind(rootView);
 
@@ -139,8 +138,9 @@ public class QueryBalanceDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -215,11 +215,7 @@ public class QueryBalanceDialog extends CommonDialog {
     private void loadUserAccount(String cardId){
         refresh2(null);
 
-        final String cardId2 = MUtils.parseCardId(cardId);
-        if (StringUtils.isEmpty(cardId2)) {
-            DialogUtil.showHint("芯片号无效");
-            return;
-        }
+
 
         if (!NetworkUtils.isConnect(getContext())){
             DialogUtil.showHint(R.string.toast_network_error);
@@ -228,14 +224,22 @@ public class QueryBalanceDialog extends CommonDialog {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        Map<String, String> options = new HashMap<>();
-        if (!StringUtils.isEmpty(cardId2)) {
-//            options.put("cardId", cardId2);
-            options.put("cardNo", cardId2);
+        mCustomerPresenter.getCustomerByOther(cardId);
+
+        final String cardId2 = MUtils.parseCardId(cardId);
+        if (StringUtils.isEmpty(cardId2)) {
+            DialogUtil.showHint("芯片号无效");
+            return;
         }
-        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-//        CommonUserAccountHttpManager.getInstance().getUserAccountByCardId(options,
-//                new Subscriber<UserAccount>() {
+
+//        Map<String, String> options = new HashMap<>();
+//        if (!StringUtils.isEmpty(cardId2)) {
+////            options.put("cardId", cardId2);
+//            options.put("cardNo", cardId2);
+//        }
+//        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+//        RxHttpManager.getInstance().getCustomerByOther(options,
+//                new Subscriber<Human>() {
 //                    @Override
 //                    public void onCompleted() {
 //
@@ -248,32 +252,31 @@ public class QueryBalanceDialog extends CommonDialog {
 //                    }
 //
 //                    @Override
-//                    public void onNext(UserAccount userAccount) {
-//                        refresh(userAccount);
+//                    public void onNext(Human human) {
+//                        refresh2(human);
 //                        progressBar.setVisibility(View.GONE);
 //                    }
-//
 //                });
+    }
 
-        RxHttpManager.getInstance().getCustomerByOther(options,
-                new Subscriber<Human>() {
-                    @Override
-                    public void onCompleted() {
+    @Override
+    public void onICustomerViewLoading() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
 
-                    }
+    @Override
+    public void onICustomerViewError(int type, String content, String errorMsg) {
+        refresh2(null);
 
-                    @Override
-                    public void onError(Throwable e) {
-                        progressBar.setVisibility(View.GONE);
-                        DialogUtil.showHint(e.getMessage());
-                    }
+        progressBar.setVisibility(View.GONE);
+        DialogUtil.showHint(errorMsg);
+    }
 
-                    @Override
-                    public void onNext(Human human) {
-                        refresh2(human);
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
+    @Override
+    public void onICustomerViewSuccess(int type, String content, Human human) {
+        refresh2(human);
+        progressBar.setVisibility(View.GONE);
+
     }
 
 }

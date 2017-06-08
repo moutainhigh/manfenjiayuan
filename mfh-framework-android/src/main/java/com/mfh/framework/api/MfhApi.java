@@ -21,10 +21,10 @@ import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApi;
 import com.mfh.framework.api.invSendOrder.InvSendOrderApi;
 import com.mfh.framework.api.invSkuStore.InvSkuStoreApi;
 import com.mfh.framework.api.netInfo.NetInfoApi;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.payOrder.PayOrderApi;
 import com.mfh.framework.api.pmcstock.PmcStockApi;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
+import com.mfh.framework.api.posorder.PosOrderApi;
 import com.mfh.framework.api.reciaddr.ReciaddrApi;
 import com.mfh.framework.api.res.ResApi;
 import com.mfh.framework.api.scChainGoodsSku.ScChainGoodsSkuApi;
@@ -51,8 +51,12 @@ public class MfhApi implements ApiParams {
             + "/msgcore/embYtx/getYuninfoByGuid";
     //域名
     public static String URL_DEFAULT = "http://devmobile.manfenjiayuan.cn/";
-    //渠道编号
+    /**
+     * 渠道编号
+     */
     public static String CHANNEL_ID = NetFactory.getChannelId();
+    public static String WXPAY_CHANNEL_ID = NetFactory.getWxPayChannelId();
+    public static String ALIPAY_CHANNEL_ID = NetFactory.getAliPayChannelId();
 
     //注册消息桥参数
     public static String PARAM_VALUE_QUEUE_NAME_DEF = "pmc-app-queue";
@@ -90,7 +94,6 @@ public class MfhApi implements ApiParams {
         InvSendOrderApi.register();
         InvSkuStoreApi.register();
         NetInfoApi.register();
-        PayApi.register();
         PayOrderApi.register();
         PmcStockApi.register();
         PosRegisterApi.register();

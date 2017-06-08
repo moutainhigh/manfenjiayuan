@@ -9,74 +9,84 @@
                                     app:cardPreventCornerOverlap="true"
                                     app:cardUseCompatPadding="true">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rootview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="190dp"
         android:padding="@dimen/spacing_normal">
-        <!-- 标签-->
-        <TextView
-            android:id="@+id/tv_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/spacing_normal"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"/>
 
-        <!--订单编号-->
-        <TextView
-            android:id="@+id/tv_id"
-            style="@style/singleline_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_badge"
-            android:text="订单编号"/>
-        <!--订单流水编号-->
-        <TextView
-            android:id="@+id/tv_barcode"
-            style="@style/singleline_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_id"
-            android:text="订单编号"/>
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/tv_createDate"
-            style="@style/singleline_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_barcode"
-            android:text="下单时间"/>
-        <TextView
-            android:id="@+id/tv_updatedate"
-            style="@style/singleline_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_createDate"
-            android:text="更新时间"/>
+            <!-- 标签-->
+            <TextView
+                android:id="@+id/tv_badge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:padding="@dimen/spacing_normal"/>
 
-        <!-- 网点-->
-        <TextView
-            android:id="@+id/tv_office"
-            style="@style/singleline_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_updatedate"
-            android:text="网点"/>
+            <!--订单编号-->
+            <TextView
+                android:id="@+id/tv_id"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_badge"
+                android:text="订单编号"/>
+            <!--订单流水编号-->
+            <TextView
+                android:id="@+id/tv_barcode"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_id"
+                android:text="订单编号"/>
 
-        <!-- 租户-->
-        <TextView
-            android:id="@+id/tv_tenant"
-            style="@style/singleline_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_office"
-            android:ellipsize="end"/>
+            <TextView
+                android:id="@+id/tv_createDate"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_barcode"
+                android:text="下单时间"/>
+
+            <TextView
+                android:id="@+id/tv_updatedate"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_createDate"
+                android:text="更新时间"/>
+
+            <!-- 网点-->
+            <TextView
+                android:id="@+id/tv_office"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_updatedate"
+                android:text="网点"/>
+
+            <!-- 租户-->
+            <TextView
+                android:id="@+id/tv_tenant"
+                style="@style/singleline_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_office"
+                android:ellipsize="end"
+                android:text="租户"/>
+
+        </RelativeLayout>
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_tenant"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center_vertical|end">
 
             <ImageButton
@@ -98,7 +108,6 @@
                 android:contentDescription="@null"
                 android:src="@mipmap/ic_cardview_print_preview"/>
 
-
             <ImageButton
                 android:id="@+id/ib_payhistory"
                 android:layout_width="32dp"
@@ -110,5 +119,5 @@
         </LinearLayout>
 
 
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.v7.widget.CardView>

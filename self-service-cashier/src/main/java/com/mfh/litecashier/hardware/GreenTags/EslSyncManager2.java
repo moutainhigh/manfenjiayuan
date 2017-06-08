@@ -93,7 +93,7 @@ public class EslSyncManager2 extends EslSyncManager{
      * 上传结束
      */
     private void uploadProcess(String msg) {
-        ZLogger.df(msg);
+        ZLogger.d(msg);
         bSyncInProgress = true;
   }
 
@@ -101,7 +101,7 @@ public class EslSyncManager2 extends EslSyncManager{
      * 上传结束
      */
     private void uploadFinished(String msg) {
-        ZLogger.df(msg);
+        ZLogger.d(msg);
         bSyncInProgress = false;
     }
 
@@ -109,7 +109,7 @@ public class EslSyncManager2 extends EslSyncManager{
      * 上传结束失败
      */
     private void uploadFailed(String msg) {
-        ZLogger.df(msg);
+        ZLogger.ef(msg);
         bSyncInProgress = false;
 
         //每次休眠一段时间后连接基站都会失败，这里重试一次，确保数据可以同步成功
@@ -173,7 +173,7 @@ public class EslSyncManager2 extends EslSyncManager{
                         makeEslPushRequest(goodsList, newCursor);
                 if (!exPackResult.isResult()) {
                     retrySyncFlag++;
-                    ZLogger.df(String.format("同步价签商品失败：%s",
+                    ZLogger.ef(String.format("同步价签商品失败：%s",
                             TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                     return false;
                 }
@@ -197,7 +197,7 @@ public class EslSyncManager2 extends EslSyncManager{
                             makeEslPushRequest(goodsList2, newCursor);
                     if (!exPackResult2.isResult()) {
                         retrySyncFlag++;
-                        ZLogger.df(String.format("同步价签商品失败：%s",
+                        ZLogger.ef(String.format("同步价签商品失败：%s",
                                 TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                         return false;
                     }

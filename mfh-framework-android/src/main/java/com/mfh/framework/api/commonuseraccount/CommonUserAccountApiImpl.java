@@ -1,9 +1,6 @@
 package com.mfh.framework.api.commonuseraccount;
 
-import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
-import com.mfh.framework.network.NetFactory;
 
 import net.tsz.afinal.http.AjaxCallBack;
 import net.tsz.afinal.http.AjaxParams;
@@ -14,24 +11,6 @@ import net.tsz.afinal.http.AjaxParams;
  */
 
 public class CommonUserAccountApiImpl extends CommonUserAccountApi{
-
-    /**
-     * 会员卡充值
-     *
-     * @see URL_TRANSFERFROMMYACCOUNT
-     */
-    public static void transferFromMyAccount(String amount, String accountPassword, Long receiveHumanId,
-                                             AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("amount", amount);
-        params.put("accountPassword", accountPassword);
-        params.put("receiveHumanId", String.valueOf(receiveHumanId));
-        params.put("isCash", "1");
-        params.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.getHttp(true).post(URL_TRANSFERFROMMYACCOUNT, params, responseCallback);
-    }
-
     /**
      * 商城订单支付（满分账户）
      * @param humanId 人员编号

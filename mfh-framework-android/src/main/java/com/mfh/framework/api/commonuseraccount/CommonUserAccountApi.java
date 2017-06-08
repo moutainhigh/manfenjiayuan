@@ -24,12 +24,6 @@ public class CommonUserAccountApi {
     private static String URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
 
     /**
-     * 会员卡充值:给其他帐号转账
-     * /commonuseraccount/activateAccount?cardId=334455667788&ownerId=94182
-     */
-    static String URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
-
-    /**
      * (商城/洗衣)订单支付
      */
     static String URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
@@ -49,7 +43,6 @@ public class CommonUserAccountApi {
         URL_COMMONUSERACCOUNT = MfhApi.URL_BASE_SERVER + "/commonuseraccount/";
         URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
         URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
-        URL_TRANSFERFROMMYACCOUNT = URL_COMMONUSERACCOUNT + "transferFromMyAccount";
         URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
         URL_MFACCOUNT_PAY = URL_COMMONUSERACCOUNT + "mfhAccountPay";
         NOTIFY_ACCOUNT = URL_COMMONUSERACCOUNT + "notifyAccount";

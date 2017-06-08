@@ -26,6 +26,10 @@ public class EscCommand {
         this.Command = new Vector(4096, 1024);
     }
 
+    public void clear() {
+        this.Command.clear();
+    }
+
     private void addArrayToCommand(byte[] array) {
         for(int i = 0; i < array.length; ++i) {
             this.Command.add(Byte.valueOf(array[i]));

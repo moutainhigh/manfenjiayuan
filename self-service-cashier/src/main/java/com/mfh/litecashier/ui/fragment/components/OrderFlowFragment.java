@@ -17,12 +17,13 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -53,7 +54,7 @@ import butterknife.OnClick;
  * 设置－－门店所有订单流水
  * 显示POS机本地的订单流水
  * <p/>
- * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
+ * Created by bingshanguxue on 15/8/31.
  */
 public class OrderFlowFragment extends BaseFragment {
     private static final int STATE_NONE = 0;
@@ -287,6 +288,7 @@ public class OrderFlowFragment extends BaseFragment {
         }
     };
 
+    //异常订单，显示订单详情处理
     private PosOrderDetailDialog mPosOrderDetailDialog = null;
     private void showOrderDetail(PosOrderEntity orderEntity){
         if (orderEntity == null || orderEntity.getStatus() != PosOrderEntity.ORDER_STATUS_EXCEPTION){
@@ -294,7 +296,7 @@ public class OrderFlowFragment extends BaseFragment {
             return;
         }
 
-        CashierOrderInfo cashierOrderInfo = CashierAgent.makeCashierOrderInfo(orderEntity, null);
+        CashierOrderInfo cashierOrderInfo = CashierProvider.createCashierOrderInfo(orderEntity, null);
         if (cashierOrderInfo == null){
             return;
         }
@@ -399,6 +401,7 @@ public class OrderFlowFragment extends BaseFragment {
             onLoadStart();
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载线下门店订单流水，已经是最后一页。");
             onLoadFinished();
         }
@@ -556,7 +559,7 @@ public class OrderFlowFragment extends BaseFragment {
     public void dailysettlePreview1() {
 //        Date date = new Date();
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(TimeUtil.getCurrentDate());
 
         if (dateTimePickerDialog == null) {
             dateTimePickerDialog = new MyDatePickerDialog(getActivity());

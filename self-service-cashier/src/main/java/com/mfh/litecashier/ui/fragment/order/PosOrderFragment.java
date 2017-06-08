@@ -10,9 +10,10 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.core.utils.StringUtils;
@@ -222,6 +223,7 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
             orderflowPresenter.findGoodsOrderList(mBizType, mSubTypes,
                     orderStatus, sellOffices, mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载线下门店订单流水，已经是最后一页。");
             onLoadFinished();
         }

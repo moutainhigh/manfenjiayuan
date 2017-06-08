@@ -13,6 +13,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -24,7 +26,6 @@ import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
 import com.mfh.litecashier.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
-import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.litecashier.ui.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
@@ -299,6 +300,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
             orderflowPresenter.findGoodsOrderList(BizType.SC, null, status,
                     String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载线上订单订单流水，已经是最后一页。");
             onLoadFinished();
         }

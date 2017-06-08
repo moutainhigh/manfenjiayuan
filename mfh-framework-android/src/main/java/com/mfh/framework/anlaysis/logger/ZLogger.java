@@ -6,6 +6,7 @@ import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -129,7 +130,7 @@ public class ZLogger {
      */
     public static void df(String log) {
 //        printWrapper(DEBUG, null, log);
-        if (LOG_ENABLED) {
+        if (LOG_ENABLED || SharedPrefesManagerFactory.isSuperPermissionGranted()) {
 //            Log.d(String.format("%s--%d/%d", TAG, MfhApplication.getAvailMemory(MfhApplication.getAppContext()), MfhApplication.getTotalMemory(MfhApplication.getAppContext())),
 //                    String.format("%s %s", log, callMethodAndLine()));
 

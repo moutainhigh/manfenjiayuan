@@ -11,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.dialog.AccountQuickPayDialog;
@@ -232,7 +232,7 @@ public class InventoryTransFragment extends BaseFragment {
             payDialog.setCanceledOnTouchOutside(false);
         }
         payDialog.init(dialogType, String.valueOf(orderId),
-                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo),
+                CashierProvider.getHandleAmount(cashierOrderInfo),
                 new AccountQuickPayDialog.DialogClickListener() {
                     @Override
                     public void onPaySucceed() {

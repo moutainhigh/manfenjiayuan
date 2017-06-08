@@ -1,12 +1,13 @@
 package com.mfh.litecashier.database.logic;
 
-import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.framework.api.constant.IsPrivate;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.constant.IsPrivate;
+import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.litecashier.database.dao.PurchaseShopcartDao;
 import com.mfh.litecashier.database.entity.PurchaseShopcartEntity;
 
@@ -190,6 +191,7 @@ public class PurchaseShopcartService extends BaseService<PurchaseShopcartEntity,
             return;
         }
 
+        Date rightNow = TimeUtil.getCurrentDate();
         PurchaseShopcartEntity purchaseShopcartEntity = PurchaseShopcartService
                 .getInstance().getFreshGoods(goods.getTenantId(),
                         goods.getBarcode());
@@ -197,7 +199,7 @@ public class PurchaseShopcartService extends BaseService<PurchaseShopcartEntity,
         if (purchaseShopcartEntity == null){
             ZLogger.d(String.format("添加新的生鲜商品到购物车:%s", goods.getBarcode()));
             purchaseShopcartEntity = new PurchaseShopcartEntity();
-            purchaseShopcartEntity.setCreatedDate(new Date());
+            purchaseShopcartEntity.setCreatedDate(rightNow);
             purchaseShopcartEntity.setPurchaseType(PurchaseShopcartEntity.PURCHASE_TYPE_FRESH);
             purchaseShopcartEntity.setProviderId(goods.getTenantId());
             purchaseShopcartEntity.setProviderName(goods.getCompanyName());
@@ -215,7 +217,7 @@ public class PurchaseShopcartService extends BaseService<PurchaseShopcartEntity,
         purchaseShopcartEntity.setUnit(goods.getBuyUnit());
         purchaseShopcartEntity.setPrice(goods.getHintPrice());
         purchaseShopcartEntity.setQuantity(quantity);
-        purchaseShopcartEntity.setUpdatedDate(new Date());
+        purchaseShopcartEntity.setUpdatedDate(rightNow);
         saveOrUpdate(purchaseShopcartEntity);
     }
 
@@ -225,9 +227,10 @@ public class PurchaseShopcartService extends BaseService<PurchaseShopcartEntity,
            return;
         }
 
+        Date rightNow = TimeUtil.getCurrentDate();
         purchaseShopcartEntity.setQuantity(quantity);
         if (saveUpdatedDate){
-            purchaseShopcartEntity.setUpdatedDate(new Date());
+            purchaseShopcartEntity.setUpdatedDate(rightNow);
         }
         saveOrUpdate(purchaseShopcartEntity);
     }

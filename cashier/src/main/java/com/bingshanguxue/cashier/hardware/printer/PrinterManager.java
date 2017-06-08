@@ -6,7 +6,7 @@ import com.bingshanguxue.cashier.hardware.printer.gprinter.EscCommand;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.mfh.framework.api.posorder.PayWay;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.manfenjiayuan.business.GlobalInstanceBase;
@@ -55,9 +55,6 @@ public abstract class PrinterManager implements IPrinterManager {
      * 添加小票底部租户名称&联系方式
      */
     public void addFooter(EscCommand esc) {
-        if (esc == null) {
-            return;
-        }
         TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer != null) {
             String footerText = String.format("%s%s\n",
@@ -397,14 +394,22 @@ public abstract class PrinterManager implements IPrinterManager {
     public void printDailySettleAggItem(EscCommand esc, int startIndex,
                                         List<AggItem> aggItems) {
         if (aggItems != null) {
+            Double turnOver = 0D, salesBalance = 0D;
             for (AggItem aggItem : aggItems) {
+                turnOver += aggItem.getTurnover();
+                salesBalance += aggItem.getSalesBalance();
+
                 makeHandoverTemp(esc,
                         String.format("%d %s/%s", startIndex, aggItem.getBizTypeCaption(),
                                 aggItem.getSubTypeCaption()),
-                        String.format("%.2f", aggItem.getOrderNum()),
-                        String.format("%.2f", aggItem.getTurnover()));
+                        String.format("%.2f", aggItem.getTurnover()),
+                        String.format("%.2f", aggItem.getSalesBalance()));
                 startIndex++;
             }
+
+            makeHandoverTemp(esc, "合计",
+                    String.format("%.2f", turnOver),
+                    String.format("%.2f", salesBalance));
         }
     }
 
@@ -414,13 +419,22 @@ public abstract class PrinterManager implements IPrinterManager {
     public void printDailySettleAccItem(EscCommand esc, int startIndex,
                                         List<AccItem> accItems) {
         if (accItems != null && accItems.size() > 0) {
+            Double bcount = 0D, amount = 0D;
+
             for (AccItem accItem : accItems) {
+                bcount += accItem.getOrderNum();
+                amount += accItem.getAmount();
+
                 makeHandoverTemp(esc,
                         String.format("%d %s", startIndex, accItem.getPayTypeCaption()),
                         String.format("%.2f", accItem.getOrderNum()),
                         String.format("%.2f", accItem.getAmount()));
                 startIndex++;
             }
+
+            makeHandoverTemp(esc, "合计",
+                    String.format("%.2f", bcount),
+                    String.format("%.2f", amount));
         }
     }
 
@@ -539,7 +553,10 @@ public abstract class PrinterManager implements IPrinterManager {
                 headers.put("产品线：", subType);
 //                escCommands.add(makeHeaderEsc("产品线对账单", headers));
                 escCommands.add(makeReconcileHeaderEsc("产品线对账单", headers));
-                escCommands.addAll(makeReconcileEsc(goodsItems));
+
+                escCommands.addAll(makeReconcileEsc(goodsItems, 10));
+
+                Printer.print(escCommands);
                 subscriber.onNext(escCommands);
                 subscriber.onCompleted();
             }
@@ -560,12 +577,13 @@ public abstract class PrinterManager implements IPrinterManager {
 
                     @Override
                     public void onNext(List<EscCommand> escCommands) {
-                        Printer.print(escCommands);
+//                        Printer.print(escCommands);
                     }
                 });
     }
     public abstract EscCommand makeReconcileHeaderEsc(String title, HashMap<String, String> headers);
-    public abstract List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems);
+    public abstract List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems, int blockSize);
+//    public abstract List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems);
 
 
     /**小票头*/
@@ -584,8 +602,8 @@ public abstract class PrinterManager implements IPrinterManager {
         }
 
         esc.addText(String.format("%s%s\n",
-                Printer.formatShort(text1, 8, Printer.BLANK_GRAVITY.RIGHT),
-                Printer.formatShort(text2, 24, Printer.BLANK_GRAVITY.LEFT)));
+                Printer.formatShort(text1, 10, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text2, 22, Printer.BLANK_GRAVITY.RIGHT)));
         if (bottomLineEnabled) {
             esc.addText("--------------------------------\n");//32个
         }
@@ -599,10 +617,6 @@ public abstract class PrinterManager implements IPrinterManager {
     public void prepareContent1(EscCommand esc,
                                String text1, String text2, String text3,
                                boolean bottomLineEnabled) {
-        if (esc == null) {
-            return;
-        }
-
         esc.addText(String.format("%s%s%s\n",
                 Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
                 Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),
@@ -611,6 +625,7 @@ public abstract class PrinterManager implements IPrinterManager {
             esc.addText("--------------------------------\n");//32个
         }
     }
+
     /**小票尾*/
     public abstract EscCommand makeFooterEsc(HashMap<String, String> footers);
     /**
@@ -619,16 +634,12 @@ public abstract class PrinterManager implements IPrinterManager {
      * <li>text1：text2</li>
      * </ol>
      */
-    public void preparefooter1(EscCommand esc,
+    public void prepareFooter1(EscCommand esc,
                                String text1, String text2,
                                boolean bottomLineEnabled) {
-        if (esc == null) {
-            return;
-        }
-
         esc.addText(String.format("%s%s\n",
-                Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
-                Printer.formatShort(text2, 16, Printer.BLANK_GRAVITY.LEFT)));
+                Printer.formatShort(text1, 24, Printer.BLANK_GRAVITY.LEFT),
+                Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.RIGHT)));
         if (bottomLineEnabled) {
             esc.addText("--------------------------------\n");//32个
         }
@@ -876,10 +887,6 @@ public abstract class PrinterManager implements IPrinterManager {
                                String text4, String text5, String text6,
                                String text7, String text8, String text9,
                                boolean bottomLineEnabled) {
-        if (esc == null) {
-            return;
-        }
-
         esc.addText(String.format("%s%s%s\n",
                 Printer.formatShort(text1, 16, Printer.BLANK_GRAVITY.RIGHT),
                 Printer.formatShort(text2, 8, Printer.BLANK_GRAVITY.LEFT),

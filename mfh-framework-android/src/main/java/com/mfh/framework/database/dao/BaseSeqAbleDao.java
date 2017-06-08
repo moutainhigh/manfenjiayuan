@@ -54,7 +54,7 @@ public abstract class BaseSeqAbleDao<T extends IObject, PK>  extends BaseDbDao<T
 
     public void updateSequence(long curValue){
         if (seqService != null){
-            seqService.setSequenceValue(sequeceName, curValue);
+            seqService.setSequenceValue(sequeceName, curValue, -1L);
         }
     }
 

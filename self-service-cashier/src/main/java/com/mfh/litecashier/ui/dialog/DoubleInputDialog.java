@@ -223,7 +223,9 @@ public class DoubleInputDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
 
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
@@ -253,7 +255,7 @@ public class DoubleInputDialog extends CommonDialog {
         this.hintValue = hintValue;
         this.unit = unit;
         this.mListener = callback;
-        this.DECIMAL_DIGITS = decimalDigits;
+        DECIMAL_DIGITS = decimalDigits;
 
         this.tvTitle.setText(title);
 //        etValue.setText(hintValue.toString());

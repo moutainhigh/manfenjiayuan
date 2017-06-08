@@ -74,8 +74,8 @@ public class IMConstants {
     public static final Integer SESSION_TYPE_GUANJIA_UNBIND = 1;//客户关注后首先置入未绑定客服会话，为简单起见 不再如下面再未区别初始和临时团队。
     public static final Integer SESSION_TYPE_GUANJIA_NORMAL = 101;//已绑定客服团队会话-初始团队  //final Integer GUANJIA_TMP = 102;//已绑定客服团队会话-加入临时成员后的团队
 
-    public static List<Integer> unBindKinds = new ArrayList<Integer>();
-    public static List<Integer> bindKinds = new ArrayList<Integer>();
+    public static List<Integer> unBindKinds = new ArrayList<>();
+    public static List<Integer> bindKinds = new ArrayList<>();
 
     //客户绑定类型
     public static final Integer CUSTOM_TYPE_UNBIND = 0;//未绑定,等同于GUANJIA_UNBIND

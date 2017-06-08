@@ -120,15 +120,14 @@ public class PosProductService extends BaseService<PosProductEntity, String, Pos
      * @param barcode 商品条码
      * @return PosProductEntity 如果找到多个返回第一个商品；没有找到返回null.
      */
-    public PosProductEntity findGoods(String barcode) {
+    public PosProductEntity queryByBarcode(String barcode) {
         //注意，这里的租户默认是当前登录租户
-        List<PosProductEntity> entities = PosProductService.get()
-                .queryAllByDesc(String.format("barcode = '%s' and tenantId = '%d'",
+        List<PosProductEntity> entities = queryAllByDesc(String.format("barcode = '%s' and tenantId = '%d'",
                         barcode, MfhLoginService.get().getSpid()));
         if (entities != null && entities.size() > 0) {
             PosProductEntity goods = entities.get(0);
-            ZLogger.d(String.format("找到%d个商品:%s[%s]",
-                    entities.size(), barcode, goods.getSkuName()));
+            ZLogger.d(String.format("找到%d个商品:%s[%s][%s]",
+                    entities.size(), barcode, goods.getAbbreviation(), goods.getSkuName()));
             return goods;
         } else {
             ZLogger.d(String.format("未找到商品:%s", barcode));

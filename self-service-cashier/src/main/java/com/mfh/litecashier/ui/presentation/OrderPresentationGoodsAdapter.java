@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.api.constant.PriceType;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
 
@@ -55,14 +56,15 @@ public class OrderPresentationGoodsAdapter
 
         holder.tvName.setText(entity.getSkuName());
         holder.tvPrice.setText(String.format("%.2f", entity.getFinalPrice()));
-        holder.tvCustomerPrice.setText(MUtils.formatDouble(entity.getCustomerPrice(), ""));
+        holder.tvCustomerPrice.setText(MUtils.formatDouble(entity.getFinalCustomerPrice(), ""));
         //计件：整数；记重：3位小数
         if (entity.getPriceType() == PriceType.WEIGHT) {
             holder.tvBcount.setText(String.format("%.3f", entity.getBcount()));
         } else {
             holder.tvBcount.setText(String.format("%.2f", entity.getBcount()));
         }
-        holder.tvAmount.setText(String.format("%.2f", entity.getFinalAmount()));
+        //显示会员价小计
+        holder.tvAmount.setText(String.format("%.2f", MathCompact.mult(entity.getBcount(), entity.getFinalCustomerPrice())));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {

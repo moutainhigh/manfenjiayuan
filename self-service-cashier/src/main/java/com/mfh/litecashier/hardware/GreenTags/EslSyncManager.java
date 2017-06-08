@@ -9,7 +9,6 @@ import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.litecashier.hardware.GreenTags.GreenTagsApiImpl2;
 
 import org.century.GreenTagsApi;
 import org.century.schemas.ArrayOfGoodsInfoEX;
@@ -53,7 +52,7 @@ public class EslSyncManager {
         if (!StringUtils.isEmpty(startCursor)) {
             try {
                 Date d1 = TimeCursor.InnerFormat.parse(startCursor);
-                Date rightNow = new Date();
+                Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
                     ZLogger.df(String.format("上次价签同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
@@ -79,11 +78,11 @@ public class EslSyncManager {
             //记录最大时间游标
             if (newCursor == null || goods.getUpdatedDate() == null
                     || newCursor.compareTo(goods.getUpdatedDate()) <= 0) {
-                ZLogger.df(String.format("before, updatedDate=%s, newCursor:  %s",
+                ZLogger.d(String.format("before, updatedDate=%s, newCursor:  %s",
                         TimeUtil.format(goods.getUpdatedDate(), TimeCursor.InnerFormat),
                         TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                 newCursor = goods.getUpdatedDate();
-                ZLogger.df(String.format("after, updatedDate=%s, newCursor: %s",
+                ZLogger.d(String.format("after, updatedDate=%s, newCursor: %s",
                         TimeUtil.format(goods.getUpdatedDate(), TimeCursor.InnerFormat),
                         TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
 

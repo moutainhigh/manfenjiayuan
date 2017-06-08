@@ -19,8 +19,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.api.scOrder.ScOrderItem;
@@ -29,9 +27,7 @@ import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.rxapi.http.ScOrderHttpManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
@@ -95,7 +91,7 @@ public class PrepareStep2Fragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         try {
             Bundle args = getArguments();
-            ZLogger.df(String.format("打开平台组货页面，%s", StringUtils.decodeBundle(args)));
+            ZLogger.d(String.format("打开平台组货页面，%s", StringUtils.decodeBundle(args)));
             if (args != null) {
                 mScOrder = (ScOrder) args.getSerializable(EXTRA_KEY_SCORDER);
             }
@@ -262,37 +258,11 @@ public class PrepareStep2Fragment extends BaseFragment {
 
                     @Override
                     public void onNext(String s) {
-                        ZLogger.df("发货并通知骑手:" + s);
+                        ZLogger.d("发货并通知骑手:" + s);
                         prepareOrder();
-
                     }
                 });
     }
-
-    NetCallBack.NetTaskCallBack updateCommitInfoRC = new NetCallBack.NetTaskCallBack<String,
-            NetProcessor.Processor<String>>(
-            new NetProcessor.Processor<String>() {
-                @Override
-                public void processResult(IResponseData rspData) {
-                    //{"code":"0","msg":"操作成功!","version":"1","data":null}
-                    if (rspData != null) {
-                        RspValue<String> retValue = (RspValue<String>) rspData;
-                        String retStr = retValue.getValue();
-                    }
-
-                    prepareOrder();
-                }
-
-                @Override
-                protected void processFailure(Throwable t, String errMsg) {
-                    super.processFailure(t, errMsg);
-                    btnSubmit.setEnabled(true);
-                    hideProgressDialog();
-                }
-            }
-            , String.class
-            , CashierApp.getAppContext()) {
-    };
 
     /**
      * 计算会员/优惠券优惠金额

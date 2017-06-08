@@ -91,7 +91,7 @@ public abstract class IflyTekActivity extends BaseActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        ZLogger.d("onConfigurationChanged" + newConfig.toString());
+//        ZLogger.d("onConfigurationChanged" + newConfig.toString());
     }
 
 
@@ -120,7 +120,7 @@ public abstract class IflyTekActivity extends BaseActivity {
 //3.开始合成
 //            mTts.startSpeaking("科大讯飞,让世界聆听我们的声音", mTtsListener);
         } catch (Exception e) {
-            ZLogger.e(e.toString());
+            ZLogger.ef(e.toString());
         }
     }
 

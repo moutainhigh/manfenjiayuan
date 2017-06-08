@@ -10,10 +10,9 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.alibaba.fastjson.JSON;
-import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
+import com.bingshanguxue.cashier.v1.CashierBenchObservable;
 import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierOrderInfoImpl;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -38,17 +37,18 @@ import java.util.Observer;
  * the main activity is showing so we must be careful to use the presentation's
  * own {@link Context} whenever we load resources.
  * </p>
- *
+ * <p>
  * Created by bingshanguxue on 04/02/2017.
- *
+ * <p>
  * 主屏幕分辨率：1366*720 1.000000
  * 副屏幕分辨率：1024*768 1.418750
  */
 
-public class OrderPresentation  extends Presentation {
+public class OrderPresentation extends Presentation {
     private AvatarView ivMemberHeader;
     private MultiLayerLabel labelOrderAmount;
     private MultiLayerLabel labelDiscount;
+    private MultiLayerLabel labelPromotion;
     private MultiLayerLabel labelCouponDiscount;
     private MultiLayerLabel labelScore;
     private MultiLayerLabel labelActualAmount;
@@ -78,6 +78,7 @@ public class OrderPresentation  extends Presentation {
         ivMemberHeader = (AvatarView) findViewById(R.id.iv_vip_header);
         labelOrderAmount = (MultiLayerLabel) findViewById(R.id.label_orderamount);
         labelDiscount = (MultiLayerLabel) findViewById(R.id.label_discount);
+        labelPromotion = (MultiLayerLabel) findViewById(R.id.label_promotion);
         labelCouponDiscount = (MultiLayerLabel) findViewById(R.id.label_coupon_discount);
         labelScore = (MultiLayerLabel) findViewById(R.id.label_score);
         labelActualAmount = (MultiLayerLabel) findViewById(R.id.label_actualamount);
@@ -106,13 +107,11 @@ public class OrderPresentation  extends Presentation {
         int resourceId = resources.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         //获取NavigationBar的高度
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("Presentation: %d*%d %f%navigation_bar_height:%d\n",
+        ZLogger.d(String.format("Presentation: %d*%d %f%navigation_bar_height:%d\n",
                 resources.getDisplayMetrics().widthPixels,
                 resources.getDisplayMetrics().heightPixels,
                 resources.getDisplayMetrics().density,
                 resources.getDimensionPixelSize(resourceId)));
-        ZLogger.d(sb.toString());
 //
 //        getWindow().getWindowManager().getDefaultDisplay().getSize();
     }
@@ -121,18 +120,18 @@ public class OrderPresentation  extends Presentation {
     protected void onStart() {
         super.onStart();
 
-        CashierDesktopObservable.getInstance().addObserver(mObserver);
+        CashierBenchObservable.getInstance().addObserver(mObserver);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
 
-        CashierDesktopObservable.getInstance().deleteObserver(mObserver);
+        CashierBenchObservable.getInstance().deleteObserver(mObserver);
     }
 
     private void initGoodsRecyclerView() {
-        try{
+        try {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
             linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             goodsRecyclerView.setLayoutManager(linearLayoutManager);
@@ -161,8 +160,7 @@ public class OrderPresentation  extends Presentation {
 
             });
             goodsRecyclerView.setAdapter(mGoodsAdapter);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             ZLogger.e(e.toString());
         }
@@ -174,8 +172,6 @@ public class OrderPresentation  extends Presentation {
      */
     private void refreshMemberInfo(Human memberInfo) {
         if (memberInfo != null) {
-            ZLogger.df(String.format("刷新会员信息：%s", JSON.toJSONString(memberInfo)));
-
             ivMemberHeader.setAvatarUrl(memberInfo.getHeadimageUrl());
         } else {
             ivMemberHeader.setImageResource(R.drawable.chat_tmp_user_head);
@@ -187,27 +183,29 @@ public class OrderPresentation  extends Presentation {
         @Override
         public void update(Observable o, Object arg) {
             try {
-                mGoodsAdapter.setEntityList(CashierDesktopObservable.getInstance().getShopcartEntities());
+                mGoodsAdapter.setEntityList(CashierBenchObservable.getInstance().getShopcartEntities());
                 labelOrderAmount.setTopText(String.format("%.2f",
-                        CashierDesktopObservable.getInstance().getAmount()));//成交价
+                        CashierBenchObservable.getInstance().getFinalAmount()));//成交价
 
-                CashierOrderInfo cashierOrderInfo = CashierDesktopObservable.getInstance().getCashierOrderInfo();
-                if (cashierOrderInfo != null){
+                CashierOrderInfo cashierOrderInfo = CashierBenchObservable.getInstance().getCashierOrderInfo();
+                if (cashierOrderInfo != null) {
                     refreshMemberInfo(cashierOrderInfo.getVipMember());
 
-                    Double handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
+                    Double handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
                     labelDiscount.setTopText(String.format("%.2f",
-                            CashierOrderInfoImpl.getRuleDiscountAmount(cashierOrderInfo)));
+                            CashierBenchObservable.getInstance().getItemRuleAmount()));
+                    labelPromotion.setTopText(String.format("%.2f",
+                            CashierBenchObservable.getInstance().getPackRuleAmount()));
                     labelCouponDiscount.setTopText(String.format("%.2f",
-                            CashierOrderInfoImpl.getCouponDiscountAmount(cashierOrderInfo)));
-                    labelScore.setTopText(String.format("%.2f", Math.abs(handleAmount / 2)));
+                            CashierBenchObservable.getInstance().getCouponAmount()));
+                    labelScore.setTopText(String.format("%.0f", Math.abs(handleAmount / 2)));
                     labelActualAmount.setTopText(String.format("%.2f", handleAmount));
-                }
-                else{
+                } else {
                     refreshMemberInfo(null);
                     labelDiscount.setTopText(String.format("%.2f", 0D));
+                    labelPromotion.setTopText(String.format("%.2f", 0D));
                     labelCouponDiscount.setTopText(String.format("%.2f", 0D));
-                    labelScore.setTopText(String.format("%.2f", 0D));
+                    labelScore.setTopText(String.format("%.0f", 0D));
                     labelActualAmount.setTopText(String.format("%.2f", 0D));
                 }
 
@@ -222,7 +220,7 @@ public class OrderPresentation  extends Presentation {
 
     /**
      * 刷新订单信息
-     * */
+     */
     public void setText(String text) {
         DialogUtil.showHint(text);
         ZLogger.d(text);

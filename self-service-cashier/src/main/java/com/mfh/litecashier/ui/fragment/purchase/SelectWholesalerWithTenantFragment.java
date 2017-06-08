@@ -88,7 +88,6 @@ public class SelectWholesalerWithTenantFragment extends BaseFragment {
         getActivity().finish();
     }
 
-
     private void initTabs() {
         //setupViewPager
         mViewPager.setScrollEnabled(true);

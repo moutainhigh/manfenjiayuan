@@ -13,12 +13,13 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@color/mfh_toolbar_background"
         android:gravity="center_vertical"
-        android:paddingStart="@dimen/spacing_double"
+        android:orientation="horizontal"
         android:paddingEnd="@dimen/spacing_double"
-        android:orientation="horizontal">
+        android:paddingStart="@dimen/spacing_double">
 
         <TextView
             android:id="@+id/tv_header_title"
+            style="@style/singleline_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -27,7 +28,6 @@
             android:text=""
             android:textColor="@color/material_white"
             android:textSize="20sp"
-            style="@style/singleline_text"
             />
 
         <ImageButton
@@ -149,6 +149,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_cash_white"/>
 
 

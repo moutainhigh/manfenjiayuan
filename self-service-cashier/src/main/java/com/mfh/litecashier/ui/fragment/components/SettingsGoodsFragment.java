@@ -19,6 +19,7 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -268,6 +269,7 @@ public class SettingsGoodsFragment extends BaseListFragment<PosProductEntity> {
             onLoadStart();
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载本地商品库，已经是最后一页。");
             onLoadFinished();
         }

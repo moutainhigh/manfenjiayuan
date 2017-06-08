@@ -32,19 +32,16 @@ import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
-import com.mfh.comn.net.data.IResponseData;
-import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CategoryOption;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -52,10 +49,10 @@ import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
+import com.mfh.litecashier.categoty.CommodityCategoryAdapter;
 import com.mfh.litecashier.event.CommodityStockEvent;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
-import com.mfh.litecashier.categoty.CommodityCategoryAdapter;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
@@ -68,10 +65,13 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscriber;
 
 /**
  * 库存－－库存成本
@@ -721,6 +721,7 @@ public class InventoryCostFragment extends BaseProgressFragment
                     searchParams.getCategoryId(), getBarcode(),
                     getName(), orderby, orderbydesc, getPriceType());
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载库存商品，已经是最后一页。");
             onLoadFinished();
         }
@@ -772,32 +773,28 @@ public class InventoryCostFragment extends BaseProgressFragment
 //                jsonObject.put("lowerLimit", goods.getUpperLimit());
                 jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
-                //回调
-                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                        NetProcessor.Processor<String>>(
-                        new NetProcessor.Processor<String>() {
-                            @Override
-                            public void processResult(IResponseData rspData) {
-                                //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                                //{"code":"0","msg":"更新成功!","version":"1","data":""}
-//                                RspValue<String> retValue = (RspValue<String>) rspData;
-//                                String retStr = retValue.getValue();
-//                                ZLogger.d("修改售价成功:" + retStr);
+                Map<String, String> options = new HashMap<>();
+                options.put("jsonStr", jsonObject.toJSONString());
+                options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+                InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                                goods.setCostPrice(quantity);
-                                goodsListAdapter.notifyDataSetChanged();
-                            }
+                    }
 
-                            @Override
-                            protected void processFailure(Throwable t, String errMsg) {
-                                super.processFailure(t, errMsg);
-                                ZLogger.d("修改售价失败：" + errMsg);
-                            }
-                        }
-                        , String.class
-                        , CashierApp.getAppContext()) {
-                };
-                InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
+                        DialogUtil.showHint(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        goods.setCostPrice(quantity);
+                        goodsListAdapter.notifyDataSetChanged();
+                    }
+
+                });
             }
         });
         if (!changeDialog.isShowing()) {
@@ -814,10 +811,10 @@ public class InventoryCostFragment extends BaseProgressFragment
             changeDialog.setCancelable(false);
             changeDialog.setCanceledOnTouchOutside(false);
         }
-        changeDialog.init("排面库存", 2, goods.getCostPrice(), new DoubleInputDialog.OnResponseCallback() {
+        changeDialog.init("排面库存", 2, goods.getUpperLimit(), new DoubleInputDialog.OnResponseCallback() {
             @Override
             public void onQuantityChanged(final Double quantity) {
-                if (quantity == null || quantity.compareTo(goods.getCostPrice()) == 0) {
+                if (quantity == null || quantity.compareTo(goods.getUpperLimit()) == 0) {
                     ZLogger.d("排面库存不变");
                     return;
                 }
@@ -833,33 +830,29 @@ public class InventoryCostFragment extends BaseProgressFragment
                 jsonObject.put("upperLimit", quantity);
                 jsonObject.put("tenantId", MfhLoginService.get().getSpid());
 
-                //回调
-                NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                        NetProcessor.Processor<String>>(
-                        new NetProcessor.Processor<String>() {
-                            @Override
-                            public void processResult(IResponseData rspData) {
-                                //java.lang.ClassCastException: com.mfh.comn.net.data.RspValue cannot be cast to com.mfh.comn.net.data.RspBean
-                                RspValue<String> retValue = (RspValue<String>) rspData;
-                                String retStr = retValue.getValue();
 
-                                //出库成功:1-556637
-                                ZLogger.d("修改排面库存成功:" + retStr);
+                Map<String, String> options = new HashMap<>();
+                options.put("jsonStr", jsonObject.toJSONString());
+                options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+                InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
 
-                                goods.setCostPrice(quantity);
-                                goodsListAdapter.notifyDataSetChanged();
-                            }
+                    }
 
-                            @Override
-                            protected void processFailure(Throwable t, String errMsg) {
-                                super.processFailure(t, errMsg);
-                                ZLogger.d("修改排面库存失败：" + errMsg);
-                            }
-                        }
-                        , String.class
-                        , CashierApp.getAppContext()) {
-                };
-                InvSkuStoreApiImpl.update(jsonObject.toJSONString(), responseCallback);
+                    @Override
+                    public void onError(Throwable e) {
+                        ZLogger.ef(e.toString());
+                        DialogUtil.showHint(e.getMessage());
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        goods.setUpperLimit(quantity);
+                        goodsListAdapter.notifyDataSetChanged();
+                    }
+
+                });
             }
         });
         if (!changeDialog.isShowing()) {

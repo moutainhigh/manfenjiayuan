@@ -7,7 +7,7 @@ import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * POS--收银台／购物车商品
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 @Table(name = "tb_cashier_shopcart_v01001")
 public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
@@ -33,11 +33,14 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
     private Long providerId;//商品供应商编号
     private int priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double costPrice = 0D; //商品零售价格
-    private Double customerPrice = 0D;//会员价
     private Double amount = 0D; //总价.按零售价计算得出
 
     private Double finalPrice = 0D;//成交价
     private Double finalAmount = 0D; //总价.按成交价计算得出
+
+    private Double customerPrice = 0D;//会员价
+    private Double finalCustomerPrice = 0D;//成交的会员价
+
     private Integer needWait;
 
     public String getPosTradeNo() {
@@ -103,6 +106,14 @@ public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {
 
     public void setCustomerPrice(Double customerPrice) {
         this.customerPrice = customerPrice;
+    }
+
+    public Double getFinalCustomerPrice() {
+        return finalCustomerPrice;
+    }
+
+    public void setFinalCustomerPrice(Double finalCustomerPrice) {
+        this.finalCustomerPrice = finalCustomerPrice;
     }
 
     public String getName() {

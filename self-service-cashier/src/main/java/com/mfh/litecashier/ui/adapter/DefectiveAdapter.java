@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.bean.wrapper.LossOrderItem;
@@ -25,7 +26,7 @@ import butterknife.OnClick;
 
 /**
  * 报损
- * Created by Nat.ZZN on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class DefectiveAdapter
         extends SwipAdapter<LossOrderItem, DefectiveAdapter.ProductViewHolder> {
@@ -135,10 +136,11 @@ public class DefectiveAdapter
             this.entityList = new ArrayList<>();
         }
 
+        Date rightNow = TimeUtil.getCurrentDate();
         LossOrderItem entity = query(goods.getBarcode());
         if (entity != null) {
             entity.setQuantity(entity.getQuantity()+1);
-            entity.setUpdatedDate(new Date());
+            entity.setUpdatedDate(rightNow);
         } else {
             entity = new LossOrderItem();
             entity.setId(goods.getId());
@@ -146,8 +148,8 @@ public class DefectiveAdapter
             entity.setBarcode(goods.getBarcode());
             entity.setName(goods.getSkuName());
             entity.setQuantity(1D);
-            entity.setCreatedDate(new Date());
-            entity.setUpdatedDate(new Date());
+            entity.setCreatedDate(rightNow);
+            entity.setUpdatedDate(rightNow);
 
             this.entityList.add(entity);
         }

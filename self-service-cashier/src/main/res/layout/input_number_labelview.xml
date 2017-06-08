@@ -15,7 +15,8 @@
         android:text="Title"
         android:textColor="@color/black_70"
         android:textSize="18sp"
-        android:visibility="gone" />
+        android:visibility="gone"/>
+
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -26,26 +27,26 @@
             style="@style/mfh_edittext_normal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_vertical"
-            android:paddingEnd="40dp"
             android:hint="@string/hint_product_barcode"
             android:inputType="number"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"/>
+            android:paddingEnd="40dp"/>
 
         <ImageView
             android:id="@+id/iv_del"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:scaleType="centerInside"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/spacing_double"
             android:layout_marginStart="@dimen/spacing_normal"
             android:background="@null"
             android:contentDescription="@null"
+            android:scaleType="centerInside"
             android:src="@mipmap/ic_del_oval"
             android:visibility="invisible"/>
     </RelativeLayout>
@@ -58,6 +59,6 @@
         android:background="@drawable/btn_rectange_green"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_toolbar_search_white" />
+        android:src="@mipmap/ic_toolbar_search_white"/>
 
 </LinearLayout>

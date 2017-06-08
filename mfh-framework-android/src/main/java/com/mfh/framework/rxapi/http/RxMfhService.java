@@ -6,6 +6,7 @@ import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
+import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
 import com.mfh.framework.api.tenant.TenantInfo;
@@ -15,6 +16,8 @@ import com.mfh.framework.rxapi.entity.MValue;
 
 import java.util.Map;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -22,7 +25,10 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
 import rx.Observable;
@@ -113,17 +119,7 @@ public interface RxMfhService {
      */
     @GET("toAlipayBarTradePay/barPay")
     Observable<MResponse<String>> alipayBarPay(@QueryMap Map<String, String> options);
-    /**
-     * 微信条码支付
-     *
-     * @param outTradeNo         商户订单号,商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
-     * @param authCode           支付授权码,用户支付宝钱包中的“付款码”信息
-     * @param totalAmount        订单总金额,单位为元，精确到小数点后两位，取值范围[0.01,100000000]，
-     * @param discountableAmount 可打折金额
-     * @param subject            订单标题
-     */
-    @GET("toWxpayBarTradePay/barPay")
-    Observable<MResponse<String>> wepayBarPay(@QueryMap Map<String, String> options);
+
 
     @GET("payOrder/create")
     Observable<MResponse<String>> createPayOrder(@QueryMap Map<String, String> options);
@@ -132,10 +128,24 @@ public interface RxMfhService {
     Observable<MResponse<String>> createParamDirect(@QueryMap Map<String, String> options);
 
     //批量上传订单
-//    @FormUrlEncoded
-//    @POST("posOrder/batchInOrders")
-//    Observable<MResponse<String>> batchInOrders(@Field("JSESSIONID") String JSESSIONID,
-//                                             @Body JSONArray jsonStr);
+
+    @Multipart
+    @POST("posOrder/batchInOrders")
+    Observable<MResponse<String>> batchInOrders3(@Query("JSESSIONID") String JSESSIONID,
+                                                 @Part MultipartBody.Part jsonStr);
+    @Multipart
+    @POST("posOrder/batchInOrders")
+    Observable<MResponse<String>> batchInOrders4(@Query("JSESSIONID") String JSESSIONID,
+                                                 @PartMap Map<String, RequestBody> params);
+
+    @Headers({"Content-Type: application/json","Accept: application/json"})
+    @POST("posOrder/batchInOrders")
+    Observable<MResponse<String>> batchInOrders5(@Query("JSESSIONID") String JSESSIONID,
+                                                 @Body BatchInOrdersWrapper jsonStr);
+    @POST("posOrder/batchInOrders")
+    Observable<MResponse<String>> batchInOrders2(@Query("JSESSIONID") String JSESSIONID,
+                                                 @Body RequestBody jsonStr);
+
     @POST("posOrder/batchInOrders")
     Observable<MResponse<String>> batchInOrders(@Query("JSESSIONID") String JSESSIONID,
                                                 @Query("jsonStr") String jsonStr);
@@ -182,8 +192,9 @@ public interface RxMfhService {
     @POST("http://www.weibovideo.com")
     Observable<ResponseBody> getVideoUrl(@Field("weibourl") String weibourl);
 
-    /**查询用户：
-     * /pmc/customer/getCustomerByOther?mobile=2123&humanId=31323
+    /**
+     * 通用会员识别接口
+     * /pmc/customer/getCustomerByOther?mobile|humanId|cardNo|wxopenid=
      * 返回当前账户余额
      * */
     @GET("customer/getCustomerByOther")

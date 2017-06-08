@@ -4,29 +4,25 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
+import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderItemService;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.database.service.PosProductService;
-import com.bingshanguxue.cashier.v1.CashierAgent;
 import com.bingshanguxue.vector_uikit.TextDrawable;
-import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.bean.wrapper.HangupOrder;
 
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Locale;
 
 /**
  * 收银帮助类
@@ -52,79 +48,26 @@ public class CashierHelper {
 
 
     /**
-     * 合并订单,将相同交易编号的订单合并
-     * 适用场景：挂单
-     */
-    public static List<HangupOrder> mergeHangupOrders(Integer bizType) {
-        List<HangupOrder> hangupOrders = new ArrayList<>();
-
-        List<PosOrderEntity> orderEntities = CashierAgent.fetchOrderEntities(bizType,
-                PosOrderEntity.ORDER_STATUS_HANGUP);
-        for (PosOrderEntity orderEntity : orderEntities) {
-            HangupOrder hangupOrder = new HangupOrder();
-            hangupOrder.setOrderTradeNo(orderEntity.getBarCode());
-            hangupOrder.setFinalAmount(orderEntity.getFinalAmount());
-            hangupOrder.setUpdateDate(orderEntity.getUpdatedDate());
-
-            hangupOrders.add(hangupOrder);
-        }
-
-        return hangupOrders;
-    }
-
-    @Deprecated
-    public static List<HangupOrder> mergeHangupOrders2(Integer bizType) {
-        List<PosOrderEntity> orderEntities = CashierAgent.fetchOrderEntities(bizType,
-                PosOrderEntity.ORDER_STATUS_HANGUP);
-        if (orderEntities == null || orderEntities.size() <= 0){
-            return null;
-        }
-
-        Map<String, HangupOrder> mergeOrderMap = new HashMap<>();
-        for (PosOrderEntity orderEntity : orderEntities) {
-            String orderTradeNo = orderEntity.getBarCode();
-            if (StringUtils.isEmpty(orderTradeNo)) {
-                continue;
-            }
-
-            HangupOrder hangupOrder = mergeOrderMap.get(orderTradeNo);
-            if (hangupOrder != null) {
-                hangupOrder.setFinalAmount(hangupOrder.getFinalAmount() + orderEntity.getFinalAmount());
-                hangupOrder.setUpdateDate(orderEntity.getUpdatedDate());
-            } else {
-                hangupOrder = new HangupOrder();
-                hangupOrder.setOrderTradeNo(orderTradeNo);
-                hangupOrder.setFinalAmount(orderEntity.getFinalAmount());
-                hangupOrder.setUpdateDate(orderEntity.getUpdatedDate());
-            }
-            mergeOrderMap.put(orderTradeNo, hangupOrder);
-        }
-
-        List<HangupOrder> mergeOrderList = new ArrayList<>();
-        mergeOrderList.addAll(mergeOrderMap.values());
-        return mergeOrderList;
-    }
-
-    /**
-     * 清除旧的订单数据
+     * 清除过期的订单数据，包括未完成的订单和已经完成并同步的订单
      *
      * @param saveDate 保存的天数
      */
     public static void clearOldPosOrder(int saveDate) {
-//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE, 0 - saveDate);//
-        String expireCursor = TimeCursor.InnerFormat.format(calendar.getTime());
+
+        String expireCursor = sdf.format(calendar.getTime());
         ZLogger.d(String.format("订单过期时间(%s)保留最近30天数据。", expireCursor));
 
         String lastUpdateCursor = SharedPreferencesUltimate.getPosOrderLastUpdate();
-        ZLogger.d(String.format("last posorder upload datetime(%s)。", lastUpdateCursor));
+        ZLogger.d(String.format("上一次订单同步时间(%s)。", lastUpdateCursor));
 
         if (!StringUtils.isEmpty(lastUpdateCursor)) {
             //得到指定模范的时间
             try {
-                Date d1 = TimeCursor.InnerFormat.parse(lastUpdateCursor);
-                Date d2 = TimeCursor.InnerFormat.parse(expireCursor);
+                Date d1 = sdf.parse(lastUpdateCursor);
+                Date d2 = sdf.parse(expireCursor);
 //            Date d2 = new Date();
                 if (d2.compareTo(d1) > 0) {
                     ZLogger.d("订单过期时间大于上次更新时间，暂不清除。");
@@ -135,57 +78,50 @@ public class CashierHelper {
                 ZLogger.e(e.toString());
             }
         }
-        //清楚过期的未完成订单
-        PosOrderService.get().deleteBy(String.format("updatedDate < '%s' and status != '%d'",
-                expireCursor, PosOrderEntity.ORDER_STATUS_FINISH));
-        //清除过期的已经同步的订单
-        PosOrderService.get().deleteBy(String.format("updatedDate < '%s' and syncStatus = '%d'",
-                expireCursor, PosOrderEntity.SYNC_STATUS_SYNCED));
 
-//        List<PosOrderEntity> entityList = PosOrderService.get()
-//                .queryAllBy(String.format("updatedDate < '%s'", expireCursor));
-//        if (entityList != null && entityList.size() > 0) {
-//            for (PosOrderEntity entity : entityList) {
-//                PosOrderItemService.get().deleteBy(String.format("orderId = '%d'", entity.getId()));
-//                PosOrderPayService.get().deleteBy(String.format("orderId = '%d'", entity.getId()));
-//                //删除订单
-////                PosOrderService.get().deleteById(String.valueOf(entity.getBarCode()));
-//            }
-//
-//
-//
-//
-//            PosOrderService.get().deleteBy(String.format("updatedDate < '%s'", expireCursor));
-//            ZLogger.d(String.format("清除过期订单数据(%s)。", expireCursor));
-//        } else {
-//            ZLogger.d(String.format("暂无过期订单数据需要清除(%s)。", expireCursor));
-//        }
-    }
-
-    /**
-     * 查询商品
-     *
-     * @param barCode 条形码
-     */
-    public static PosProductEntity findProduct(String barCode) {
-        if (StringUtils.isEmpty(barCode)) {
-            return null;
+        //清除过期的未完成订单/已经同步的订单
+        ZLogger.d("清除过期的未完成订单/已经同步的订单。");
+        String sqlWhere = String.format("updatedDate < '%s' and (status != '%d' or syncStatus = '%d')",
+                expireCursor, PosOrderEntity.ORDER_STATUS_FINISH, PosOrderEntity.SYNC_STATUS_SYNCED);
+        List<PosOrderEntity> orderEntities = PosOrderService.get().queryAllBy(sqlWhere);
+        if (orderEntities != null && orderEntities.size() > 0) {
+            for (PosOrderEntity orderEntity : orderEntities) {
+                Long orderId = orderEntity.getId();
+                PosOrderItemService.get().deleteBy(String.format("orderId = '%d", orderId));
+                PosOrderPayService.get().deleteBy(String.format("orderId = '%d", orderId));
+                PosOrderService.get().deleteById(String.valueOf(orderId));
+            }
         }
+//        PosOrderService.get().deleteBy(sqlWhere);
 
-        List<PosProductEntity> entityList = PosProductService.get()
-                .queryAllByDesc(String.format("barcode = '%s' and tenantId = '%d'",
-                        barCode, MfhLoginService.get().getSpid()));
-        if (entityList != null && entityList.size() > 0) {
-            ZLogger.d(String.format("找到%d个商品:%s", entityList.size(), barCode));
-            return entityList.get(0);
-        } else {
-            ZLogger.d("未找到商品:" + barCode);
+        //删除无用的收银订单明细
+        ZLogger.d("删除无用的收银订单明细。");
+        List<PosOrderItemEntity> orderItemEntities = PosOrderItemService.get().queryAllBy(null);
+        if (orderItemEntities != null) {
+            for (PosOrderItemEntity entity : orderItemEntities) {
+                Long orderId = entity.getOrderId();
+                PosOrderEntity orderEntity = PosOrderService.get().getEntityById(String.valueOf(orderId));
+                if (orderEntity == null) {
+                    PosOrderItemService.get().deleteById(String.valueOf(entity.getId()));
+                    PosOrderPayService.get().deleteBy(String.format("orderId = '%d", orderId));
+                }
+            }
         }
-
-        return null;
+        //删除无用的收银订单支付记录
+        ZLogger.d("删除无用的收银订单支付记录。");
+        List<PosOrderPayEntity> orderPayEntities = PosOrderPayService.get().queryAllBy(null);
+        if (orderItemEntities != null) {
+            for (PosOrderPayEntity entity : orderPayEntities) {
+                Long orderId = entity.getOrderId();
+                PosOrderEntity orderEntity = PosOrderService.get().getEntityById(String.valueOf(orderId));
+                if (orderEntity == null) {
+                    PosOrderItemService.get().deleteBy(String.format("orderId = '%d", orderId));
+                    PosOrderPayService.get().deleteById(String.valueOf(entity.getId()));
+                }
+            }
+        }
     }
-
-
+    
     /**
      * 购物车数字
      */

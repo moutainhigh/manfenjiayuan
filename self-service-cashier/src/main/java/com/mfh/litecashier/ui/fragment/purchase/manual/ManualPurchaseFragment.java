@@ -858,6 +858,7 @@ public class ManualPurchaseFragment extends BaseProgressFragment
                     getOtherTenantId(),
                     getBarcode(), getName(), getSortType(), getPriceType());
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载商品列表，已经是最后一页。");
             onLoadFinished();
         }

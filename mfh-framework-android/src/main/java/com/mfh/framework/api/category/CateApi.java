@@ -79,6 +79,7 @@ public class CateApi {
     public final static Integer REPAIR = 11;//报修
     public final static Integer DAILYSETTLE = 98;//日结
     public final static Integer RECHARGE = 99;//代充值
+    public final static Integer PROD_LINE = 100;// 产品线
     public final static Integer FRESH = 101;//生鲜
     public final static Integer FRUIT = 102;//水果
 

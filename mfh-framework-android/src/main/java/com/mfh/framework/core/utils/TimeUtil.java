@@ -315,4 +315,32 @@ public class TimeUtil {
         return timeList.toArray(new String[timeList.size()]);
     }
 
+    private static Date lastDate;
+    /**
+     * 获取当前时间
+     * */
+    public static Date getCurrentDate() {
+        Date rightNow1 = new Date(System.currentTimeMillis());
+
+        if (isSameDay(lastDate, rightNow1)) {
+            lastDate = rightNow1;
+            ZLogger.d(String.format("getCurrentDate1: %s >> %s", lastDate.toString(), rightNow1.toString()));
+            return rightNow1;
+        } else {
+            Date rightNow2 = new Date(System.currentTimeMillis());
+            if (isSameDay(rightNow1, rightNow2)) {
+                lastDate = rightNow2;
+                ZLogger.d(String.format("getCurrentDate2: %s >> %s", lastDate.toString(), rightNow2.toString()));
+
+                return rightNow2;
+            } else {
+                Date rightNow3 = new Date(System.currentTimeMillis());
+                lastDate = rightNow3;
+                ZLogger.d(String.format("getCurrentDate3: %s >> %s", lastDate.toString(), rightNow3.toString()));
+
+                return rightNow3;
+            }
+        }
+    }
+
 }

@@ -15,9 +15,12 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
+import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.invSendOrder.InvSendOrder;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.dialog.CommonDialog;
@@ -25,9 +28,7 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
 import com.mfh.litecashier.ui.adapter.SelectSendOrderAdapter;
-import com.manfenjiayuan.business.view.IInvSendOrderView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
@@ -171,8 +172,9 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -404,6 +406,7 @@ public class SelectInvSendOrderDialog extends CommonDialog implements IInvSendOr
             invSendOrderPresenter.loadOrders(mPageInfo, true,
                     MfhLoginService.get().getCurOfficeId(), "", status);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购订单，已经是最后一页。");
             onLoadFinished();
         }

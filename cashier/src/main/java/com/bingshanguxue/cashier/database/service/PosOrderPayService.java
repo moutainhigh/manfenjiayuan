@@ -3,16 +3,17 @@ package com.bingshanguxue.cashier.database.service;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosOrderPayDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.PayAmountWrapper;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.bingshanguxue.cashier.v1.PaymentInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
+import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 
 import java.util.Date;
 import java.util.List;
@@ -147,6 +148,7 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
                 return;
             }
 
+            Date rightNow = TimeUtil.getCurrentDate();
             PosOrderPayEntity entity;
             //查询订单，更多的匹配条件
             //注意这里要根据orderId，outTradeNo和payType三者确定支付记录的唯一性，
@@ -160,7 +162,7 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
                 entity = entityList.get(0);
             } else {
                 entity = new PosOrderPayEntity();
-                entity.setCreatedDate(new Date());
+                entity.setCreatedDate(rightNow);
                 entity.setOrderId(orderId);
                 entity.setOutTradeNo(outTradeNo);
                 entity.setPayType(payType);
@@ -174,10 +176,9 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
             }
             entity.setCouponsIds(couponsIds);
             entity.setRuleIds(ruleIds);
-            entity.setUpdatedDate(new Date());
+            entity.setUpdatedDate(rightNow);
             saveOrUpdate(entity);
-            ZLogger.df(String.format("保存or更新订单支付流水:\n%s",
-                    JSONObject.toJSONString(entity)));
+            ZLogger.d(String.format("保存or更新订单支付流水:%s", JSONObject.toJSONString(entity)));
         } catch (Exception e) {
             ZLogger.e(e.toString());
         }
@@ -220,26 +221,26 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
                     PayWayType.TYPE_VIP_BALANCE, changeRemain,
                     status, member, null, null);
 
-            PayAmountWrapper payAmountWrapper = paymentInfo.getDiscountInfo();
-            if (payAmountWrapper != null) {
+            PayAmount payAmount = paymentInfo.getDiscountInfo();
+            if (payAmount != null) {
                 //会员优惠
-                saveOrUpdate(payAmountWrapper.getOrderId(),
+                saveOrUpdate(orderId,
                         outTradeNo, WayType.RULES,
                         PayWayType.TYPE_VIP_DISCOUNT,
-                        payAmountWrapper.getVipAmount(),
-                        status, member, payAmountWrapper.getCouponsIds(), payAmountWrapper.getRuleIds());
+                        payAmount.getItemRuleAmount(),
+                        status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
                 //促销优惠
-                saveOrUpdate(payAmountWrapper.getOrderId(),
+                saveOrUpdate(orderId,
                         outTradeNo, WayType.RULES,
                         PayWayType.TYPE_VIP_PROMOTION,
-                        payAmountWrapper.getPromotionAmount(),
-                        status, member, payAmountWrapper.getCouponsIds(), payAmountWrapper.getRuleIds());
+                        payAmount.getPackRuleAmount(),
+                        status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
                 //优惠券
-                saveOrUpdate(payAmountWrapper.getOrderId(),
+                saveOrUpdate(orderId,
                         outTradeNo, WayType.RULES,
                         PayWayType.TYPE_VIP_COUPONS,
-                        payAmountWrapper.getCoupAmount(),
-                        status, member, payAmountWrapper.getCouponsIds(), payAmountWrapper.getRuleIds());
+                        payAmount.getCoupAmount(),
+                        status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
             }
         } else if ((payType & WayType.WX_F2F) == WayType.WX_F2F) {
             amountType = PayWayType.TYPE_WEPAY_F2F;

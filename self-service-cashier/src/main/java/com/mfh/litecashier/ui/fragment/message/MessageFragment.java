@@ -60,7 +60,8 @@ public class MessageFragment extends BaseFragment {
 
     @BindView(R.id.et_message)
     EditText etMessage;
-    @BindView(R.id.et_query) EditText etQuery;
+    @BindView(R.id.et_query)
+    EditText etQuery;
 
     @BindView(R.id.ib_emoji)
     ImageButton ibEmoji;
@@ -98,10 +99,10 @@ public class MessageFragment extends BaseFragment {
     }
 
 
-    public static MessageFragment newInstance(Bundle args){
+    public static MessageFragment newInstance(Bundle args) {
         MessageFragment fragment = new MessageFragment();
 
-        if (args != null){
+        if (args != null) {
             fragment.setArguments(args);
         }
         return fragment;
@@ -144,7 +145,7 @@ public class MessageFragment extends BaseFragment {
 
         //加载卡券测试数据
         List<CouponRule> couponEntityList = new ArrayList<>();
-        for (int i = 0; i < 6; i++){
+        for (int i = 0; i < 6; i++) {
             CouponRule bean = new CouponRule();
             bean.setTitle(String.format("测试%d", i));
             bean.setDiscount(1D * i);
@@ -163,19 +164,18 @@ public class MessageFragment extends BaseFragment {
     }
 
     @OnClick(R.id.ib_emoji)
-    public void toggleEmoji(){
+    public void toggleEmoji() {
         hideCouponFrame();
 
-        if (ibEmoji.isSelected()){
+        if (ibEmoji.isSelected()) {
             hideEmojiFrame();
-        }
-        else{
+        } else {
             showEmojiFrame();
         }
     }
 
     @OnClick(R.id.ib_goods)
-    public void toggleGoods(){
+    public void toggleGoods() {
         hideCouponFrame();
         hideEmojiFrame();
 
@@ -191,30 +191,29 @@ public class MessageFragment extends BaseFragment {
     }
 
     @OnClick(R.id.ib_coupon)
-    public void toggleCoupon(){
+    public void toggleCoupon() {
         hideEmojiFrame();
 
-        if (ibCoupon.isSelected()){
+        if (ibCoupon.isSelected()) {
             hideCouponFrame();
-        }
-        else{
+        } else {
             showCouponFrame();
         }
     }
 
     @OnClick(R.id.button_send)
-    public void sendText(){
+    public void sendText() {
         String message = etMessage.getText().toString();
-        if (StringUtils.isEmpty(message)){
+        if (StringUtils.isEmpty(message)) {
             DialogUtil.showHint("请输入文字");
             return;
         }
 
         //TODO 发送消息
 //        DialogUtil.showHint("@开发君@ 失踪了...");
-        NetProcessor.ComnProcessor processor = new NetProcessor.ComnProcessor<EmbMsg>(){
+        NetProcessor.ComnProcessor processor = new NetProcessor.ComnProcessor<EmbMsg>() {
             @Override
-            protected void processOperResult(EmbMsg result){
+            protected void processOperResult(EmbMsg result) {
 //                doAfterSendSuccess(result);
                 ZLogger.d("消息发送成功");
                 chatMessageAdapter.appendEntity(result);
@@ -233,7 +232,7 @@ public class MessageFragment extends BaseFragment {
         mTabs.add(new ViewPageInfo("对话", R.drawable.ic_message_chat));
         mTabs.add(new ViewPageInfo("会员", R.drawable.ic_message_mfh));
 
-        for (ViewPageInfo viewPageInfo : mTabs){
+        for (ViewPageInfo viewPageInfo : mTabs) {
             addTab(viewPageInfo);
         }
 
@@ -257,9 +256,9 @@ public class MessageFragment extends BaseFragment {
         });
     }
 
-    private void addTab(ViewPageInfo viewPageInfo){
+    private void addTab(ViewPageInfo viewPageInfo) {
         Context context = getActivity();
-        if (context == null){
+        if (context == null) {
             return;
         }
         View v = LayoutInflater.from(context).inflate(
@@ -328,14 +327,14 @@ public class MessageFragment extends BaseFragment {
         couponRecyclerView.setAdapter(couponAdapter);
     }
 
-    private void initEmoji(){
+    private void initEmoji() {
         emojiPageAdapter = new MaterialEmojiPageAdapter(getActivity(), new MaterialEmojiPageAdapter.OnEmojiClickListener() {
             @Override
             public void onItemSelected(int id) {
 
                 if (id == 20) {
                     //删除，回退
-                    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN,KeyEvent.KEYCODE_DEL);
+                    KeyEvent keyEvent = new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL);
                     etMessage.dispatchKeyEvent(keyEvent);
                     return;
                 }
@@ -354,37 +353,37 @@ public class MessageFragment extends BaseFragment {
 
     /**
      * 隐藏Emoji
-     * */
-    private void hideEmojiFrame(){
+     */
+    private void hideEmojiFrame() {
         ibEmoji.setSelected(false);
         emojiViewPager.setVisibility(View.GONE);
     }
 
     /**
      * 显示Emoji
-     * */
-    private void showEmojiFrame(){
+     */
+    private void showEmojiFrame() {
         ibEmoji.setSelected(true);
         emojiViewPager.setVisibility(View.VISIBLE);
     }
 
     /**
      * 隐藏卡券
-     * */
-    private void hideCouponFrame(){
+     */
+    private void hideCouponFrame() {
         ibCoupon.setSelected(false);
         frameCoupon.setVisibility(View.GONE);
     }
 
     /**
      * 显示卡券
-     * */
-    private void showCouponFrame(){
+     */
+    private void showCouponFrame() {
         ibCoupon.setSelected(true);
         frameCoupon.setVisibility(View.VISIBLE);
     }
 
-    public void refresh(){
+    public void refresh() {
         etMessage.requestFocus();
     }
 }

@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.v1;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
@@ -226,6 +226,6 @@ public class CashierOrderInfo implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return String.format("cashierOrderInfo:\n%s", JSON.toJSONString(this));
+        return String.format("cashierOrderInfo:\n%s", JSONObject.toJSONString(this));
     }
 }

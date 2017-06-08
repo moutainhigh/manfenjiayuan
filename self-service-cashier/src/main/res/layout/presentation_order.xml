@@ -74,7 +74,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:bottomText="订单金额"
+                app:bottomText="原价金额"
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="12sp"
                 app:topText="0.00"

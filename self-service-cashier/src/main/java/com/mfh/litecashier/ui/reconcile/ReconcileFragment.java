@@ -18,6 +18,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductAggDate;
 import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -36,7 +37,6 @@ import com.mfh.litecashier.ui.dialog.MyDatePickerDialog;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,8 +49,6 @@ import static com.mfh.litecashier.service.DataManagerHelper.MAX_SYNC_PAGESIZE;
 
 /**
  * <h1>对账</h1>
- * <p>
- * <p/>
  * Created by bingshanguxue on 17/02/25.
  */
 public class ReconcileFragment extends BaseProgressFragment {
@@ -101,7 +99,7 @@ public class ReconcileFragment extends BaseProgressFragment {
         initGoodsRecyclerView();
 
         mCalendar = Calendar.getInstance();
-        mCalendar.setTime(new Date());
+        mCalendar.setTime(TimeUtil.getCurrentDate());
         mCalendar.add(Calendar.DATE, 0 - 1);
 //        calendar.set(Calendar.HOUR, 0);
 //        calendar.set(Calendar.MINUTE, 0);
@@ -121,7 +119,9 @@ public class ReconcileFragment extends BaseProgressFragment {
      */
     @OnClick(R.id.fab_print)
     public void printOrder() {
-        PrinterFactory.getPrinterManager().printReconcile(goodsAdapter.getEntityList());
+        PrinterFactory.getPrinterManager().printReconcile(mCategoryInfo.getNameCn(),
+                TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD),
+                goodsAdapter.getEntityList());
     }
 
     private void initGoodsRecyclerView() {
@@ -199,11 +199,11 @@ public class ReconcileFragment extends BaseProgressFragment {
 
         Map<String, String> rMaps = new HashMap<>();
         if (mCategoryInfo != null) {
-            rMaps.put("subType=", String.valueOf(mCategoryInfo.getParentId()));
+            rMaps.put("subType", String.valueOf(mCategoryInfo.getId()));
         }
-        rMaps.put("bizType=", String.valueOf(BizType.POS));
+        rMaps.put("bizType", String.valueOf(BizType.POS));
         rMaps.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        rMaps.put("aggDateStr=", TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
+        rMaps.put("aggDateStr", TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
         load(rMaps, mPageInfo);
         mPageInfo.setPageNo(1);
     }
@@ -228,13 +228,14 @@ public class ReconcileFragment extends BaseProgressFragment {
 
             Map<String, String> rMaps = new HashMap<>();
             if (mCategoryInfo != null) {
-                rMaps.put("subType=", String.valueOf(mCategoryInfo.getParentId()));
+                rMaps.put("subType", String.valueOf(mCategoryInfo.getId()));
             }
-            rMaps.put("bizType=", String.valueOf(BizType.POS));
+            rMaps.put("bizType", String.valueOf(BizType.POS));
             rMaps.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-            rMaps.put("aggDateStr=", TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
+            rMaps.put("aggDateStr", TimeUtil.format(mCalendar.getTime(), TimeUtil.FORMAT_YYYYMMDD));
             load(rMaps, mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载线上订单订单流水，已经是最后一页。");
             onLoadFinished();
         }
@@ -285,7 +286,9 @@ public class ReconcileFragment extends BaseProgressFragment {
 //                break;
             case 1://相册
                 mCategoryInfo = (CategoryInfo) intent.getSerializableExtra("categoryInfo");
-                labelCategory.setLabelText(mCategoryInfo.getNameCn());
+                if (mCategoryInfo != null) {
+                    labelCategory.setLabelText(mCategoryInfo.getNameCn());
+                }
                 reload();
                 break;
         }
@@ -309,7 +312,7 @@ public class ReconcileFragment extends BaseProgressFragment {
     @OnClick(R.id.label_updatedate)
     public void changeDate() {
         final Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
+        calendar.setTime(TimeUtil.getCurrentDate());
 
         if (dateTimePickerDialog == null) {
             dateTimePickerDialog = new MyDatePickerDialog(getActivity());
@@ -341,6 +344,8 @@ public class ReconcileFragment extends BaseProgressFragment {
     }
 
     private void load(Map<String, String> rMaps, PageInfo pageInfo){
+
+        onLoadProcess("加载中");
 
         Map<String, String> options = new HashMap<>();
         if (rMaps != null) {

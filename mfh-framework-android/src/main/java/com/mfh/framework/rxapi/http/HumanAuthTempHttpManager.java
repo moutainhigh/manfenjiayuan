@@ -35,7 +35,8 @@ public class HumanAuthTempHttpManager extends BaseHttpManager{
         @GET("humanAuthTemp/checkPayTempUserBindHuman?")
         Observable<MResponse<MValue<String>>> checkPayTempUserBindHuman(@QueryMap Map<String, String> options);
 
-        /**查询该笔支付绑定的平台用户，其中payType为支付类型（2-支付宝扫码付，256-微信扫码付），
+        /**
+         * 查询该笔支付绑定的平台用户，其中payType为支付类型（2-支付宝扫码付，256-微信扫码付），
          * outTradeNo为pos机生成的支付流水号
          * /humanAuthTemp/getPayTempUserBindHuman?payType=256&outTradeNo=66_1001354_1467021942455
          *

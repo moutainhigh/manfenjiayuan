@@ -20,7 +20,7 @@ import java.io.Serializable;
 /**
  * 传递给客户端的最新消息结构，包含了会话的基本信息,用于辅助客户端寻找该消息显示在界面中的哪个会话里。
  * 如果未找到，则要求客户端自己请求该会话信息!!!!!!!!!
- * 
+ * <p>
  * 判断该消息属于哪个业务分组,总共六个分组
  * sessionType=1 or (sessionType=101 and sessionTagOne is null)  -- 陌生粉丝组
  * sessionType=101 and sessionTagOne is not null -- 客户组(或称会员组、业主组)
@@ -28,7 +28,7 @@ import java.io.Serializable;
  * sessionType=0 and sessionBizType=1            -- 同事组 ,然后根据fromguid或sessionid判断具体位置
  * sessionType=2 and sessionBizType=0            -- 普通群组会话,然后根据sessionid判断具体位置
  * sessionType=2 and sessionBizType=1            -- 服务群组会话(如针对一个订单),然后根据sessionid判断具体位置
- * 
+ *
  * @author zhangyz created on 2015-3-20
  */
 @SuppressWarnings("serial")
@@ -51,44 +51,44 @@ public final class BizMsgParamWithSession extends MfhEntity<String> implements S
     public MsgParameterWrapper getMsg() {
         return msg;
     }
-    
+
     public void setMsg(MsgParameterWrapper msg) {
         this.msg = msg;
     }
 
-    
+
     public Integer getSessionType() {
         return sessionType;
     }
 
-    
+
     public void setSessionType(Integer sessionType) {
         this.sessionType = sessionType;
     }
 
-    
+
     public Integer getSessionBizType() {
         return sessionBizType;
     }
 
-    
+
     public void setSessionBizType(Integer sessionBizType) {
         this.sessionBizType = sessionBizType;
     }
 
-    
+
     public Integer getSessionTagOne() {
         return sessionTagOne;
     }
 
-    
+
     public void setSessionTagOne(Integer sessionTagOne) {
         this.sessionTagOne = sessionTagOne;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return JSON.toJSONString(this);
     }
-    
+
 }

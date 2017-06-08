@@ -18,6 +18,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.framework.api.stock.StockApi;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -457,6 +458,7 @@ public class ExpressDeliveryOrderFlowFragment extends BaseListFragment<ReceiveBa
             onLoadStart();
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载代收快递订单流水，已经是最后一页。");
             onLoadFinished();
         }

@@ -138,8 +138,8 @@
             android:layout_marginStart="@dimen/spacing_8x"
             app:editInputType="barcode"
             app:editTextColor="@color/material_black"
-            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:editTextColorHint="@color/mfh_textColorHint"
+            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
             app:inputNumberLabelView_rightImageButtonSrc="@drawable/btn_switch_goods"/>
 
         <include

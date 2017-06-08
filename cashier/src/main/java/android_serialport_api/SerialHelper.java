@@ -124,7 +124,7 @@ public abstract class SerialHelper {
                     }
                 } catch (Throwable e) {
 //					e.printStackTrace();
-                    ZLogger.e(e.toString());
+                    ZLogger.ef(e.toString());
                     return;
                 }
             }
@@ -144,7 +144,7 @@ public abstract class SerialHelper {
                         try {
                             wait();
                         } catch (InterruptedException e) {
-                            ZLogger.e(e.toString());
+                            ZLogger.ef(e.toString());
 //							e.printStackTrace();
                         }
                     }
@@ -153,7 +153,7 @@ public abstract class SerialHelper {
                 try {
                     Thread.sleep(iDelay);
                 } catch (InterruptedException e) {
-                    ZLogger.e(e.toString());
+                    ZLogger.ef(e.toString());
 //					e.printStackTrace();
                 }
             }

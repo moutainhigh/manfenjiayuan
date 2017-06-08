@@ -59,7 +59,7 @@ public class OrderflowMode {
                     public void onError(Throwable e) {
                         super.onError(e);
 
-                        ZLogger.df("加载流水失败:" + e.toString());
+                        ZLogger.ef("加载流水失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.toString());
                         }

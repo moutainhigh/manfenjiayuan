@@ -71,6 +71,9 @@ public class Human extends MfhEntity<Long> {
     }
 
     public Double getCurCash() {
+        if (curCash == null){
+            curCash = 0D;
+        }
         return curCash;
     }
 

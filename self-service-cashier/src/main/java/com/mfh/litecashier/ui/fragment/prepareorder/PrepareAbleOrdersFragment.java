@@ -387,6 +387,7 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
             mPageInfo.moveToNext();
             mScOrderPresenter.findPrepareAbleOrders(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购订单，已经是最后一页。");
             onLoadFinished();
         }

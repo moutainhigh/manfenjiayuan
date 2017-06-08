@@ -15,6 +15,7 @@
     <string name="hint_product_name">商品名称</string>
     <string name="hint_product_brand">品牌</string>
     <string name="hint_money">金额</string>
+    <string name="hint_">金额</string>
     <string name="hint_backcard_tradeno">请输入银行单号</string>
     <string name="hint_pay_password">请输入支付密码</string>
 
@@ -53,6 +54,7 @@
     <!--标签-->
     <string name="label_order_amount">商品金额</string>
     <string name="label_member_discount">会员优惠</string>
+    <string name="label_promotion_discount">促销优惠</string>
     <string name="label_coupons">代金券</string>
     <string name="label_paid_money">已付</string>
     <string name="label_handle_amount">应收金额</string>

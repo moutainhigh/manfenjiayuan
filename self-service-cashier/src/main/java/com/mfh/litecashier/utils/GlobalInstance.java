@@ -2,6 +2,7 @@ package com.mfh.litecashier.utils;
 
 import android.app.Activity;
 
+import com.bingshanguxue.cashier.hardware.scale.ScaleProvider;
 import com.mfh.litecashier.ui.dialog.PosRegisterDialog;
 
 /**
@@ -10,7 +11,7 @@ import com.mfh.litecashier.ui.dialog.PosRegisterDialog;
 public class GlobalInstance {
 
     private Double netWeight;//净重(单位kg)
-    private int stableNum = 0;//稳定发送次数
+    private int stableCount = 0;//稳定发送次数
 
     private PosRegisterDialog mPosRegisterDialog = null;
 
@@ -34,24 +35,36 @@ public class GlobalInstance {
 
     public void reset(){
         netWeight = 0D;
-        stableNum = 0;
+        stableCount = 0;
     }
 
     public synchronized Double getNetWeight() {
-        if (netWeight != null && stableNum >= 3) {
-            return netWeight;
+        Double temp = 0D;
+        if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_DS_781A) {
+            if (stableCount >= 2) {
+                temp = netWeight;
+            }
         } else {
-            return 0D;
+            temp = netWeight;
         }
+
+        //取出重量后自动重置
+//        reset();
+
+        return temp != null ? temp : 0D;
     }
 
     public synchronized void setNetWeight(Double netWeight) {
+        //由于收到一些不完整的数据或者不是期望的格式数据会导致重量信息为null,
+        // 由于串口的不稳定性，如果直接将次数清零，可能会导致永远不会收到3次稳定的数据，所以暂时注视掉。
+        //以后稳定后再说。
         if (netWeight == null) {
-            stableNum = 0;
+//            stableCount = 0;
+            return;
         } else if (this.netWeight != null && this.netWeight.compareTo(netWeight) == 0){
-            stableNum += 1;
+            stableCount += 1;
         } else {
-            stableNum = 1;
+            stableCount = 1;
         }
         this.netWeight = netWeight;
     }

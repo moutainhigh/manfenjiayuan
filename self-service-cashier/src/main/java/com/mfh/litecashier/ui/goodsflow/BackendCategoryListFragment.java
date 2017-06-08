@@ -39,16 +39,16 @@ import rx.Subscriber;
  */
 public class BackendCategoryListFragment extends BaseListFragment<CategoryOption> {
 
-//    @Bind(R.id.toolbar)
+    //    @Bind(R.id.toolbar)
     Toolbar mToolbar;
-//    @Bind(R.id.goods_list)
+    //    @Bind(R.id.goods_list)
     RecyclerViewEmptySupport mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private BackendCategoryListAdapter companyAdapter;
 
-//    @Bind(R.id.empty_view)
+    //    @Bind(R.id.empty_view)
     View emptyView;
-//    @Bind(R.id.animProgress)
+    //    @Bind(R.id.animProgress)
     ProgressBar progressBar;
 
 
@@ -199,8 +199,7 @@ public class BackendCategoryListFragment extends BaseListFragment<CategoryOption
                     ACacheHelper.CK_BACKEND_CATEGORY_TREE, cacheData.size()));
 
             companyAdapter.setEntityList(cacheData);
-        }
-        else {
+        } else {
             companyAdapter.setEntityList(null);
             listBackendCategoryStep1();
         }
@@ -210,12 +209,13 @@ public class BackendCategoryListFragment extends BaseListFragment<CategoryOption
      * 下载后台类目树
      */
     private void listBackendCategoryStep1() {
+        onLoadStart();
+
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadFinished();
             return;
         }
 
-        ZLogger.df("下载后台类目树开始");
         Map<String, String> options = new HashMap<>();
         options.put("kind", "code");
         options.put("domain", String.valueOf(CateApi.DOMAIN_TYPE_PROD));
@@ -232,7 +232,7 @@ public class BackendCategoryListFragment extends BaseListFragment<CategoryOption
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("加载后台类目树失败, " + e.toString());
+                ZLogger.ef("加载后台类目树失败, " + e.toString());
                 onLoadFinished();
             }
 
@@ -244,6 +244,8 @@ public class BackendCategoryListFragment extends BaseListFragment<CategoryOption
                 } else {
                     listBackendCategoryStep2(null);
                 }
+
+                onLoadFinished();
             }
         });
     }
@@ -252,8 +254,8 @@ public class BackendCategoryListFragment extends BaseListFragment<CategoryOption
      * 保存后台类目树
      */
     private void listBackendCategoryStep2(List<CategoryOption> options) {
-        ZLogger.df(String.format("保存POS %d个后台类目",
-                (options != null ? options.size() : 0)));
+//        ZLogger.d(String.format("保存POS %d个后台类目",
+//                (options != null ? options.size() : 0)));
         //缓存数据
         JSONArray cacheArrays = new JSONArray();
         if (options != null && options.size() > 0) {

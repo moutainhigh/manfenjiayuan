@@ -7,7 +7,6 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.mobile.MobileApi;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.tenant.PayCfgId;
 import com.mfh.framework.api.tenant.SassInfo;
 import com.mfh.framework.api.tenant.TenantInfo;
@@ -132,10 +131,10 @@ public class GlobalInstanceBase extends Observable{
             if (payCfgIds != null && payCfgIds.size() > 0){
                 for (PayCfgId payCfgId : payCfgIds){
                     if ((payCfgId.getPayType() & WayType.ALI_F2F) == WayType.ALI_F2F){
-                        PayApi.ALIPAY_CHANNEL_ID = payCfgId.getChId();
+                        MfhApi.ALIPAY_CHANNEL_ID = payCfgId.getChId();
                     }
                     else if ((payCfgId.getPayType() & WayType.WX_F2F) == WayType.WX_F2F){
-                        PayApi.WXPAY_CHANNEL_ID = payCfgId.getChId();
+                        MfhApi.WXPAY_CHANNEL_ID = payCfgId.getChId();
                     }
                 }
             }
@@ -145,8 +144,8 @@ public class GlobalInstanceBase extends Observable{
 
         ZLogger.d(String.format("MfhApi.URL_BASE_SERVER=%s", MfhApi.URL_BASE_SERVER));
         ZLogger.d(String.format("MobileApi.DOMAIN=%s", MobileApi.DOMAIN));
-        ZLogger.d(String.format("PayApi.ALIPAY_CHANNEL_ID=%s", PayApi.ALIPAY_CHANNEL_ID));
-        ZLogger.d(String.format("PayApi.WXPAY_CHANNEL_ID=%s", PayApi.WXPAY_CHANNEL_ID));
+        ZLogger.d(String.format("PayApi.ALIPAY_CHANNEL_ID=%s", MfhApi.ALIPAY_CHANNEL_ID));
+        ZLogger.d(String.format("PayApi.WXPAY_CHANNEL_ID=%s", MfhApi.WXPAY_CHANNEL_ID));
     }
 
 }

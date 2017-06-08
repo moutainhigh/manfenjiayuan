@@ -100,7 +100,7 @@ public class PrepareStep1Fragment extends BaseFragment implements IScOrderView {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
-        ZLogger.df(String.format("拣货，%s", StringUtils.decodeBundle(args)));
+        ZLogger.d(String.format("打开拣货页面，%s", StringUtils.decodeBundle(args)));
 
         if (args != null) {
             tradeNo = args.getString(PrepareActivity.EXTRA_KEY_TRADENO);

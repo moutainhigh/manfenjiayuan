@@ -64,7 +64,7 @@ public class CashierPresenter {
                 PosProductSkuEntity posProductSkuEntity = entityList.get(0);
                 String mainBarcode = posProductSkuEntity.getMainBarcode();
                 packFlag = posProductSkuEntity.getPackFlag();
-                ZLogger.df(String.format("找到%d个主条码%s", entityList.size(), mainBarcode));
+                ZLogger.d(String.format("找到%d个主条码%s", entityList.size(), mainBarcode));
 
                 //Step 3:根据主条码再次查询商品
                 entity = this.iCashierMode.findGoods(mainBarcode);
@@ -113,7 +113,7 @@ public class CashierPresenter {
                     PosProductSkuEntity posProductSkuEntity = entityList.get(0);
                     String mainBarcode = posProductSkuEntity.getMainBarcode();
                     packFlag = posProductSkuEntity.getPackFlag();
-                    ZLogger.df(String.format("找到%d个主条码%s", entityList.size(), mainBarcode));
+                    ZLogger.d(String.format("找到%d个主条码%s", entityList.size(), mainBarcode));
 
                     //Step 3:根据主条码再次查询商品
                     entity = this.iCashierMode.findGoods(mainBarcode);
@@ -148,6 +148,8 @@ public class CashierPresenter {
                 "订单列表", R.mipmap.ic_service_online_order));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_DISCOUNT,
                 "折扣", R.mipmap.ic_menu_cashier_discount));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_TOPUP,
+                "充值", R.mipmap.ic_service_topup));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SCORE,
                 "积分兑换", R.mipmap.ic_cashier_score));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MEMBER_CARD,
@@ -160,11 +162,11 @@ public class CashierPresenter {
                 "打印订单", R.mipmap.ic_service_feedpaper));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MONEYBOX,
                 "钱箱", R.mipmap.ic_service_moneybox));
-        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_BALANCE_QUERY,
-                "余额查询", R.mipmap.ic_service_balance));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SETTINGS,
                 "设置", R.mipmap.ic_service_settings));
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
+            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_BALANCE_QUERY,
+                    "余额查询", R.mipmap.ic_service_balance));
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
                     "注册", R.mipmap.ic_service_register_vip));
 //            functionalList.add(CashierFunctional.generate(ResMenu.CASHIER_MENU_PACKAGE,

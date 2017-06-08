@@ -45,6 +45,10 @@ public class ScCategoryInfoHttpManager  extends BaseHttpManager{
         /**加载类目*/
         @GET("scCategoryInfo/getCodeValue")
         Observable<MResponse<List<CategoryInfo>>> getCodeValue(@QueryMap Map<String, String> options);
+        /**
+         * /scCategoryInfo/create?jsonStr={},
+         * 上面tenantId是当前pos机所属租户（注意不是网点，现在还没细化到网点或pos机），catePosition此次为1，domain为0
+         */
         @GET("scCategoryInfo/create")
         Observable<MResponse<MValue<String>>> create(@Query("JSESSIONID") String JSESSIONID,
                                                      @Query("jsonStr") String jsonStr);

@@ -17,7 +17,7 @@
 
 
     <dimen name="mfh_normal_dialog_width">600dp</dimen>
-    <dimen name="mf_simple_dialog_width">800dp</dimen>
+    <dimen name="mf_simple_dialog_width">895dp</dimen>
     <dimen name="mf_simple_dialog_height">400dp</dimen>
     <dimen name="mf_simple_dialog_height_footer">448dp</dimen>
 

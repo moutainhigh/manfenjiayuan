@@ -13,6 +13,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductAggDate;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
@@ -239,6 +240,7 @@ public class GoodsSalesFragment extends BaseListFragment<ProductAggDate> {
             rMaps.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
             load(rMaps, mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载销量，已经是最后一页。");
             onLoadFinished();
         }

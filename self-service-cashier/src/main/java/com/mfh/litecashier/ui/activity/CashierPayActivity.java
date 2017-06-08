@@ -14,8 +14,10 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.fragment.pay.PayStep2Fragment;
+import com.mfh.litecashier.ui.fragment.topup.TransferFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,10 +34,16 @@ public class CashierPayActivity extends BaseActivity {
 
     private PayStep1Fragment mPayStep1Fragment;
     private PayStep2Fragment mPayStep2Fragment;
+    private TransferFragment mTransferFragment;
+    private ExchangeScoreFragment mExchangeScoreFragment;
 
     private CashierOrderInfo cashierOrderInfo = null;
 
     private int curStep = 0;
+    private int payType;
+    private int paySubType;
+    private String cardId;
+    private Human memberInfo;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, CashierPayActivity.class);
@@ -105,6 +113,7 @@ public class CashierPayActivity extends BaseActivity {
             cashierOrderInfo = (CashierOrderInfo) intent.getSerializableExtra(EXTRA_KEY_CASHIER_ORDERINFO);
         }
     }
+
     /**
      * 显示
      */
@@ -114,8 +123,7 @@ public class CashierPayActivity extends BaseActivity {
         intent.putExtra(EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
         if (mPayStep1Fragment == null) {
             mPayStep1Fragment = PayStep1Fragment.newInstance(intent.getExtras());
-        }
-        else{
+        } else {
             mPayStep1Fragment.setArguments(intent.getExtras());
         }
 
@@ -125,26 +133,33 @@ public class CashierPayActivity extends BaseActivity {
                 .commit();
     }
 
-    private void showStep2(int payType, int paySubType, String cardId, Human memberInfo) {
-        if (curStep == 1){
-            ZLogger.df("已经是会员支付页面，跳转无效。");
+    private void showStep2(int payType, int paySubType, String cardId, Human memberInfo, boolean isNeedReloadVIP) {
+        if (curStep == 1) {
+            ZLogger.d("已经是会员支付页面，跳转无效。");
             return;
         }
         ZLogger.df("准备跳转到会员支付页面");
         curStep = 1;
+        this.payType = payType;
+        this.paySubType = paySubType;
+        this.cardId = cardId;
+        this.memberInfo = memberInfo;
+
         if (cashierOrderInfo != null) {
             cashierOrderInfo.vipPrivilege(memberInfo);
         }
+
+        mTransferFragment = null;
 
         Bundle args = new Bundle();
         args.putSerializable(PayStep2Fragment.EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
         args.putInt(PayStep2Fragment.EXTRA_KEY_PAYTYPE, payType);
         args.putInt(PayStep2Fragment.EXTRA_KEY_PAY_SUBTYPE, paySubType);
         args.putString(PayStep2Fragment.EXTRA_KEY_VIP_CARID, cardId);
+        args.putBoolean(PayStep2Fragment.EXTRA_KEY_IS_RELOAD_VIP, isNeedReloadVIP);
         if (mPayStep2Fragment == null) {
             mPayStep2Fragment = PayStep2Fragment.newInstance(args);
-        }
-        else{
+        } else {
             mPayStep2Fragment.setArguments(args);
         }
 
@@ -152,92 +167,123 @@ public class CashierPayActivity extends BaseActivity {
 //                    .add(R.id.fragment_container, purchaseGoodsFragment).show(purchaseGoodsFragment)
                 .replace(R.id.fragment_container, mPayStep2Fragment)
                 .commit();
+
+//        try {
+//            ActivityRoute.redirect2ExchangeScore(this, null);
+//        } catch (Exception e) {
+//            ZLogger.d("redirect2ExchangeScore 失败： " + e.toString());
+//        }
     }
 
     /**
-     * 取消支付
-     * */
-//    public void cancelSettle() {
-//        // TODO: 7/21/16 这里要做判断，当前是不是正在支付订单，正在支付订单的时候不能关闭窗口
-////        setResult(Activity.RESULT_CANCELED);
-////        finish();
-//        if (cancelPayDialog == null) {
-//            cancelPayDialog = new CommonDialog(this);
-//            cancelPayDialog.setCancelable(true);
-//            cancelPayDialog.setCanceledOnTouchOutside(true);
-//            cancelPayDialog.setMessage("确定要取消支付吗？");
+     * 显示
+     */
+    private void showStep3(Human human) {
+        curStep = 2;
+        Intent intent = this.getIntent();
+        intent.putExtra(TransferFragment.EXTRA_HUMAN, human);
+        intent.putExtra(TransferFragment.EXTRA_IS_PAY_ACTION,
+                true);
+
+//        Bundle extras = new Bundle();
+//        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+//        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+//                SimpleDialogActivity.DT_MIDDLE);
+//        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+//                SimpleDialogActivity.FT_CUSTOMER_TOPUP);
+//        if (human != null) {
+//            extras.putSerializable(TransferFragment.EXTRA_HUMAN,
+//                    human);
 //        }
-//        cancelPayDialog.setPositiveButton("订单异常", new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//                if (curStep == 0){
-//                    if (mPayStep1Fragment != null){
-//                        mPayStep1Fragment.onPayException();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//                else{
-//                    if (mPayStep2Fragment != null){
-//                        mPayStep2Fragment.onPayException();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//            }
-//        });
-//        cancelPayDialog.setNegativeButton("取消支付", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//
-//                if (curStep == 0){
-//                    if (mPayStep1Fragment != null){
-//                        mPayStep1Fragment.onPayCancel();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//                else{
-//                    if (mPayStep2Fragment != null){
-//                        mPayStep2Fragment.onPayCancel();
-//                    }
-//                    else {
-//                        setResult(Activity.RESULT_CANCELED);
-//                        finish();
-//                    }
-//                }
-//            }
-//        });
-//        cancelPayDialog.show();
-//    }
+//        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+
+//        ActivityRoute.redirect2Transfer(CashierPayActivity.this, human);
+        if (mTransferFragment == null) {
+            mTransferFragment = TransferFragment.newInstance(intent.getExtras());
+        } else {
+            mTransferFragment.setArguments(intent.getExtras());
+        }
+
+        getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseGoodsFragment).show(purchaseGoodsFragment)
+                .replace(R.id.fragment_container, mTransferFragment)
+                .commit();
+    }
+
+    /**
+     * 显示
+     */
+    private void showStep4(Human human) {
+        curStep = 3;
+        Intent intent = this.getIntent();
+        intent.putExtra(ExchangeScoreFragment.EXTRA_HUMAN, human);
+        intent.putExtra(ExchangeScoreFragment.EXTRA_IS_PAY_ACTION,
+                true);
+        if (mExchangeScoreFragment == null) {
+            mExchangeScoreFragment = ExchangeScoreFragment.newInstance(intent.getExtras());
+        } else {
+            mExchangeScoreFragment.setArguments(intent.getExtras());
+        }
+
+        getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseGoodsFragment).show(purchaseGoodsFragment)
+                .replace(R.id.fragment_container, mExchangeScoreFragment)
+                .commit();
+    }
+
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(PayActionEvent event) {
         Bundle args = event.getArgs();
         ZLogger.df(String.format("PayActionEvent:%d\n%s",
                 event.getAction(), StringUtils.decodeBundle(args)));
-        switch (event.getAction()){
-            case PayActionEvent.PAY_ACTION_VIP_DETECTED:{
-                if (args != null){
+        switch (event.getAction()) {
+            case PayActionEvent.PAY_ACTION_VIP_DETECTED: {
+                if (args != null) {
                     Human memberInfo = (Human) args.getSerializable(PayActionEvent.KEY_MEMBERINFO);
                     int payType = args.getInt(PayActionEvent.KEY_PAY_TYPE);
                     int paySubType = args.getInt(PayActionEvent.KEY_PAY_SUBTYPE);
                     String cardId = args.getString(PayActionEvent.KEY_CARD_ID);
-                    showStep2(payType, paySubType, cardId, memberInfo);
+                    showStep2(payType, paySubType, cardId, memberInfo, false);
+                }
+            }
+            break;
+            case PayActionEvent.PAY_ACTION_VIP_UPDATED: {
+                boolean isNeedReloadVIP = false;
+                if (args != null) {
+                    isNeedReloadVIP = args.getBoolean(PayStep2Fragment.EXTRA_KEY_IS_RELOAD_VIP);
+                }
+                showStep2(payType, paySubType, cardId, memberInfo, isNeedReloadVIP);
+            }
+            break;
+            case PayActionEvent.PAY_ACTION_CUSTOMER_TOPUP: {
+                if (args != null) {
+                    Human memberInfo = (Human) args.getSerializable(PayActionEvent.KEY_MEMBERINFO);
+                    try {
+//                        ActivityRoute.redirect2Transfer(CashierPayActivity.this, memberInfo);
+                        showStep3(memberInfo);
+
+                    } catch (Exception e) {
+                        ZLogger.d("redirect2Transfer 失败： " + e.toString());
+                    }
+                }
+            }
+            break;
+            case PayActionEvent.PAY_ACTION_CUSTOMER_SCORE: {
+                if (args != null) {
+                    Human memberInfo = (Human) args.getSerializable(PayActionEvent.KEY_MEMBERINFO);
+                    try {
+//                        ActivityRoute.redirect2ExchangeScore(CashierPayActivity.this, memberInfo);
+                        showStep4(memberInfo);
+
+                    } catch (Exception e) {
+                        ZLogger.d("redirect2ExchangeScore 失败： " + e.toString());
+                    }
                 }
             }
             break;
         }
     }
-
 
 
 }

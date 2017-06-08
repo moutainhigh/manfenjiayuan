@@ -36,7 +36,7 @@ import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.bingshanguxue.cashier.v1.CashierDesktopObservable;
+import com.bingshanguxue.cashier.v1.CashierBenchObservable;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -53,10 +53,10 @@ import butterknife.OnClick;
  */
 public class PayStep1Fragment extends BasePayStepFragment {
 
-    private static final int TAB_CASH = 0;
-    private static final int TAB_VIP = 1;
-    private static final int TAB_ALIPAY = 2;
-    private static final int TAB_WX = 3;
+    private static final int TAB_CASH = 3;
+    private static final int TAB_VIP = 0;
+    private static final int TAB_ALIPAY = 1;
+    private static final int TAB_WX = 2;
     private static final int TAB_BANK = 4;
 //    private static final int TAB_CREDIT     = 6;
 
@@ -176,7 +176,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             tvAdjustAmount.setTopText(String.format("%.2f", 0D));
         }
 
-        CashierDesktopObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
+        CashierBenchObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
         notifyPayInfoChanged(paySlidingTabStrip.getCurrentPosition());
 
         activeMode(true);
@@ -296,13 +296,13 @@ public class PayStep1Fragment extends BasePayStepFragment {
         parArgs.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
                 CashierProvider.getHandleAmount(cashierOrderInfo));
 
-        mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
-                parArgs));
         mTabs.add(new ViewPageInfo("会员", "会员", PayByVipFragment.class,
                 parArgs));
         mTabs.add(new ViewPageInfo("支付宝", "支付宝", PayByAlipayFragment.class,
                 parArgs));
         mTabs.add(new ViewPageInfo("微信", "微信", PayByWxpayFragment.class,
+                parArgs));
+        mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));
         mTabs.add(new ViewPageInfo("银行卡", "银行卡", PayByBandcardFragment.class,
                 parArgs));
@@ -369,4 +369,5 @@ public class PayStep1Fragment extends BasePayStepFragment {
 //        btnSubmit.setEnabled(true);
         hideProgressDialog();
         super.onPayStepFinish();
-    }}
+    }
+}

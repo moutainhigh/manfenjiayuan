@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.service.CashierShopcartService;
+import com.bingshanguxue.cashier.v1.CashierAgent;
+import com.mfh.framework.core.utils.MathCompact;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.dialog.DoubleInputDialog;
@@ -27,7 +29,9 @@ import butterknife.OnClick;
 public class ReturnProductAdapter
         extends SwipAdapter<CashierShopcartEntity, ReturnProductAdapter.ProductViewHolder> {
 
-    private DoubleInputDialog changeQuantityDialog;
+    private DoubleInputDialog changeQuantityDialog = null;
+    private DoubleInputDialog changePriceDialog = null;
+    private DoubleInputDialog changeFinalCustomerPriceDialog = null;
 
     public interface OnAdapterListener {
         void onDataSetChanged(boolean needScroll);
@@ -56,9 +60,11 @@ public class ReturnProductAdapter
         holder.tvName.setText(entity.getSkuName());
 
         //退货时单个扫描商品需要
-        holder.tvPrice.setText(String.format("%.2f", entity.getCostPrice()));
+        holder.tvPrice.setText(String.format("%.2f", entity.getFinalPrice()));
+        holder.tvCustomerPrice.setText(String.format("%.2f", entity.getFinalCustomerPrice()));
         holder.tvCount.setText(String.format("%.2f", Math.abs(entity.getBcount())));
-        holder.tvAmount.setText(String.format("%.2f", Math.abs(entity.getAmount())));
+        holder.tvAmount.setText(String.format("%.2f", Math.abs(entity.getFinalAmount())));
+        holder.tvCustomerAmount.setText(String.format("%.2f", Math.abs(MathCompact.mult(entity.getBcount(), entity.getFinalCustomerPrice()))));
     }
 
     public class ProductViewHolder extends RecyclerView.ViewHolder {
@@ -66,10 +72,14 @@ public class ReturnProductAdapter
         TextView tvName;
         @BindView(R.id.tv_price)
         TextView tvPrice;
+        @BindView(R.id.tv_customer_price)
+        TextView tvCustomerPrice;
         @BindView(R.id.tv_quantity)
         TextView tvCount;
         @BindView(R.id.tv_amount)
         TextView tvAmount;
+        @BindView(R.id.tv_customer_amount)
+        TextView tvCustomerAmount;
 
         public ProductViewHolder(final View itemView) {
             super(itemView);
@@ -92,7 +102,7 @@ public class ReturnProductAdapter
         public void changeQuantity() {
             final int position = getAdapterPosition();
 
-            final CashierShopcartEntity original = entityList.get(position);
+            final CashierShopcartEntity original = getEntity(position);
             if (original == null) {
                 return;
             }
@@ -111,7 +121,7 @@ public class ReturnProductAdapter
 //                    ShopcartService.get().saveOrUpdate(original);
 
                     CashierShopcartService.getInstance().saveOrUpdate(original);
-                    notifyDataSetChanged();
+                    notifyItemChanged(position);
 
                     if (adapterListener != null) {
                         adapterListener.onDataSetChanged(false);
@@ -119,6 +129,87 @@ public class ReturnProductAdapter
                 }
             });
             changeQuantityDialog.show();
+        }
+
+        /**
+         * 修改商品零售成交价，同时联动修改会员成交价和商品折扣
+         */
+        @OnClick(R.id.ll_price)
+        public void changeGoodsPrice() {
+            final int position = getAdapterPosition();
+
+            final CashierShopcartEntity entity = getEntity(position);
+            if (entity == null) {
+                return;
+            }
+
+            if (changePriceDialog == null) {
+                changePriceDialog = new DoubleInputDialog(mContext);
+                changePriceDialog.setCancelable(true);
+                changePriceDialog.setCanceledOnTouchOutside(true);
+            }
+            changePriceDialog.initialzie("原价", 2, entity.getFinalPrice(), "元",
+                    new DoubleInputDialog.OnResponseCallback() {
+                        @Override
+                        public void onQuantityChanged(Double quantity) {
+                            Double discount = CashierAgent.calculatePriceDiscount(entity.getFinalPrice(), quantity);
+
+                            entity.setFinalCustomerPrice(MathCompact.mult(entity.getCustomerPrice(), discount));
+                            entity.setFinalPrice(quantity);
+                            entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+                            CashierShopcartService.getInstance().saveOrUpdate(entity);
+
+                            notifyItemChanged(position);
+
+                            if (adapterListener != null) {
+                                adapterListener.onDataSetChanged(false);
+                            }
+                        }
+                    });
+            if (!changePriceDialog.isShowing()) {
+                changePriceDialog.show();
+            }
+        }
+
+        /**
+         * 修改商品会员成交价格，同时联动修改零售成交价和商品折扣
+         */
+        @OnClick(R.id.ll_customer_price)
+        public void changeCustomerPrice() {
+            final int position = getAdapterPosition();
+
+            final CashierShopcartEntity entity = getEntity(position);
+            if (entity == null) {
+                return;
+            }
+
+            if (changeFinalCustomerPriceDialog == null) {
+                changeFinalCustomerPriceDialog = new DoubleInputDialog(mContext);
+                changeFinalCustomerPriceDialog.setCancelable(true);
+                changeFinalCustomerPriceDialog.setCanceledOnTouchOutside(true);
+            }
+            changeFinalCustomerPriceDialog.initialzie("会员价", 2, entity.getFinalCustomerPrice(), "元",
+                    new DoubleInputDialog.OnResponseCallback() {
+                        @Override
+                        public void onQuantityChanged(Double quantity) {
+                            Double discount = CashierAgent.calculatePriceDiscount(entity.getCustomerPrice(), quantity);
+
+                            entity.setFinalCustomerPrice(quantity);
+                            entity.setFinalPrice(MathCompact.mult(entity.getCostPrice(), discount));
+                            entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+//                        ZLogger.d(JSONObject.toJSONString(entity));
+                            CashierShopcartService.getInstance().saveOrUpdate(entity);
+
+                            notifyItemChanged(position);
+
+                            if (adapterListener != null) {
+                                adapterListener.onDataSetChanged(false);
+                            }
+                        }
+                    });
+            if (!changeFinalCustomerPriceDialog.isShowing()) {
+                changeFinalCustomerPriceDialog.show();
+            }
         }
     }
 
@@ -184,6 +275,18 @@ public class ReturnProductAdapter
             for (CashierShopcartEntity entity : entityList) {
                 //TODO 会员价
                 amount += entity.getFinalAmount();
+            }
+        }
+
+        return amount;
+    }
+
+    public double getFinalCustomerAmount() {
+        double amount = 0;
+        if (entityList != null && entityList.size() > 0) {
+            for (CashierShopcartEntity entity : entityList) {
+                //TODO 会员价
+                amount += MathCompact.mult(entity.getBcount(), entity.getFinalCustomerPrice());
             }
         }
 

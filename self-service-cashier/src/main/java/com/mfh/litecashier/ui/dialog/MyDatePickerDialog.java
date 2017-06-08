@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
@@ -105,8 +104,9 @@ public class MyDatePickerDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
 //        WindowManager m = getWindow().getWindowManager();
 //        Display d = m.getDefaultDisplay();
 //        WindowManager.LayoutParams p = getWindow().getAttributes();

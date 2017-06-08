@@ -21,6 +21,7 @@ import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderApiImpl;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItemBrief;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
@@ -257,6 +258,7 @@ public class PurchaseReturnFragment extends BaseListFragment<InvSendIoOrder>
 
             invReturnOrderPresenter.loadOrders(mPageInfo, "1,2,3,4", null, null);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购退货订单流水，已经是最后一页。");
             onLoadFinished();
         }

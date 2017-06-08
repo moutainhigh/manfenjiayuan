@@ -59,9 +59,9 @@
         android:layout_marginStart="32dp"
         android:orientation="horizontal"
         android:padding="8dp">
-        <!--营业额合计-->
+        <!--原价金额-->
         <TextView
-            android:id="@+id/tv_amount"
+            android:id="@+id/tv_originAmount"
             style="@style/mfh_textview_text"
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -69,6 +69,25 @@
             android:gravity="center_vertical"
             android:text="营业额合计："/>
 
+        <!--营业额-->
+        <TextView
+            android:id="@+id/tv_turnover"
+            style="@style/mfh_textview_text"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="账户新增："/>
+    </LinearLayout>
+
+    <!--营业额-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginStart="32dp"
+        android:orientation="horizontal"
+        android:padding="8dp">
         <!--账户新增-->
         <TextView
             android:id="@+id/tv_income"

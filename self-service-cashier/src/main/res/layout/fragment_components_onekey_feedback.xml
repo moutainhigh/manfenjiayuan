@@ -29,17 +29,17 @@
                 android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
-                android:text=""
-                android:textSize="18sp"
-                android:textColor="@color/material_black"
-                android:padding="@dimen/spacing_normal"
                 android:layout_marginTop="@dimen/spacing_micro"
-                android:hint="吐槽开始..."
-                android:textColorHint="@color/material_grey_500"
-                android:gravity="start|top"
                 android:background="@drawable/bg_input_rectange"
+                android:gravity="start|top"
+                android:hint="吐槽开始..."
                 android:inputType="text"
-                android:textIsSelectable="false"/>
+                android:padding="@dimen/spacing_normal"
+                android:text=""
+                android:textColor="@color/material_black"
+                android:textColorHint="@color/material_grey_500"
+                android:textIsSelectable="false"
+                android:textSize="18sp"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -50,6 +50,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_margin="@dimen/spacing_double"
+        android:contentDescription="@null"
         android:src="@mipmap/ic_toolbar_submit"/>
 
 </RelativeLayout>

@@ -39,6 +39,11 @@ public class ProductCatalogManager extends BaseHttpManager{
         Observable<MResponse<MRspQuery<ProductCatalog>>> downLoadProductCatalog(@QueryMap Map<String, String> options);
         @GET("anon/sc/productCatalog/countProductCatalogSyncAbleNum")
         Observable<MResponse<MValue<String>>> countProductCatalogSyncAbleNum(@QueryMap Map<String, String> options);
+        /**
+         * 把几个商品添加到指定前台类目中：  /anon/sc/productCatalog/addToCatalog?groupIds=3397&productIds=20551&catalogType=1
+         * 其中groupIds为建好的前台类目，productIds为商品的spuId（不是skuId）
+         * spuId就是productId
+         */
         @GET("anon/sc/productCatalog/addToCatalog")
         Observable<MResponse<String>> addToCatalog(@QueryMap Map<String, String> options);
         @GET("anon/sc/productCatalog/delete")

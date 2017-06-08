@@ -1,13 +1,7 @@
 package com.manfenjiayuan.im.param;
 
 import com.alibaba.fastjson.JSONObject;
-import com.manfenjiayuan.im.bean.MsgBean;
-import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.constants.IMTechType;
-
-import org.w3c.dom.Text;
-
-import java.util.Date;
 
 /**
  * 文本消息

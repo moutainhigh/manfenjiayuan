@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootview"
+    style="@style/mfh_form_content"
+    android:gravity="center"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/tv_index"
+        style="@style/mfh_form_content_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.5"
+        android:gravity="center_vertical|start"
+        android:text="序号" />
+
+    <TextView
+        android:id="@+id/tv_biztype"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center_vertical|start"
+        android:text="产品线"/>
+    <TextView
+        android:id="@+id/tv_turnover"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:text="营业额"/>
+
+    <!--<TextView-->
+        <!--android:id="@+id/tv_grossProfitMargin"-->
+        <!--style="@style/singleline_text"-->
+        <!--android:layout_width="0dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_weight="1"-->
+        <!--android:gravity="center_vertical|start"-->
+        <!--android:text="毛利率"/>-->
+
+    <TextView
+        android:id="@+id/tv_salesBalance"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center_vertical|start"
+        android:text="销售差额"/>
+
+
+</LinearLayout>

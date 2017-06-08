@@ -168,7 +168,7 @@ public class SharedPreferencesUltimate extends SharedPrefesManagerBase {
      * 获取上一次交接班时间
      */
     public static Date getLastHandoverDateTime() {
-        Date date = new Date();
+        Date date = TimeUtil.getCurrentDate();
 
         String lastCursor = getLastHandoverDateTimeStr();
 

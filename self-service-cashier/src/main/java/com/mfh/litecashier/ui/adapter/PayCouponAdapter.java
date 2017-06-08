@@ -368,7 +368,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             source.add(entity);
         }
 
-        ZLogger.df(JSON.toJSONString(entity));
+        ZLogger.d(JSON.toJSONString(entity));
     }
 
     private void mergeCoupon(List<CouponRule> source, CoupBean coupon){
@@ -400,7 +400,7 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (source != null){
             source.add(entity);
         }
-        ZLogger.df(JSON.toJSONString(entity));
+        ZLogger.d(JSON.toJSONString(entity));
     }
 
     public void setVipScore(Double score){

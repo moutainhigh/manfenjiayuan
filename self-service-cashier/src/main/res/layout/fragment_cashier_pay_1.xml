@@ -95,6 +95,7 @@
         android:id="@+id/fab_give"
         style="@style/FloatImageButton"
         android:layout_gravity="bottom|end"
+        android:contentDescription="@null"
         android:layout_margin="@dimen/spacing_double"
         android:src="@mipmap/ic_fab_give"/>
 

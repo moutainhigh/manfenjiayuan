@@ -35,11 +35,7 @@ public class ProductCatalogApi {
      */
     public static String URL_COUNTPRODUCTCATALOG_SYNCABLENUM = URL_PRODUCT_CATALOG + "countProductCatalogSyncAbleNum";
 
-    /**
-     * 把几个商品添加到指定前台类目中：  /anon/sc/productCatalog/addToCatalog?groupIds=3397&productIds=20551&catalogType=1
-     * 其中groupIds为建好的前台类目，productIds为商品的spuId（不是skuId）
-     * spuId就是productId
-     */
+
     public static String URL_ADD2CATEGORY = URL_PRODUCT_CATALOG + "addToCatalog";
 
 

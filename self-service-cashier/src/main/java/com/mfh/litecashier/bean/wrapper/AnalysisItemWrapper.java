@@ -12,6 +12,7 @@ public class AnalysisItemWrapper implements java.io.Serializable{
     private Double turnover = 0D;//金额
     private Double grossProfit = 0D;//毛利
     private Double origionAmount = 0D;//原价金额
+    private Double salesBalance = 0D;//销售差额 = 营业额 - 采购成本
 
 
     private boolean isShowIndex;//是否显示序号
@@ -71,5 +72,16 @@ public class AnalysisItemWrapper implements java.io.Serializable{
 
     public void setOrigionAmount(Double origionAmount) {
         this.origionAmount = origionAmount;
+    }
+
+    public Double getSalesBalance() {
+        if (salesBalance == null){
+            return 0D;
+        }
+        return salesBalance;
+    }
+
+    public void setSalesBalance(Double salesBalance) {
+        this.salesBalance = salesBalance;
     }
 }

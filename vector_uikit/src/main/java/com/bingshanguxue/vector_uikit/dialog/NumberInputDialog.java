@@ -41,8 +41,11 @@ public class NumberInputDialog extends CommonDialog {
 
     public interface OnResponseCallback {
         void onNext(String value);
+
         void onNext(Double value);
+
         void onCancel();
+
         void onCompleted();
     }
 
@@ -189,7 +192,7 @@ public class NumberInputDialog extends CommonDialog {
         rootView.findViewById(R.id.button_header_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null){
+                if (mListener != null) {
                     mListener.onCancel();
                 }
                 dismiss();
@@ -246,6 +249,7 @@ public class NumberInputDialog extends CommonDialog {
         this.etInput.getText().clear();
         requestFocusEnd();
     }
+
     /**
      * 初始化
      */
@@ -277,11 +281,11 @@ public class NumberInputDialog extends CommonDialog {
             //相当于在.xml文件中设置inputType="numberDecimal
             this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(2)});
-        }  else if (inputType == EditInputType.WEIGHT) {
+        } else if (inputType == EditInputType.WEIGHT) {
             //相当于在.xml文件中设置inputType="numberDecimal
             this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(3)});
-        }  else if (inputType == EditInputType.NUMBER) {
+        } else if (inputType == EditInputType.NUMBER) {
             //相当于在.xml文件中设置inputType="numberDecimal
             this.etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
 //            this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
@@ -290,7 +294,7 @@ public class NumberInputDialog extends CommonDialog {
         }
     }
 
-    public void requestFocusEnd(){
+    public void requestFocusEnd() {
         this.etInput.setSelection(this.etInput.length());
         this.etInput.requestFocus();
     }
@@ -303,7 +307,7 @@ public class NumberInputDialog extends CommonDialog {
 
     /**
      * 提交
-     * */
+     */
     private void submit() {
         String inputVal = etInput.getText().toString();
         if (StringUtils.isEmpty(inputVal)) {
@@ -340,8 +344,7 @@ public class NumberInputDialog extends CommonDialog {
                 e.printStackTrace();
                 ZLogger.ef(e.toString());
             }
-        }
-        else {
+        } else {
             if (mListener != null) {
                 mListener.onNext(inputVal);
             }

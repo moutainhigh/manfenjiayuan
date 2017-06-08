@@ -7,7 +7,10 @@ import android.os.Bundle;
  */
 public class PayActionEvent {
     public static final int PAY_ACTION_VIP_DETECTED         = 0X05;//检测（读取）到会员信息
-    public static final int PAY_ACTION_BASIC_PAY            = 0X06;//普通支付
+    public static final int PAY_ACTION_VIP_UPDATED         = 0X06;//检测（读取）到会员信息
+    public static final int PAY_ACTION_CUSTOMER_TOPUP         = 0X07;//充值
+    public static final int PAY_ACTION_CUSTOMER_SCORE         = 0X08;//积分
+
 
     private int action;
 

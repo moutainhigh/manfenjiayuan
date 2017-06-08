@@ -12,10 +12,11 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
+import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -320,6 +321,7 @@ onLoadFinished();
                     String.valueOf(Constants.ORDER_STATUS_RECEIVED),
                     String.valueOf(MfhLoginService.get().getCurOfficeId()), mPageInfo);
         }else{
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载衣服洗护订单流水，已经是最后一页。");
             onLoadFinished();
         }

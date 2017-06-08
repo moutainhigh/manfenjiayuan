@@ -87,7 +87,7 @@ public class PrepareTakeoutFragment extends BaseFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         try {
             Bundle args = getArguments();
-            ZLogger.df(String.format("打开第三方组货页面，%s", StringUtils.decodeBundle(args)));
+            ZLogger.d(String.format("打开第三方组货页面，%s", StringUtils.decodeBundle(args)));
             if (args != null) {
                 posTradeNo = args.getString(EXTRA_KEY_POS_TRADENO);
                 mBizSubTypeWrapper = (BizSubTypeWrapper) args.getSerializable(EXTRA_KEY_SUBTYPE);

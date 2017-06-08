@@ -145,7 +145,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
         Bundle args = event.getArgs();
         Long categoryId = args.getLong(KEY_CATEGORY_ID);
 
-        if (categoryId.compareTo(this.categoryId) != 0) {
+        if (this.categoryId == null || categoryId.compareTo(this.categoryId) != 0) {
             ZLogger.d(String.format("类目编号 %d不对，请忽略", this.categoryId));
             return;
         }
@@ -230,6 +230,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
         });
 
         mRecyclerView.setAdapter(adapter);
+        adapter.setEntityList(null);
     }
 
     /**
@@ -262,6 +263,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             load(mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载类目商品，已经是最后一页。");
             onLoadFinished();
         }
@@ -295,26 +297,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
                             if (productEntities1 != null && productEntities1.size() > 0) {
                                 ZLogger.d(String.format("找到%d个商品，spuId=%d",
                                         productEntities1.size(), entity.getCataItemId()));
-
-                                PosProductEntity entity1 = productEntities1.get(0);
-//                                LocalFrontCategoryGoods goods = new LocalFrontCategoryGoods();
-//                                goods.setType(0);
-//                                goods.setId(entity1.getId());
-//                                goods.setProSkuId(entity1.getProSkuId());
-//                                goods.setProductId(entity1.getProductId());
-//                                goods.setBarcode(entity1.getBarcode());
-//                                goods.setName(entity1.getName());
-//                                goods.setSkuName(entity1.getSkuName());
-//                                goods.setShortName(entity1.getShortName());
-//                                goods.setProviderId(entity1.getProviderId());
-//                                goods.setCostPrice(entity1.getCostPrice());
-//                                goods.setCustomerPrice(entity1.getCustomerPrice());
-//                                goods.setUnit(entity1.getUnit());
-//                                goods.setPriceType(entity1.getPriceType());
-//                                goods.setProdLineId(entity1.getProdLineId());
-//                                goods.setNeedWait(entity1.getNeedWait());
-//                                goods.setStatus(entity1.getStatus());
-                                productEntities.add(LocalFrontCategoryGoods.create(entity1));
+                                productEntities.add(LocalFrontCategoryGoods.create(productEntities1.get(0)));
                             } else {
                                 ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
                             }
@@ -531,7 +514,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             ActivityRoute.redirect2StoreIn(getActivity(), tempBarcode);
         } else {
-            ZLogger.df("查询成功，准备导入商品到类目中");
+            ZLogger.d("查询成功，准备导入商品到类目中");
             if (mImportGoodsPresenter != null) {
                 mImportGoodsPresenter.importFromCenterSkus(categoryId, String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
             } else {
@@ -563,7 +546,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onNext(String s) {
-                ZLogger.df("导入商品到本店仓储成功");
+                ZLogger.d("导入商品到本店仓储成功");
                 add2Category(productIds);
             }
 
@@ -593,7 +576,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onNext(String s) {
-                ZLogger.df("导入前台类目商品成功");
+                ZLogger.d("导入前台类目商品成功");
                 hideProgressDialog();
             }
 
@@ -787,7 +770,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("更新商品失败, " + e.toString());
+                ZLogger.d("更新商品失败, " + e.toString());
                 DialogUtil.showHint("更新商品失败");
                 hideProgressDialog();
             }

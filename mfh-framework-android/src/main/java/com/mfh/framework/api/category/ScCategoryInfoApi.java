@@ -1,6 +1,5 @@
 package com.mfh.framework.api.category;
 
-import com.alibaba.fastjson.JSONObject;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -28,12 +27,6 @@ public class ScCategoryInfoApi {
 
 
     /**
-     * /scCategoryInfo/create?jsonStr={},
-     * 上面tenantId是当前pos机所属租户（注意不是网点，现在还没细化到网点或pos机），catePosition此次为1，domain为0
-     */
-    private static String URL_CREATE = URL_SC_CATEGORYINFO + "create";
-
-    /**
      * 删除类目
      * /scCategoryInfo/delete?id=
      */
@@ -59,60 +52,12 @@ public class ScCategoryInfoApi {
         URL_SC_CATEGORYINFO = MfhApi.URL_BASE_SERVER + "/scCategoryInfo/";
         URL_COMNQUERY = URL_SC_CATEGORYINFO + "comnQuery";
         URL_GETCODEVALUE = URL_SC_CATEGORYINFO + "getCodeValue";
-        URL_CREATE = URL_SC_CATEGORYINFO + "create";
         URL_DELETE = URL_SC_CATEGORYINFO + "delete";
         URL_UPDATE = URL_SC_CATEGORYINFO + "update";
         URL_LIST = URL_SC_CATEGORYINFO + "list";
         URL_GET_TOPFRONTID = URL_SC_CATEGORYINFO + "getTopFrontId";
     }
 
-    /**
-     * private String cateInfo; //类目介绍
-     * private Long imageId;//类目logo
-     * private Integer catePosition;//
-     * private Integer cateOrder;//次序
-     * private Integer status;//是否有效 1-有效 0-无效
-     * private String remark;//备注
-     *
-     * @param domain       业务域，0-实物商品 {@link CateApi#DOMAIN_TYPE_PROD}
-     * @param catePosition 类目位置 0-系统默认(后台管理类目) 1-前台(用户自定义类目)
-     * @param tenantId     当前pos机所属租户编号（注意不是网点，现在还没细化到网点或pos机）
-     * @param nameCn       类目中文
-     */
-    public static void create(int domain, int catePosition, Long tenantId,
-                              String nameCn, Integer cateType,
-                              AjaxCallBack<? extends Object> responseCallback) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("kind", "code");
-        jsonObject.put("domain", domain);
-        jsonObject.put("nameCn", nameCn);
-        jsonObject.put("catePosition", catePosition);
-        jsonObject.put("tenantId", tenantId);
-        jsonObject.put("cateType", cateType);
-
-        AjaxParams params = new AjaxParams();
-        params.put("jsonStr", jsonObject.toJSONString());
-
-        AfinalFactory.postDefault(URL_CREATE, params, responseCallback);
-    }
-
-    public static void create(Long parentId, int domain, int catePosition, Long tenantId,
-                              String nameCn, Integer cateType,
-                              AjaxCallBack<? extends Object> responseCallback) {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("kind", "code");
-        jsonObject.put("domain", domain);
-        jsonObject.put("nameCn", nameCn);
-        jsonObject.put("catePosition", catePosition);
-        jsonObject.put("tenantId", tenantId);
-        jsonObject.put("cateType", cateType);
-        jsonObject.put("parentId", parentId);
-
-        AjaxParams params = new AjaxParams();
-        params.put("jsonStr", jsonObject.toJSONString());
-
-        AfinalFactory.postDefault(URL_CREATE, params, responseCallback);
-    }
 
     /**
      * 删除类目

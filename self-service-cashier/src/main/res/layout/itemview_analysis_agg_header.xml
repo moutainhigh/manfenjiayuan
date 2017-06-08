@@ -1,50 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              style="@style/mfh_form_header"
-              android:gravity="center"
-              android:orientation="horizontal">
+    style="@style/mfh_form_header"
+    android:gravity="center"
+    android:orientation="horizontal">
 
     <TextView
         style="@style/mfh_form_header_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="0.5"
-        android:text="序号"/>
+        android:gravity="center_vertical|start"
+        android:text="序号" />
 
     <TextView
-        style="@style/mfh_form_header_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="2"
-        android:gravity="center_vertical"
-        android:text="业务类型"
-        android:maxLines="1"/>
-
+        android:gravity="center_vertical|start"
+        android:text="产品线"/>
     <TextView
-        style="@style/mfh_form_header_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:text="数量"
-        android:maxLines="1"/>
+        android:gravity="center_vertical|start"
+        android:text="营业额"/>
 
     <TextView
-        style="@style/mfh_form_header_text"
+        style="@style/singleline_text"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:text="金额"
-        android:maxLines="1"/>
-
-    <TextView
-        style="@style/mfh_form_header_text"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:gravity="center"
-        android:text="毛利率"
-        android:maxLines="1"/>
+        android:gravity="center_vertical|start"
+        android:text="销售差额" />
 
 </LinearLayout>

@@ -48,6 +48,7 @@ public class AnalysisHttpManager extends BaseHttpManager{
         /**
          * 日结流水分析查询
          * 流水分析：/analysisAccDate/list?officeId=132079&aggDate=2016-02-18&wrapper=true
+         * bizDomain=0代表查询的经营性流水； bizDomain=1代表查询的充值部分的流水
          */
         @GET("analysisAccDate/list")
         Observable<MResponse<MRspQuery<MEntityWrapper<AccItem>>>> analysisAccDateList(@QueryMap Map<String, String> options);

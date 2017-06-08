@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,7 +15,11 @@ import android.widget.EditText;
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayActionEvent;
-import com.manfenjiayuan.business.utils.MUtils;
+import com.bingshanguxue.cashier.pay.PayStep1Event;
+import com.bingshanguxue.vector_uikit.EditInputType;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.manfenjiayuan.business.presenter.CustomerPresenter;
+import com.manfenjiayuan.business.view.ICustomerView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.constant.WayType;
@@ -22,10 +27,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.login.logic.MfhLoginService;
-import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
@@ -33,19 +35,19 @@ import com.mfh.litecashier.R;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindView;
-import rx.Subscriber;
 
 /**
  * 会员卡支付
  * Created by bingshanguxue on 15/8/31.
  */
-public class PayByVipFragment extends BasePayFragment {
+public class PayByVipFragment extends BasePayFragment implements ICustomerView {
     @BindView(R.id.et_barcode)
     EditText etBarCode;
+
+    private CustomerPresenter mCustomerPresenter;
+    private NumberInputDialog customerDialog = null;
+
 
     @Override
     protected int getLayoutResId() {
@@ -55,6 +57,13 @@ public class PayByVipFragment extends BasePayFragment {
     @Override
     protected int getPayType() {
         return WayType.VIP;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mCustomerPresenter = new CustomerPresenter(this);
     }
 
     @Override
@@ -72,7 +81,7 @@ public class PayByVipFragment extends BasePayFragment {
 //        etBarCode.requestFocus();
 
         //TODO,主动去请求当前价格
-//        EventBus.getDefault().post(new MfPayEvent(CashierConstants.PAYTYPE_MFCARD, MfPayEvent.EVENT_ID_QEQUEST_HANDLE_AMOUNT));
+        EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_WAYTYPE_UPDATED, null));
     }
 
     @Override
@@ -131,7 +140,8 @@ public class PayByVipFragment extends BasePayFragment {
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     if (SharedPrefesManagerFactory.isSoftInputEnabled()) {
-                        DeviceUtils.showSoftInput(CashierApp.getAppContext(), etBarCode);
+                        queryCustomer();
+//                        DeviceUtils.showSoftInput(CashierApp.getAppContext(), etBarCode);
                     } else {
                         DeviceUtils.hideSoftInput(CashierApp.getAppContext(), etBarCode);
                     }
@@ -161,61 +171,29 @@ public class PayByVipFragment extends BasePayFragment {
         });
     }
 
+    /**
+     * 加载会员信息
+     */
     @Override
     protected void submitOrder() {
-//        if (bPayProcessing) {
-//            ZLogger.df("正在进行账户支付，不用重复发起请求");
-//            return;
-//        }
+        submitOrder(etBarCode.getText().toString());
+    }
 
+    protected void submitOrder(String code) {
         onDeactiveMode();
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在查询用户信息", true);
-        String codeA = etBarCode.getText().toString();
-        if (StringUtils.isEmpty(codeA)) {
+
+        if (StringUtils.isEmpty(code)) {
             validateFailed("参数无效");
             return;
         }
-        ZLogger.d("codeA=" + codeA);
 
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             validateFailed(getString(R.string.toast_network_error));
             return;
         }
 
-        Map<String, String> options = new HashMap<>();
-
-        //长度为8(466CAF31) ，会员卡芯片号
-        if (codeA.length() == 8) {
-            final String cardNo = MUtils.parseCardId(codeA);
-            if (StringUtils.isEmpty(cardNo)) {
-                validateFailed("芯片号无效");
-                return;
-            }
-
-            options.put("cardNo", cardNo);
-            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-            loadHuman(0, cardNo, options);
-        }
-        //长度为11(15250065084)，手机号
-        else if (codeA.length() == 11) {
-            options.put("mobile", codeA);
-            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-            loadHuman(2, null, options);
-        }
-        //长度为15(000000000712878)，微信付款码
-        else if (codeA.length() == 15) {
-            String humanId = MUtils.parseMfPaycode(codeA);
-            if (StringUtils.isEmpty(humanId)) {
-                validateFailed("付款码无效");
-                return;
-            }
-
-            options.put("humanId", humanId);
-            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-            loadHuman(1, null, options);
-        } else {
-            validateFailed("参数无效");
-        }
+        mCustomerPresenter.getCustomerByOther(code);
     }
 
     /**
@@ -235,14 +213,14 @@ public class PayByVipFragment extends BasePayFragment {
      * 验证成功
      */
     private void validateSuccess(int subPayType, String cardId, Human memberInfo) {
-        ZLogger.df(String.format("会员验证成功,subPayType=%d, carId=%s, \nmemberInfo=%s",
+        ZLogger.d(String.format("会员验证成功,subPayType=%d, carId=%s, \nmemberInfo=%s",
                 subPayType, cardId, JSON.toJSONString(memberInfo)));
         hideProgressDialog();
         Bundle args = new Bundle();
         args.putSerializable(PayActionEvent.KEY_MEMBERINFO, memberInfo);
         args.putInt(PayActionEvent.KEY_PAY_TYPE, payType);
         args.putInt(PayActionEvent.KEY_PAY_SUBTYPE, subPayType);
-        if (!StringUtils.isEmpty(cardId)) {
+        if (subPayType == 0 && !StringUtils.isEmpty(cardId)) {
             args.putString(PayActionEvent.KEY_CARD_ID, cardId);
         }
         EventBus.getDefault().post(new PayActionEvent(PayActionEvent.PAY_ACTION_VIP_DETECTED, args));
@@ -250,33 +228,55 @@ public class PayByVipFragment extends BasePayFragment {
         etBarCode.getText().clear();
     }
 
-    /**
-     * 加载会员信息
-     * */
-    private void loadHuman(final int subPayType, final String cardId, Map<String, String> options){
-        RxHttpManager.getInstance().getCustomerByOther(options,
-                new Subscriber<Human>() {
+    public void queryCustomer() {
+        if (customerDialog == null) {
+            customerDialog = new NumberInputDialog(getActivity());
+            customerDialog.setCancelable(false);
+            customerDialog.setCanceledOnTouchOutside(false);
+        }
+
+        customerDialog.initializeBarcode(EditInputType.TEXT, "搜索会员", "会员帐号", "确定",
+                new NumberInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        submitOrder(value);
+                    }
+
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                    }
+
                     @Override
                     public void onCompleted() {
 
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        validateFailed(e.toString());
-
-                    }
-
-                    @Override
-                    public void onNext(Human human) {
-                        if (human == null){
-                            validateFailed("未查询到结果");
-                        }
-                        else {
-                            validateSuccess(subPayType, cardId, human);
-                        }
-                    }
                 });
+        if (!customerDialog.isShowing()) {
+            customerDialog.show();
+        }
+    }
+
+    @Override
+    public void onICustomerViewLoading() {
+    }
+
+    @Override
+    public void onICustomerViewError(int type, String content, String errorMsg) {
+        validateFailed(errorMsg);
+    }
+
+    @Override
+    public void onICustomerViewSuccess(int type, String content, Human human) {
+        if (human == null) {
+            validateFailed("未查询到会员信息");
+        } else {
+            validateSuccess(type, content, human);
+        }
     }
 
 

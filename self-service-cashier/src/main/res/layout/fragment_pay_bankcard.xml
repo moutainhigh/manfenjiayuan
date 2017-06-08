@@ -13,6 +13,7 @@
             style="@style/FloatImageButton"
             android:layout_centerInParent="true"
             android:layout_margin="@dimen/spacing_double"
+            android:contentDescription="@null"
             android:src="@mipmap/ic_scan_card"/>
     </RelativeLayout>
 

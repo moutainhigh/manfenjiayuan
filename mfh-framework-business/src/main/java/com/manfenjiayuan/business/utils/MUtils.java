@@ -47,8 +47,8 @@ public class MUtils {
 
         String barCode = String.valueOf(timeStamp);
         Random r = new Random();
-        barCode = barCode + Math.abs(r.nextInt());
-        barCode = barCode.substring(0, 12);
+        barCode = barCode + String.valueOf(Math.abs(r.nextInt(10)));
+//        barCode = barCode.substring(0, 14);
 //        ZLogger.d("orderBarCode=" + barCode);
         return barCode;
     }

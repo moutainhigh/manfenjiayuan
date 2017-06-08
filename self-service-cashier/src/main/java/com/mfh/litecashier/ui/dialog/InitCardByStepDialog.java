@@ -4,7 +4,6 @@ package com.mfh.litecashier.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
@@ -19,13 +18,14 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
-import com.bingshanguxue.vector_uikit.widget.TextLabelView;
+import com.manfenjiayuan.business.presenter.CustomerPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
+import com.manfenjiayuan.business.view.ICustomerView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserAccount;
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -34,10 +34,10 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
-import com.mfh.framework.rxapi.http.SysHttpManager;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.widget.CustomerView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,26 +54,119 @@ import rx.Subscriber;
  * <p/>
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InitCardByStepDialog extends CommonDialog {
+public class InitCardByStepDialog extends CommonDialog implements ICustomerView {
 
     private View rootView;
     private TextView tvTitle;
     private ImageButton btnClose;
-    private AvatarView ivHeader;
-    private TextView tvUsername;
-    private TextLabelView labelPhone;
+    private CustomerView mCustomerView;
     private EditLabelView labelCardNumber, labelCardId;
     private Button btnSubmit;
 
     private ProgressBar progressBar;
 
-    private Human mHuman = null;//会员信息
     private CommonDialog confirmDialog = null;
+    private CustomerInputDialog scoreDialog = null;
+    private CustomerPresenter mCustomerPresenter;
+    private String phoneNumber;
 
-    public interface OnInitCardListener{
+    @Override
+    public void onICustomerViewLoading() {
+
+    }
+
+    @Override
+    public void onICustomerViewError(int type, String content, String errorMsg) {
+        DialogUtil.showHint(errorMsg);
+        mCustomerView.reload(null);
+        phoneNumber = null;
+
+//        if (type == 2) {
+//            continueOrNot(content);
+//        } else {
+//            retryOrNot();
+//        }
+    }
+
+    private void continueOrNot(final String mobile) {
+        if (confirmDialog == null) {
+            confirmDialog = new CommonDialog(getContext());
+        }
+
+        confirmDialog.setMessage(String.format("%s 未注册", mobile));
+        confirmDialog.setPositiveButton("继续开卡", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                phoneNumber = mobile;
+                mCustomerView.setTvPhone(mobile);
+            }
+        });
+        confirmDialog.setNegativeButton("重试", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                queryCustomer();
+            }
+        });
+        confirmDialog.show();
+    }
+
+    private void retryOrNot() {
+        if (confirmDialog == null) {
+            confirmDialog = new CommonDialog(getContext());
+        }
+
+        confirmDialog.setMessage("未查询到会员信息");
+        confirmDialog.setPositiveButton("重试", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                queryCustomer();
+            }
+        });
+        confirmDialog.setNegativeButton("退出", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+
+                dismiss();
+            }
+        });
+        confirmDialog.show();
+    }
+
+    @Override
+    public void onICustomerViewSuccess(int type, String content, Human human) {
+        mCustomerView.reload(human);
+
+        if (human == null) {
+            phoneNumber = null;
+            if (type == 2) {
+                continueOrNot(content);
+            } else {
+                retryOrNot();
+            }
+        } else {
+            phoneNumber = human.getMobile();
+        }
+
+    }
+
+
+    public interface OnInitCardListener {
         void onSuccess();
+
         void onFailed();
     }
+
     private OnInitCardListener mOnInitCardListener;
 
     private InitCardByStepDialog(Context context, boolean flag, OnCancelListener listener) {
@@ -86,10 +179,10 @@ public class InitCardByStepDialog extends CommonDialog {
         rootView = getLayoutInflater().inflate(R.layout.dialogview_initcard_bystep, null);
 //        ButterKnife.bind(rootView);
 
+        mCustomerPresenter = new CustomerPresenter(this);
+
         tvTitle = (TextView) rootView.findViewById(R.id.tv_header_title);
-        ivHeader = (AvatarView) rootView.findViewById(R.id.iv_header);
-        tvUsername = (TextView) rootView.findViewById(R.id.tv_username);
-        labelPhone = (TextLabelView) rootView.findViewById(R.id.label_phone);
+        mCustomerView = (CustomerView) rootView.findViewById(R.id.customer_view);
         labelCardNumber = (EditLabelView) rootView.findViewById(R.id.label_cardnumber);
         labelCardId = (EditLabelView) rootView.findViewById(R.id.label_cardid);
         progressBar = (ProgressBar) rootView.findViewById(R.id.animProgress);
@@ -97,8 +190,13 @@ public class InitCardByStepDialog extends CommonDialog {
         btnClose = (ImageButton) rootView.findViewById(R.id.button_header_close);
 
         tvTitle.setText("开卡");
-        ivHeader.setBorderWidth(3);
-        ivHeader.setBorderColor(Color.parseColor("#e8e8e8"));
+
+        mCustomerView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                queryCustomer();
+            }
+        });
 
         labelCardNumber.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -179,13 +277,15 @@ public class InitCardByStepDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
 
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
         p.height = d.getHeight();
+        p.width = DensityUtil.dip2px(getContext(), 895);
 ////        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
@@ -202,6 +302,10 @@ public class InitCardByStepDialog extends CommonDialog {
         super.show();
 
         DeviceUtils.hideSoftInput(getOwnerActivity());
+
+        if (StringUtils.isEmpty(phoneNumber)) {
+            queryCustomer();
+        }
     }
 
     @Override
@@ -210,16 +314,18 @@ public class InitCardByStepDialog extends CommonDialog {
 
     }
 
-    public void initialize(String phonenumber, OnInitCardListener mOnInitCardListener) {
-        this.mOnInitCardListener = mOnInitCardListener;
-        saveHumanInfo(null);
-        queryPhone(phonenumber);
-        thirdStep();
-    }
+//    public void initialize(String phonenumber, OnInitCardListener mOnInitCardListener) {
+//        this.mOnInitCardListener = mOnInitCardListener;
+//        saveHumanInfo(null);
+////        queryPhone(phonenumber);
+//        thirdStep();
+//    }
 
     public void initialize(Human human, OnInitCardListener mOnInitCardListener) {
         this.mOnInitCardListener = mOnInitCardListener;
-        saveHumanInfo(human);
+        mCustomerView.reload(human);
+        phoneNumber = human != null ? human.getMobile() : null;
+
         thirdStep();
     }
 
@@ -297,15 +403,29 @@ public class InitCardByStepDialog extends CommonDialog {
     }
 
 
+//    /**
+//     * 第三步，输入手机后
+//     */
+//    private void secondStep() {
+//        labelCardNumber.clearInput();
+//        labelCardNumber.setInputEnabled(true);
+//        labelCardNumber.requestFocusEnd();
+//        labelCardId.clearInput();
+//        labelCardId.setInputEnabled(false);
+//
+//        btnSubmit.setEnabled(true);
+//        progressBar.setVisibility(View.GONE);
+//    }
+
     /**
      * 第三步，输入卡面号
      */
     private void thirdStep() {
         labelCardNumber.clearInput();
-        labelCardNumber.setEnabled(true);
+        labelCardNumber.setInputEnabled(true);
         labelCardNumber.requestFocusEnd();
         labelCardId.clearInput();
-        labelCardId.setEnabled(false);
+        labelCardId.setInputEnabled(false);
 
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
@@ -318,72 +438,46 @@ public class InitCardByStepDialog extends CommonDialog {
 //        labelCardNumber.getText().clear();
 //        labelCardNumber.setEnabled(true);
         labelCardId.clearInput();
-        labelCardId.setEnabled(true);
+        labelCardId.setInputEnabled(true);
         labelCardId.requestFocusEnd();
 
         btnSubmit.setEnabled(true);
         progressBar.setVisibility(View.GONE);
     }
 
-    /**
-     * 刷新会员信息
-     */
-    private void saveHumanInfo(Human human) {
-        mHuman = human;
-        if (human == null) {
-            ivHeader.setAvatarUrl(null);
-            tvUsername.setText("");
-            labelPhone.setEndText("");
-        }
-        else{
-            ivHeader.setAvatarUrl(human.getHeadimageUrl());
-            tvUsername.setText(human.getName());
-            labelPhone.setEndText(human.getMobile());
-        }
-    }
-
-
-    /**
-     * 查询会员信息，s
-     */
-    private void queryPhone(String phoneNumber) {
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
+    public void queryCustomer() {
+        if (scoreDialog == null) {
+            scoreDialog = new CustomerInputDialog(getContext());
+            scoreDialog.setCancelable(false);
+            scoreDialog.setCanceledOnTouchOutside(false);
         }
 
-        progressBar.setVisibility(View.VISIBLE);
+        scoreDialog.initializeBarcode(EditInputType.TEXT, "搜索会员", "会员帐号", "确定",
+                new CustomerInputDialog.OnResponseCallback() {
+                    @Override
+                    public void onNext(String value) {
+                        mCustomerPresenter.getCustomerByOther(value);
+                    }
 
-        Map<String, String> options = new HashMap<>();
-        options.put("mobile", phoneNumber);
-        SysHttpManager.getInstance().getHumanByIdentity(options,
-                new Subscriber<Human>() {
+                    @Override
+                    public void onNext(Double value) {
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+
                     @Override
                     public void onCompleted() {
 
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        progressBar.setVisibility(View.GONE);
-                        ZLogger.e(String.format("查询会员信息失败:%s", e.toString()));
-                        DialogUtil.showHint("查询会员信息失败，请退出重试");
-                    }
-
-                    @Override
-                    public void onNext(Human human) {
-                        progressBar.setVisibility(View.GONE);
-
-
-                        if (human == null) {
-                            DialogUtil.showHint("未查到会员信息，请退出重试");
-                        } else {
-                            saveHumanInfo(human);
-                        }
-                    }
                 });
+        if (!scoreDialog.isShowing()) {
+            scoreDialog.show();
+        }
     }
-
 
     /**
      * 提交
@@ -391,10 +485,8 @@ public class InitCardByStepDialog extends CommonDialog {
     private void submit() {
         btnSubmit.setEnabled(false);
 
-        //验证手机号和会员信息
-        if (mHuman == null) {
-            btnSubmit.setEnabled(true);
-            DialogUtil.showHint("用户信息加载失败，请退出重试");
+        if (StringUtils.isEmpty(phoneNumber)) {
+            queryCustomer();
             return;
         }
 
@@ -405,12 +497,12 @@ public class InitCardByStepDialog extends CommonDialog {
             thirdStep();
             return;
         }
-        //卡面号10位数字：0512000748
-        if (cardNumber.length() != 10) {
-            DialogUtil.showHint("卡面号不正确,请重新输入");
-            thirdStep();
-            return;
-        }
+//        //卡面号10位数字：0512000748
+//        if (cardNumber.length() != 10) {
+//            DialogUtil.showHint("卡面号不正确,请重新输入");
+//            thirdStep();
+//            return;
+//        }
 
 
         String cardId = this.labelCardId.getInput();
@@ -427,12 +519,12 @@ public class InitCardByStepDialog extends CommonDialog {
             return;
         }
 
-        doSubmitWork(cardNumber, cardId2);
+        doSubmitWork(phoneNumber, cardNumber, cardId2);
     }
 
-    private void doSubmitWork(final String shortNo, final String cardId){
+    private void doSubmitWork(final String phoneNumber, final String shortNo, final String cardId) {
 
-        if (confirmDialog == null){
+        if (confirmDialog == null) {
             confirmDialog = new CommonDialog(getContext());
         }
 
@@ -448,7 +540,8 @@ public class InitCardByStepDialog extends CommonDialog {
                 Map<String, String> options = new HashMap<>();
                 options.put("shortNo", shortNo);
                 options.put("cardId", cardId);
-                options.put("ownerId", String.valueOf(mHuman.getId()));
+                options.put("mobile", phoneNumber);
+//                options.put("ownerId", String.valueOf(mHuman.getId()));
                 options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
                 CommonUserAccountHttpManager.getInstance().activateAccount(options,
                         new Subscriber<UserAccount>() {
@@ -459,7 +552,7 @@ public class InitCardByStepDialog extends CommonDialog {
 
                             @Override
                             public void onError(Throwable e) {
-                                ZLogger.e(String.format("开卡失败:%s", e.toString()));
+                                ZLogger.ef(String.format("开卡失败:%s", e.toString()));
                                 btnSubmit.setEnabled(true);
                                 progressBar.setVisibility(View.GONE);
                             }
@@ -469,14 +562,14 @@ public class InitCardByStepDialog extends CommonDialog {
                                 btnSubmit.setEnabled(true);
                                 if (activateAccountResult == null) {
                                     DialogUtil.showHint("开卡失败");
-                                    if (mOnInitCardListener != null){
+                                    if (mOnInitCardListener != null) {
                                         mOnInitCardListener.onFailed();
                                     }
                                 } else {
-                                    ZLogger.df(String.format("开卡成功:%d-%d",
+                                    ZLogger.d(String.format("开卡成功:%d-%d",
                                             activateAccountResult.getId(), activateAccountResult.getOwnerId()));
                                     dismiss();
-                                    if (mOnInitCardListener != null){
+                                    if (mOnInitCardListener != null) {
                                         mOnInitCardListener.onSuccess();
                                     }
                                 }

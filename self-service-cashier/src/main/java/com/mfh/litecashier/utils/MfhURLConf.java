@@ -1,15 +1,15 @@
 package com.mfh.litecashier.utils;
 
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.litecashier.CashierApp;
+import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.comn.config.UConfig;
+import com.mfh.litecashier.CashierApp;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
 
 /**
  * MFH · Android · URL
@@ -60,7 +60,7 @@ public class MfhURLConf {
 
 //        //随机字符串
         sb.append("&");
-        sb.append(String.format("t=%s", String.valueOf(new Date().getTime())));
+        sb.append(String.format("t=%s", String.valueOf(TimeUtil.getCurrentDate().getTime())));
 
         sb.append("&");
         sb.append(String.format("JSESSIONID=%s", MfhLoginService.get().getCurrentSessionId()));
@@ -137,7 +137,7 @@ public class MfhURLConf {
 
         //随机字符串
         sb.append("&");
-        sb.append(String.format("t=%s", String.valueOf(new Date().getTime())));
+        sb.append(String.format("t=%s", String.valueOf(TimeUtil.getCurrentDate().getTime())));
 
         //随机字符串
         sb.append("&");

@@ -14,8 +14,6 @@ package com.manfenjiayuan.im.param;
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.im.constants.IMTechType;
 
-import java.io.Serializable;
-
 /**
  * 消息体基类
  * @author zhangyz created on 2014-4-4

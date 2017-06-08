@@ -3,8 +3,12 @@ package com.mfh.framework.rxapi.http;
 import android.util.Base64;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.posorder.BatchInOrder;
+import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
 import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserMixInfo;
@@ -24,12 +28,16 @@ import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -43,7 +51,7 @@ import rx.schedulers.Schedulers;
  * Created by bingshanguxue on 8/29/16.
  */
 
-public class    RxHttpManager {
+public class RxHttpManager {
     public static boolean RELEASE = true;
     public static boolean isUseRx = false;
 
@@ -51,8 +59,9 @@ public class    RxHttpManager {
     public static String API_BASE_URL = "http://admin.mixicook.com/pmc/";
 
     //请求超时时间
-    private static final int DEFAULT_CONNECT_TIMEOUT = 20;
-    private static final int DEFAULT_READ_TIMEOUT = 60 * 5;
+    private static final int DEFAULT_CONNECT_TIMEOUT = 30;
+    private static final int DEFAULT_READ_TIMEOUT = 60 * 10;
+    private static final int DEFAULT_WRITE_TIMEOUT = 60 * 10;
 //    private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder().connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
 
     // @formatter:off
@@ -72,6 +81,7 @@ public class    RxHttpManager {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
@@ -92,6 +102,7 @@ public class    RxHttpManager {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhOAuthInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
@@ -116,6 +127,7 @@ public class    RxHttpManager {
         OkHttpClient httpClient = new OkHttpClient.Builder()
                 .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                 .addInterceptor(new MfhRequestInterceptor())
                 .addInterceptor(new MfhHttpLoggingInterceptor()
                         .setLevel(MfhHttpLoggingInterceptor.Level.BODY))
@@ -141,6 +153,7 @@ public class    RxHttpManager {
             OkHttpClient httpClient = new OkHttpClient.Builder()
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                    .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                     .addInterceptor(new MfhOAuthInterceptor())
 //                    .addInterceptor(new Interceptor() {
 //                        @Override
@@ -182,6 +195,7 @@ public class    RxHttpManager {
             OkHttpClient httpClient = new OkHttpClient.Builder()
                     .connectTimeout(DEFAULT_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                     .readTimeout(DEFAULT_READ_TIMEOUT, TimeUnit.SECONDS)
+                    .writeTimeout(DEFAULT_WRITE_TIMEOUT, TimeUnit.SECONDS)
                     .addInterceptor(new MfhRequestInterceptor())
                     .addInterceptor(new Interceptor() {
                         @Override
@@ -322,7 +336,6 @@ public class    RxHttpManager {
     }
 
 
-
     public void findGoodsOrderList(Map<String, String> options,
                                    MQuerySubscriber<PosOrder> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
@@ -352,13 +365,6 @@ public class    RxHttpManager {
         toSubscribe(observable, subscriber);
     }
 
-    public void wepayBarPay(Map<String, String> options, Subscriber<MResponse<String>> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.wepayBarPay(options);
-//                .map(new MResponseFunc<String>());
-        toSubscribe(observable, subscriber);
-    }
-
     public void createParamDirect(Map<String, String> options, Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.createParamDirect(options)
@@ -377,6 +383,45 @@ public class    RxHttpManager {
                               Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.batchInOrders(JSESSIONID, jsonStr.toJSONString())
+                .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void batchInOrders2(String JSESSIONID, List<BatchInOrder> jsonStr,
+                               Subscriber<String> subscriber) {
+        BatchInOrdersWrapper batchInOrdersWrapper = new BatchInOrdersWrapper();
+        batchInOrdersWrapper.setJSESSIONID(JSESSIONID);
+        batchInOrdersWrapper.setJsonStr(jsonStr);
+
+        ZLogger.d(JSONObject.toJSONString(batchInOrdersWrapper));
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.batchInOrders2(JSESSIONID, RequestBody.create(ResHttpManager.JSON_UTF8,
+                JSONObject.toJSONString(batchInOrdersWrapper)))
+                .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void batchInOrders4(String JSESSIONID, JSONArray jsonStr,
+                               Subscriber<String> subscriber) {
+        Map<String, RequestBody> params = new HashMap<>();
+
+        BatchInOrdersWrapper batchInOrdersWrapper = new BatchInOrdersWrapper();
+//        batchInOrdersWrapper.setJsonStr(jsonStr);
+//        params.put("JSESSIONID", RequestBody.create(ResHttpManager.TEXT, JSESSIONID));
+        params.put("jsonStr", RequestBody.create(ResHttpManager.JSON_UTF8,
+                JSONObject.toJSONString(batchInOrdersWrapper)));
+
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.batchInOrders4(JSESSIONID, params)
+                .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void batchInOrders3(String JSESSIONID, JSONArray jsonStr,
+                               Subscriber<String> subscriber) {
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.batchInOrders3(JSESSIONID,
+                MultipartBody.Part.createFormData("responseType", jsonStr.toJSONString()))
                 .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }

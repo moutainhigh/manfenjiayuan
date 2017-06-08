@@ -80,7 +80,7 @@ public class ValidateManager {
      */
     public synchronized void batchValidate() {
         if (bSyncInProgress) {
-            ZLogger.df("正在验证数据...");
+            ZLogger.d("正在验证数据...");
             return;
         }
 
@@ -92,7 +92,7 @@ public class ValidateManager {
      */
     public void stepValidate(int step) {
         if (bSyncInProgress) {
-            ZLogger.df("正在验证数据...");
+            ZLogger.d("正在验证数据...");
             return;
         }
 
@@ -181,7 +181,7 @@ public class ValidateManager {
 
                         @Override
                         public void onError(Throwable e) {
-                            ZLogger.df("登录状态已失效，准备冲登录" + e.toString());
+                            ZLogger.ef("登录状态已失效，准备冲登录" + e.toString());
                             retryLogin();
                         }
 
@@ -251,7 +251,7 @@ public class ValidateManager {
             order.put("channelId", MfhApi.CHANNEL_ID);
             order.put("channelPointId", IMConfig.getPushClientId());
             order.put("netId", MfhLoginService.get().getCurOfficeId());
-            ZLogger.df("注册设备中..." + order.toJSONString());
+            ZLogger.d("注册设备中..." + order.toJSONString());
 
             RxHttpManager.getInstance().posRegisterCreate(order.toJSONString(),
                     new Subscriber<String>() {
@@ -262,7 +262,7 @@ public class ValidateManager {
 
                         @Override
                         public void onError(Throwable e) {
-                            ZLogger.df(String.format("注册设备失败,%s", e.toString()));
+                            ZLogger.ef(String.format("注册设备失败,%s", e.toString()));
 
                             if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
                                 validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
@@ -288,13 +288,13 @@ public class ValidateManager {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 if (!StringUtils.isEmpty(respnse)) {
-                    ZLogger.df("注册设备成功:" + respnse);
+                    ZLogger.d("注册设备成功:" + respnse);
                     String[] retA = respnse.split(",");
                     if (retA.length > 1) {
                         SharedPrefesManagerFactory.setTerminalId(retA[0]);
                         // TODO: 8/22/16 修改本地系统时间
                         ZLogger.d(String.format("当前系统时间1: %s",
-                                TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+                                TimeUtil.format(TimeUtil.getCurrentDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
                         Date serverDateTime = TimeUtil.parse(retA[1], TimeUtil.FORMAT_YYYYMMDDHHMMSS);
 //                                Date serverDateTime = TimeUtil.parse("2016-08-22 13:09:57", TimeUtil.FORMAT_YYYYMMDDHHMMSS);
                         if (serverDateTime != null) {
@@ -302,7 +302,7 @@ public class ValidateManager {
                             try {
                                 boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
                                 ZLogger.df(String.format("修改系统时间 %b: %s", isSuccess,
-                                        TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
+                                        TimeUtil.format(TimeUtil.getCurrentDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
                             } catch (Exception e) {
                                 ZLogger.ef("修改系统时间失败:" + e.toString());
                             }
@@ -422,7 +422,7 @@ public class ValidateManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df("判读是否锁定POS机失败：" + e.toString());
+                        ZLogger.ef("判读是否锁定POS机失败：" + e.toString());
                         nextStep();
 
                         AlarmManagerHelper.triggleNextDailysettle(0);
@@ -430,7 +430,7 @@ public class ValidateManager {
 
                     @Override
                     public void onNext(String data) {
-                        ZLogger.df("判断是否需要锁定POS机:" + data);
+                        ZLogger.d("判断是否需要锁定POS机:" + data);
 
                         if (StringUtils.isEmpty(data)){
                             AlarmManagerHelper.triggleNextDailysettle(0);
@@ -444,8 +444,8 @@ public class ValidateManager {
                             boolean isNeedLock = Boolean.parseBoolean(ret[0]);
                             Double amount = Double.valueOf(ret[1]);
 
-                            ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
-                                    isNeedLock, amount));
+//                            ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
+//                                    isNeedLock, amount));
                             if (isNeedLock && amount >= 0.01) {
                                 Bundle args = new Bundle();
                                 args.putDouble("amount", amount);

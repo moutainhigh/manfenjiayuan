@@ -219,13 +219,13 @@ public class DemoIntentService extends GTIntentService {
         //SKU更新
         if (IMBizType.TENANT_SKU_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.TENANT_SKU_UPDATE);
-            ZLogger.df(String.format("IMBizType.TENANT_SKU_UPDATE = %d", count));
+            ZLogger.d(String.format("IMBizType.TENANT_SKU_UPDATE = %d", count));
             if (count > 0) {
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_APPEND_UNREAD_SKU));
             }
         } else if (IMBizType.FRONGCATEGORY_GOODS_UPDATE == bizType) {
             int count = EmbMsgService.getInstance().getUnreadCount(IMBizType.FRONGCATEGORY_GOODS_UPDATE);
-            ZLogger.df(String.format("IMBizType.FRONGCATEGORY_GOODS_UPDATE = %d", count));
+            ZLogger.d(String.format("IMBizType.FRONGCATEGORY_GOODS_UPDATE = %d", count));
             if (count > 0) {
                 DataDownloadManager.get().sync(DataDownloadManager.FRONTENDCATEGORY_GOODS);
             }
@@ -254,6 +254,7 @@ public class DemoIntentService extends GTIntentService {
         //现金超过授权额度，要求锁定pos机
         else if (IMBizType.LOCK_POS_CLIENT_NOTIFY == bizType) {
             Date createTime = TimeUtil.parse(time, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
+            Date rightNow = TimeUtil.getCurrentDate();
 
             //保留最近一个小时的消息
             if (createTime == null) {
@@ -267,14 +268,14 @@ public class DemoIntentService extends GTIntentService {
             Calendar minTrigger = Calendar.getInstance();
             minTrigger.add(Calendar.HOUR_OF_DAY, -1);
             if (minTrigger.after(msgTrigger)) {
-                ZLogger.df(String.format("消息过期--当前时间:%s,消息创建时间:%s",
-                        TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                ZLogger.d(String.format("消息过期--当前时间:%s,消息创建时间:%s",
+                        TimeUtil.format(rightNow, TimeCursor.FORMAT_YYYYMMDDHHMMSS),
                         TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
                 return;
             }
 
             ZLogger.df(String.format("现金超过授权额度--当前时间:%s,消息创建时间:%s",
-                    TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS),
+                    TimeUtil.format(rightNow, TimeCursor.FORMAT_YYYYMMDDHHMMSS),
                     TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
 
             AlarmManagerHelper.triggleNextDailysettle(1);
@@ -308,8 +309,12 @@ public class DemoIntentService extends GTIntentService {
         ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
 
         if (remoteId.equals(1L)) {
+            RemoteControlClient.getInstance().remoteFeedback();
+        } else if (remoteId.equals(2L)) {
             RemoteControlClient.getInstance().onekeyFeedback();
         } else if (remoteId.equals(3L)) {
+            RemoteControlClient.getInstance().copyDatabase();
+        } else if (remoteId.equals(4L)) {
             Beta.checkUpgrade(false, false);
         } else if (remoteId.equals(20L)) {
             GPrinter.print(remoteData);

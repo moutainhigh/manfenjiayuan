@@ -1,7 +1,5 @@
 package com.bingshanguxue.cashier.database.entity;
 
-import android.util.ArrayMap;
-
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.abs.MfhEntity;
@@ -9,23 +7,22 @@ import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.utils.StringUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * POS--销售订单明细
  * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
  */
 @Table(name = "tb_pos_order_item_2")
 public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
-    /**POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo*/
+    /**
+     * POS唯一订单号(12位字符串),流水号，可拆分成多个订单,拆分后的订单共用一个posTradeNo
+     */
     private String orderBarCode;
 
-    /**关联订单编号<br>
+    /**
+     * 关联订单编号<br>
      * 日结单和订单流水共用一套序列
      * 关联收银流水订单{@link PosOrderEntity}/
-     * 日结单{@link com.mfh.litecashier.database.entity.DailysettleEntity}
-     * */
+     */
     private Long orderId;
 
     private Long goodsId;   //商品主键
@@ -40,17 +37,24 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     private String unit; // 单位，如箱、瓶
     private int priceType = PriceType.PIECE;//价格类型0-计件 1-计重
     private Double bcount = 0D; //商品数量,quantity
-    /**档案价格(商品零售价格)。*/
+    /**
+     * 档案价格(商品零售价格)。
+     */
     private Double costPrice = 0D;
-    /**会员价*/
+    /**
+     * 会员价
+     */
     private Double customerPrice = 0D;
     private Double amount = 0D; //档案价格总价.按零售价计算得出
     /**订单价（店收银默认取商品的档案价格，可以手动修改，只影响当前订单）*/
 //    private Double adjustPrice = 0D;
 //    private Double adjustAmount = 0D; //按订单价计算的总金额
-    /**成交价（根据订单商品，匹配后台营销策略，获取商品的最终成交价格）*/
+    /**
+     * 成交价（根据订单商品，匹配后台营销策略，获取商品的最终成交价格）
+     */
     private Double finalPrice = 0D;
     private Double finalAmount = 0D; //总价.按成交价计算得出
+    private Double finalCustomerPrice = 0D;
 
     // 2016-05-19 新增商品类目类型字段，支持按类目进行账务清分
     @Deprecated
@@ -59,7 +63,9 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     private Integer prodLineId = 0;//产品线编号,产品线的商品默认都归到0，相当于原来的标超
     private Integer needWait = 0;
     //2017-04-18 营业额统计方式调整
-    /**该条订单明细流水具体的会员折扣规则优惠情况，可能会有多条会员折扣规则适用，其中key是规则id，value是该规则的产生的优惠金额*/
+    /**
+     * 该条订单明细流水具体的会员折扣规则优惠情况，可能会有多条会员折扣规则适用，其中key是规则id，value是该规则的产生的优惠金额
+     */
     private String ruleAmountMap;
     private Double vipAmount = 0D;//会员优惠金额
 
@@ -139,6 +145,17 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
         this.customerPrice = customerPrice;
     }
 
+    public Double getFinalCustomerPrice() {
+        if (finalCustomerPrice == null) {
+            return 0D;
+        }
+        return finalCustomerPrice;
+    }
+
+    public void setFinalCustomerPrice(Double finalCustomerPrice) {
+        this.finalCustomerPrice = finalCustomerPrice;
+    }
+
     public String getName() {
         if (name == null) {
             return "";
@@ -152,7 +169,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
 
     public String getSkuName() {
         //2016-12-25 兼容旧版本已经下载过商品档案的情况，skuName和shortName没有数据的问题
-        if (StringUtils.isEmpty(skuName)){
+        if (StringUtils.isEmpty(skuName)) {
             return name;
         }
         return skuName;
@@ -207,7 +224,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
 
 
     public Double getFinalPrice() {
-        if (finalPrice == null){
+        if (finalPrice == null) {
             return 0D;
         }
         return finalPrice;
@@ -218,7 +235,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Double getFinalAmount() {
-        if (finalAmount == null){
+        if (finalAmount == null) {
             return 0D;
         }
         return finalAmount;
@@ -245,7 +262,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Integer getProdLineId() {
-        if (prodLineId == null){
+        if (prodLineId == null) {
             return 0;
         }
         return prodLineId;
@@ -256,7 +273,7 @@ public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {
     }
 
     public Integer getNeedWait() {
-        if (needWait == null){
+        if (needWait == null) {
             return 0;
         }
         return needWait;

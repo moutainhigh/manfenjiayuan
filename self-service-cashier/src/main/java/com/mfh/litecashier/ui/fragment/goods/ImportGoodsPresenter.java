@@ -49,7 +49,7 @@ public class ImportGoodsPresenter {
 
             @Override
             public void onNext(String s) {
-                ZLogger.df("导入商品到本店仓储成功");
+                ZLogger.d("导入商品到本店仓储成功");
                 add2Category(categoryId, productIds);
             }
 
@@ -80,7 +80,7 @@ public class ImportGoodsPresenter {
 
             @Override
             public void onNext(String s) {
-                ZLogger.df("导入前台类目商品成功");
+                ZLogger.d("导入前台类目商品成功");
                 if (mIImportGoodsView != null) {
                     mIImportGoodsView.onIImportGoodsViewSuccess();
                 }

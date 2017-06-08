@@ -1,6 +1,6 @@
 package com.bingshanguxue.cashier.database.service;
 
-import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosOrderItemDao;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
@@ -8,6 +8,9 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
+import com.mfh.framework.core.utils.TimeUtil;
+
+import net.tsz.afinal.db.table.KeyValue;
 
 import java.util.Date;
 import java.util.List;
@@ -100,15 +103,25 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
     }
 
 
+    public void update(List<KeyValue> keyValues, String strWhere){
+        try{
+            getDao().update(PosOrderItemEntity.class, keyValues, strWhere);
+        }catch (Exception e){
+            ZLogger.e(e.toString());
+        }
+    }
+
+
     /**
      * 新增订单明细
      * */
-    public void saveOrUpdate(String orderBarCode, Long orderId, CashierShopcartEntity goods){
+    public void saveOrUpdate(String orderBarCode, Long orderId, CashierShopcartEntity goods, boolean isCash){
         if (goods == null){
             ZLogger.d("商品无效");
             return;
         }
 
+        Date rightNow = TimeUtil.getCurrentDate();
         PosOrderItemEntity entity;
 
         String sqlWhere = String.format("orderBarCode = '%s' and orderId = '%d' and barcode = '%s'",
@@ -121,7 +134,7 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
             entity = new PosOrderItemEntity();
             entity.setOrderBarCode(orderBarCode);
             entity.setOrderId(orderId);
-            entity.setCreatedDate(new Date());//使用当前日期，表示加入购物车信息
+            entity.setCreatedDate(rightNow);//使用当前日期，表示加入购物车信息
 
             entity.setProdLineId(goods.getProdLineId());
             entity.setBarcode(goods.getBarcode());
@@ -141,17 +154,21 @@ public class PosOrderItemService extends BaseService<PosOrderItemEntity, String,
         entity.setCostPrice(goods.getCostPrice());
         entity.setCustomerPrice(goods.getCustomerPrice());
         entity.setFinalPrice(goods.getFinalPrice());
+        entity.setFinalCustomerPrice(goods.getFinalCustomerPrice());
         //标准金额
         entity.setAmount(entity.getBcount() * goods.getCostPrice());
         //成交金额
-        entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+        if (isCash) {
+            entity.setFinalAmount(entity.getBcount() * entity.getFinalPrice());
+        } else {
+            entity.setFinalAmount(entity.getBcount() * entity.getFinalCustomerPrice());
+        }
         entity.setVipAmount(0D);
         entity.setRuleAmountMap(null);
-        entity.setUpdatedDate(new Date());
+        entity.setUpdatedDate(rightNow);
 
         saveOrUpdate(entity);
-        ZLogger.df(String.format("保存or更新订单明细:%s\n%s",
-                goods.getBarcode(), JSON.toJSONString(entity)));
+        ZLogger.d(String.format("保存or更新订单明细:%s", JSONObject.toJSONString(entity)));
     }
 
 }

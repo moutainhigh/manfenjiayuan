@@ -100,7 +100,9 @@ public class PosOrderDetailDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();

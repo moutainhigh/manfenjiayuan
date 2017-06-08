@@ -8,26 +8,41 @@
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="3"
         android:text="商品"
         style="@style/mfh_form_header_text" />
 
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="单价"
+        android:text="原价"
+        style="@style/mfh_form_header_text" />
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="会员价"
         style="@style/mfh_form_header_text" />
 
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:text="数量"
         style="@style/mfh_form_header_text" />
 
     <TextView
-        android:layout_width="80dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="小计"
+        android:text="原价小计"
+        style="@style/mfh_form_header_text"/>
+    <TextView
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:text="会员价小计"
         style="@style/mfh_form_header_text"/>
 
 </LinearLayout>

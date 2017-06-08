@@ -14,6 +14,7 @@ import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -201,7 +202,8 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 //                ZLogger.d(String.format("%s %d(%d)", (dy > 0 ? "向上滚动" : "向下滚动"), lastVisibleItem, totalItemCount));
             if (lastVisibleItem >= totalItemCount - 4 && dx > 0) {
                 if (!isLoadingMore) {
-                    loadMore();
+                    onLoadFinished();
+//                    loadMore();
                 }
             } else if (dy < 0) {
                 isLoadingMore = false;
@@ -269,7 +271,8 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 //        mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
         mPageInfo.reset();
         mPageInfo.setPageNo(1);
-        load(keyword, mPageInfo);
+//        load(keyword, mPageInfo);
+        load(keyword, null);
     }
 
 
@@ -289,6 +292,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
             onLoadStart();
             load(keyword, mPageInfo);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载本地商品库，已经是最后一页。");
             onLoadFinished();
         }
@@ -334,6 +338,8 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                         List<PosProductEntity> temp = new ArrayList<>();
                         for (PosProductEntity product : productEntities) {
                             String barcode = product.getBarcode();
+                            ZLogger.d(String.format("商品:%s--%s(%s)",
+                                    product.getBarcode(), product.getName(), product.getAbbreviation()));
                             if (!StringUtils.isEmpty(barcode) && barcode.length() == 6) {
                                 temp.add(product);
                             }
@@ -353,7 +359,6 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                     @Override
                     public void onError(Throwable e) {
                         onLoadFinished();
-
                     }
 
                     @Override
@@ -369,6 +374,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                         if (goodsListAdapter != null) {
                             goodsListAdapter.setEntityList(entityList);
                         }
+                        goodsRecyclerView.smoothScrollToPosition(0);
 
                         onLoadFinished();
                     }

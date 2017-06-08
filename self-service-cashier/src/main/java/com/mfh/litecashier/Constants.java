@@ -30,6 +30,11 @@ public class Constants {
 
     public static final String BA_HANDLE_QUERY_PICKORDER  = "BA_HANDLE_QUERY_PICKORDER";//查询拣货单
 
+    public static final String BA_HANDLE_TOPUPAMOUNT_CHANGED_CUSTOMER  = "BA_HANDLE_TOPUPAMOUNT_CHANGED_CUSTOMER";//会员
+    public static final String BA_HANDLE_TOPUPAMOUNT_CHANGED_ALIPAY  = "BA_HANDLE_TOPUPAMOUNT_CHANGED_ALIPAY";//支付宝
+    public static final String BA_HANDLE_TOPUPAMOUNT_CHANGED_WEPAY  = "BA_HANDLE_TOPUPAMOUNT_CHANGED_WEPAY";//微信
+
+
 
     //    orderStatus:订单通用状态
 //    -1:     初始状态

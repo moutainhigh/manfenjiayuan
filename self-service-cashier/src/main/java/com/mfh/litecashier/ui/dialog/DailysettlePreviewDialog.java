@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.model.wrapper.PayWay;
+import com.mfh.framework.api.posorder.PayWay;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -127,7 +127,9 @@ public class DailysettlePreviewDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -251,7 +253,7 @@ public class DailysettlePreviewDialog extends CommonDialog {
                     orderPayInfo.setPayType(orderPayInfo.getPayType() | payInfo.getPayType());
                     orderPayInfo.setPaidAmount(orderPayInfo.getPaidAmount() + payInfo.getPaidAmount());
                     orderPayInfo.setChange(orderPayInfo.getChange() + payInfo.getChange());
-                    orderPayInfo.setRuleDiscount(orderPayInfo.getRuleDiscount() + payInfo.getRuleDiscount());
+                    orderPayInfo.setVipDiscount(orderPayInfo.getVipDiscount() + payInfo.getVipDiscount());
                     orderPayInfo.setCouponDiscount(orderPayInfo.getCouponDiscount() + payInfo.getCouponDiscount());
                     orderPayInfo.setCouponsIds(String.format("%s,%s",
                             orderPayInfo.getCouponsIds(), payInfo.getCouponsIds()));
@@ -279,10 +281,10 @@ public class DailysettlePreviewDialog extends CommonDialog {
                     }
 
                     sbHtml.append(String.format("<tr>\n" +
-                            "  <td>%s</td>\n" +
-                            "  <td>%d</td>\n" +
+                                    "  <td>%s</td>\n" +
+                                    "  <td>%d</td>\n" +
 //                            "  <td>暂未统计</td>\n" +
-                            "</tr>\n",
+                                    "</tr>\n",
                             PosType.name(subType),
                             subTypeEntities.size()));
                 }

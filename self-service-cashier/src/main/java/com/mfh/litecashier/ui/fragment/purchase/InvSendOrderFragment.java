@@ -16,6 +16,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invSendOrder.InvSendOrder;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.uikit.base.BaseListFragment;
@@ -242,6 +243,7 @@ public class InvSendOrderFragment extends BaseListFragment<InvSendOrder>
             invSendOrderPresenter.listInvSendOrders2(mPageInfo,
                     MfhLoginService.get().getCurOfficeId(), sendType, status);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购订单，已经是最后一页。");
             onLoadFinished();
         }

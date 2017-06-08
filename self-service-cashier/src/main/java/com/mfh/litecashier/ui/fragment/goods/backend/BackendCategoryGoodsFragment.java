@@ -13,20 +13,13 @@ import android.view.ViewGroup;
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.anon.sc.ProductCatalogApi;
 import com.mfh.framework.api.category.CategoryOption;
-import com.mfh.framework.api.invSkuStore.InvSkuStoreApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.network.NetCallBack;
-import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
-import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.database.entity.PosCategoryGoodsTempEntity;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
@@ -232,69 +225,11 @@ public class BackendCategoryGoodsFragment extends BaseFragment implements IImpor
         }
 
         if (mImportGoodsPresenter != null) {
-            mImportGoodsPresenter.importFromCenterSkus(posFrontCategoryId, productIds.toString(), proSkuIds.toString());
+            mImportGoodsPresenter.importFromCenterSkus(posFrontCategoryId,
+                    productIds.toString(), proSkuIds.toString());
         } else {
             hideProgressDialog();
         }
-//        submitStep2(productIds.toString(), proSkuIds.toString());
-    }
-
-    /**
-     * 导入商品到类目 - step2
-     */
-    private void submitStep2(final String productIds, String proSkuIds) {
-        NetCallBack.NetTaskCallBack importRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("导入商品到本店仓储失败, " + errMsg);
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                        ZLogger.df("导入商品到本店仓储成功，等待后台发送1101消息");
-                        add2Category(productIds);
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        InvSkuStoreApiImpl.importFromCenterSkus(proSkuIds, importRC);
-    }
-
-    /**
-     * 导入前台类目
-     * */
-    private void add2Category(String productIds){
-        NetCallBack.NetTaskCallBack submitRC = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("导入前台类目商品失败, " + errMsg);
-                        showProgressDialog(ProgressDialog.STATUS_ERROR, errMsg, true);
-                    }
-
-                    @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"操作成功!","version":"1","data":""}
-                        ZLogger.df("导入商品到前台类目成功，等待后台发送1105消息");
-                        hideProgressDialog();
-                        getActivity().setResult(Activity.RESULT_OK);
-                        getActivity().finish();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        ProductCatalogApi.add2Category(String.valueOf(posFrontCategoryId),
-                productIds, submitRC);
     }
 
     @Override

@@ -140,14 +140,12 @@ public class DeveloperOptionsFragment extends BaseFragment {
         int resourceId = resources.getIdentifier("navigation_bar_height",
                 "dimen", "android");
         //获取NavigationBar的高度
-        StringBuilder sb = new StringBuilder();
-        sb.append(String.format("DisplayMetrics: %d*%d %f%navigation_bar_height:%d\n",
+//        sb.append(String.format("buildTime: %s", BuildConfig.S))
+        tvDisplay.setText(String.format("DisplayMetrics: %d*%d %f%navigation_bar_height:%d\n",
                 resources.getDisplayMetrics().widthPixels,
                 resources.getDisplayMetrics().heightPixels,
                 resources.getDisplayMetrics().density,
                 resources.getDimensionPixelSize(resourceId)));
-//        sb.append(String.format("buildTime: %s", BuildConfig.S))
-        tvDisplay.setText(sb.toString());
         //获取当前SDK的服务状态
 //        pushServiceSwitchCompact.setChecked(PushManager.getInstance().isPushTurnedOn(CashierApp.getAppContext()));
 

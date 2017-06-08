@@ -98,7 +98,8 @@ public class SequenceServiceImpl implements SequenceService{
                 else{
                     ZLogger.df(String.format("序列(%d)已经达到最大值(%d),不能生成新的序列!",
                             nextValue, sequence.getMaxValue()));
-                    throw new RuntimeException("序列已经达到最大值,不能生成新的序列!");
+                    throw new RuntimeException(String.format("序列(%d)已经达到最大值(%d),不能生成新的序列!",
+                            nextValue, sequence.getMaxValue()));
                 }
             }
         }
@@ -161,6 +162,31 @@ public class SequenceServiceImpl implements SequenceService{
             sequence.setSequenceValue(curValue);
             sequenceDao.updateSequence(sequence);
         }
+        ZLogger.df(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
+
+    }
+
+    @Override
+    public void setSequenceValue(String sequeceName, long curValue, Long maxValue) {
+        Sequence sequence = sequenceDao.getSequence(sequeceName);
+        if (sequence == null){
+            ZLogger.ef("指定的序列名:" + sequeceName + "不存在,设置序列编号!");
+            return;
+        }
+
+        long sequenceValue = sequence.getSequenceValue();//当前值
+        if (sequenceValue < curValue){
+            sequence.setSequenceValue(curValue);
+        }
+        if (maxValue == null){
+            maxValue = -1L;
+        }
+        if (sequence.getMaxValue() != maxValue){
+            sequence.setMaxValue(maxValue);
+        }
+
+        sequenceDao.updateSequence(sequence);
+
         ZLogger.df(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
 
     }

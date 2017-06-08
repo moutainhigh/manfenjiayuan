@@ -27,6 +27,8 @@ public class ResHttpManager extends BaseHttpManager{
     public static final MediaType FILE = MediaType.parse("multipart/form-data");
     public static final MediaType STREAM = MediaType.parse("application/octet-stream");
     public static final MediaType ZIP = MediaType.parse("application/zip");
+    public static final MediaType JSON_UTF8 = MediaType.parse("application/json; charset=utf-8");
+    public static final MediaType TEXT = MediaType.parse("text/plain");
 
     //在访问HttpMethods时创建单例
     private static class SingletonHolder {

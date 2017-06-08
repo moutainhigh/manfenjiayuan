@@ -11,6 +11,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.service.BaseService;
 import com.mfh.framework.core.service.DataSyncStrategy;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.core.utils.TimeUtil;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -139,6 +140,8 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
                 return;
             }
 
+            Date rightNow = TimeUtil.getCurrentDate();
+
             PosTopupEntity entity;
             //查询订单，更多的匹配条件
             //注意这里要根据orderId，outTradeNo和payType三者确定支付记录的唯一性，
@@ -151,7 +154,7 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
                 entity = entityList.get(0);
             } else {
                 entity = new PosTopupEntity();
-                entity.setCreatedDate(new Date());
+                entity.setCreatedDate(rightNow);
                 entity.setOutTradeNo(outTradeNo);
                 entity.setPayType(payType);
             }
@@ -161,10 +164,9 @@ public class PosTopupService extends BaseService<PosTopupEntity, String, PosTopu
             entity.setAmount(quickPayInfo.getAmount());
             entity.setPaystatus(status);
             entity.setSyncStatus(SyncStatus.INIT);
-            entity.setUpdatedDate(new Date());
+            entity.setUpdatedDate(rightNow);
             saveOrUpdate(entity);
-            ZLogger.df(String.format("保存or更新支付流水:\n%s",
-                    JSONObject.toJSONString(entity)));
+            ZLogger.d(String.format("保存or更新支付流水:%s", JSONObject.toJSONString(entity)));
         } catch (Exception e) {
             ZLogger.ef(e.toString());
         }

@@ -32,8 +32,17 @@ public class InvSkuStoreHttpManager extends BaseHttpManager{
     }
 
     private interface InvSkuStoreService{
+        /**
+         * 当前登录人员，把平台商品导入到本店仓储中
+         * /invSkuStore/importFromCenterSkus?proSkuIds=111,222
+         */
         @GET("invSkuStore/importFromCenterSkus")
         Observable<MResponse<String>> importFromCenterSkus(@QueryMap Map<String, String> options);
+        /**
+         * 更新商品信息－－
+         * /invSkuStore/update?jsonStr={"id":...,"costPrice"...,"quantity":...,"lowerLimit":...., "tenantId":....},
+         * 注意：这里的tenantId就是店的租户，不是CATEGORY_TENANT_ID(130222)
+         */
         @GET("invSkuStore/update")
         Observable<MResponse<String>> update(@QueryMap Map<String, String> options);
         @GET("invSkuStore/updateStatus")

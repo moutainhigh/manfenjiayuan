@@ -11,11 +11,9 @@ import com.bingshanguxue.cashier.database.service.CashierShopcartService;
 import com.bingshanguxue.cashier.database.service.PosLocalCategoryService;
 import com.bingshanguxue.cashier.database.service.PosProductService;
 import com.bingshanguxue.cashier.database.service.PosProductSkuService;
-import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.cashier.hardware.scale.ScaleProvider;
 import com.manfenjiayuan.business.utils.SharedPrefesManagerBase;
-import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.comn.config.UConfig;
 import com.mfh.framework.BizConfig;
@@ -28,9 +26,10 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.hardware.SerialManager;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
+import com.mfh.litecashier.hardware.SerialManager;
+import com.mfh.litecashier.service.TrushService;
 import com.mfh.litecashier.ui.activity.SplashActivity;
 
 import net.tsz.afinal.FinalDb;
@@ -54,7 +53,7 @@ public class AppHelper {
      * 保存应用程序启动日期和时间
      */
     public static void saveAppStartupDatetime() {
-        Date currentDate = new Date();
+        Date currentDate = TimeUtil.getCurrentDate();
         //设置应用当天首次启动时间
         String appDayFirstStartupDatetime = SharedPrefesManagerFactory.getAppDayFirstStartupDateTime();
         if (StringUtils.isEmpty(appDayFirstStartupDatetime)) {
@@ -81,7 +80,7 @@ public class AppHelper {
      * 获取当天应用程序启动日期
      */
     public static Date getAppDayFirstStartupDateTime() {
-        Date date = new Date();
+        Date date = TimeUtil.getCurrentDate();
 
         String appDayFirstStartupDateTime = SharedPrefesManagerFactory.getAppDayFirstStartupDateTime();
         //与当前时间相比，取最小当时间
@@ -175,6 +174,7 @@ public class AppHelper {
      * 恢复出厂设置
      * */
     public static void resetFactoryData(Context context){
+        ZLogger.df("恢复出厂设置");
         clearAppData();
 
         //删除SharedPreference
@@ -187,7 +187,7 @@ public class AppHelper {
         SharedPrefesManagerFactory.clear(ScaleProvider.PREF_NAME);
 
         //删除无效文件
-        clearRedunantData(true);
+        clearRedunantData(CashierApp.getAppContext(), true);
 
         //删除数据库
         DataCleanManager.cleanApplicationData(context);
@@ -207,6 +207,7 @@ public class AppHelper {
      * </ol>
      */
     public static void clearAppData() {
+        ZLogger.df("清除数据（文件，设置，账户，数据库等）");
         CashierShopcartService.getInstance().clear();
         PosCategoryGodosTempService.getInstance().clear();
         PosProductService.get().clear();//商品库
@@ -218,42 +219,14 @@ public class AppHelper {
         SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                 "");
 
-        clearRedunantData(false);
-    }
-
-    /**
-     * 清空过期数据，保留最近7天的数据。
-     */
-    public static void clearRedunantData(boolean isFactoryReset){
-        if (isFactoryReset){
-            CashierHelper.clearOldPosOrder(0);//收银订单
-            PosTopupService.get().deleteOldData(0);
-            ZLogger.deleteOldFiles(0);
-            SMScaleSyncManager2.deleteOldFiles(0);
-            EmbMsgService.getInstance().clearReduantData(0);
-
-            //删除缓存
-            ACacheHelper.clear();
-            //清除数据缓存
-            DataCleanManager.clearCache(CashierApp.getAppContext());
-            GlobalInstance.getInstance().reset();
-        }
-        else{
-            CashierHelper.clearOldPosOrder(14);//收银订单
-            PosTopupService.get().deleteOldData(7);
-            ZLogger.deleteOldFiles(7);
-            SMScaleSyncManager2.deleteOldFiles(1);
-            EmbMsgService.getInstance().clearReduantData(7);
-
-            AppHelper.clearCacheData();
-        }
-
+        clearRedunantData(CashierApp.getAppContext(), false);
     }
 
     /**
      * 清空缓存数据
      */
     public static void clearCacheData() {
+        ZLogger.df("清空缓存数据");
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_ORDER_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_SUPPLY_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_GOODS_DATA);
@@ -276,6 +249,41 @@ public class AppHelper {
 
         GlobalInstance.getInstance().reset();
     }
+
+    /**
+     * 清空过期数据，保留最近7天的数据。
+     */
+    public static void clearRedunantData(Context context, final boolean isFactoryReset){
+        Intent intent = new Intent(context, TrushService.class);
+        intent.putExtra("isFactory", isFactoryReset);
+        context.startService(intent);
+
+//        if (isFactoryReset){
+//            CashierHelper.clearOldPosOrder(0);//收银订单
+//            PosTopupService.get().deleteOldData(0);
+//            ZLogger.deleteOldFiles(0);
+//            SMScaleSyncManager2.deleteOldFiles(0);
+//            EmbMsgService.getInstance().clearReduantData(0);
+//
+//            //删除缓存
+//            ACacheHelper.clear();
+//            //清除数据缓存
+//            DataCleanManager.clearCache(CashierApp.getAppContext());
+//            GlobalInstance.getInstance().reset();
+//        }
+//        else{
+//            CashierHelper.clearOldPosOrder(30);//收银订单
+//            PosTopupService.get().deleteOldData(30);
+//            ZLogger.deleteOldFiles(7);
+//            SMScaleSyncManager2.deleteOldFiles(1);
+//            EmbMsgService.getInstance().clearReduantData(7);
+//
+//            AppHelper.clearCacheData();
+//        }
+
+    }
+
+
 //
 //    /**
 //     * 生成16进制累加和校验码

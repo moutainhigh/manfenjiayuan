@@ -23,6 +23,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.companyInfo.CompanyInfo;
 import com.mfh.framework.api.invCompany.IInvCompanyInfoView;
 import com.mfh.framework.api.invCompany.InvCompanyPresenter;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -156,8 +157,9 @@ public class SelectInvCompanyInfoDialog extends CommonDialog
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
         WindowManager m = getWindow().getWindowManager();
         Display d = m.getDefaultDisplay();
         WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -354,6 +356,7 @@ public class SelectInvCompanyInfoDialog extends CommonDialog
 
             mInvCompanyPresenter.list(mPageInfo, labelShortcode.getInputString());
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载批发商，已经是最后一页。");
             onLoadFinished();
         }

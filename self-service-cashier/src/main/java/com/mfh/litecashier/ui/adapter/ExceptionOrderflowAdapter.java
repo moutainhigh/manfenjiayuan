@@ -166,6 +166,12 @@ public class ExceptionOrderflowAdapter
         if (entity.getSyncStatus() == PosOrderEntity.SYNC_STATUS_SYNCED) {
             drawableSyncStatus.setText1(String.format("已同步(%d)", entity.getSyncStatus()));
             drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+        } else if (entity.getSyncStatus() == PosOrderEntity.SYNC_STATUS_ERROR) {
+            drawableSyncStatus.setText1(String.format("同步失败(%d)", entity.getSyncStatus()));
+            drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+        } else if (entity.getSyncStatus() == PosOrderEntity.SYNC_STATUS_FATAL) {
+            drawableSyncStatus.setText1(String.format("同步异常(%d)", entity.getSyncStatus()));
+            drawableSyncStatus.setBadgeColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         } else {
             drawableSyncStatus.setText1(String.format("(%d)", entity.getSyncStatus()));
         }

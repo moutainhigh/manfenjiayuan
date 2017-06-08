@@ -11,11 +11,13 @@ import com.bingshanguxue.cashier.hardware.printer.emb.PrinterConstants;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
-import com.bingshanguxue.cashier.v1.CashierAgent;
+import com.bingshanguxue.cashier.v1.CashierProvider;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.ProductAggDate;
+import com.mfh.framework.api.analysis.AccItem;
+import com.mfh.framework.api.analysis.AggItem;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pmcstock.GoodsItem;
@@ -31,7 +33,6 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class GPrinterManager extends PrinterManager {
         /**打印 机器设备号＋订单号*/
         esc.addText(String.format("设备编号：%s \n", SharedPrefesManagerFactory.getTerminalId()));
         /**打印 日期*/
-        esc.addText(String.format("订单日期：%s \n", TimeUtil.format(new Date(),
+        esc.addText(String.format("订单日期：%s \n", TimeUtil.format(TimeUtil.getCurrentDate(),
                 TimeCursor.FORMAT_YYYYMMDDHHMM)));
         esc.addText(String.format("支付方式：%s \n", WayType.name(mQuickPayInfo.getPayType())));
         esc.addText(String.format("流水号  ：%s \n", outTradeNo));
@@ -153,7 +154,7 @@ public class GPrinterManager extends PrinterManager {
             /**打印 商品明细*/
             printAndLineFeed(esc, 1);
             List<PosOrderItemEntity> needWaitEntities = new ArrayList<>();
-            List<PosOrderItemEntity> posOrderItemEntities = CashierAgent.fetchOrderItems(posOrderEntity);
+            List<PosOrderItemEntity> posOrderItemEntities = CashierProvider.fetchOrderItems(posOrderEntity);
             if (posOrderItemEntities != null && posOrderItemEntities.size() > 0) {
                 makeOrderItem7(esc, "商品", "数量", "单位",
                         "", "原价", "小计",
@@ -171,8 +172,8 @@ public class GPrinterManager extends PrinterManager {
                             String.format("%.2f", entity.getFinalPrice()),
                             String.format("%.3f", entity.getFinalAmount()),
                             "",
-                            String.format("%.2f", entity.getCustomerPrice()),
-                            String.format("%.3f", MathCompact.mult(entity.getCustomerPrice(), entity.getBcount())),
+                            String.format("%.2f", entity.getFinalCustomerPrice()),
+                            String.format("%.3f", MathCompact.mult(entity.getFinalCustomerPrice(), entity.getBcount())),
                             true);
                 }
             }
@@ -351,7 +352,7 @@ public class GPrinterManager extends PrinterManager {
         //设置打印左对齐
         esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);
         /**打印 订购日期*/
-        esc.addText(String.format("日期:%s \n", TimeCursor.InnerFormat.format(new Date())));
+        esc.addText(String.format("日期:%s \n", TimeCursor.InnerFormat.format(TimeUtil.getCurrentDate())));
         printAndLineFeed(esc, 1);
 
         /**打印 商品明细
@@ -425,29 +426,34 @@ public class GPrinterManager extends PrinterManager {
 //        esc.addPrintAndLineFeed();
 
         /**打印 日结单明细*/
-        esc.addText("业务类型            数量    金额\n");
-        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
-        //设置为倍高倍宽
-        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
-                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
+//        esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
+//        //设置为倍高倍宽
+//        esc.addSelectPrintModes(EscCommand.FONT.FONTB, EscCommand.ENABLE.OFF,
+//                EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF, EscCommand.ENABLE.OFF);
 
-        printDailySettleAggItem(esc, 1, dailysettleInfo.getAggItems());
 
-        printAndLineFeed(esc, 1);
-        esc.addText("支付类型            数量    金额\n");
-        printDailySettleAccItem(esc, 1, dailysettleInfo.getAccItems());
+        List<AggItem> aggItems = dailysettleInfo.getAggItems();
+        if (aggItems != null && aggItems.size() > 0) {
+//            printAndLineFeed(esc, 1);
+            esc.addText("产品线            数量    金额\n");
+            printDailySettleAggItem(esc, 1, aggItems);
+        }
 
-        /**
-         * 打印合计信息
-         * */
-        esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
         esc.addText("--------------------------------\n");//32个
-        esc.addText(String.format("现金收取:%.2f\n", dailysettleInfo.getCash()));
-        esc.addText(String.format("非现金收取:%.2f\n",
-                dailysettleInfo.getTurnOver() - dailysettleInfo.getCash()));
+        List<AccItem> accItems1 = dailysettleInfo.getAccItems();
+        if (accItems1 != null && accItems1.size() > 0) {
+            printAndLineFeed(esc, 1);
+            esc.addText("支付渠道            数量    金额\n");
+            printDailySettleAccItem(esc, 1, accItems1);
+        }
 
-        Double turnover = dailysettleInfo.getTurnOver();
-        esc.addText(String.format("营业额合计:%.2f\n", turnover));
+        esc.addText("--------------------------------\n");//32个
+        List<AccItem> accItems2 = dailysettleInfo.getAccItems2();
+        if (accItems2 != null && accItems2.size() > 0) {
+            printAndLineFeed(esc, 1);
+            esc.addText("支付渠道            数量    金额\n");
+            printDailySettleAccItem(esc, 1, accItems2);
+        }
 
         /**
          * 打印 结束语
@@ -713,10 +719,8 @@ public class GPrinterManager extends PrinterManager {
 
         /**打印 商品明细*/
         printAndLineFeed(esc, 1);
-        List<PosOrderItemEntity> posOrderItemEntityList = CashierAgent.fetchOrderItems(posOrderEntity);
+        List<PosOrderItemEntity> posOrderItemEntityList = CashierProvider.fetchOrderItems(posOrderEntity);
         if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
-//            esc.addText("零一二三四五六七八九零一二三四五\n");//16(正确)
-//            esc.addText("品名                 数量   小计\n");
             esc.addText("品名            单价 数量   小计\n");
             esc.addSetCharcterSize(EscCommand.WIDTH_ZOOM.MUL_1, EscCommand.HEIGHT_ZOOM.MUL_1);
             esc.addUserCommand(EmbPrinter.setPrinter(PrinterConstants.Command.ALIGN,
@@ -1025,7 +1029,7 @@ public class GPrinterManager extends PrinterManager {
         //打印表头内容
         if (footers != null && footers.size() > 0) {
             for (String key : footers.keySet()) {
-                preparefooter1(esc, key, footers.get(key), false);
+                prepareFooter1(esc, key, footers.get(key), false);
             }
         }
 
@@ -1039,7 +1043,6 @@ public class GPrinterManager extends PrinterManager {
         EscCommand esc = new EscCommand();
         printAndLineFeed(esc, 2);
 
-
         /**打印 标题*/
         esc.addSelectJustification(EscCommand.JUSTIFICATION.CENTER);
         esc.addText(title + "\n");
@@ -1052,13 +1055,13 @@ public class GPrinterManager extends PrinterManager {
         }
 
         printAndLineFeed(esc, 1);
-
         prepareContent1(esc, "商品", "小计", "营业额", true);
 
         return esc;
     }
+
     @Override
-    public List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems) {
+    public List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems, int blockSize) {
         if (goodsItems == null) {
             return null;
         }
@@ -1066,7 +1069,6 @@ public class GPrinterManager extends PrinterManager {
         List<EscCommand> commands = new ArrayList<>();
 
         EscCommand esc = new EscCommand();
-        esc.addUserCommand(EmbPrinter.initPrinter());
 
         Double turnOver = 0D;
         int len = goodsItems.size();
@@ -1074,26 +1076,79 @@ public class GPrinterManager extends PrinterManager {
             ProductAggDate goodsItem = goodsItems.get(i);
 
             turnOver += goodsItem.getTurnover();
+
+            esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
             prepareContent1(esc, goodsItem.getTenantSkuIdWrapper(),
                     String.format("%.2f", goodsItem.getProductNum()),
                     String.format("%.2f", goodsItem.getTurnover()), true);
 
             if (i == len - 1) {
-                prepareContent1(esc, "", "销售额合计：",
-                        String.format("%.2f", turnOver), false);
-                printAndLineFeed(esc, 2);
-                addFooter(esc);
                 commands.add(esc);
 
-                esc = new EscCommand();
-            } else if (i != 0 && i % 20 == 0) {
+//                esc = new EscCommand();
+//                esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+            } else if (i != 0 && i % blockSize == 0) {
                 commands.add(esc);
+//                essc.clear();
                 esc = new EscCommand();
+                esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
             }
         }
 
+        EscCommand esc2 = new EscCommand();
+        esc2.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+        prepareFooter1(esc2, "销售额合计：",
+                String.format("%.2f", turnOver), false);
+        printAndLineFeed(esc2, 2);
+//                addFooter(esc);
+        commands.add(esc2);
+
         return commands;
     }
+
+//    @Override
+//    public List<EscCommand> makeReconcileEsc(List<ProductAggDate> goodsItems) {
+//        if (goodsItems == null) {
+//            return null;
+//        }
+//
+//
+//        List<EscCommand> commands = new ArrayList<>();
+//
+//        EscCommand esc = new EscCommand();
+//
+//        Double turnOver = 0D;
+//        int len = goodsItems.size();
+//        for (int i = 0; i < len; i++) {
+//            ProductAggDate goodsItem = goodsItems.get(i);
+//
+//            turnOver += goodsItem.getTurnover();
+//
+//            esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+//            prepareContent1(esc, goodsItem.getTenantSkuIdWrapper(),
+//                    String.format("%.2f", goodsItem.getProductNum()),
+//                    String.format("%.2f", goodsItem.getTurnover()), true);
+//
+//            if (i == len - 1) {
+//                esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+//                prepareFooter1(esc, "销售额合计：",
+//                        String.format("%.2f", turnOver), false);
+//                printAndLineFeed(esc, 2);
+////                addFooter(esc);
+//                commands.add(esc);
+//
+////                esc = new EscCommand();
+////                esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+//            } else if (i != 0 && i % blockSize == 0) {
+//                commands.add(esc);
+//                esc.clear();
+////                esc = new EscCommand();
+//                esc.addSelectJustification(EscCommand.JUSTIFICATION.LEFT);//设置打印左对齐
+//            }
+//        }
+//
+//        return commands;
+//    }
 
     @Override
     public EscCommand makeTestPageEsc() {
@@ -1127,7 +1182,7 @@ public class GPrinterManager extends PrinterManager {
             esc.addText(String.format("%s NO.%s \n", SharedPrefesManagerFactory.getTerminalId(),
                     MUtils.getOrderBarCode()));
             /**打印 订购日期*/
-            esc.addText(String.format("%s \n", GPrinter.DATE_FORMAT.format(new Date())));
+            esc.addText(String.format("%s \n", GPrinter.DATE_FORMAT.format(TimeUtil.getCurrentDate())));
             //5个数字等于3个汉字（1个数字＝3/5个汉字）
             esc.addText("--------------------------------\n");//32(正确)
             esc.addText("01234567890123456789012345678901\n");//32(正确)

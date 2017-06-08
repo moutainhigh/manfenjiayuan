@@ -14,13 +14,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
+import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invSendIoOrder.IInvSendIoOrderView;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderItem;
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrderPresenter;
+import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -177,8 +178,9 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendI
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
-
+        if (getWindow() != null) {
+            getWindow().setGravity(Gravity.CENTER);
+        }
 //        WindowManager m = getWindow().getWindowManager();
 //        Display d = m.getDefaultDisplay();
 //        WindowManager.LayoutParams p = getWindow().getAttributes();
@@ -407,6 +409,7 @@ public class SelectInvRecvOrderDialog extends CommonDialog  implements IInvSendI
 
             invRecvOrderPresenter.loadOrders(mPageInfo, status, null, null);
         } else {
+            DialogUtil.showHint("已经是最后一页了");
             ZLogger.d("加载采购收货订单，已经是最后一页。");
             onLoadFinished();
         }
