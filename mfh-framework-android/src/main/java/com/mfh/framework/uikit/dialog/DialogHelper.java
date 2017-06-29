@@ -1,9 +1,8 @@
 package com.mfh.framework.uikit.dialog;
 
-import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
@@ -59,21 +58,22 @@ public class DialogHelper {
 
     /**
      * 生成进度框
+     *
      * @param context
-     * @param meaasge 提示信息 设置为null 默认显示正在加载
+     * @param meaasge  提示信息 设置为null 默认显示正在加载
      * @param isScreen 是否全屏
      * @return
      */
     public static ProgressDialog genProgressDialog(Context context, boolean isScreen, String meaasge) {
         ProgressDialog dialog;
         if (isScreen) {
-            dialog = new ProgressDialog(context,R.style.Transparent_wait_screen);
-        }else  {
-            dialog =  new ProgressDialog(context);
+            dialog = new ProgressDialog(context, R.style.Transparent_wait_screen);
+        } else {
+            dialog = new ProgressDialog(context);
         }
-        View view = View.inflate(context,R.layout.activity_wait,null);
+        View view = View.inflate(context, R.layout.activity_wait, null);
         TextView textView = (TextView) view.findViewById(R.id.tv_meaasge);
-        if (meaasge != null){
+        if (meaasge != null) {
             textView.setText(meaasge);
         }
         dialog.show();

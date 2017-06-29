@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 
 /**
  * 日结/交接班 经营分析统计数据
- * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class CashQuotaAdapter
         extends RegularAdapter<OrderPayWay, CashQuotaAdapter.ProductViewHolder> {

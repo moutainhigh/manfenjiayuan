@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.R;
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 
 import java.util.ArrayList;
@@ -143,7 +142,7 @@ public class TopFragmentPagerAdapter extends FragmentStatePagerAdapter {
     }
 
     public ViewPageInfo getTab(int position) {
-        ZLogger.d(String.format("position=%d, size=%d", position, mTabs.size()));
+//        ZLogger.d(String.format("position=%d, size=%d", position, mTabs.size()));
         if (position < 0 || position >= mTabs.size()){
             return null;
         }

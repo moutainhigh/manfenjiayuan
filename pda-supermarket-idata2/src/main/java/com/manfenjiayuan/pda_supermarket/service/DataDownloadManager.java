@@ -7,11 +7,9 @@ import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.manfenjiayuan.pda_supermarket.AppContext;
-import com.manfenjiayuan.pda_supermarket.database.dao.PosProductNetDao;
-import com.manfenjiayuan.pda_supermarket.database.dao.PosProductSkuNetDao;
-import com.manfenjiayuan.pda_supermarket.database.entity.PosProductEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.PosProductService;
-import com.manfenjiayuan.pda_supermarket.database.logic.PosProductSkuService;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.PosProductEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.service.PosProductService;
+import com.manfenjiayuan.pda_supermarket.cashier.database.service.PosProductSkuService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.Priv;
@@ -80,9 +78,7 @@ public class DataDownloadManager extends DataSyncManager {
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 70;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
-    private PosProductNetDao posProductNetDao = new PosProductNetDao();
     private PageInfo mPosSkuPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
-    private PosProductSkuNetDao posProductSkuNetDao = new PosProductSkuNetDao();
 
     private boolean bSyncInProgress = false;//是否正在同步
     private int rollback = -1;
@@ -206,7 +202,7 @@ public class DataDownloadManager extends DataSyncManager {
                 String startCursor = getPosLastUpdateCursor();
                 if (StringUtils.isEmpty(startCursor)) {
                     ZLogger.df("商品档案时间戳为空，全量更新，假删除旧数据");
-                    PosProductService.get().deactiveAll();
+                    PosProductService.get().pretendDelete();
                 }
 
                 subscriber.onNext(startCursor);

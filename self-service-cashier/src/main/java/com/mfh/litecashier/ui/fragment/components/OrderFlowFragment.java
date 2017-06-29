@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierProvider;
+import com.bingshanguxue.cashier.model.CashierOrderInfo;
+import com.bingshanguxue.cashier.CashierProvider;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;

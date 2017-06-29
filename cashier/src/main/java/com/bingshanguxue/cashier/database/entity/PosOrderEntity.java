@@ -8,7 +8,7 @@ import com.mfh.framework.api.constant.BizType;
 
 /**
  * POS--订单销售流水
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06
  */
 @Table(name = "tb_pos_order_v3")
 public class PosOrderEntity extends MfhEntity<Long> implements ILongId {

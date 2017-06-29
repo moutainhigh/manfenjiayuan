@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * <h1>适配器</h1>
- * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public abstract class RegularAdapter<D, VH extends RecyclerView.ViewHolder>
         extends RecyclerView.Adapter<VH> {

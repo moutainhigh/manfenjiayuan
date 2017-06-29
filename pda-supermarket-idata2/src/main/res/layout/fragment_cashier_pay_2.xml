@@ -63,6 +63,19 @@
                 app:topTextColor="@color/colorPrimary"
                 app:topTextSize="24sp"/>
 
+            <!--促销优惠-->
+            <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
+                android:id="@+id/labelPromotion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:bottomText="促销优惠"
+                app:bottomTextColor="@color/black_70"
+                app:bottomTextSize="16sp"
+                app:topText="0.00"
+                app:topTextColor="@color/colorPrimary"
+                app:topTextSize="30sp"/>
+
             <!--代金券-->
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
                 android:id="@+id/labelCouponDiscount"

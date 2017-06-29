@@ -23,6 +23,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bingshanguxue.cashier.presenter.CashierPresenter;
+import com.bingshanguxue.cashier.view.ICashierView;
 import com.bingshanguxue.cashier.database.entity.CashierShopcartEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
@@ -35,10 +37,10 @@ import com.bingshanguxue.cashier.model.wrapper.HangupOrder;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
-import com.bingshanguxue.cashier.v1.CashierAgent;
-import com.bingshanguxue.cashier.v1.CashierBenchObservable;
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierProvider;
+import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.CashierBenchObservable;
+import com.bingshanguxue.cashier.model.CashierOrderInfo;
+import com.bingshanguxue.cashier.CashierProvider;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
@@ -84,7 +86,6 @@ import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.hardware.GreenTags.EslSyncManager2;
 import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
-import com.mfh.litecashier.presenter.CashierPresenter;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.service.DemoPushService;
@@ -106,7 +107,6 @@ import com.mfh.litecashier.ui.fragment.pay.PayStep1Fragment;
 import com.mfh.litecashier.ui.prepare.PrepareActivity;
 import com.mfh.litecashier.ui.prepare.PrepareStep2Fragment;
 import com.mfh.litecashier.ui.presentation.OrderPresentation;
-import com.mfh.litecashier.ui.view.ICashierView;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 import com.mfh.litecashier.utils.ACacheHelper;
 import com.mfh.litecashier.utils.AppHelper;
@@ -118,6 +118,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,7 +131,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.igexin.push.core.g.R;
 
 
 /**
@@ -277,7 +277,7 @@ public class MainActivity extends CashierActivity
         }
 
         if (menuAdapter != null) {
-            menuAdapter.setEntityList(cashierPresenter.getCashierFunctions());
+            menuAdapter.setEntityList(getCashierFunctions());
         }
 
 
@@ -2266,5 +2266,43 @@ public class MainActivity extends CashierActivity
         fragmentTransaction.show(mLocalFrontCategoryFragment)
                 .hide(mQueryGoodsFragment).commit();
     }
+
+    /**
+     * 加载收银机前台类目：私有功能＋公共类目＋自定义类目
+     */
+    public synchronized List<ResMenu> getCashierFunctions() {
+        List<ResMenu> functionalList = new ArrayList<>();
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_ONLINE_ORDER,
+                "订单列表", R.mipmap.ic_service_online_order));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_DISCOUNT,
+                "折扣", R.mipmap.ic_menu_cashier_discount));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_TOPUP,
+                "充值", R.mipmap.ic_service_topup));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SCORE,
+                "积分兑换", R.mipmap.ic_cashier_score));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MEMBER_CARD,
+                "办卡", R.mipmap.ic_service_membercard));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_HANGUP_ORDER,
+                "挂单", R.mipmap.ic_service_hangup_order));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_RETURN_GOODS,
+                "退货", R.mipmap.ic_service_returngoods));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_PRINT_ORDER,
+                "打印订单", R.mipmap.ic_service_feedpaper));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_MONEYBOX,
+                "钱箱", R.mipmap.ic_service_moneybox));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SETTINGS,
+                "设置", R.mipmap.ic_service_settings));
+        if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
+            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_BALANCE_QUERY,
+                    "余额查询", R.mipmap.ic_service_balance));
+            functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_REGISTER_VIP,
+                    "注册", R.mipmap.ic_service_register_vip));
+//            functionalList.add(CashierFunctional.generate(ResMenu.CASHIER_MENU_PACKAGE,
+//                    "包裹", R.mipmap.ic_service_package));
+        }
+
+        return functionalList;
+    }
+
 
 }

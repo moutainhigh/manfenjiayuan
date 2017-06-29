@@ -21,10 +21,11 @@ import com.mfh.framework.uikit.gridpasswordview.GridPasswordView;
 import com.mfh.litecashier.R;
 
 
+
 /**
  * 输入密码
  *
- * @author NAT.ZZN(bingshanguxue)
+ * @author bingshanguxue
  */
 public class EnterPasswordDialog extends CommonDialog {
 

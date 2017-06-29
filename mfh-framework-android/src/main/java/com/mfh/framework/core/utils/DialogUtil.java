@@ -1,8 +1,8 @@
 package com.mfh.framework.core.utils;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 import com.mfh.framework.MfhApplication;

@@ -43,7 +43,7 @@ public class ProgressDialog extends CommonDialog {
     }
 
     @SuppressLint("InflateParams")
-    private ProgressDialog(Context context, int defStyle) {
+    public ProgressDialog(Context context, int defStyle) {
         super(context, defStyle);
 //        LayoutInflater inflater = LayoutInflater.from(mContext);
 //        View view = inflater.inflate(a.getResourceId(

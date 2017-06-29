@@ -32,12 +32,15 @@ import com.mfh.litecashier.utils.ACacheHelper;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+
 
 /**
  * 线上销售－－待配送/已配送
@@ -292,7 +295,6 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
             onLoadFinished();
             return;
         }
-
 
         if (mPageInfo.hasNextPage() && mPageInfo.getPageNo() <= MAX_PAGE) {
             mPageInfo.moveToNext();

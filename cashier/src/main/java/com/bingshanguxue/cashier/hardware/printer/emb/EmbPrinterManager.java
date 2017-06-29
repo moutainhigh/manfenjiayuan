@@ -11,7 +11,7 @@ import com.bingshanguxue.cashier.hardware.printer.gprinter.GPrinter;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
-import com.bingshanguxue.cashier.v1.CashierProvider;
+import com.bingshanguxue.cashier.CashierProvider;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;

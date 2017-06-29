@@ -48,6 +48,11 @@ public interface IPrinterManager {
     void printSendOrder(final ScOrder scOrder);
 
     /**
+     * 打印提货单
+     */
+    void printPickupOrder(final ScOrder scOrder);
+
+    /**
      * 出库单
      * */
     void printStockOutOrder(final List<StockOutItem> orderItems);

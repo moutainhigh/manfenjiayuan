@@ -23,17 +23,20 @@ import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.bean.wrapper.LastOrderInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierAgent;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
-import com.manfenjiayuan.pda_supermarket.database.entity.CashierShopcartEntity;
-import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderEntity;
-import com.manfenjiayuan.pda_supermarket.database.entity.PosProductEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.CashierShopcartService;
+import com.manfenjiayuan.pda_supermarket.cashier.CashierProvider;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.CashierShopcartEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.PosOrderEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.PosProductEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.service.CashierShopcartService;
+import com.manfenjiayuan.pda_supermarket.cashier.model.CashierOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.HangupOrder;
+import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.LastOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.presenter.CashierPresenter;
+import com.manfenjiayuan.pda_supermarket.cashier.view.ICashierView;
 import com.manfenjiayuan.pda_supermarket.service.DataUploadManager;
 import com.manfenjiayuan.pda_supermarket.ui.store.CashierPayActivity;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.api.constant.WayType;
@@ -229,8 +232,7 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
         //Step 1:
         if (productAdapter.getItemCount() > 0) {
             ZLogger.d(String.format("挂单：%s", curPosTradeNo));
-            CashierAgent.settle(BizType.POS,
-                    PosType.POS_STANDARD, curPosTradeNo, null, PosOrderEntity.ORDER_STATUS_HANGUP,
+            CashierAgent.settle(PosType.POS_STANDARD, curPosTradeNo, null, PosOrderEntity.ORDER_STATUS_HANGUP,
                     productAdapter.getEntityList());
         }
 
@@ -260,10 +262,9 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
                         .deleteBy(String.format("posTradeNo = '%s'", curPosTradeNo));
             }
 
-            PosOrderEntity hangupEntity = CashierAgent.fetchOrderEntity(BizType.POS,
-                    PosOrderEntity.ORDER_STATUS_HANGUP);
-            if (hangupEntity != null){
-                obtaincurPosTradeNo(hangupEntity.getBarCode());
+            List<HangupOrder> hangupOrders = CashierProvider.fetchHangupOrders();
+            if (hangupOrders != null && hangupOrders.size() > 0){
+                obtaincurPosTradeNo(hangupOrders.get(0).getOrderTradeNo());
                 CashierShopcartService.getInstance().readOrderItems(curPosTradeNo,
                         CashierAgent.resume(curPosTradeNo));
             }
@@ -345,8 +346,7 @@ public class CashierFragment extends PDAScanFragment implements ICashierView {
         Observable.create(new Observable.OnSubscribe<CashierOrderInfo>() {
             @Override
             public void call(Subscriber<? super CashierOrderInfo> subscriber) {
-                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(BizType.POS,
-                        PosType.POS_STANDARD, curPosTradeNo, null,
+                CashierOrderInfo cashierOrderInfo = CashierAgent.settle(PosType.POS_STANDARD, curPosTradeNo, null,
                         PosOrderEntity.ORDER_STATUS_STAY_PAY, productAdapter.getEntityList());
 
                 subscriber.onNext(cashierOrderInfo);

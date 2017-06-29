@@ -20,7 +20,7 @@ import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
-import com.bingshanguxue.cashier.v1.CashierProvider;
+import com.bingshanguxue.cashier.CashierProvider;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.posorder.PayWay;

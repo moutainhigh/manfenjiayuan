@@ -7,7 +7,7 @@ import com.mfh.framework.api.abs.MfhEntity;
 
 /**
  * POS--收银台／购物车商品
- * Created by bingshanguxue on 15-09-06..
+ * Created by bingshanguxue on 15-09-06
  */
 @Table(name = "tb_cashier_shopcart_v01001")
 public class CashierShopcartEntity extends MfhEntity<Long> implements ILongId {

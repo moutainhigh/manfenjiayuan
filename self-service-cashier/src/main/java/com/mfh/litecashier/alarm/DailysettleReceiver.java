@@ -13,7 +13,7 @@ import com.mfh.litecashier.service.ValidateManager;
 public class DailysettleReceiver extends BroadcastReceiver{
     @Override
     public void onReceive(Context context, Intent intent) {
-        ZLogger.df(">>启动日结判断");
+        ZLogger.d(">>启动日结判断");
         //启动验证
         ValidateManager.get().stepValidate(ValidateManager.STEP_HAVENOMENYEND);
     }

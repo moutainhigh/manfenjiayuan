@@ -8,8 +8,8 @@ import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.core.utils.StringUtils;
 
 /**
- * POS--商品--库存
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * POS--商品档案
+ * Created by bingshanguxue on 15-09-06
  */
 @Table(name = "tb_pos_procuct_v1")
 public class PosProductEntity extends MfhEntity<Long> implements ILongId {
@@ -48,7 +48,7 @@ public class PosProductEntity extends MfhEntity<Long> implements ILongId {
     private Long procateId; //商品类目
 
     //商品类目的类型，按商品类目同步到电子秤
-    private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;   //
+    private Integer cateType = CateApi.BACKEND_CATE_BTYPE_NORMAL;
     //2016-08-01，新增产品线编号清分,产品线的商品默认都归到0，相当于原来的标超
     private Integer prodLineId = 0;
     private Integer needWait;//是否需要等待（餐饮商品收银后除了需要打印小票，同时需要打印2张取货单）

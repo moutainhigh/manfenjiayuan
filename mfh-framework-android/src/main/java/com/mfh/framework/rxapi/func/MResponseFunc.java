@@ -1,6 +1,5 @@
 package com.mfh.framework.rxapi.func;
 
-import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.http.ApiException;
 
@@ -20,7 +19,7 @@ public class MResponseFunc<T> implements Func1<MResponse<T>, T> {
         if (tmResponse == null || tmResponse.getCode() != 0) {
             throw new ApiException(tmResponse.getMsg(), tmResponse.getCode());
         } else {
-            ZLogger.d("返回真正需要的数据");
+//            ZLogger.d("返回真正需要的数据");
             return tmResponse.getData();
         }
     }

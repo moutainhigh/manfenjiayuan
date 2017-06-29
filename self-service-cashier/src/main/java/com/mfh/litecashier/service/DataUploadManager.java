@@ -6,15 +6,15 @@ import android.os.Message;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.PayStatus;
-import com.bingshanguxue.cashier.SyncStatus;
+import com.bingshanguxue.cashier.model.PayStatus;
+import com.bingshanguxue.cashier.model.SyncStatus;
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
 import com.bingshanguxue.cashier.database.entity.PosOrderItemEntity;
 import com.bingshanguxue.cashier.database.entity.PosTopupEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
-import com.bingshanguxue.cashier.v1.CashierProvider;
+import com.bingshanguxue.cashier.CashierProvider;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -455,101 +455,6 @@ public class DataUploadManager {
     }
 
 
-    /**
-     * 生成订单同步数据结构
-     */
-    private JSONObject wrapperOrder(PosOrderEntity orderEntity) {
-        ZLogger.df(String.format("准备同步订单 : (%d/%s) %s", orderEntity.getId(), orderEntity.getBarCode(),
-                JSONObject.toJSONString(orderEntity)));
-        JSONObject order = new JSONObject();
-
-        order.put("id", orderEntity.getId());//pos机订单编号
-        order.put("barCode", orderEntity.getBarCode());
-        order.put("status", orderEntity.getStatus());
-        order.put("remark", orderEntity.getRemark());//备注
-        order.put("bcount", orderEntity.getBcount());//数量
-        order.put("adjPrice", MathCompact.sub(orderEntity.getRetailAmount(), orderEntity.getFinalAmount())); //调价金额
-        order.put("paystatus", orderEntity.getPaystatus());
-        order.put("subType", orderEntity.getSubType());//业务子类型
-        order.put("outerNo", orderEntity.getOuterTradeNo());//外部订单编号（外部平台订单组货功能特有）
-        order.put("posId", orderEntity.getPosId());//机器编号
-        order.put("sellOffice", orderEntity.getSellOffice());//curoffice id
-        order.put("sellerId", orderEntity.getSellerId());//spid
-        order.put("humanId", orderEntity.getHumanId());//会员编号
-        //由后台计算折扣
-//        if (orderEntity.getRetailAmount() == 0D) {
-//            order.put("discount", Double.valueOf(String.valueOf(Integer.MAX_VALUE)));
-//        } else {
-//            order.put("discount", (orderEntity.getRetailAmount() - orderEntity.getDiscountAmount())
-//                    / orderEntity.getRetailAmount());
-//        }
-
-        //使用订单最后更新日期作为订单生效日期
-        Date createdDate = orderEntity.getUpdatedDate();
-        if (createdDate == null) {
-            createdDate = orderEntity.getCreatedDate();
-        }
-        order.put("createdDate", TimeUtil.format(createdDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
-        order.put("createdBy", orderEntity.getCreatedBy());
-
-        //读取订单商品明细
-        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity);
-        JSONArray items = new JSONArray();
-        for (PosOrderItemEntity entity : orderItemEntities) {
-            JSONObject item = new JSONObject();
-            item.put("goodsId", entity.getGoodsId());
-            item.put("productId", entity.getProductId());
-            item.put("skuId", entity.getProSkuId());
-            item.put("barcode", entity.getBarcode());
-            item.put("bcount", entity.getBcount());
-            item.put("price", entity.getCostPrice());//原价（零售价）
-            item.put("customerPrice", entity.getFinalCustomerPrice());// 会员价（服务端备存）
-            item.put("amount", entity.getAmount());//商品预设的原始价格
-            item.put("factAmount", entity.getFinalAmount());//订单明细的实际折后销售价格，商品本次销售原价金额(例如抹零)
-            //// TODO: 19/04/2017
-            //saleAmount，根据ruleAmountMap去计算
-            item.put("saleAmount", MathCompact.sub(entity.getFinalAmount(), entity.getVipAmount()));//实际销售金额(扣除了会员优惠后)
-            //该条订单明细流水具体的会员折扣规则优惠情况，可能会有多条会员折扣规则适用，其中key是规则id，value是该规则的产生的优惠金额
-            String ruleAmountMap = entity.getRuleAmountMap();
-            if (ruleAmountMap != null) {
-                item.put("ruleAmountMap", JSONObject.parse(ruleAmountMap));
-            }
-//            item.put("cateType", entity.getCateType());//按类目进行账务清分
-            item.put("prodLineId", entity.getProdLineId());//按产品线进行账务清分
-            items.add(item);
-        }
-        order.put("items", items);
-        String rpDisAmountMap = orderEntity.getRpDisAmountMap();
-        if (rpDisAmountMap != null) {
-            order.put("rpDisAmountMap", JSONObject.parse(rpDisAmountMap));
-        }
-
-        //2016-07-01 上传订单支付记录到后台
-        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
-        if (payWrapper != null) {
-            //注意这里上传的支付记录不包括现金找零和会员账户余额
-            order.put("payWays", payWrapper.getUploadPayWays());
-            //优惠金额（促销规则+卡券）
-            Double disAmount = payWrapper.getVipDiscount() + payWrapper.getPromotionDiscount() + payWrapper.getCouponDiscount();
-            order.put("disAmount", disAmount);
-            //卡券核销
-            order.put("couponsIds", payWrapper.getCouponsIds());
-            order.put("ruleIds", payWrapper.getRuleIds());
-            order.put("payType", payWrapper.getPayType());//支付方式
-            Double amount = orderEntity.getFinalAmount() - disAmount;
-            order.put("amount", amount);//订单金额，负数表示退单
-            if (amount >= 0.01) {
-                order.put("score", amount / 2);
-            } else {
-                order.put("score", 0D);
-            }
-        } else {
-            order.put("amount", orderEntity.getFinalAmount());//实际支付金额
-        }
-
-        return order;
-    }
-
     private BatchInOrder wrapper2(PosOrderEntity orderEntity) {
         ZLogger.d(String.format("准备同步订单 : %s", JSONObject.toJSONString(orderEntity)));
         BatchInOrder order = new BatchInOrder();
@@ -670,7 +575,7 @@ public class DataUploadManager {
                 newCursor = orderEntity.getUpdatedDate();
             }
 
-            orders.add(wrapperOrder(orderEntity));
+            orders.add(CashierProvider.wrapperUploadOrder(orderEntity));
         }
 
         final Date finalNewCursor = newCursor;
@@ -730,7 +635,7 @@ public class DataUploadManager {
 //        List<BatchInOrder> orders = new ArrayList<>();
 //        orders.add(wrapper2(orderEntity));
         JSONArray orders = new JSONArray();
-        orders.add(wrapperOrder(orderEntity));
+        orders.add(CashierProvider.wrapperUploadOrder(orderEntity));
 
 //            Map<String, String> options = new HashMap<>();
 //            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
@@ -786,7 +691,7 @@ public class DataUploadManager {
         }
 
         JSONArray orders = new JSONArray();
-        orders.add(wrapperOrder(orderEntity));
+        orders.add(CashierProvider.wrapperUploadOrder(orderEntity));
 //        List<BatchInOrder> orders = new ArrayList<>();
 //        orders.add(wrapper2(orderEntity));
 

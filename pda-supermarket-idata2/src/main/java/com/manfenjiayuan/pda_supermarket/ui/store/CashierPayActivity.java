@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.model.CashierOrderInfo;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.order.PayStep1Fragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.order.PayStep2Fragment;

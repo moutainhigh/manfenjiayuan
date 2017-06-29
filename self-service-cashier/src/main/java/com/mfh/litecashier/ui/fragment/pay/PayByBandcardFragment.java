@@ -15,7 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
-import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.model.PaymentInfo;
 import com.chinaums.mis.bank.BankDAO;
 import com.chinaums.mis.bank.ICallBack;
 import com.chinaums.mis.bean.RequestPojo;

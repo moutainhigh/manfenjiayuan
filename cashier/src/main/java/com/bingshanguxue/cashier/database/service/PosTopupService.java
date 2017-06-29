@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.database.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bingshanguxue.cashier.SyncStatus;
+import com.bingshanguxue.cashier.model.SyncStatus;
 import com.bingshanguxue.cashier.database.dao.PosTopupDao;
 import com.bingshanguxue.cashier.database.entity.PosTopupEntity;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;

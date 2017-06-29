@@ -26,7 +26,7 @@ import android_serialport_api.SerialPortFinder;
 
 /**
  * 首页
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public abstract class SerialPortActivity extends BaseActivity {
     DispQueueThread DispQueue;//刷新显示线程
@@ -140,7 +140,7 @@ public abstract class SerialPortActivity extends BaseActivity {
                         Thread.sleep(50);//显示性能高的话，可以把此数值调小。
                     } catch (Exception e) {
 //                        e.printStackTrace();
-                        ZLogger.e(e.toString());
+                        ZLogger.ef(e.toString());
                     }
                     break;
                 }

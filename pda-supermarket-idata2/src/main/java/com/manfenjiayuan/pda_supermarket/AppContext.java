@@ -48,13 +48,18 @@ public class AppContext extends MfhApplication {
             }
             else{
                 ZLogger.LOG_ENABLED = true;
+
+                debugPrint();
             }
             //初始化IM模块
             IMClient.getInstance().init(getApplicationContext());
 
             initSkinLoader();
 
-            debugPrint();
+
+//            PosProductEntity entity = new PosProductEntity();
+//            entity.setBarcode("testBar");
+//            PosProductService.get().save
         }
 
         ZLogger.df(String.format("initialize finished(%s)", processAppName));

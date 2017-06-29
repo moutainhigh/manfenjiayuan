@@ -74,7 +74,7 @@ import rx.schedulers.Schedulers;
  * <li>同步商品档案——前台类目</li>
  * <li>同步商品档案——前台类目&商品档案关联表</li>
  * </ol>
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 public class DataDownloadManager {
     public static final int NA = 0;
@@ -1078,7 +1078,7 @@ public class DataDownloadManager {
                         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)) {
                             ZLogger.d("当前登录用户具有买手能力");
                         } else {
-                            ZLogger.d("当前登录用户不具有买手能力");
+                            ZLogger.w("当前登录用户不具有买手能力");
                         }
                         processQueue();
                     }

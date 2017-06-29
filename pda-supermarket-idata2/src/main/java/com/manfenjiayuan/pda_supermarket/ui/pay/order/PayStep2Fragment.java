@@ -23,15 +23,14 @@ import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.bean.wrapper.CouponRule;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierAgent;
+import com.manfenjiayuan.pda_supermarket.cashier.CashierBenchObservable;
 import com.manfenjiayuan.pda_supermarket.cashier.CashierFactory;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfoImpl;
-import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
-import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
-import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
-import com.manfenjiayuan.pda_supermarket.ui.pay.BasePayStepFragment;
+import com.manfenjiayuan.pda_supermarket.cashier.CashierProvider;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.model.CashierOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.model.PaymentInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.CouponRule;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -48,6 +47,7 @@ import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
 import com.mfh.framework.rxapi.http.PmcStockHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
@@ -55,6 +55,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -65,7 +67,7 @@ import rx.Subscriber;
  * 会员支付
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class PayStep2Fragment extends BasePayStepFragment {
+public class PayStep2Fragment extends BasePdaPayStepFragment {
     public static final String EXTRA_KEY_PAYTYPE = "payType";
     public static final String EXTRA_KEY_PAY_SUBTYPE = "paySubType";//0:会员卡，1:付款码，2:手机号
     public static final String EXTRA_KEY_VIP_CARID = "vipCardId";
@@ -80,6 +82,8 @@ public class PayStep2Fragment extends BasePayStepFragment {
     MultiLayerLabel tvHandleAmount;
     @BindView(R.id.labelRuleDiscount)
     MultiLayerLabel tvRuleDiscount;
+    @BindView(R.id.labelPromotion)
+    MultiLayerLabel labelPromotion;
     @BindView(R.id.labelCouponDiscount)
     MultiLayerLabel tvCouponAmount;
     @BindView(R.id.labelScore)
@@ -147,6 +151,8 @@ public class PayStep2Fragment extends BasePayStepFragment {
         ivMemberHeader.setBorderColor(Color.parseColor("#e8e8e8"));
         initCouponRecyclerView();
 
+        CashierBenchObservable.getInstance().addObserver(mObserver);
+
         if (cashierOrderInfo == null) {
             DialogUtil.showHint("订单支付数据错误");
             getActivity().setResult(Activity.RESULT_CANCELED);
@@ -167,6 +173,14 @@ public class PayStep2Fragment extends BasePayStepFragment {
     public void onResume() {
         super.onResume();
         couponRecyclerView.requestFocus();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mObserver != null) {
+            CashierBenchObservable.getInstance().deleteObserver(mObserver);
+        }
     }
 
     private void initCouponRecyclerView() {
@@ -223,26 +237,41 @@ public class PayStep2Fragment extends BasePayStepFragment {
     @Override
     protected void refresh() {
         if (cashierOrderInfo != null) {
-            orderId = cashierOrderInfo.getOrderId();
-            bizType = String.valueOf(cashierOrderInfo.getBizType());
+            try {
+                orderId = cashierOrderInfo.getOrderId();
+                bizType = String.valueOf(cashierOrderInfo.getBizType());
 
-            handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
-            ZLogger.df(String.format("刷新收银信息，应收金额:%f\n%s", handleAmount,
-                    JSONObject.toJSONString(cashierOrderInfo)));
+                handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
 
-            tvHandleAmount.setTopText(String.format("%.2f",
-                    CashierOrderInfoImpl.getUnpayAmount(cashierOrderInfo)));
-            tvRuleDiscount.setTopText(String.format("%.2f",
-                    CashierOrderInfoImpl.getRuleDiscountAmount(cashierOrderInfo)));
-            tvCouponAmount.setTopText(String.format("%.2f",
-                    CashierOrderInfoImpl.getCouponDiscountAmount(cashierOrderInfo)));
-            tvScore.setTopText(String.format("%.2f", Math.abs(handleAmount / 2)));
-            tvDealPayAmount.setTopText(String.format("%.2f", handleAmount));
+                tvHandleAmount.setTopText(String.format("%.2f",
+                        CashierProvider.getUnpayAmount(cashierOrderInfo)));
+                tvRuleDiscount.setTopText(String.format("%.2f",
+                        CashierBenchObservable.getInstance().getItemRuleAmount()));
+                labelPromotion.setTopText(String.format("%.2f",
+                        CashierBenchObservable.getInstance().getPackRuleAmount()));
+                tvCouponAmount.setTopText(String.format("%.2f",
+                        CashierBenchObservable.getInstance().getCouponAmount()));
+                tvScore.setTopText(String.format("%.0f", Math.abs(handleAmount / 2)));
+                tvDealPayAmount.setTopText(String.format("%.2f", handleAmount));
 
-            ZLogger.df(String.format("会员支付(%d)-应收金额:%f",
-                    paySubType, handleAmount));
+                //显示应付款
+//        SerialManager.show(2, cashierOrderInfo.getHandleAmount());
+                ZLogger.df(String.format("会员支付(%d)-应收金额:%f\n%s",
+                        paySubType, handleAmount, JSONObject.toJSONString(cashierOrderInfo)));
+            } catch (Exception e) {
+                e.printStackTrace();
+                ZLogger.ef(e.toString());
+            }
+
         }
     }
+
+    private Observer mObserver = new Observer() {
+        @Override
+        public void update(Observable o, Object arg) {
+            refresh();
+        }
+    };
 
     /**
      * 加载会员信息
@@ -284,6 +313,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
             hideProgressDialog();
             return;
         }
+        Date rightNow = TimeUtil.getCurrentDate();
 
         JSONArray jsonArray = new JSONArray();
         JSONObject jsonObject = new JSONObject();
@@ -291,7 +321,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
         jsonObject.put("humanId", mMemberInfo.getId());
         jsonObject.put("btype", cashierOrderInfo.getBizType());
         jsonObject.put("discount", cashierOrderInfo.getDiscountRate());
-        jsonObject.put("createdDate", TimeUtil.format(new Date(), TimeCursor.FORMAT_YYYYMMDDHHMMSS));
+        jsonObject.put("createdDate", TimeUtil.format(rightNow, TimeCursor.FORMAT_YYYYMMDDHHMMSS));
 //        jsonObject.put("subdisId", new Date());//会员所属小区
         jsonObject.put("items", cashierOrderInfo.getProductsInfo());
         jsonArray.add(jsonObject);
@@ -357,33 +387,29 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
         final String couponsIds = CashierAgent.getSelectCouponIds(couponAdapter.getEntityList());
         final String rulesIds = CashierAgent.getRuleIds(cashierOrderInfo.getOrderMarketRules());
+        Date rightNow = TimeUtil.getCurrentDate();
 
 
-        JSONArray jsonstr = new JSONArray();
-        JSONObject orderInfo = new JSONObject();
-        orderInfo.put("humanId", mMemberInfo.getId());
-        orderInfo.put("payType", curPayType);
+        JSONObject jsonstr = new JSONObject();
+        jsonstr.put("humanId", mMemberInfo.getId());
+        jsonstr.put("bizType", String.valueOf(cashierOrderInfo.getBizType()));
+        jsonstr.put("payType", curPayType);
 //        jsonObject.put("discount", cashierOrderInfo.getDiscountRate());
 //        jsonObject.put("discount", 1);
-        orderInfo.put("amount", cashierOrderInfo.getFinalAmount() - cashierOrderInfo.getPaidAmount());
-        orderInfo.put("createdDate", TimeCursor.InnerFormat.format(new Date()));
+        jsonstr.put("amount", cashierOrderInfo.getFinalAmount() - cashierOrderInfo.getPaidAmount());
+        jsonstr.put("createdDate", TimeCursor.InnerFormat.format(rightNow));
 //        jsonObject.put("subdisId", new Date());//会员所属小区
-        orderInfo.put("items", cashierOrderInfo.getProductsInfo());
-
-        JSONObject jsonstrItem = new JSONObject();
-        jsonstrItem.put("rules", rulesIds);
-        jsonstrItem.put("couponsIds", couponsIds);
-        jsonstrItem.put("orderInfo", orderInfo);
-        jsonstr.add(jsonstrItem);
-
+        jsonstr.put("items", cashierOrderInfo.getProductsInfo());
 
         Map<String, String> options = new HashMap<>();
-        options.put("bizType", String.valueOf(cashierOrderInfo.getBizType()));
+        options.put("version", "2");//"1|2"
+        options.put("ruleIds", rulesIds);
+        options.put("couponsIds", couponsIds);
         options.put("jsonStr", jsonstr.toJSONString());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        CommonUserAccountHttpManager.getInstance().getPayAmountByOrderInfos(options,
-                new Subscriber<List<PayAmount>>() {
+        CommonUserAccountHttpManager.getInstance().getPayAmountByOrderInfo(options,
+                new Subscriber<PayAmount>() {
                     @Override
                     public void onCompleted() {
 
@@ -401,12 +427,17 @@ public class PayStep2Fragment extends BasePayStepFragment {
                     }
 
                     @Override
-                    public void onNext(List<PayAmount> payAmounts) {
-                        if (cashierOrderInfo.saveCouponDiscount(payAmounts, couponsIds, rulesIds)) {
+                    public void onNext(PayAmount payAmount) {
+                        if (payAmount != null) {
+                            payAmount.setCouponsIds(couponsIds);
+                            payAmount.setRuleIds(rulesIds);
+                            cashierOrderInfo.setPayAmount(payAmount);
                             //刷新会员优惠的积分
                             if (couponAdapter != null) {
-                                couponAdapter.setVipScore(CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo) / 2);
+                                couponAdapter.setVipScore(CashierProvider.getHandleAmount(cashierOrderInfo) / 2);
                             }
+                            CashierBenchObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
+
                             refresh();
                         } else {
                             if (couponRule != null) {
@@ -455,12 +486,12 @@ public class PayStep2Fragment extends BasePayStepFragment {
     private void onPreSubmit(){
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在支付订单...", false);
 
-        handleAmount = CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo);
+        handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
 
-        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, curPayType,
                 PosOrderPayEntity.PAY_STATUS_PROCESS,
                 handleAmount, handleAmount, 0D,
-                cashierOrderInfo.getDiscountInfo());
+                cashierOrderInfo.getPayAmount());
 
         onPayStepProcess(paymentInfo);
     }
@@ -520,7 +551,7 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
     private void payDirect(Map<String, String> options) {
         CommonUserAccountHttpManager.getInstance().payDirect(options,
-                new Subscriber<String>() {
+                new MValueSubscriber<String>() {
                     @Override
                     public void onCompleted() {
 
@@ -528,23 +559,34 @@ public class PayStep2Fragment extends BasePayStepFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+                        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, curPayType,
                                 PosOrderPayEntity.PAY_STATUS_FAILED,
                                 handleAmount, handleAmount, 0D,
-                                cashierOrderInfo.getDiscountInfo());
-                        onPayStepFailed(paymentInfo, e.toString());
+                                cashierOrderInfo.getPayAmount());
+                        onPayStepFailed(paymentInfo, e.getMessage());
                     }
 
                     @Override
-                    public void onNext(String s) {
-                        ZLogger.df(String.format("%s %s 支付成功: %s", outTradeNo,
-                                WayType.name(curPayType), s));
+                    public void onValue(String data) {
+                        super.onValue(data);
+
+                        ZLogger.df(String.format("%s %s 支付成功", outTradeNo,
+                                WayType.getWayTypeName(curPayType)));
+                        Double balance = 0D;
+                        if (data != null) {
+                            balance = Double.valueOf(data);
+                        }
 //                    bPayProcessing = false;
-                        onUpdate(PaymentInfoImpl.genPaymentInfo(outTradeNo, curPayType,
+//                        Human human = cashierOrderInfo.getVipMember();
+                        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, curPayType,
                                 PosOrderPayEntity.PAY_STATUS_FINISH,
-                                handleAmount, handleAmount, 0D,
-                                cashierOrderInfo.getDiscountInfo()));
+                                handleAmount, handleAmount,
+                                balance,
+                                cashierOrderInfo.getPayAmount());
+
+                        onUpdate(paymentInfo);
                     }
+
                 });
     }
 
@@ -553,6 +595,9 @@ public class PayStep2Fragment extends BasePayStepFragment {
     @Override
     public void onPayStepFinish() {
         super.onPayStepFinish();
+
+        btnSubmit.setEnabled(true);
+        hideProgressDialog();
         refresh();
     }
 

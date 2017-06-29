@@ -599,6 +599,7 @@ public class InvRecvInspectFragment extends PDAScanFragment
             return;
         }
 
+
         chainGoodsSkuPresenter.getTenantSkuMust(tenantId, barcode, queryCheckbox.isChecked());
     }
 

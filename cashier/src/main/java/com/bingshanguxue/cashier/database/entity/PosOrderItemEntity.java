@@ -9,7 +9,7 @@ import com.mfh.framework.core.utils.StringUtils;
 
 /**
  * POS--销售订单明细
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06
  */
 @Table(name = "tb_pos_order_item_2")
 public class PosOrderItemEntity extends MfhEntity<Long> implements ILongId {

@@ -10,9 +10,9 @@ import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bingshanguxue.cashier.v1.CashierBenchObservable;
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierProvider;
+import com.bingshanguxue.cashier.CashierBenchObservable;
+import com.bingshanguxue.cashier.model.CashierOrderInfo;
+import com.bingshanguxue.cashier.CashierProvider;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.anlaysis.logger.ZLogger;

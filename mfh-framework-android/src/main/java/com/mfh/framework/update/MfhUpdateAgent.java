@@ -1,11 +1,11 @@
 package com.mfh.framework.update;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;

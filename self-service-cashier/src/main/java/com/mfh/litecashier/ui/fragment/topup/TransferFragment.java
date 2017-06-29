@@ -129,7 +129,7 @@ public class TransferFragment extends BaseProgressFragment implements ICustomerV
 
         } catch (Exception e) {
             e.printStackTrace();
-            ZLogger.d("打开充值页面 异常" + e.toString());
+            ZLogger.e("打开充值页面 异常" + e.toString());
         }
     }
 

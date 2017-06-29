@@ -17,13 +17,13 @@ import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
-import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
-import com.manfenjiayuan.pda_supermarket.ui.pay.BasePayStepFragment;
+import com.manfenjiayuan.pda_supermarket.cashier.model.CashierOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.model.PaymentInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.pay.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
-import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePayFragment;
+import com.manfenjiayuan.pda_supermarket.ui.pay.order.BasePdaPayStepFragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -46,7 +46,7 @@ import butterknife.OnClick;
  * 首页－－采购
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class InstockPayFragment extends BasePayStepFragment {
+public class InstockPayFragment extends BasePdaPayStepFragment {
 
     private static final int TAB_VIP = 0;
     private static final int TAB_ALIPAY = 1;

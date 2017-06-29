@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.database.entity.CashierShopcartEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.CashierShopcartService;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.CashierShopcartEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.service.CashierShopcartService;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.PriceType;
 import com.mfh.framework.uikit.recyclerview.SwipAdapter;

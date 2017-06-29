@@ -355,9 +355,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
                     "报损盘点", R.mipmap.ic_invlossorder_stock));
             menus.add(new HomeMenu(HomeMenu.OPTION_ID_INVCHECKORDER_STOCKTAKE,
                     "盘点", R.mipmap.ic_stocktake));
-
-//            menus.add(new HomeMenu(HomeMenu.OPTION_ID_PACKAGE,
-//                    "取包裹", R.mipmap.ic_package));
+            menus.add(new HomeMenu(HomeMenu.OPTION_ID_PICKUP_ORDER,
+                    "自提定安", R.mipmap.ic_package));
         }
         //买手：拣货
         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)) {
@@ -450,6 +449,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
             ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_LOSSORDER_LIST);
         }  else if (id.compareTo(HomeMenu.OPTION_ID_SENDORDER_NEW) == 0) {
             ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_SENDORDER_NEW);
+        }  else if (id.compareTo(HomeMenu.OPTION_ID_PICKUP_ORDER) == 0) {
+            ActivityRoute.redirect2Primary(MainActivity.this, PrimaryActivity.FT_INV_PICKUP_ORDER);
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }

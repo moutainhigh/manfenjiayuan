@@ -69,7 +69,6 @@ public class InvLossFragment extends BaseFragment {
     @BindView(R.id.empty_view)
     View emptyView;
 
-
     //当前正在报损的单据
     private InvLossOrder mInvLossOrder = null;
 

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosOrderPayDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.model.wrapper.PayWayType;
-import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.model.PaymentInfo;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;

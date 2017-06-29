@@ -146,7 +146,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
         Long categoryId = args.getLong(KEY_CATEGORY_ID);
 
         if (this.categoryId == null || categoryId.compareTo(this.categoryId) != 0) {
-            ZLogger.d(String.format("类目编号 %d不对，请忽略", this.categoryId));
+            ZLogger.w(String.format("类目编号 %d不对，请忽略", this.categoryId));
             return;
         }
         ZLogger.d(String.format("类目编号 %d 更新", this.categoryId));
@@ -299,7 +299,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
                                         productEntities1.size(), entity.getCataItemId()));
                                 productEntities.add(LocalFrontCategoryGoods.create(productEntities1.get(0)));
                             } else {
-                                ZLogger.d(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
+                                ZLogger.w(String.format("没有找到商品，spuId=%d", entity.getCataItemId()));
                             }
                         }
                     }

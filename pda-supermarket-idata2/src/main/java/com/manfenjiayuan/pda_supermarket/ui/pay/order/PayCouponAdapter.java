@@ -12,18 +12,15 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.bean.wrapper.CouponRule;
+import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.CouponRule;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.pmcstock.CoupBean;
 import com.mfh.framework.api.pmcstock.MarketRules;
-import com.mfh.framework.api.pmcstock.RuleBean;
 import com.mfh.framework.core.utils.ObjectsCompact;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +29,7 @@ import butterknife.OnClick;
 
 /**
  * 支付－－优惠券
- * Created by Nat.ZZN on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -332,51 +329,6 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return couponRules;
     }
 
-    private void mergeRule(List<CouponRule> source, RuleBean rule,
-                           Long splitOrderId, Double finalAmount) {
-        CouponRule entity = new CouponRule();
-        entity.setId(rule.getId());
-        entity.setType(CouponRule.TYPE_RULE);
-        entity.setTitle(rule.getTitle());
-        entity.setSubTitle(String.format("%s/%s",
-                rule.getExecTypeCaption(), rule.getPlanTypeCaption()));
-        entity.setDiscount(rule.getExecNum());
-        entity.setRuleExecType(rule.getExecType());
-        entity.setSelected(false);
-        entity.setAmount(finalAmount);
-        entity.setSplitOrderId(splitOrderId);
-
-        List<Long> spilitOrderIds = new ArrayList<>();
-        if (!spilitOrderIds.contains(splitOrderId)) {
-            spilitOrderIds.add(splitOrderId);
-        }
-
-        if (source != null && source.size() > 0) {
-            for (CouponRule couponRule : source) {
-                //删除重复的记录
-                if (CouponRule.TYPE_RULE.equals(couponRule.getType()) &&
-                        rule.getId().equals(couponRule.getId())) {
-                    spilitOrderIds.addAll(couponRule.getSplitOrderIds());
-
-                    if (finalAmount.compareTo(couponRule.getAmount()) > 0) {
-                        entity.setAmount(couponRule.getAmount());
-                        entity.setSplitOrderId(couponRule.getSplitOrderId());
-                    }
-                    source.remove(couponRule);
-                    break;
-                }
-            }
-
-        }
-
-        entity.setSplitOrderIds(spilitOrderIds);
-
-        if (source != null) {
-            source.add(entity);
-        }
-
-        ZLogger.df(JSON.toJSONString(entity));
-    }
 
     private void mergeCoupon(List<CouponRule> source, CoupBean coupon){
         CouponRule entity = new CouponRule();
@@ -408,39 +360,6 @@ public class PayCouponAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             source.add(entity);
         }
         ZLogger.df(JSON.toJSONString(entity));
-    }
-
-    /**
-     * 按订单拆分，获取选中的优惠券
-     */
-    public Map<Long, List<CouponRule>> getSelectSplitCoupons() {
-        Map<Long, List<CouponRule>> selectCouponsMap = new HashMap<>();
-
-        if (entityList != null && entityList.size() > 0) {
-            for (CouponRule couponRule : entityList) {
-                Long splitOrderId = couponRule.getSplitOrderId();
-                List<CouponRule> temp = selectCouponsMap.get(splitOrderId);
-                if (temp == null) {
-                    temp = new ArrayList<>();
-                }
-                temp.add(couponRule);
-                selectCouponsMap.put(splitOrderId, temp);
-
-//                List<String> spilitOrderIds = couponRule.getSplitOrderIds();
-//                if (spilitOrderIds != null && spilitOrderIds.size() > 0){
-//                    for (String splitOrderId : spilitOrderIds){
-//                        List<CouponRule> temp = selectCouponsMap.get(splitOrderId);
-//                        if (temp == null){
-//                            temp = new ArrayList<>();
-//                        }
-//                        temp.add(couponRule);
-//                        selectCouponsMap.put(splitOrderId, temp);
-//                    }
-//                }
-            }
-        }
-
-        return selectCouponsMap;
     }
 
     public List<CouponRule> getEntityList() {

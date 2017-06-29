@@ -1,7 +1,7 @@
 package com.bingshanguxue.cashier.database.entity;
 
-import com.bingshanguxue.cashier.PayStatus;
-import com.bingshanguxue.cashier.SyncStatus;
+import com.bingshanguxue.cashier.model.PayStatus;
+import com.bingshanguxue.cashier.model.SyncStatus;
 import com.mfh.comn.annotations.Table;
 import com.mfh.comn.bean.ILongId;
 import com.mfh.framework.api.constant.WayType;

@@ -13,10 +13,10 @@ import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.database.service.PosOrderPayService;
 import com.bingshanguxue.cashier.database.service.PosOrderService;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.bingshanguxue.cashier.v1.CashierAgent;
-import com.bingshanguxue.cashier.v1.CashierOrderInfo;
-import com.bingshanguxue.cashier.v1.CashierProvider;
-import com.bingshanguxue.cashier.v1.PaymentInfo;
+import com.bingshanguxue.cashier.CashierAgent;
+import com.bingshanguxue.cashier.model.CashierOrderInfo;
+import com.bingshanguxue.cashier.CashierProvider;
+import com.bingshanguxue.cashier.model.PaymentInfo;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -51,7 +51,6 @@ public abstract class BasePayStepFragment extends BaseFragment {
 
     protected CashierOrderInfo cashierOrderInfo = null;
     protected Integer curPayType = WayType.NA;
-
 
     private CommonDialog cancelPayDialog = null;
     private NumberInputDialog phoneInputDialog = null;//手机号
@@ -172,7 +171,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
      * 订单失败or异常
      */
     public void onPayStepFailed(PaymentInfo paymentInfo, String errMsg) {
-        ZLogger.ef(String.format("%s 订单支付失败or异常：%s\n%s", WayType.getWayTypeName(curPayType),
+        ZLogger.wf(String.format("%s 订单支付失败or异常：%s\n%s", WayType.getWayTypeName(curPayType),
                 errMsg, JSONObject.toJSONString(cashierOrderInfo)));
 
         if (paymentInfo == null) {
@@ -305,7 +304,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        ZLogger.ef("查询该笔支付者绑定的平台用户失败：" + e.toString());
+                        ZLogger.w("查询该笔支付者绑定的平台用户失败：" + e.toString());
                         back2MainActivity();
                     }
 

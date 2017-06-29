@@ -19,7 +19,7 @@ import com.mfh.framework.uikit.base.BaseActivity;
 
 /**
  * 科大讯飞
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public abstract class IflyTekActivity extends BaseActivity {
     // 语音合成对象

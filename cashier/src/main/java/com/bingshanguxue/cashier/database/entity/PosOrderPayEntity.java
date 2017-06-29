@@ -9,7 +9,7 @@ import com.mfh.framework.api.constant.WayType;
 /**
  * POS支付记录
  *
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..<br>
+ * Created by bingshanguxue on 15-09-06<br>
  * <table>
  *     <tr>
  *         <th>id</th>

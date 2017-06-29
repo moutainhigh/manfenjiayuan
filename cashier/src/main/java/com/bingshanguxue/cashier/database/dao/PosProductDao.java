@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * POS--商品库
  * 主键由后台数据提供
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue  on 15-09-06..
  */
 public class PosProductDao extends BaseDbDao<PosProductEntity, String> {
 

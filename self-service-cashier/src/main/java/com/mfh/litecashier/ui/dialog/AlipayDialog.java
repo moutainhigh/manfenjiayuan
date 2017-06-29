@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
-import com.bingshanguxue.cashier.PayStatus;
+import com.bingshanguxue.cashier.model.PayStatus;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
@@ -57,8 +57,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import rx.Subscriber;
-
-import static com.mfh.framework.api.MfhApi.WXPAY_CHANNEL_ID;
 
 
 /**

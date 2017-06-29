@@ -19,9 +19,9 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
-import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfoImpl;
-import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.PosOrderPayEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.model.PaymentInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.pay.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.WayType;
@@ -230,9 +230,9 @@ public class PayByCashFragment extends BasePayFragment {
 
 
     private void onPaidSucceed() {
-        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(outTradeNo, payType,
+        PaymentInfo paymentInfo = PaymentInfo.create(outTradeNo, payType,
                 PosOrderPayEntity.PAY_STATUS_FINISH,
-                handleAmount, handleAmount, rechargeAmount);
+                handleAmount, handleAmount, rechargeAmount, null);
         ZLogger.df(String.format("现金支付成功，收取金额：%.2f\n%s",
                 paidAmount, JSON.toJSONString(paymentInfo)));
 

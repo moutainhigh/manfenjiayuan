@@ -1,8 +1,8 @@
 package com.manfenjiayuan.pda_supermarket.service;
 
 import com.bingshanguxue.pda.utils.SharedPrefesManagerUltimate;
-import com.manfenjiayuan.pda_supermarket.database.entity.PosOrderEntity;
-import com.manfenjiayuan.pda_supermarket.database.logic.PosOrderService;
+import com.manfenjiayuan.pda_supermarket.cashier.database.entity.PosOrderEntity;
+import com.manfenjiayuan.pda_supermarket.cashier.database.service.PosOrderService;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;

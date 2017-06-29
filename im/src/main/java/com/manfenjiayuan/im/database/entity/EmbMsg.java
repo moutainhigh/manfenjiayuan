@@ -8,7 +8,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 
 /**
  * 消息表
- * Created by Administrator on 14-5-6.
+ * Created by bingshanguxue on 14-5-6.
  */
 @Table(name="emb_msg_v0001")
 public class EmbMsg extends MfhEntity<String> implements IStringId{

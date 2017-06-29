@@ -25,6 +25,7 @@ public class HomeMenu implements Serializable {
     public static final Long OPTION_ID_CASHIER = 27L;//收银
     public static final Long OPTION_ID_QUERY_BILL = 28L;//单据查询
     public static final Long OPTION_ID_SENDORDER_NEW = 29L;//订货
+    public static final Long OPTION_ID_PICKUP_ORDER = 30L;//自提订单
 
     public static final Long OPTION_ID_RECVORDER_NEW = 4L;//收货（商品配送）
     public static final Long OPTION_ID_RECVORDER_CONVERT = 31L;//收货转换

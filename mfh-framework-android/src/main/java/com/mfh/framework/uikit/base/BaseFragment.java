@@ -1,6 +1,7 @@
 package com.mfh.framework.uikit.base;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -219,6 +220,20 @@ public abstract class BaseFragment extends Fragment {
         if (mProgressDialog != null) {
             mProgressDialog.dismiss();
         }
+    }
+
+    /**
+     * 获取正确状态的文字颜色
+     */
+    public int getOkTextColor() {
+        return Color.parseColor("#FF009B4E");
+    }
+
+    /**
+     * 获取错误状态的文字颜色
+     */
+    public int getErrorTextColor() {
+        return Color.parseColor("#FE5000");
     }
 
 }

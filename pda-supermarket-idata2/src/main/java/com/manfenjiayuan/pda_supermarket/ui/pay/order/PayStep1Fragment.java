@@ -18,10 +18,11 @@ import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfo;
-import com.manfenjiayuan.pda_supermarket.cashier.CashierOrderInfoImpl;
-import com.manfenjiayuan.pda_supermarket.cashier.PaymentInfo;
-import com.manfenjiayuan.pda_supermarket.ui.pay.BasePayStepFragment;
+import com.manfenjiayuan.pda_supermarket.cashier.CashierBenchObservable;
+import com.manfenjiayuan.pda_supermarket.cashier.CashierProvider;
+import com.manfenjiayuan.pda_supermarket.cashier.model.CashierOrderInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.model.PaymentInfo;
+import com.manfenjiayuan.pda_supermarket.cashier.pay.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayStep1Event;
@@ -48,7 +49,7 @@ import butterknife.OnClick;
  * 支付
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
-public class PayStep1Fragment extends BasePayStepFragment {
+public class PayStep1Fragment extends BasePdaPayStepFragment {
 
     private static final int TAB_CASH = 0;
     private static final int TAB_VIP = 1;
@@ -150,7 +151,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
     protected void refresh() {
         if (cashierOrderInfo != null) {
             //显示应付款
-            Double handleAmount = CashierOrderInfoImpl.getUnpayAmount(cashierOrderInfo);
+            Double handleAmount = CashierProvider.getUnpayAmount(cashierOrderInfo);
 
             ZLogger.df(String.format("刷新收银信息，应收金额:%f\n%s", handleAmount,
                     JSONObject.toJSONString(cashierOrderInfo)));
@@ -164,6 +165,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
             tvAdjustAmount.setTopText(String.format("%.2f", 0D));
         }
 
+        CashierBenchObservable.getInstance().setCashierOrderInfo(cashierOrderInfo);
         notifyPayInfoChanged(paySlidingTabStrip.getCurrentPosition());
 
         activeMode(true);
@@ -228,12 +230,6 @@ public class PayStep1Fragment extends BasePayStepFragment {
             @Override
             public void onChanged(int page) {
                 notifyPayInfoChanged(page);
-//                if (page == 1 || page == 2 || page == 4 || page == 5) {
-//                    if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-//                        DialogUtil.showHint("网络异常,请选择其他支付方式");
-////                        paySlidingTabStrip.setSelected();
-//                    }
-//                }
             }
         });
         viewPagerAdapter = new TopFragmentPagerAdapter(getChildFragmentManager(),
@@ -253,7 +249,7 @@ public class PayStep1Fragment extends BasePayStepFragment {
         parArgs.putString(BasePayFragment.EXTRA_KEY_BIZ_TYPE,
                 String.valueOf(cashierOrderInfo.getBizType()));
         parArgs.putDouble(BasePayFragment.EXTRA_KEY_HANDLE_AMOUNT,
-                CashierOrderInfoImpl.getHandleAmount(cashierOrderInfo));
+                CashierProvider.getHandleAmount(cashierOrderInfo));
 
         mTabs.add(new ViewPageInfo("现金", "现金", PayByCashFragment.class,
                 parArgs));

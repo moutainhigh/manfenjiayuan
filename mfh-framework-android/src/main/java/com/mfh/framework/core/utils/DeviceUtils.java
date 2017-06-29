@@ -64,11 +64,12 @@ public class DeviceUtils {
             return;
         }
         View view = activity.getWindow().peekDecorView();
-        if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) activity
-                    .getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+        hideSoftInput(activity, view);
+//        if (view != null) {
+//            InputMethodManager inputmanger = (InputMethodManager) activity
+//                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+//        }
     }
 
     public static void hideSoftInput2(Activity context) {

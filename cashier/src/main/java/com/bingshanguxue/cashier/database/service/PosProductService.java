@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * POS--商品--库存
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 public class PosProductService extends BaseService<PosProductEntity, String, PosProductDao> {
     private static PosProductService instance = null;

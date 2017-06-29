@@ -47,7 +47,7 @@ public class KeepAlarmLiveReceiver extends BroadcastReceiver{
                 info.append("无升级信息");
             }
 
-            ZLogger.df(String.format("%s-自动检测更新\n%s", intent.getAction(), info.toString()));
+            ZLogger.d(String.format("%s-自动检测更新\n%s", intent.getAction(), info.toString()));
             Beta.checkUpgrade(false, false);
         }
     }

@@ -51,7 +51,6 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.igexin.push.core.g.R;
 
 
 /**

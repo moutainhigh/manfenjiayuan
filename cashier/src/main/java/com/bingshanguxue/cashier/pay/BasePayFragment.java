@@ -17,7 +17,7 @@ import com.mfh.framework.uikit.base.BaseFragment;
 
 /**
  * 结算
- * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
+ * Created by bingshanguxue on 15/8/31.
  */
 public abstract class BasePayFragment extends BaseFragment {
 
@@ -28,6 +28,9 @@ public abstract class BasePayFragment extends BaseFragment {
     public static final String EXTRA_KEY_BODY           = "body";   //内容
     public static final String EXTRA_KEY_HANDLE_AMOUNT  = "handleAmount";   //应收金额
     public static final String EXTRA_KEY_MEMBERINFO     = "memberInfo";     //会员信息
+    public static final String EXTRA_KEY_WAYTYPE     = "wayType";     //支付方式
+    public static final String EXTRA_KEY_SCANCODE     = "scanCode";     //扫描码
+
 
     protected int payType;//支付类型
 
@@ -45,6 +48,10 @@ public abstract class BasePayFragment extends BaseFragment {
     protected BroadcastReceiver receiver;
 
     protected boolean bPayProcessing = false;//支付状态
+
+    //扫描到条码
+    protected void onScanCode(String code){}
+    protected boolean isAcceptBarcodeEnabled = true;
 
     /**
      * 设置支付类型*/
@@ -156,6 +163,8 @@ public abstract class BasePayFragment extends BaseFragment {
      * 支付订单
      * */
     protected void submitOrder(){
+        isAcceptBarcodeEnabled = false;
+
         //验证参数
         //生成商户订单号
         generateOutTradeNo();
