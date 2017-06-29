@@ -104,27 +104,27 @@
             android:showDividers="middle">
 
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                android:id="@+id/label_quantity"
+                android:id="@+id/label_original_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:bottomText="数量"
+                app:bottomText="@string/original_amount"
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="@string/default_amount"
-                app:topTextColor="#FF009B4E"
+                app:topTextColor="@color/text_color_red"
                 app:topTextSize="48sp"/>
 
             <com.bingshanguxue.vector_uikit.widget.MultiLayerLabel
-                android:id="@+id/label_amount"
+                android:id="@+id/label_customer_amount"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:bottomText="金额"
+                app:bottomText="@string/customer_amount"
                 app:bottomTextColor="@color/black_70"
                 app:bottomTextSize="16sp"
                 app:topText="@string/default_amount"
-                app:topTextColor="#FFFE5000"
+                app:topTextColor="@color/text_color_green"
                 app:topTextSize="48sp"/>
         </LinearLayout>
 
@@ -136,6 +136,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/spacing_8x"
             android:layout_marginStart="@dimen/spacing_8x"
+            app:editTextSize="@dimen/textsize_normal"
             app:editInputType="barcode"
             app:editTextColor="@color/material_black"
             app:editTextColorHint="@color/mfh_textColorHint"

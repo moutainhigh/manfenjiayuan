@@ -7,5 +7,7 @@
 
     <color name="menu_normal">@color/mfh_barBackground</color>
     <color name="menu_pressed">#545359</color>
+    <color name="text_color_red">#FFFE5000</color>
+    <color name="text_color_green">#FF009B4E</color>
 
 </resources>

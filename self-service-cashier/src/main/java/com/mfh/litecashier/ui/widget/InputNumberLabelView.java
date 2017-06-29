@@ -135,7 +135,7 @@ public class InputNumberLabelView extends LinearLayout {
         etInput.setFocusable(ta.getBoolean(R.styleable.InputNumberLabelView_editFocusable, true));
         etInput.setFocusableInTouchMode(ta.getBoolean(R.styleable.InputNumberLabelView_editFocusableInTouchMode, true));
         Drawable editBackground = ta.getDrawable(R.styleable.InputNumberLabelView_editBackground);
-        if (editBackground != null){
+        if (editBackground != null) {
             etInput.setBackground(editBackground);
         }
 //        else{
@@ -345,11 +345,11 @@ public class InputNumberLabelView extends LinearLayout {
         return true;
     }
 
-    public void setAction1Selected(boolean selected){
+    public void setAction1Selected(boolean selected) {
         this.ibAction1.setSelected(selected);
     }
 
-    public boolean isAction1Selected(){
+    public boolean isAction1Selected() {
         return this.ibAction1.isSelected();
     }
 

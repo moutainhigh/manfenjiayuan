@@ -132,7 +132,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-
 /**
  * 首页
  * Created by bingshanguxue on 15/8/30.
@@ -154,10 +153,10 @@ public class MainActivity extends CashierActivity
     TextView tvLastDiscount;
     @BindView(R.id.tv_last_charge)
     TextView tvLastCharge;
-    @BindView(R.id.label_quantity)
-    MultiLayerLabel labelQuantity;
-    @BindView(R.id.label_amount)
-    MultiLayerLabel labelAmount;
+    @BindView(R.id.label_original_amount)
+    MultiLayerLabel labelOriginalAmount;
+    @BindView(R.id.label_customer_amount)
+    MultiLayerLabel labelCustomerAmount;
     @BindView(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
     @BindView(R.id.product_list)
@@ -438,6 +437,8 @@ public class MainActivity extends CashierActivity
             ActivityRoute.redirect2ExchangeScore(this, null);
         } else if (id.compareTo(ResMenu.CASHIER_MENU_TOPUP) == 0) {
             ActivityRoute.redirect2Transfer(this, null);
+        } else if (id.compareTo(ResMenu.CASHIER_MENU_PICKUP_ORDER) == 0) {
+            ActivityRoute.redirect2Pickup(this, null);
         } else {
             DialogUtil.showHint(R.string.coming_soon);
         }
@@ -2148,11 +2149,11 @@ public class MainActivity extends CashierActivity
     private java.util.Observer cashierObservable = new java.util.Observer() {
         @Override
         public void update(java.util.Observable o, Object arg) {
-            if (labelQuantity != null) {
-                labelQuantity.setTopText(MUtils.formatDouble(CashierBenchObservable.getInstance().getBcount(), ""));
+            if (labelOriginalAmount != null) {
+                labelOriginalAmount.setTopText(MUtils.formatDouble(CashierBenchObservable.getInstance().getFinalAmount(), ""));//成交价
             }
-            if (labelAmount != null) {
-                labelAmount.setTopText(MUtils.formatDouble(CashierBenchObservable.getInstance().getFinalAmount(), ""));//成交价
+            if (labelCustomerAmount != null) {
+                labelCustomerAmount.setTopText(MUtils.formatDouble(CashierBenchObservable.getInstance().getFinalCustomerAmount(), ""));//成交价
             }
         }
     };
@@ -2292,6 +2293,8 @@ public class MainActivity extends CashierActivity
                 "钱箱", R.mipmap.ic_service_moneybox));
         functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_SETTINGS,
                 "设置", R.mipmap.ic_service_settings));
+        functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_PICKUP_ORDER,
+                "打印取货单", R.mipmap.ic_service_settings));
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
             functionalList.add(new ResMenu(ResMenu.CASHIER_MENU_BALANCE_QUERY,
                     "余额查询", R.mipmap.ic_service_balance));
