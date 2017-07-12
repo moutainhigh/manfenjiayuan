@@ -7,12 +7,12 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
+import com.mfh.litecashier.components.customer.CustomerTransactionFragment;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.activity.SimpleActivity;
 import com.mfh.litecashier.ui.activity.SimpleDialogActivity;
-import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
-import com.mfh.litecashier.ui.fragment.topup.TransferFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
+import com.mfh.litecashier.components.pickup.PickupFragment;
 
 /**
  * 活动视图路由
@@ -97,7 +97,7 @@ public class ActivityRoute {
      * 订单列表
      */
     public static void redirect2OrderList(Context context) {
-        ZLogger.df(">>>打开线上订单页面");
+        ZLogger.d(">>>打开线上订单页面");
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_SERVICE_TYPE, FragmentActivity.FT_ORDER);
@@ -130,37 +130,41 @@ public class ActivityRoute {
     }
 
     /**
-     * 积分兑换
+     * 会员交易查询
      * */
-    public static void redirect2ExchangeScore(Context context, Human human){
+    public static void redirect2CustomerTransaction(Context context, Human human){
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
                 SimpleDialogActivity.DT_MIDDLE);
         extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleDialogActivity.FT_EXCHANGE_SCORE);
+                SimpleDialogActivity.FT_CUSTOMER_TRANSACTION);
         if (human != null) {
-            extras.putSerializable(ExchangeScoreFragment.EXTRA_HUMAN,
+            extras.putSerializable(CustomerTransactionFragment.EXTRA_KEY_HUMAN,
                     human);
         }
         UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
     }
 
     /**
-     * 会员充值
+     * 打印取货单
      * */
-    public static void redirect2Transfer(Context context, Human human){
-        Bundle extras = new Bundle();
-        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
-                SimpleDialogActivity.DT_MIDDLE);
-        extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
-                SimpleDialogActivity.FT_CUSTOMER_TOPUP);
-        if (human != null) {
-            extras.putSerializable(TransferFragment.EXTRA_HUMAN,
-                    human);
+    public static void redirect2Pickup(Context context, Human human){
+        try {
+            Bundle extras = new Bundle();
+            extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
+            extras.putInt(SimpleDialogActivity.EXTRA_KEY_DIALOG_TYPE,
+                    SimpleDialogActivity.DT_MIDDLE);
+            extras.putInt(SimpleDialogActivity.EXTRA_KEY_SERVICE_TYPE,
+                    SimpleDialogActivity.FT_CUSTOMER_PICKUP);
+            if (human != null) {
+                extras.putSerializable(PickupFragment.EXTRA_HUMAN,
+                        human);
+            }
+            UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        UIHelper.startActivity(context, SimpleDialogActivity.class, extras);
     }
 
     /**

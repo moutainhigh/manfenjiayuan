@@ -16,7 +16,9 @@
         <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
             android:id="@+id/order_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_normal"/>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 

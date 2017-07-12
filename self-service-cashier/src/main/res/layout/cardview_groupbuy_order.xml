@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="@dimen/spacing_normal"
+                                    app:cardBackgroundColor="@color/mfhtheme_maskPrimary"
+                                    app:cardCornerRadius="2dp"
+                                    app:cardElevation="5dp"
+                                    app:cardPreventCornerOverlap="true"
+                                    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:orientation="vertical">
+        <!-- 标签-->
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/material_blue_500"
+            android:gravity="center"
+            android:padding="@dimen/spacing_normal"
+            android:textColor="@color/material_black"
+            android:textSize="16sp"/>
+
+        <!--编号-->
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/goods_list"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/tv_date"/>
+
+        <View
+            android:id="@+id/maskView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageButton
+            android:id="@+id/ib_ratio"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.65"
+            android:background="@color/mfh_barBackground"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_toolbar_submit"
+            android:visibility="gone"/>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

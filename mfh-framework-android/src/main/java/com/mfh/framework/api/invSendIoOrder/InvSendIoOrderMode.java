@@ -27,14 +27,15 @@ public class InvSendIoOrderMode {
 
     /**
      * 加载库存调拨订单列表
+     *
      * @param pageInfo
-     * @param status 订单状态，可以为空，为空时表示查询所有状态
-     * @param payStatus 支付状态，可以为空，为空时表示查询所有状态。
+     * @param status       订单状态，可以为空，为空时表示查询所有状态
+     * @param payStatus    支付状态，可以为空，为空时表示查询所有状态。
      * @param sendTenantId 发货方网点编号，可以为空，为空时表示查询所有发货发。
      * @param listener
-     * */
+     */
     public void loadTransOrders(PageInfo pageInfo, boolean netFlag,
-                           final OnPageModeListener<InvSendIoOrder> listener) {
+                                final OnPageModeListener<InvSendIoOrder> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -91,7 +92,8 @@ public class InvSendIoOrderMode {
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
                 //{"code":"1","msg":"null","version":"1","data":null}
-                ZLogger.df("加载收货订单失败:" + errMsg);if (listener != null) {
+                ZLogger.ef("加载收货订单失败:" + errMsg);
+                if (listener != null) {
                     listener.onError(errMsg);
                 }
             }
@@ -110,7 +112,7 @@ public class InvSendIoOrderMode {
      * @param listener
      */
     public void loadReturnOrders(PageInfo pageInfo, String status, String payStatus, String sendTenantId,
-                           final OnPageModeListener<InvSendIoOrder> listener) {
+                                 final OnPageModeListener<InvSendIoOrder> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -172,7 +174,7 @@ public class InvSendIoOrderMode {
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
                 //{"code":"1","msg":"null","version":"1","data":null}
-                ZLogger.df("加载收货订单失败:" + errMsg);
+                ZLogger.ef("加载收货订单失败:" + errMsg);
                 if (listener != null) {
                     listener.onError(errMsg);
                 }
@@ -184,19 +186,20 @@ public class InvSendIoOrderMode {
 
     /**
      * 加载采购收货订单列表
+     *
      * @param pageInfo
-     * @param status 订单状态，可以为空，为空时表示查询所有状态
-     * @param payStatus 支付状态，可以为空，为空时表示查询所有状态。
+     * @param status       订单状态，可以为空，为空时表示查询所有状态
+     * @param payStatus    支付状态，可以为空，为空时表示查询所有状态。
      * @param sendTenantId 发货方网点编号，可以为空，为空时表示查询所有发货发。
      * @param listener
-     * */
+     */
     public void loadRecvOrders(PageInfo pageInfo, String status, String payStatus, String sendTenantId,
-                           final OnPageModeListener<InvSendIoOrder> listener) {
+                               final OnPageModeListener<InvSendIoOrder> listener) {
         if (listener != null) {
             listener.onProcess();
         }
         AjaxParams params = new AjaxParams();
-        if (!StringUtils.isEmpty(status)){
+        if (!StringUtils.isEmpty(status)) {
             if (status.contains(",")) {
                 params.put("statuss", status);
             } else {
@@ -246,7 +249,8 @@ public class InvSendIoOrderMode {
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
                 //{"code":"1","msg":"null","version":"1","data":null}
-                ZLogger.df("加载收货订单失败:" + errMsg);if (listener != null) {
+                ZLogger.ef("加载收货订单失败:" + errMsg);
+                if (listener != null) {
                     listener.onError(errMsg);
                 }
             }

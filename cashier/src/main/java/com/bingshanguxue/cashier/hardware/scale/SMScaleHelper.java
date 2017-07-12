@@ -438,7 +438,7 @@ public class SMScaleHelper {
             ds781A.setUnitPrice(sUnitPrice2 != null ? Double.parseDouble(sUnitPrice2) : null);
             ds781A.setTotalPrice(sTotalPrice2 != null ? Double.parseDouble(sTotalPrice2) : null);
             if (SharedPrefesManagerFactory.isSuperPermissionGranted()) {
-                ZLogger.df(JSONObject.toJSONString(ds781A));
+                ZLogger.d(JSONObject.toJSONString(ds781A));
             }
 
             return ds781A;

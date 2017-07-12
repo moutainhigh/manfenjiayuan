@@ -12,8 +12,8 @@ import android.view.WindowManager;
 
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.fragment.components.OrderFlowFragment;
-import com.mfh.litecashier.ui.fragment.components.SettingsGoodsFragment;
+import com.mfh.litecashier.components.OrderFlowFragment;
+import com.mfh.litecashier.components.SettingsGoodsFragment;
 import com.mfh.litecashier.ui.fragment.inventory.InventoryCostFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseFragment;
 import com.mfh.litecashier.ui.fragment.purchase.manual.ManualPurchaseFragment;

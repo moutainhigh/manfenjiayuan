@@ -40,7 +40,6 @@ public class InvSkuStoreApiImpl extends InvSkuStoreApi{
 
     /**
      * 货架绑定商品:
-     * /pmcstock/findConpousByOrderInfo?jsonStr={productId:[1,2,3], officeId:.., shopId:..., orderAmount:...} 其中officeId和shopId可以只提供一个，也可以同时为空
      */
     public static void bindRackNo(String barcode, String rackNo, AjaxCallBack<? extends Object> responseCallback) {
         AjaxParams params = new AjaxParams();

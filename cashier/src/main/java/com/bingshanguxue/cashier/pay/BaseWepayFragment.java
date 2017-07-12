@@ -88,7 +88,7 @@ public class BaseWepayFragment extends BasePayFragment {
                             onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, "微信条码支付失败，无响应", getErrorTextColor(), false);
                             return;
                         }
-                        ZLogger.df(String.format("微信条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        ZLogger.d(String.format("微信条码支付:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
                         switch (stringMResponse.getCode()) {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
@@ -157,7 +157,7 @@ public class BaseWepayFragment extends BasePayFragment {
                             onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, "微信条码支付失败，无响应", getErrorTextColor(), false);
                             return;
                         }
-                        ZLogger.df(String.format("微信条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        ZLogger.d(String.format("微信条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
                             case 0:
@@ -216,7 +216,7 @@ public class BaseWepayFragment extends BasePayFragment {
                             onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, "微信条码支付取消订单，无响应", getErrorTextColor(), false);
                             return;
                         }
-                        ZLogger.df(String.format("微信条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        ZLogger.d(String.format("微信条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
                             case 0:

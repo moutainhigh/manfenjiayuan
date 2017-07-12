@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              style="@style/mfh_form_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:paddingBottom="@dimen/spacing_micro"
+              android:paddingTop="@dimen/spacing_micro">
+
+
+    <TextView
+        android:id="@+id/tv_createDate"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center_vertical|start"
+        android:text="@string/app_name"/>
+
+    <TextView
+        android:id="@+id/tv_biztype"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center_vertical|start"
+        android:text="@string/app_name"/>
+
+    <!--联系人信息-->
+    <TextView
+        android:id="@+id/tv_pay_type"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center_vertical|start"
+        android:text="@string/app_name"/>
+
+
+    <TextView
+        android:id="@+id/tv_amount"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_vertical|end"
+        android:text="@string/app_name"/>
+
+
+</LinearLayout>

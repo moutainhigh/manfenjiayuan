@@ -152,6 +152,7 @@ public abstract class BaseListFragment<T> extends Fragment {
 
     }
 
+    android.app.ProgressDialog dd;
     /**
      * 显示同步数据对话框
      */

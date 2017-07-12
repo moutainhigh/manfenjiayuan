@@ -74,6 +74,13 @@ public abstract class SerialHelper {
             mSerialPort.close1();
             mSerialPort = null;
         }
+        if (mOutputStream != null) {
+            try {
+                mOutputStream.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         _isOpen = false;
     }
 
@@ -84,6 +91,7 @@ public abstract class SerialHelper {
             }
             if (mOutputStream != null) {
                 mOutputStream.write(bOutArray);
+                mOutputStream.flush();
             }
 //            mOutputStream.flush();
         } catch (IOException e) {

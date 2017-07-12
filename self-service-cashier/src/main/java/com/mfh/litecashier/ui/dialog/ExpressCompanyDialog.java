@@ -151,7 +151,7 @@ public class ExpressCompanyDialog extends CommonDialog {
                 @Override
                 public void processResult(IResponseData rspData) {
                     if (rspData == null) {
-                        ZLogger.df("未查询到结果");
+                        ZLogger.w("未查询到结果");
                         return;
                     }
 

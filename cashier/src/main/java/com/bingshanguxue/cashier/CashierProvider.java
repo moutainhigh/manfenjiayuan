@@ -125,9 +125,9 @@ public class CashierProvider {
     /**
      * 获取订单明细
      */
-    public static List<PosOrderItemEntity> fetchOrderItems(PosOrderEntity orderEntity) {
+    public static List<PosOrderItemEntity> fetchOrderItems(Long orderId) {
         return PosOrderItemService.get()
-                .queryAllBy(String.format("orderId = '%d'", orderEntity.getId()));
+                .queryAllBy(String.format("orderId = '%d'", orderId));
     }
 
     /**
@@ -172,18 +172,26 @@ public class CashierProvider {
 
     public static CashierOrderInfo createCashierOrderInfo(PosOrderEntity orderEntity,
                                                           Human vipMember) {
+        Long orderId = orderEntity.getId();
+        if (orderId == null) {
+            ZLogger.e("订单编号无效");
+            return null;
+        }
+
+        ZLogger.d("创建订单支付信息：" +JSONObject.toJSONString(orderEntity));
         Double bCount = 0D;
-        Double retailAmount = 0D;
-        Double finalAmount = 0D;
+        Double retailAmount = 0D, finalAmount = 0D, vipAmount = 0D;
         StringBuilder sbBody = new StringBuilder();
         JSONArray productsInfo = new JSONArray();
+
         //订单明细
-        List<PosOrderItemEntity> orderItemEntityList = fetchOrderItems(orderEntity);
+        List<PosOrderItemEntity> orderItemEntityList = fetchOrderItems(orderId);
         if (orderItemEntityList != null && orderItemEntityList.size() > 0) {
             for (PosOrderItemEntity itemEntity : orderItemEntityList) {
                 bCount += itemEntity.getBcount();
                 retailAmount += itemEntity.getAmount();
                 finalAmount += itemEntity.getFinalAmount();
+                vipAmount += itemEntity.getVipAmount();
 
                 if (sbBody.length() > 0) {
                     sbBody.append(",");
@@ -224,15 +232,15 @@ public class CashierProvider {
         cashierOrderInfo.setProductsInfo(productsInfo);
 
         //读取支付记录
-        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderEntity.getId());
+        OrderPayInfo payWrapper = OrderPayInfo.deSerialize(orderId);
         if (payWrapper != null) {
             cashierOrderInfo.setPayType(payWrapper.getPayType());
             cashierOrderInfo.setPaidAmount(payWrapper.getPaidAmount()
                     + payWrapper.getVipDiscount() + payWrapper.getPromotionDiscount()
-                    + payWrapper.getCouponDiscount());
+                    + payWrapper.getCouponDiscount() + vipAmount);
         }
 
-        ZLogger.df(String.format("订单支付信息:%s", JSONObject.toJSONString(cashierOrderInfo)));
+        ZLogger.d(String.format("订单支付信息:%s", JSONObject.toJSONString(cashierOrderInfo)));
         return cashierOrderInfo;
     }
 
@@ -240,7 +248,7 @@ public class CashierProvider {
      * 生成订单同步数据结构
      */
     public static JSONObject wrapperUploadOrder(PosOrderEntity orderEntity) {
-        ZLogger.df(String.format("准备同步订单 : (%d/%s) %s", orderEntity.getId(), orderEntity.getBarCode(),
+        ZLogger.d(String.format("准备同步订单 : (%d/%s) %s", orderEntity.getId(), orderEntity.getBarCode(),
                 JSONObject.toJSONString(orderEntity)));
         JSONObject order = new JSONObject();
 
@@ -274,7 +282,7 @@ public class CashierProvider {
         order.put("createdBy", orderEntity.getCreatedBy());
 
         //读取订单商品明细
-        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity);
+        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity.getId());
         JSONArray items = new JSONArray();
         for (PosOrderItemEntity entity : orderItemEntities) {
             JSONObject item = new JSONObject();

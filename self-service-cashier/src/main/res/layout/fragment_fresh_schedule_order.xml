@@ -15,7 +15,7 @@
         android:layout_marginBottom="@dimen/spacing_micro"
         android:layout_marginTop="@dimen/spacing_micro"
         android:padding="@dimen/spacing_micro"
-        app:inputNumberLabelView_inputHint="手机号"
+        app:inputHint="手机号"
         app:editTextColor="@color/material_black"
         app:editTextColorHint="@color/mfh_textColorHint"/>
 

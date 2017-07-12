@@ -17,6 +17,7 @@ import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.analysis.AccItem;
 import com.mfh.framework.api.analysis.AggItem;
+import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -413,6 +414,11 @@ public class DailySettleFragment extends BaseProgressFragment {
             if (dataList != null && dataList.size() > 0) {
                 for (MEntityWrapper<AggItem> entityWrapper : dataList) {
                     AggItem aggItem = entityWrapper.getBean();
+
+                    if (BizType.RECHARGE.equals(aggItem.getBizType())) {
+                        continue;
+                    }
+
                     Map<String, String> caption = entityWrapper.getCaption();
                     aggItem.setBizTypeCaption(caption.get("bizType"));
                     aggItem.setSubTypeCaption(caption.get("subType"));
@@ -426,12 +432,12 @@ public class DailySettleFragment extends BaseProgressFragment {
             mDailysettleInfo.setTurnOver(turnOver);
             mDailysettleInfo.setSalesBalance(salesBalance);
             mDailysettleInfo.setUpdatedDate(TimeUtil.getCurrentDate());
-            ZLogger.df(String.format("保存经营分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
+            ZLogger.d(String.format("保存经营分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
 
             refresh();
         } catch (Exception ex) {
             ex.printStackTrace();
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.ef("保存流水分析数据失败:" + ex.toString());
         }
     }
 
@@ -497,11 +503,11 @@ public class DailySettleFragment extends BaseProgressFragment {
             mDailysettleInfo.setAccAmount1(amount);
             mDailysettleInfo.setUpdatedDate(TimeUtil.getCurrentDate());
 
-            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
+            ZLogger.d(String.format("保存流水分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
 
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.ef("保存流水分析数据失败:" + ex.toString());
         }
     }
 
@@ -566,11 +572,11 @@ public class DailySettleFragment extends BaseProgressFragment {
             mDailysettleInfo.setAccAmount2(amount);
             mDailysettleInfo.setUpdatedDate(TimeUtil.getCurrentDate());
 
-            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
+            ZLogger.d(String.format("保存流水分析数据:\n%s", JSON.toJSONString(mDailysettleInfo)));
 
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.ef("保存流水分析数据失败:" + ex.toString());
         }
     }
 

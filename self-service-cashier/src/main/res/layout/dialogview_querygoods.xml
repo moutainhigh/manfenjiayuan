@@ -24,8 +24,8 @@
             app:editInputType="barcode"
             app:editTextColor="@color/material_black"
             app:editTextColorHint="@color/mfh_textColorHint"
-            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_toolbar_search_white"/>
+            app:inputHint="@string/hint_product_barcode"
+            app:rightImageButtonSrc="@mipmap/ic_toolbar_search_white"/>
 
         <!--商品列表-->
         <LinearLayout

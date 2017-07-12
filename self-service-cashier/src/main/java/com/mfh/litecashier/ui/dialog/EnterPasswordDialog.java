@@ -21,7 +21,6 @@ import com.mfh.framework.uikit.gridpasswordview.GridPasswordView;
 import com.mfh.litecashier.R;
 
 
-
 /**
  * 输入密码
  *
@@ -29,13 +28,21 @@ import com.mfh.litecashier.R;
  */
 public class EnterPasswordDialog extends CommonDialog {
 
-    public interface OnEnterPasswordListener {
-        void onSubmit(String password);
+    public static final int TARGET_CASHIER_NA = 0;
+    public static final int TARGET_CASHIER_VIP_PAY = 1;
+    public static final int TARGET_OLD_PASSWORD = 2;
+    public static final int TARGET_NEW_PASSWORD = 3;
+    public static final int TARGET_CONFIRM_PASSWORD = 4;
 
-        void onCancel();
+
+    public interface OnEnterPasswordListener {
+        void onSubmit(int target, String password);
+
+        void onCancel(int target);
     }
 
     private OnEnterPasswordListener mListener;
+    private int mTarget = TARGET_CASHIER_NA;
     private View rootView;
     private TextView tvTitle;
     private GridPasswordView mGridPasswordView;
@@ -145,7 +152,7 @@ public class EnterPasswordDialog extends CommonDialog {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onCancel();
+                    mListener.onCancel(mTarget);
                 }
                 dismiss();
             }
@@ -205,7 +212,8 @@ public class EnterPasswordDialog extends CommonDialog {
 //        return super.onKeyDown(keyCode, event);
 //    }
 
-    public void init(String title, OnEnterPasswordListener listener) {
+    public void init(String title, int target, OnEnterPasswordListener listener) {
+        this.mTarget = target;
         this.mListener = listener;
 
         tvTitle.setText(title);
@@ -240,7 +248,7 @@ public class EnterPasswordDialog extends CommonDialog {
         dismiss();
 
         if (mListener != null) {
-            mListener.onSubmit(passWord);
+            mListener.onSubmit(mTarget, passWord);
         }
     }
 

@@ -68,7 +68,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
     public static ESLPushGoodsInfoExPackResult ESLPushGoodsInfoExPack2(ArrayOfGoodsInfoEX arrayOfGoodsInfoEX,
                                                  Date startCursor)
             throws XmlPullParserException, IOException {
-        ZLogger.df(String.format("准备推送%d个商品到ESL %s", arrayOfGoodsInfoEX.size(),
+        ZLogger.d(String.format("准备推送%d个商品到ESL %s", arrayOfGoodsInfoEX.size(),
                 TimeUtil.format(startCursor, TimeCursor.InnerFormat)));
         GreenTagsApi.printDefault();
 
@@ -140,7 +140,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
     public static boolean ESLPushGoodsInfoExPack(ArrayOfGoodsInfoEX arrayOfGoodsInfoEX,
                                                  Date startCursor)
             throws XmlPullParserException, IOException {
-        ZLogger.df(String.format("准备推送%d个商品到ESL", arrayOfGoodsInfoEX.size()));
+        ZLogger.d(String.format("准备推送%d个商品到ESL", arrayOfGoodsInfoEX.size()));
         GreenTagsApi.printDefault();
 
         //Step 1: Create request
@@ -210,7 +210,7 @@ public class GreenTagsApiImpl2 extends GreenTagsApi {
             SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                     GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, cursor);
 
-            ZLogger.df(String.format("保存价签同步时间：%s", cursor));
+            ZLogger.d(String.format("保存价签同步时间：%s", cursor));
             return true;
         } catch (Exception e) {
             ZLogger.e(String.format("failed: %s", e.toString()));

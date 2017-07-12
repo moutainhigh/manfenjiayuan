@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical">
+
+    <include layout="@layout/appbar"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="160dp">
+        <!--会员信息-->
+        <com.mfh.litecashier.ui.widget.CustomerView
+            android:id="@+id/customer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <ImageButton
+            android:id="@+id/fab_print"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/spacing_double"
+            android:background="@drawable/bg_fab_circle_orange"
+            android:contentDescription="@null"
+            android:scaleType="centerInside"
+            android:src="@mipmap/ic_print_white"/>
+    </RelativeLayout>
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="0dp"
+        android:background="#D2D2D2"/>
+
+    <!--支付-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@color/material_white"
+        android:divider="@drawable/divider_horizontal_line_primary"
+        android:orientation="vertical"
+        android:showDividers="middle">
+        <!--导航-->
+        <com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip
+            android:id="@+id/tabstrip_pay"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:allowWidthFull="true"
+            app:slidingBlock="@drawable/slidingblock_white_greenline"/>
+        <!--内容区-->
+        <com.mfh.framework.uikit.widget.CustomViewPager
+            android:id="@+id/tab_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+</LinearLayout>
+

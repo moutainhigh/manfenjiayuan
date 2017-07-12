@@ -142,7 +142,7 @@ public class ValidateManager {
      */
     private void validateFinished(int eventId, Bundle args, String msg) {
         if (!StringUtils.isEmpty(msg)) {
-            ZLogger.df(msg);
+            ZLogger.d(msg);
         }
         bSyncInProgress = false;
         EventBus.getDefault().post(new ValidateManagerEvent(eventId, args));
@@ -153,7 +153,7 @@ public class ValidateManager {
      */
     private void validateUpdate(int eventId, Bundle args, String msg) {
         if (!StringUtils.isEmpty(msg)) {
-            ZLogger.df(msg);
+            ZLogger.d(msg);
         }
         EventBus.getDefault().post(new ValidateManagerEvent(eventId, args));
     }
@@ -187,7 +187,7 @@ public class ValidateManager {
 
                         @Override
                         public void onNext(String s) {
-                            ZLogger.df(String.format("验证登录状态成功: %s", s));
+                            ZLogger.d(String.format("验证登录状态成功: %s", s));
                             nextStep();
                         }
                     });
@@ -301,7 +301,7 @@ public class ValidateManager {
                             //设置时间
                             try {
                                 boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
-                                ZLogger.df(String.format("修改系统时间 %b: %s", isSuccess,
+                                ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
                                         TimeUtil.format(TimeUtil.getCurrentDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
                             } catch (Exception e) {
                                 ZLogger.ef("修改系统时间失败:" + e.toString());
@@ -384,7 +384,7 @@ public class ValidateManager {
 
                                     AlarmManagerHelper.triggleNextDailysettle(1);
                                 } else {
-                                    ZLogger.df(String.format("清分完成: %.2f, 可以正常使用POS机", amount));
+                                    ZLogger.i2f(String.format("清分完成: %.2f, 可以正常使用POS机", amount));
                                     nextStep();
                                 }
                             } catch (NumberFormatException e) {
@@ -496,7 +496,7 @@ public class ValidateManager {
                     public void onValue(String data) {
                         super.onValue(data);
                         //{"code":"0","msg":"操作成功!","version":"1","data":null}
-                        ZLogger.df(String.format("获取指定pos机编号在服务器端已经生成的" +
+                        ZLogger.d(String.format("获取指定pos机编号在服务器端已经生成的" +
                                 "最大订单id号成功,%s", data));
 
                         if (!StringUtils.isEmpty(data)){

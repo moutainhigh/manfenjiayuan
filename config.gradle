@@ -36,7 +36,7 @@ ext {
                     "butterknife"         : "com.jakewharton:butterknife:8.4.0",
                     "butterknife-compiler": "com.jakewharton:butterknife-compiler:8.4.0",
                     "eventbus"            : "org.greenrobot:eventbus:3.0.0",
-                    "getui"               : "com.getui:sdk:2.9.5.0",
+                    "getui"               : "com.getui:sdk:2.10.2.0",
                     "bugly"               : "com.tencent.bugly:crashreport:latest.release",
                     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.1
                     "crashreport_upgrade" : "com.tencent.bugly:crashreport_upgrade:1.2.4",

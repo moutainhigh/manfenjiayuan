@@ -35,6 +35,8 @@ public class PosLocalCategoryEntity extends MfhEntity<Long> implements ILongId {
     /**是否和云端同步:默认1同步，0不同步*/
     private int isCloudActive = CLOUD_DEACTIVE;
 
+    private int type = 0;//0商品；1动作
+
 
     public String getName() {
         return name;
@@ -50,5 +52,13 @@ public class PosLocalCategoryEntity extends MfhEntity<Long> implements ILongId {
 
     public void setIsCloudActive(int isCloudActive) {
         this.isCloudActive = isCloudActive;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }

@@ -202,7 +202,7 @@ public class EslSyncManager2 extends EslSyncManager{
                         return false;
                     }
                     newCursor = exPackResult2.getCursor();
-                    ZLogger.df(String.format("同步价签商品成功：%s",
+                    ZLogger.i(String.format("同步价签商品成功：%s",
                             TimeUtil.format(newCursor, TimeCursor.InnerFormat)));
                 }
 
@@ -227,7 +227,7 @@ public class EslSyncManager2 extends EslSyncManager{
                 SharedPrefesManagerFactory.set(GreenTagsApi.PREF_GREENTAGS,
                         GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR, cursor);
 
-                ZLogger.df(String.format("ESLPushGoodsInfoExPack 保存价签同步时间：%s", cursor));
+                ZLogger.d(String.format("ESLPushGoodsInfoExPack 保存价签同步时间：%s", cursor));
                 //继续上传订单
 //                batchUploadGoodsInfo();
             } else {

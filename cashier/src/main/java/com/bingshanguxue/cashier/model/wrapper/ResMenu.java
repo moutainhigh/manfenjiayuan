@@ -8,20 +8,6 @@ import java.io.Serializable;
  */
 public class ResMenu implements Serializable{
 
-    //收银
-    public static final Long CASHIER_MENU_ONLINE_ORDER     = 10L;//订单列表
-    public static final Long CASHIER_MENU_REGISTER_VIP     = 12L;//注册
-    public static final Long CASHIER_MENU_MEMBER_CARD      = 13L;//会员卡（开卡）
-    public static final Long CASHIER_MENU_HANGUP_ORDER  = 14L;//挂单
-    public static final Long CASHIER_MENU_RETURN_GOODS  = 15L;//退货
-    public static final Long CASHIER_MENU_MONEYBOX  = 17L;//钱箱
-    public static final Long CASHIER_MENU_BALANCE_QUERY    = 18L;//余额查询
-    public static final Long CASHIER_MENU_SETTINGS         = 19L;//设置
-    public static final Long CASHIER_MENU_PACKAGE = 20L;//包裹(取快递)
-    public static final Long CASHIER_MENU_PRINT_ORDER = 22L;//打印订单
-    public static final Long CASHIER_MENU_DISCOUNT = 23L;//订单打折
-    public static final Long CASHIER_MENU_SCORE = 24L;//积分兑换
-    public static final Long CASHIER_MENU_TOPUP = 25L;//充值
 
     //管理者控制台
     public static final Long ADMIN_MENU_PURCHASE_MANUAL = 51L;//订货

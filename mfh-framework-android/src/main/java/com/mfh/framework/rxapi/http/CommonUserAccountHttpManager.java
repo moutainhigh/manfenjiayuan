@@ -89,6 +89,12 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         @GET("commonuseraccount/transferFromMyAccount")
         Observable<MResponse<UserAccount>> transferFromMyAccount(@QueryMap Map<String, String> options);
 
+        /**
+         * 修改支付密码
+         */
+        @GET("commonuseraccount/changePwd")
+        Observable<MResponse<String>> changePwd(@QueryMap Map<String, String> options);
+
     }
 
     public void getPayAmountByOrderInfos(Map<String, String> options, Subscriber<List<PayAmount>> subscriber) {
@@ -158,6 +164,23 @@ public class CommonUserAccountHttpManager extends BaseHttpManager{
         CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
         Observable observable = mfhApi.transferFromMyAccount(options)
                 .map(new MResponseFunc<UserAccount>());
+        toSubscribe(observable, subscriber);
+    }
+
+    /**
+     * 修改 支付密码
+     * <p>
+     * {"code":"0","msg":"操作成功!","version":"1","data":""}
+     *
+     * @param humanId 登录用户编号
+     * @param oldPwd  旧密码
+     * @param newPwd  新密码
+     *                注：确认新密码在调用接口前做处理，默认确认新密码和新密码相同。
+     */
+    public void changePwd(Map<String, String> options, Subscriber<String> subscriber) {
+        CommonUserAccountService mfhApi = RxHttpManager.createService(CommonUserAccountService.class);
+        Observable observable = mfhApi.changePwd(options)
+                .map(new MResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
 

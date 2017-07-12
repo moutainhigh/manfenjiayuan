@@ -21,15 +21,15 @@ import com.mfh.framework.uikit.base.BaseFragment;
  */
 public abstract class BasePayFragment extends BaseFragment {
 
-    public static final String EXTRA_KEY_ORDER_ID       = "orderId";//订单编号：（设备编号_本地数据库订单编号）
-    public static final String EXTRA_KEY_ORDER_BARCODE  = "orderBarcode";//订单条码：（本地数据库订单条码）
-    public static final String EXTRA_KEY_BIZ_TYPE       = "bizType";//业务类型
-    public static final String EXTRA_KEY_SUBJECT        = "subject";//主题
-    public static final String EXTRA_KEY_BODY           = "body";   //内容
-    public static final String EXTRA_KEY_HANDLE_AMOUNT  = "handleAmount";   //应收金额
-    public static final String EXTRA_KEY_MEMBERINFO     = "memberInfo";     //会员信息
-    public static final String EXTRA_KEY_WAYTYPE     = "wayType";     //支付方式
-    public static final String EXTRA_KEY_SCANCODE     = "scanCode";     //扫描码
+    public static final String EXTRA_KEY_ORDER_ID = "orderId";//订单编号：（设备编号_本地数据库订单编号）
+    public static final String EXTRA_KEY_ORDER_BARCODE = "orderBarcode";//订单条码：（本地数据库订单条码）
+    public static final String EXTRA_KEY_BIZ_TYPE = "bizType";//业务类型
+    public static final String EXTRA_KEY_SUBJECT = "subject";//主题
+    public static final String EXTRA_KEY_BODY = "body";   //内容
+    public static final String EXTRA_KEY_HANDLE_AMOUNT = "handleAmount";   //应收金额
+    public static final String EXTRA_KEY_MEMBERINFO = "memberInfo";     //会员信息
+    public static final String EXTRA_KEY_WAYTYPE = "wayType";     //支付方式
+    public static final String EXTRA_KEY_SCANCODE = "scanCode";     //扫描码
 
 
     protected int payType;//支付类型
@@ -42,20 +42,23 @@ public abstract class BasePayFragment extends BaseFragment {
 
     //设备号＋订单编号＋时间（每次提交订单时自动生成）
     protected String outTradeNo;//商户订单号，64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。
-    protected Double handleAmount   = 0D;//应收金额
-    protected Double paidAmount     = 0D;//实收金额
+    protected Double handleAmount = 0D;//应收金额
+    protected Double paidAmount = 0D;//实收金额
     protected Double rechargeAmount = 0D;//找零金额
     protected BroadcastReceiver receiver;
 
     protected boolean bPayProcessing = false;//支付状态
 
     //扫描到条码
-    protected void onScanCode(String code){}
+    protected void onScanCode(String code) {
+    }
+
     protected boolean isAcceptBarcodeEnabled = true;
 
     /**
-     * 设置支付类型*/
-    protected int getPayType(){
+     * 设置支付类型
+     */
+    protected int getPayType() {
         return WayType.NA;
     }
 
@@ -84,7 +87,7 @@ public abstract class BasePayFragment extends BaseFragment {
         }
     }
 
-    public void handleIntent(){
+    public void handleIntent() {
         //for Fragment.instantiate
         Bundle args = getArguments();
         if (args != null) {
@@ -97,23 +100,20 @@ public abstract class BasePayFragment extends BaseFragment {
         }
     }
 
-    public void onInitializeMode(){}
-    public void onActiveMode(){}
-    public void onDeactiveMode(){}
+    public void onInitializeMode() {
+    }
 
-    /**
-     * 生成商户订单号(64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。)
-     * orderId(设备号＋订单编号)＋时间（每次提交订单时自动生成）
-     * */
-    public void generateOutTradeNo(){
-        outTradeNo = CashierFactory.genTradeNo(orderId, true);
-        ZLogger.d(String.format("%s支付－交易编号：%s", WayType.getWayTypeName(payType), outTradeNo));
+    public void onActiveMode() {
+    }
+
+    public void onDeactiveMode() {
     }
 
     /**
      * 支付宝条码支付/微信扫码支付--创建支付订单
+     *
      * @param paidAmount 支付金额
-     * @param authCode 扫描的支付码
+     * @param authCode   扫描的支付码
      * @return json对象
      */
     protected JSONObject generateOrderInfo(Double paidAmount, String authCode) {
@@ -141,57 +141,58 @@ public abstract class BasePayFragment extends BaseFragment {
     }
 
     /**
-     * 应收金额发生改变*/
-    protected void onHandleAmountChnaged(){
+     * 应收金额发生改变
+     */
+    protected void onHandleAmountChnaged() {
     }
 
     /**
      * 计算收取金额
-     * */
-    protected void calculatePaidAmount(){
+     */
+    protected void calculatePaidAmount() {
     }
 
     /**
      * 计算找零金额,需要先计算收取金额
-     * */
-    protected void calculateCharge(){
+     */
+    protected void calculateCharge() {
         calculatePaidAmount();
         rechargeAmount = MathCompact.sub(paidAmount, handleAmount);
     }
 
     /**
      * 支付订单
-     * */
-    protected void submitOrder(){
+     */
+    protected void submitOrder() {
         isAcceptBarcodeEnabled = false;
 
-        //验证参数
-        //生成商户订单号
-        generateOutTradeNo();
-        ZLogger.df(String.format("支付订单--(%s) 商户订单号:%s 应付金额:%.6f 收取金额:%.6f 找零金额:%.6f",
+        // 生成商户订单号(64个字符以内、只能包含字母、数字、下划线;需保证在商户端不重复。)
+        // orderId(设备号＋订单编号)＋时间（每次提交订单时自动生成）
+        outTradeNo = CashierFactory.genTradeNo(orderId, true);
+        ZLogger.d(String.format("%s支付-- 商户订单号:%s 应付金额:%.6f 收取金额:%.6f 找零金额:%.6f",
                 WayType.getWayTypeName(payType), outTradeNo, handleAmount, paidAmount, rechargeAmount));
     }
 
     /**
      * 支付开始
-     * */
-    protected void onPayStart(String message){
+     */
+    protected void onPayStart(String message) {
 
     }
 
-    protected void onPayProcess(String message){
+    protected void onPayProcess(String message) {
 
     }
 
-    protected void onPayFailed(){
+    protected void onPayFailed() {
 
     }
 
-    protected void onPayError(){
+    protected void onPayError() {
 
     }
 
-    protected void onPaySuccess(){
+    protected void onPaySuccess() {
 
     }
 

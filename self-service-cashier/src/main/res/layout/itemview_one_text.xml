@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/tv_content"
+          android:layout_width="match_parent"
+          android:layout_height="53dp"
+          android:background="@drawable/bg_grey_green"
+          android:gravity="center"
+          android:lines="2"
+          android:orientation="vertical"
+          android:padding="8dp"
+          android:singleLine="true"
+          android:text="冰珊孤雪"
+          android:textColor="@color/textcolor_black_white"
+          android:textSize="16sp">
+
+</TextView>

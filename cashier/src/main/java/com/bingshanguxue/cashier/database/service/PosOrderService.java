@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * POS--销售订单流水
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrderDao> {
 
@@ -26,8 +26,10 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
     }
 
     private static PosOrderService instance = null;
+
     /**
      * 返回 PosOrderService 实例
+     *
      * @return
      */
     public static PosOrderService get() {
@@ -41,11 +43,14 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
         return instance;
     }
 
-    public PosOrderEntity getEntityById(String id){
-        try{
+    public PosOrderEntity getEntityById(Long id) {
+        return getEntityById(String.valueOf(id));
+    }
+
+    public PosOrderEntity getEntityById(String id) {
+        try {
             return getDao().getEntityById(id);
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             ZLogger.e(e.toString());
             return null;
         }
@@ -59,78 +64,86 @@ public class PosOrderService extends BaseService<PosOrderEntity, String, PosOrde
         getDao().saveOrUpdate(msg);
     }
 
-    public void updateSequence(long curValue){
-        if (getDao() != null){
+    public void updateSequence(long curValue) {
+        if (getDao() != null) {
             getDao().updateSequence(curValue);
         }
     }
 
     /**
      * 清空历史记录
-     * */
-    public void clear(){
+     */
+    public void clear() {
         getDao().deleteAll();
     }
 
     /**
      * 查询指定session下的消息类比，按照逆序
+     *
      * @param pageInfo
      * @return
      */
     public List<PosOrderEntity> queryAll(PageInfo pageInfo) {
         return getDao().queryAll(pageInfo);
     }
+
     public List<PosOrderEntity> queryAll() {
         return getDao().queryAll();
     }
+
     public List<PosOrderEntity> queryAll(String strWhere, PageInfo pageInfo) {
-        try{
+        try {
             return getDao().queryAll(strWhere, pageInfo);
-        }catch (Exception e){
+        } catch (Exception e) {
             ZLogger.e(e.toString());
             return null;
         }
     }
+
     public List<PosOrderEntity> queryAllAsc(String strWhere, PageInfo pageInfo) {
         return getDao().queryAllAsc(strWhere, pageInfo);
     }
+
     public List<PosOrderEntity> queryAllDesc(String strWhere, PageInfo pageInfo) {
         return getDao().queryAllDesc(strWhere, pageInfo);
     }
+
     public List<PosOrderEntity> queryAllBy(String strWhere) {
-        try{
+        try {
             return getDao().queryAllBy(strWhere);
-        }catch (Exception e){
+        } catch (Exception e) {
             ZLogger.ef(e.toString());
             return null;
         }
     }
+
     public List<PosOrderEntity> queryAllBy(String strWhere, String orderBy) {
-        try{
+        try {
             return getDao().queryAllBy(strWhere, orderBy);
-        }catch (Exception e){
+        } catch (Exception e) {
             ZLogger.ef(e.toString());
             return null;
         }
     }
 
     /**
-     *  按条件删除
-     *  */
-    public void deleteBy(String strWhere){
-        try{
+     * 按条件删除
+     */
+    public void deleteBy(String strWhere) {
+        try {
             getDao().deleteBy(strWhere);
-        }catch (Exception e){
+        } catch (Exception e) {
             ZLogger.e(e.toString());
         }
     }
+
     /**
-     *  逐条删除
-     *  */
-    public void deleteById(String id){
-        try{
+     * 逐条删除
+     */
+    public void deleteById(String id) {
+        try {
             getDao().deleteById(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             ZLogger.e(e.toString());
         }
     }

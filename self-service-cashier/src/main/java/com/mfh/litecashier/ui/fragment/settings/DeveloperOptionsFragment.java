@@ -109,11 +109,11 @@ public class DeveloperOptionsFragment extends BaseFragment {
 //                        PushManager.getInstance().stopService(CashierApp.getAppContext());
 //                    }
                     if (isChecked) {
-                        ZLogger.df("开启Push推送");
+                        ZLogger.d("开启Push推送");
                         //        优先级高于stopService，如果当前是stopService状态，调用turnOnPush之后仍然可以正常推送。
                         PushManager.getInstance().turnOnPush(CashierApp.getAppContext());
                     } else {
-                        ZLogger.df("关闭Push推送");
+                        ZLogger.d("关闭Push推送");
                         PushManager.getInstance().turnOffPush(CashierApp.getAppContext());
                     }
                 }

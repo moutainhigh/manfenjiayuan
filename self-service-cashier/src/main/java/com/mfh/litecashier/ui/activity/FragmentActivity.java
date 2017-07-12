@@ -9,8 +9,8 @@ import android.view.WindowManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.fragment.GrouponFragment;
-import com.mfh.litecashier.ui.fragment.components.MessageMgrFragment;
-import com.mfh.litecashier.ui.fragment.components.StockDetailFragment;
+import com.mfh.litecashier.components.MessageMgrFragment;
+import com.mfh.litecashier.components.StockDetailFragment;
 import com.mfh.litecashier.ui.fragment.goods.backend.BackendCategoryGoodsFragment;
 import com.mfh.litecashier.ui.fragment.order.OrderFragment;
 

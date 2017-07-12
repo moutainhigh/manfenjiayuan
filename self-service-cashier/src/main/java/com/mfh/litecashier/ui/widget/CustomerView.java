@@ -16,11 +16,10 @@ import com.mfh.framework.api.account.Human;
 import com.mfh.litecashier.R;
 
 
-
 /**
  * 会员信息通用组件
  */
-public class CustomerView extends RelativeLayout implements View.OnClickListener{
+public class CustomerView extends RelativeLayout implements View.OnClickListener {
     private TextView tvCurCash, tvTopup, tvCurScore, tvDeduct, tvPhone;
     private AvatarView ivMemberHeader;
 
@@ -28,6 +27,7 @@ public class CustomerView extends RelativeLayout implements View.OnClickListener
 
     public interface OnCustomerVierListener {
         void onClickTopup();
+
         void onClickDeduct();
     }
 
@@ -95,11 +95,23 @@ public class CustomerView extends RelativeLayout implements View.OnClickListener
                 tvCurScore.setText(Html.fromHtml(String.format("<font color=#000000>积分：</font><font color=#FE5000>%d</font>", human.getCurScore())));
                 ivMemberHeader.setAvatarUrl(human.getHeadimageUrl());
                 tvPhone.setText(human.getMobile());
+
+                if (mOnCustomerVierListener != null) {
+                    tvTopup.setVisibility(VISIBLE);
+                    tvDeduct.setVisibility(VISIBLE);
+                } else {
+                    tvTopup.setVisibility(GONE);
+                    tvDeduct.setVisibility(GONE);
+                }
             } else {
-                tvCurCash.setText(Html.fromHtml("<font color=#000000>余额：</font><font color=#FE5000>NA</font>"));
-                tvCurScore.setText(Html.fromHtml("<font color=#000000>积分：</font><font color=#FE5000>NA</font>"));
+//                tvCurCash.setText(Html.fromHtml("<font color=#000000>余额：</font><font color=#FE5000>NA</font>"));
+//                tvCurScore.setText(Html.fromHtml("<font color=#000000>积分：</font><font color=#FE5000>NA</font>"));
                 ivMemberHeader.setImageResource(R.drawable.chat_tmp_user_head);
-                tvPhone.setText("");
+                tvPhone.setText("...");
+                tvCurCash.setVisibility(GONE);
+                tvCurScore.setVisibility(GONE);
+                tvTopup.setVisibility(GONE);
+                tvDeduct.setVisibility(GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();

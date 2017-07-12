@@ -19,6 +19,7 @@ public class BizType {
     public final static Integer REPAIR          = 11;//报修
     public final static Integer SEND            = 12;//快递代揽
     public final static Integer CAR_REPAIR      = 13;//汽车快修
+    public final static Integer GROUP_BUY       = 15;//团购
     public final static Integer DAILYSETTLE     = 98;//日结
     public final static Integer RECHARGE        = 99;//代充值
 

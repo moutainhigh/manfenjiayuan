@@ -143,7 +143,7 @@ public class SMScaleSyncManager2 extends FTPManager {
     public String getScaleStartCursor() {
         String startCursor = SharedPrefesManagerFactory.getString(SMScaleSyncManager2.PREF_SMSCALE,
                 SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR);
-        ZLogger.df(String.format("最后一次电子秤同步的更新时间(%s)。", startCursor));
+        ZLogger.d(String.format("最后一次电子秤同步的更新时间(%s)。", startCursor));
 
 //        //得到指定模范的时间
         if (!StringUtils.isEmpty(startCursor)) {
@@ -152,7 +152,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                 Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
-                    ZLogger.df(String.format("上次电子秤同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.w(String.format("上次电子秤同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();
@@ -447,7 +447,7 @@ public class SMScaleSyncManager2 extends FTPManager {
             String currentCursor = TimeUtil.format(cursor, TimeCursor.InnerFormat);
             SharedPrefesManagerFactory.set(SMScaleSyncManager2.PREF_SMSCALE,
                     SMScaleSyncManager2.PK_S_SMSCALE_LASTCURSOR, currentCursor);
-            ZLogger.df(String.format("保存商品同步电子秤游标:%s", currentCursor));
+            ZLogger.d(String.format("保存商品同步电子秤游标:%s", currentCursor));
 
             // Transfer completed
             syncFinished("Upload FTP completed ...");
@@ -479,7 +479,7 @@ public class SMScaleSyncManager2 extends FTPManager {
         long timestamp = System.currentTimeMillis();
         String time = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(TimeUtil.getCurrentDate());
         String fileName = SMSCALE_CSV_FILENAME + time + "-" + timestamp + ".csv";//
-        ZLogger.df("csvFile: " + fileName);
+        ZLogger.d("csvFile: " + fileName);
 
         File exportDir = new File(Environment.getExternalStorageDirectory(), "");
         if (!exportDir.exists()) {
@@ -492,7 +492,7 @@ public class SMScaleSyncManager2 extends FTPManager {
         String time = FORMAT_YYYYMMDD.format(TimeUtil.getCurrentDate());
         long timestamp = System.currentTimeMillis();
         String fileName = SMSCALE_CSV_FILENAME + time + "-" + timestamp + ".csv";//
-        ZLogger.df("csvFile: " + fileName);
+        ZLogger.d("csvFile: " + fileName);
 
         return FileUtil.getSaveFile(FOLDER_PATH_SMSCALE, fileName);
     }
@@ -560,7 +560,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                 String name = child.getName();
                 //文件名格式是smscale_mixicook2016-06-15-1465997239811.csv，所以格式不对的，也要删除。系统中可能存在很多2016-0001-01.log等等这样的文件。
                 if (StringUtils.isEmpty(name) || name.length() != 44) {
-                    ZLogger.df(String.format("删除无效csv文件 %s", name));
+                    ZLogger.i(String.format("删除无效csv文件 %s", name));
                     child.delete();
                     continue;
                 }
@@ -568,7 +568,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                 Date date = FORMAT_YYYYMMDD.parse(dateStr);
 //                ZLogger.d(" child:" + DATE_FORMAT.format(date));
                 if (date.before(calendar.getTime())) {
-                    ZLogger.df(String.format("csv文件已经过期，删除%s", name));
+                    ZLogger.i(String.format("csv文件已经过期，删除%s", name));
                     child.delete();
                 }
             } catch (ParseException e) {
@@ -608,7 +608,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                         sb.append("[").append(str).append("]");
                     }
                     sb.append("\n");
-                    ZLogger.df(sb.toString());
+                    ZLogger.d(sb.toString());
                 }
             }
         } catch (IOException e) {
@@ -648,7 +648,7 @@ public class SMScaleSyncManager2 extends FTPManager {
                         sb.append("[").append(str).append("]");
                     }
                     sb.append("\n");
-                    ZLogger.df(sb.toString());
+                    ZLogger.d(sb.toString());
                 }
             }
         } catch (IOException e) {

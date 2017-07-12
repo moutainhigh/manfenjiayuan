@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -30,6 +31,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+
 
 
 /**
@@ -127,6 +129,11 @@ public class InputNumberLabelView extends LinearLayout {
             tvTitle.setVisibility(VISIBLE);
         }
 
+        ViewGroup.LayoutParams lpTitle = ibAction1.getLayoutParams();
+        int titleW = ta.getDimensionPixelSize(R.styleable.InputNumberLabelView_inputNumberLabelView_titleWidth, 80);//px
+        lpTitle.width = titleW;
+        tvTitle.setLayoutParams(lpTitle);
+
         int editTextSizeInPx = ta.getDimensionPixelSize(R.styleable.InputNumberLabelView_editTextSize, 16);
         int editTextSizeInSp = DensityUtil.px2sp(getContext(), editTextSizeInPx);
         etInput.setTextSize(editTextSizeInSp);
@@ -141,7 +148,7 @@ public class InputNumberLabelView extends LinearLayout {
 //        else{
 //            etInput.setBackground(R);
 //        }
-        etInput.setHint(ta.getString(R.styleable.InputNumberLabelView_inputNumberLabelView_inputHint));
+        etInput.setHint(ta.getString(R.styleable.InputNumberLabelView_inputHint));
         int inputType = ta.getInteger(R.styleable.InputNumberLabelView_editInputType, EditInputType.TEXT);
         switch (inputType) {
             case EditInputType.BARCODE:
@@ -163,6 +170,11 @@ public class InputNumberLabelView extends LinearLayout {
                 etInput.setInputType(InputType.TYPE_CLASS_NUMBER);
 //                this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(3)});
                 break;
+            case EditInputType.NUMBER_PASSWORD:
+                //相当于在.xml文件中设置inputType="number
+                etInput.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD);
+//                this.etInput.setFilters(new InputFilter[]{new DecimalInputFilter(3)});
+                break;
             case EditInputType.TEXT_PASSWORD:
                 etInput.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD | InputType.TYPE_CLASS_TEXT);
                 break;
@@ -175,8 +187,20 @@ public class InputNumberLabelView extends LinearLayout {
                 break;
         }
 
-        int rightImageButtonResId = ta.getResourceId(R.styleable.InputNumberLabelView_inputNumberLabelView_rightImageButtonSrc, R.mipmap.ic_search_del);
+        int rightImageButtonResId = ta.getResourceId(R.styleable.InputNumberLabelView_rightImageButtonSrc, R.mipmap.ic_search_del);
         ibAction1.setImageResource(rightImageButtonResId);
+
+        ViewGroup.LayoutParams ibAction1lp = ibAction1.getLayoutParams();
+        int action1W = ta.getDimensionPixelSize(R.styleable.InputNumberLabelView_rightButtonWidth, 80);//px
+        ibAction1lp.width = action1W;
+        ibAction1.setLayoutParams(ibAction1lp);
+
+        boolean isAction1Visible = ta.getBoolean(R.styleable.InputNumberLabelView_rightAction1Visible, true);
+        if (isAction1Visible) {
+            ibAction1.setVisibility(VISIBLE);
+        } else {
+            ibAction1.setVisibility(GONE);
+        }
 
         clearOnClickDel = ta.getBoolean(R.styleable.InputNumberLabelView_clearOnClickDel, true);
         softKeyboardEnabled = ta.getBoolean(R.styleable.InputNumberLabelView_softKeyboardEnabled, false);

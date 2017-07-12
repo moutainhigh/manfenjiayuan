@@ -246,6 +246,7 @@ public class CustomerInputDialog extends CommonDialog {
         this.etInput.getText().clear();
         requestFocusEnd();
     }
+
     /**
      * 初始化
      */

@@ -24,7 +24,9 @@ public class Printer implements IPrinter {
     public static final java.text.SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy.MM.dd HH:mm",
             Locale.US);
 
-    /**默认线条，虚线，共32个字符*/
+    /**
+     * 默认线条，虚线，共32个字符
+     */
     public static final String LINE_DEFAULT = "--------------------------------";
 
     /**
@@ -92,15 +94,15 @@ public class Printer implements IPrinter {
         if (len > maxWidth) {
             return subStr;
         } else {
-            String blankStr = StringUtils.genBlankspace(Math.max(maxWidth - len, 0));
-
-            //右对齐，在前面补空格
-            if (blankGravity == BLANK_GRAVITY.LEFT) {
-                return blankStr + subStr;
-            }
-            //左对齐，在后面补空格
-            else if (blankGravity == BLANK_GRAVITY.RIGHT) {
-                return subStr + blankStr;
+            int blandSize = Math.max(maxWidth - len, 0);
+            if (blankGravity == BLANK_GRAVITY.LEFT) {//右对齐，在前面补空格
+                return StringUtils.genBlankspace(blandSize) + subStr;
+            } else if (blankGravity == BLANK_GRAVITY.RIGHT) {//左对齐，在后面补空格
+                return subStr + StringUtils.genBlankspace(blandSize);
+            } else if (blankGravity == BLANK_GRAVITY.CENTER) {//剧中
+                int left = blandSize/2;
+                int right = blandSize - left;
+                return StringUtils.genBlankspace(left) + subStr + StringUtils.genBlankspace(right);
             } else {
                 return subStr;
             }
@@ -121,47 +123,48 @@ public class Printer implements IPrinter {
     /**
      * 初始化打印机
      * <table>
-     *     <tr>
-     *        <td>格式</td>
-     *        <table>
-     *            <tr><td>ASCII码</td><td>ESC</td><td>@</td></tr>
-     *            <tr><td>十六进制码</td><td>1B</td><td>40</td></tr>
-     *            <tr><td>十进制码</td><td>27</td><td>64</td></tr>
-     *        </table>
-     *     </tr>
-     *     <tr>
-     *         <td>描述</td>
-     *         <td>清除打印缓冲区数据，打印模式被设为上电时的默认值模式。</td>
-     *     </tr>
-     *     <tr>
-     *         <td>注释</td>
-     *         <td>
-     *             <li>DIP开关的设置不进行再次检测。</li>
-     *             <li>接收缓冲区中的数据保留。</li>
-     *             <li>NV位图数据不擦除。</li>
-     *             <li>用户NV存储器数据不擦除。</li>
-     *         </td>
-     *     </tr>
+     * <tr>
+     * <td>格式</td>
+     * <table>
+     * <tr><td>ASCII码</td><td>ESC</td><td>@</td></tr>
+     * <tr><td>十六进制码</td><td>1B</td><td>40</td></tr>
+     * <tr><td>十进制码</td><td>27</td><td>64</td></tr>
      * </table>
-     * */
+     * </tr>
+     * <tr>
+     * <td>描述</td>
+     * <td>清除打印缓冲区数据，打印模式被设为上电时的默认值模式。</td>
+     * </tr>
+     * <tr>
+     * <td>注释</td>
+     * <td>
+     * <li>DIP开关的设置不进行再次检测。</li>
+     * <li>接收缓冲区中的数据保留。</li>
+     * <li>NV位图数据不擦除。</li>
+     * <li>用户NV存储器数据不擦除。</li>
+     * </td>
+     * </tr>
+     * </table>
+     */
     public static byte[] initPrinter() {
         return new byte[]{(byte) 27, (byte) 64};
     }
 
     /**
      * 打印
+     *
      * @param escCommand 打印命令
      * @param printTimes 打印次数
-     * */
-    public static  void print(EscCommand escCommand, int printTimes) {
+     */
+    public static void print(EscCommand escCommand, int printTimes) {
         if (escCommand != null && printTimes > 0) {
-            for (int i = 0 ; i < printTimes; i++){
+            for (int i = 0; i < printTimes; i++) {
                 print(escCommand);
             }
         }
     }
 
-    public static  void print(List<EscCommand> escCommands){
+    public static void print(List<EscCommand> escCommands) {
         if (escCommands != null && escCommands.size() > 0) {
             for (EscCommand escCommand : escCommands) {
                 print(escCommand);
@@ -174,7 +177,7 @@ public class Printer implements IPrinter {
         }
     }
 
-    public static void print(EscCommand escCommand) {
+    public synchronized static void print(EscCommand escCommand) {
         if (escCommand != null) {
             ZLogger.d(">>发送打印命令");
 
@@ -186,16 +189,16 @@ public class Printer implements IPrinter {
         }
     }
 
-    public static void print(String text) {
+    public synchronized static void print(String text) {
         byte[] bs = null;
-        if(!text.equals("")) {
+        if (!text.equals("")) {
             try {
                 bs = text.getBytes("GB2312");
             } catch (UnsupportedEncodingException var4) {
                 var4.printStackTrace();
             }
         }
-        if (bs != null){
+        if (bs != null) {
             EventBus.getDefault().post(new SerialPortEvent(SerialPortEvent.RINTER_PRINT_PRIMITIVE, bs));
         }
     }

@@ -110,7 +110,7 @@ public class SplashActivity extends InitActivity {
     @Override
     public void initPrimary() {
         super.initPrimary();
-        ZLogger.df("set database version.");
+        ZLogger.d("set database version.");
         DbVersion.setDomainVersion("LITECASHIER.CLIENT.DB.UPGRADE", 24);
 
         setupGetui();
@@ -242,7 +242,7 @@ public class SplashActivity extends InitActivity {
      * onCreate()或onResume()方法中调用。反复调用SDK初始化并不会有什么副作用。
      */
     private void setupGetui() {
-        ZLogger.df("准备初始化个推服务...");
+        ZLogger.i("准备初始化个推服务...");
         PushManager.getInstance().initialize(this.getApplicationContext(), DemoPushService.class);
 
         // 注册 intentService 后 PushDemoReceiver 无效, sdk 会使用 DemoIntentService 传递数据,
@@ -254,10 +254,10 @@ public class SplashActivity extends InitActivity {
         // 检查 so 是否存在
         File file = new File(this.getApplicationInfo().nativeLibraryDir
                 + File.separator + "libgetuiext2.so");
-        ZLogger.df("libgetuiext2.so exist = " + file.exists());
+        ZLogger.d("libgetuiext2.so exist = " + file.exists());
 
         String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
-        ZLogger.df("当前应用的cid = " + cid);
+        ZLogger.i("当前应用的cid = " + cid);
     }
 
     @Override
@@ -308,7 +308,7 @@ public class SplashActivity extends InitActivity {
      * 跳转至登录
      */
     private void redirectToLogin() {
-        ZLogger.df("准备跳转到登录页");
+        ZLogger.d("准备跳转到登录页");
 
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -321,7 +321,7 @@ public class SplashActivity extends InitActivity {
      * 初始化完成,跳转至首页
      */
     private void redirectToMain(boolean delayed) {
-        ZLogger.df("准备跳转到首页");
+        ZLogger.d("准备跳转到首页");
         if (delayed) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -344,19 +344,19 @@ public class SplashActivity extends InitActivity {
                 new ILoaderListener() {
                     @Override
                     public void onStart() {
-                        ZLogger.df("正在切换主题");
+                        ZLogger.d("正在切换主题");
 //                        dialog.show();
                     }
 
                     @Override
                     public void onSuccess() {
-                        ZLogger.df("切换主题成功");
+                        ZLogger.i("切换主题成功");
                         DialogUtil.showHint("切换租户成功");
                     }
 
                     @Override
                     public void onFailed(String errMsg) {
-                        ZLogger.df("切换主题失败:" + errMsg);
+                        ZLogger.e("切换主题失败:" + errMsg);
                         DialogUtil.showHint(errMsg);
                     }
 

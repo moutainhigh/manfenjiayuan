@@ -337,11 +337,11 @@ public class HandoverFragment extends BaseProgressFragment {
             handOverBill.setTurnover(turnOver);
             handOverBill.setOrigionAmount(origionAmount);
             handOverBill.setAggItems(aggItems);
-            ZLogger.df(String.format("保存经营分析数据:\n%s", JSON.toJSONString(handOverBill)));
+            ZLogger.d(String.format("保存经营分析数据:\n%s", JSON.toJSONString(handOverBill)));
 
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.ef("保存流水分析数据失败:" + ex.toString());
         }
     }
 
@@ -405,11 +405,11 @@ public class HandoverFragment extends BaseProgressFragment {
             handOverBill.setAccItems(accItems);
             handOverBill.setCash(cash);
 
-            ZLogger.df(String.format("保存流水分析数据:\n%s", JSON.toJSONString(handOverBill)));
+            ZLogger.d(String.format("保存流水分析数据:\n%s", JSON.toJSONString(handOverBill)));
 
             refresh();
         } catch (Exception ex) {
-            ZLogger.d("保存流水分析数据失败:" + ex.toString());
+            ZLogger.ef("保存流水分析数据失败:" + ex.toString());
         }
     }
 

@@ -201,6 +201,17 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
+//
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        //Any time the window receives focus, simply set the IMMERSIVE mode.
+//        if (hasFocus) {
+//            hideSystemUI();
+//        }
+//    }
+
+
     @Override
     public void finish() {
         super.finish();

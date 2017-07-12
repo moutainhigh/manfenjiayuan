@@ -140,8 +140,8 @@
             app:editInputType="barcode"
             app:editTextColor="@color/material_black"
             app:editTextColorHint="@color/mfh_textColorHint"
-            app:inputNumberLabelView_inputHint="@string/hint_product_barcode"
-            app:inputNumberLabelView_rightImageButtonSrc="@drawable/btn_switch_goods"/>
+            app:inputHint="@string/hint_product_barcode"
+            app:rightImageButtonSrc="@drawable/btn_switch_goods"/>
 
         <include
             android:id="@+id/ll_procuct_header"
@@ -223,13 +223,12 @@
         android:id="@+id/fab_pick"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/spacing_double"
-        android:layout_toStartOf="@+id/fab_settle"
         android:background="@drawable/bg_fab_circle_orange"
         android:contentDescription="@null"
         android:scaleType="centerInside"
-        android:src="@mipmap/ic_fab_shopcart_white"/>
+        android:src="@mipmap/ic_fab_shopcart_white"
+        android:layout_alignTop="@+id/fab_settle"
+        android:layout_toStartOf="@+id/fab_settle"/>
 
     <ImageButton
         android:id="@+id/fab_settle"

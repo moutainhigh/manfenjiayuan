@@ -100,7 +100,7 @@ public class DataUploadManager {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_WHAT_SYNC_POSORDER: {
-                    ZLogger.df("定时任务激活：上传收银订单");
+                    ZLogger.d("定时任务激活：上传收银订单");
                     DataUploadManager.getInstance().sync(DataUploadManager.POS_ORDER);
                 }
                 break;
@@ -151,7 +151,7 @@ public class DataUploadManager {
         queue |= step;
         if (bSyncInProgress) {
             rollback++;
-            ZLogger.df(String.format("正在同步POS数据..., rollback=%d/%d", rollback, MAX_ROLLBACK));
+            ZLogger.i(String.format("正在同步POS数据..., rollback=%d/%d", rollback, MAX_ROLLBACK));
             EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED));
 
             //自动恢复同步
@@ -186,7 +186,7 @@ public class DataUploadManager {
 
     private void onNotifyNext(String message) {
         if (!StringUtils.isEmpty(message)) {
-            ZLogger.df(message);
+            ZLogger.d(message);
         }
         processQueue();
     }
@@ -196,7 +196,7 @@ public class DataUploadManager {
      */
     private void onNotifyCompleted(String message) {
         if (!StringUtils.isEmpty(message)) {
-            ZLogger.df(message);
+            ZLogger.d(message);
         }
         bSyncInProgress = false;
         EventBus.getDefault().post(new UploadSyncManagerEvent(UploadSyncManagerEvent.EVENT_ID_SYNC_DATA_FINISHED));
@@ -250,7 +250,7 @@ public class DataUploadManager {
         }
 
         final PosTopupEntity topupEntity = entities.get(0);
-        ZLogger.df(String.format("提交清分充值支付记录:%s (%d/%d %d)",
+        ZLogger.d(String.format("提交清分充值支付记录:%s (%d/%d %d)",
                 topupEntity.getOutTradeNo(), incomeDistributionPageInfo.getPageNo(),
                 incomeDistributionPageInfo.getTotalPage(), incomeDistributionPageInfo.getTotalCount()));
 
@@ -264,7 +264,7 @@ public class DataUploadManager {
 
                         @Override
                         public void onError(Throwable e) {
-                            ZLogger.df("提交清分充值支付记录失败：" + e.toString());
+                            ZLogger.e("提交清分充值支付记录失败：" + e.toString());
                             if (incomeDistributionPageInfo.hasNextPage()) {
                                 incomeDistributionPageInfo.moveToNext();
                                 commintCashAndTrigDateEnd();
@@ -318,7 +318,7 @@ public class DataUploadManager {
                         @Override
                         protected void processFailure(Throwable t, String errMsg) {
                             super.processFailure(t, errMsg);
-                            ZLogger.df("提交清分充值支付记录失败：" + errMsg);
+                            ZLogger.e("提交清分充值支付记录失败：" + errMsg);
                             if (incomeDistributionPageInfo.hasNextPage()) {
                                 incomeDistributionPageInfo.moveToNext();
                                 commintCashAndTrigDateEnd();
@@ -362,7 +362,7 @@ public class DataUploadManager {
         }
 
         final PosTopupEntity topupEntity = entities.get(0);
-        ZLogger.df(String.format("提交现金授权支付记录:%s (%d/%d %d)",
+        ZLogger.d(String.format("提交现金授权支付记录:%s (%d/%d %d)",
                 topupEntity.getOutTradeNo(), commitCashPageInfo.getPageNo(),
                 commitCashPageInfo.getTotalPage(), commitCashPageInfo.getTotalCount()));
 
@@ -392,7 +392,7 @@ public class DataUploadManager {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
 //                        {"code":"1","msg":"未找到支付交易号:2016-08-02","data":null,"version":1}
-                        ZLogger.df("提交现金授权支付记录失败：" + errMsg);
+                        ZLogger.ef("提交现金授权支付记录失败：" + errMsg);
                         //提交失败，仍继续上传订单
                         if (commitCashPageInfo.hasNextPage()) {
                             commitCashPageInfo.moveToNext();
@@ -419,7 +419,7 @@ public class DataUploadManager {
         if (orderEntities != null && orderEntities.size() > 0) {
             stepUploadPosOrder(orderEntities.get(0));
         } else {
-            ZLogger.df("没有找到未同步的已完成订单");
+            ZLogger.i("没有找到未同步的已完成订单");
             uploadErrorPosOrders(true);
         }
     }
@@ -489,7 +489,7 @@ public class DataUploadManager {
         order.setCreatedBy(orderEntity.getCreatedBy());
 
         //读取订单商品明细
-        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity);
+        List<PosOrderItemEntity> orderItemEntities = CashierProvider.fetchOrderItems(orderEntity.getId());
         List<BatchInOrderItem> items = new ArrayList<>();
         for (PosOrderItemEntity entity : orderItemEntities) {
             BatchInOrderItem item = new BatchInOrderItem();

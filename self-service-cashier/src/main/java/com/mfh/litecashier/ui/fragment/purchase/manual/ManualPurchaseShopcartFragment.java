@@ -187,7 +187,7 @@ public class ManualPurchaseShopcartFragment extends BaseFragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df("采购订单创建失败: " + e.toString());
+                        ZLogger.e("采购订单创建失败: " + e.toString());
                         showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
                         btnSubmit.setEnabled(true);
 

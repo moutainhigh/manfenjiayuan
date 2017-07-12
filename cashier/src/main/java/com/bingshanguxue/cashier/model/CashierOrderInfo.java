@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * 收银订单
- * Created by Administrator on 2015/5/14.
+ * Created by bingshanguxue on 2015/5/14.
  */
 public class CashierOrderInfo implements java.io.Serializable {
 
@@ -208,13 +208,6 @@ public class CashierOrderInfo implements java.io.Serializable {
 //            orderMarketRules.setFinalAmount(finalAmount);
         }
         setOrderMarketRules(orderMarketRules);
-    }
-
-    /**
-     * VIP特权
-     */
-    public void vipPrivilege(Human vipMember) {
-        this.vipMember = vipMember;
     }
 
     //支付完成

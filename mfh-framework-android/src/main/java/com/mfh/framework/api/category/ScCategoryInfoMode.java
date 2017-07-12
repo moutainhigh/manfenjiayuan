@@ -61,7 +61,7 @@ public class ScCategoryInfoMode {
                     public void onError(Throwable e) {
                         super.onError(e);
 
-                        ZLogger.df("查询类目失败:" + e.toString());
+                        ZLogger.ef("查询类目失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.toString());
                         }

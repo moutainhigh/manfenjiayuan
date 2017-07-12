@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/material_white"
+                android:baselineAligned="false"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/frame_top"
+        layout="@layout/dialogview_headerview"/>
+
+    <!--会员信息-->
+    <com.mfh.litecashier.ui.widget.CustomerView
+        android:id="@+id/customer_view"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_below="@+id/frame_top"/>
+
+    <View
+        android:id="@+id/space_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/customer_view"
+        android:layout_marginTop="0dp"
+        android:background="#D2D2D2"/>
+
+    <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
+        android:id="@+id/order_list"
+        android:layout_width="match_parent"
+        android:layout_margin="@dimen/spacing_normal"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_print"
+        android:layout_below="@+id/space_line"/>
+
+    <!--空视图-->
+    <ImageView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_print"
+        android:layout_below="@+id/space_line"
+        android:clickable="true"
+        android:contentDescription="@null"
+        android:scaleType="centerInside"
+        android:src="@mipmap/emptyimage_no_goods"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/button_print"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_rectange_primary"
+        android:gravity="center"
+        android:text="@string/button_print_pickup_order"
+        android:textColor="@color/material_white"
+        android:textSize="24sp"/>
+
+</RelativeLayout>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/appbar"
+            layout="@layout/appbar"/>
+
+        <LinearLayout
+            android:id="@+id/display"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_below="@+id/appbar"
+            android:gravity="bottom|center_vertical"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_input"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:gravity="center_vertical|end"
+                android:hint="@string/hint_customer_account"
+                android:inputType="text"
+                android:maxLines="2"
+                android:padding="16dp"
+                android:textColor="#FE5000"
+                android:textColorHint="@color/black_35"
+                android:textIsSelectable="false"
+                android:textSize="48sp"/>
+
+            <TextView
+                android:id="@+id/tv_endText"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:maxWidth="48dp"
+                android:padding="@dimen/spacing_micro"
+                android:text=""
+                android:textColor="@color/material_black"
+                android:textSize="20sp"/>
+        </LinearLayout>
+
+        <include
+            android:id="@+id/keyboard"
+            layout="@layout/view_mf_keyboard_number"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_below="@+id/display"/>
+
+        <!--按键-->
+        <Button
+            android:id="@+id/button_submit"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_below="@+id/keyboard"
+            android:background="@drawable/btn_rectange_primary"
+            android:gravity="center"
+            android:text="@string/button_confirm"
+            android:textColor="@color/material_white"
+            android:textSize="24sp"
+            android:visibility="visible"/>
+
+        <RelativeLayout
+            android:id="@+id/rl_progressbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@+id/button_submit"
+            android:alpha="0.85"
+            android:background="@color/mfh_barBackground">
+
+            <ProgressBar
+                android:id="@+id/animProgressBar"
+                style="@style/loading"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:layout_centerInParent="true"
+                tools:ignore="InconsistentLayout"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

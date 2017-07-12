@@ -69,7 +69,7 @@ public class MfhUserManager {
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("退出登录失败:" + e.toString());
+                ZLogger.ef("退出登录失败:" + e.toString());
 
                 if (callback != null) {
                     callback.onError(-2, e.toString());
@@ -78,7 +78,7 @@ public class MfhUserManager {
 
             @Override
             public void onNext(String s) {
-                ZLogger.df("退出登录成功");
+                ZLogger.d("退出登录成功");
                 if (callback != null) {
                     callback.onSuccess();
                 }

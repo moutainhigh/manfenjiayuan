@@ -204,13 +204,13 @@ public class RemoteControlClient {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df(e.toString());
+                        ZLogger.ef(e.toString());
                     }
 
                     @Override
                     public void onValue(Long data) {
                         super.onValue(data);
-                        ZLogger.df("一键反馈成功：" + data);
+                        ZLogger.d("一键反馈成功：" + data);
                     }
                 });
 

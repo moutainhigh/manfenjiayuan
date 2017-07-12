@@ -198,7 +198,7 @@ public class SignInActivity extends SkinBaseActivity {
         RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
             @Override
             public void onCompleted() {
-                ZLogger.d("onCompleted");
+//                ZLogger.d("onCompleted");
             }
 
             @Override
@@ -215,7 +215,7 @@ public class SignInActivity extends SkinBaseActivity {
 
             @Override
             public void onNext(UserMixInfo userMixInfo) {
-                ZLogger.df("登录成功：");//登录成功
+                ZLogger.d("登录成功：");//登录成功
                 DialogUtil.showHint("登录成功");
 
                 MfhLoginService.get().saveUserMixInfo(username, password, userMixInfo);
@@ -376,19 +376,19 @@ public class SignInActivity extends SkinBaseActivity {
                 new ILoaderListener() {
                     @Override
                     public void onStart() {
-                        ZLogger.df("正在切换主题");
+                        ZLogger.d("正在切换主题");
 //                        dialog.show();
                     }
 
                     @Override
                     public void onSuccess() {
-                        ZLogger.df("切换主题成功");
+                        ZLogger.i("切换主题成功");
                         DialogUtil.showHint("切换租户成功");
                     }
 
                     @Override
                     public void onFailed(String errMsg) {
-                        ZLogger.df("切换主题失败:" + errMsg);
+                        ZLogger.e("切换主题失败:" + errMsg);
                         DialogUtil.showHint(errMsg);
                     }
 

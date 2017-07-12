@@ -7,15 +7,15 @@
                 android:orientation="vertical">
 
     <include
-        android:id="@+id/frame_top"
-        layout="@layout/dialogview_headerview"/>
+        android:id="@+id/appbar"
+        layout="@layout/appbar"/>
 
     <!--会员信息-->
     <com.mfh.litecashier.ui.widget.CustomerView
         android:id="@+id/customer_view"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:layout_below="@+id/frame_top"/>
+        android:layout_below="@+id/appbar"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,8 +42,8 @@
             app:editInputType="number"
             app:editTextColor="@color/material_black"
             app:editTextColorHint="@color/mfh_textColorHint"
-            app:inputNumberLabelView_inputHint="积分"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_keyboard_del"/>
+            app:inputHint="积分"
+            app:rightImageButtonSrc="@mipmap/ic_keyboard_del"/>
 
     </LinearLayout>
 

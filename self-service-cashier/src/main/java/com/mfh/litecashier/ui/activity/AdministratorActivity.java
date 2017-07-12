@@ -514,7 +514,7 @@ public class AdministratorActivity extends BaseActivity {
 
             @Override
             public void onNext(UserMixInfo userMixInfo) {
-                ZLogger.df("重登录成功：");
+                ZLogger.d("重登录成功：");
 
                 MfhLoginService.get().saveUserMixInfo(userName, password, userMixInfo);
 

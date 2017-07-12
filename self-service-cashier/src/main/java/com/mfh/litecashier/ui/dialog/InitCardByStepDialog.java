@@ -66,7 +66,7 @@ public class InitCardByStepDialog extends CommonDialog implements ICustomerView 
     private ProgressBar progressBar;
 
     private CommonDialog confirmDialog = null;
-    private CustomerInputDialog scoreDialog = null;
+    private CustomerInputDialog mCustomerInputDialog = null;
     private CustomerPresenter mCustomerPresenter;
     private String phoneNumber;
 
@@ -446,13 +446,13 @@ public class InitCardByStepDialog extends CommonDialog implements ICustomerView 
     }
 
     public void queryCustomer() {
-        if (scoreDialog == null) {
-            scoreDialog = new CustomerInputDialog(getContext());
-            scoreDialog.setCancelable(false);
-            scoreDialog.setCanceledOnTouchOutside(false);
+        if (mCustomerInputDialog == null) {
+            mCustomerInputDialog = new CustomerInputDialog(getContext());
+            mCustomerInputDialog.setCancelable(false);
+            mCustomerInputDialog.setCanceledOnTouchOutside(false);
         }
 
-        scoreDialog.initializeBarcode(EditInputType.TEXT, "搜索会员", "会员帐号", "确定",
+        mCustomerInputDialog.initializeBarcode(EditInputType.TEXT, "搜索会员", "会员帐号", "确定",
                 new CustomerInputDialog.OnResponseCallback() {
                     @Override
                     public void onNext(String value) {
@@ -474,8 +474,8 @@ public class InitCardByStepDialog extends CommonDialog implements ICustomerView 
 
                     }
                 });
-        if (!scoreDialog.isShowing()) {
-            scoreDialog.show();
+        if (!mCustomerInputDialog.isShowing()) {
+            mCustomerInputDialog.show();
         }
     }
 

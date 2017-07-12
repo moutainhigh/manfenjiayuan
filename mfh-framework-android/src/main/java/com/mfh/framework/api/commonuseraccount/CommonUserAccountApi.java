@@ -14,10 +14,7 @@ public class CommonUserAccountApi {
 
     public static String URL_COMMONUSERACCOUNT = MfhApi.URL_BASE_SERVER + "/commonuseraccount/";
 
-    /**
-     * 修改支付密码
-     */
-    private static String URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
+
     /**
      * 检查支付密码
      */
@@ -41,30 +38,10 @@ public class CommonUserAccountApi {
 
     public static void register() {
         URL_COMMONUSERACCOUNT = MfhApi.URL_BASE_SERVER + "/commonuseraccount/";
-        URL_CHANGE_PAYPASSWORD = URL_COMMONUSERACCOUNT + "changePwd";
         URL_CHECK_ACCOUNTPASSWORD = URL_COMMONUSERACCOUNT + "checkPassword";
         URL_SCACCOUNT_PAY = URL_COMMONUSERACCOUNT + "scAccountPay";
         URL_MFACCOUNT_PAY = URL_COMMONUSERACCOUNT + "mfhAccountPay";
         NOTIFY_ACCOUNT = URL_COMMONUSERACCOUNT + "notifyAccount";
-    }
-
-    /**
-     * 修改 支付密码
-     * <p>
-     * {"code":"0","msg":"操作成功!","version":"1","data":""}
-     *
-     * @param humanId 登录用户编号
-     * @param oldPwd  旧密码
-     * @param newPwd  新密码
-     *                注：确认新密码在调用接口前做处理，默认确认新密码和新密码相同。
-     */
-    public static void changePayPassword(Long humanId, String oldPwd, String newPwd, AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("humanId", String.valueOf(humanId));
-        params.put("oldPwd", oldPwd);
-        params.put("newPwd", newPwd);
-        params.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(URL_CHANGE_PAYPASSWORD, params, responseCallback);
     }
 
     /**

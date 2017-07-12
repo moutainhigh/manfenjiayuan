@@ -47,6 +47,9 @@ import rx.schedulers.Schedulers;
 public abstract class BasePayStepFragment extends BaseFragment {
 
     public static final String EXTRA_KEY_CASHIER_ORDERINFO = "cashierOrderInfo";
+    public static final String EXTRA_KEY_HUMAN = "human";
+    public static final String EXTRA_KEY_PAYTYPE = "payType";
+    public static final String EXTRA_KEY_PAY_SUBTYPE = "paySubType";//0:会员卡，1:付款码，2:手机号
     public static final String EXTRA_KEY_IS_CLEAR_ORDER = "isClearOrder";
 
     protected CashierOrderInfo cashierOrderInfo = null;
@@ -91,20 +94,23 @@ public abstract class BasePayStepFragment extends BaseFragment {
         if (paymentInfo == null) {
             return;
         }
-        ZLogger.df(String.format("支付状态更新：\n%s", JSONObject.toJSONString(paymentInfo)));
 
         final PayAmount payAmount = cashierOrderInfo.getPayAmount();
 
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
+                paymentInfo.setDiscountInfo(payAmount);
+                ZLogger.d(String.format("支付状态更新：\n%s", JSONObject.toJSONString(paymentInfo)));
+
                 //有现金支付时才打开钱箱
                 if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
                         && paymentInfo.getPaidAmount() > 0) {
                     PrinterFactory.getPrinterManager().openMoneyBox();
-                    ZLogger.d(String.format(">>开钱箱：收银：%.2f,找零:%.2f",
-                            paymentInfo.getPaidAmount(), paymentInfo.getChange()));
                 }
+
+
+//                ZLogger.df(String.format("支付状态更新：\n%s", JSONObject.toJSONString(cashierOrderInfo.getVipMember())));
 
                 //保存订单支付记录并更新订单
                 // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
@@ -115,6 +121,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
                 // TODO: 7/5/16 注意这里需要重新生成订单支付信息，如果允许多次支付的话，可能还需要清空页面优惠券信息。
                 cashierOrderInfo = CashierProvider.createCashierOrderInfo(cashierOrderInfo.getPosTradeNo(),
                         cashierOrderInfo.getVipMember());
+                cashierOrderInfo.setPayAmount(payAmount);
 
                 //根据实际应用场景，金额小于1分即认为支付完成
                 Double handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
@@ -163,7 +170,8 @@ public abstract class BasePayStepFragment extends BaseFragment {
      * 支付步骤成功
      */
     public void onPayStepFinish() {
-        ZLogger.df(String.format("%s 支付成功：\n%s", WayType.getWayTypeName(curPayType),
+        hideProgressDialog();
+        ZLogger.d(String.format("%s 支付成功：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
     }
 
@@ -177,6 +185,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
         if (paymentInfo == null) {
             return;
         }
+        paymentInfo.setDiscountInfo(cashierOrderInfo.getPayAmount());
 //        ZLogger.df(String.format("支付记录：\n%s", JSONObject.toJSONString(paymentInfo)));
 
         //保存订单支付记录并更新订单
@@ -192,12 +201,12 @@ public abstract class BasePayStepFragment extends BaseFragment {
     public void onPayFinished() {
         DialogUtil.showHint("支付成功");
 
-        if ((curPayType & WayType.ALI_F2F) == WayType.ALI_F2F
-                || (curPayType & WayType.WX_F2F) == WayType.WX_F2F) {
-            bindHuman();
-        } else {
+//        if ((curPayType & WayType.ALI_F2F) == WayType.ALI_F2F
+//                || (curPayType & WayType.WX_F2F) == WayType.WX_F2F) {
+//            bindHuman();
+//        } else {
             back2MainActivity();
-        }
+//        }
     }
 
     /**
@@ -206,7 +215,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
     public void onPayCancel() {
         CashierAgent.updateCashierOrder(cashierOrderInfo, null, PosOrderEntity.ORDER_STATUS_STAY_PAY);
 
-        ZLogger.df(String.format("%s 支付取消：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
+        ZLogger.i(String.format("%s 支付取消：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
 
         getActivity().setResult(Activity.RESULT_CANCELED);
@@ -218,7 +227,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
      */
     public void onPayException() {
         CashierAgent.updateCashierOrder(cashierOrderInfo, null, PosOrderEntity.ORDER_STATUS_EXCEPTION);
-        ZLogger.df(String.format("%s 订单异常：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
+        ZLogger.wf(String.format("%s 订单异常：准备关闭支付窗口：\n%s", WayType.getWayTypeName(curPayType),
                 JSONObject.toJSONString(cashierOrderInfo)));
 
         Intent data = new Intent();
@@ -268,12 +277,18 @@ public abstract class BasePayStepFragment extends BaseFragment {
     }
 
 
-    private void back2MainActivity() {
+    public static final String EXTRA_KEY_ORDER_BARCODE = "orderBarcode";
+    public void back2MainActivity() {
         ZLogger.df(String.format("%s 支付成功：准备关闭支付窗口：\n%s",
                 WayType.getWayTypeName(curPayType),
                 cashierOrderInfo != null ? JSONObject.toJSONString(cashierOrderInfo) : null));
         Intent data = new Intent();
-        data.putExtra(EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
+//        data.putExtra(EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
+        Bundle extras = new Bundle();
+//        extras.putSerializable(BasePayStepFragment.EXTRA_KEY_CASHIER_ORDERINFO, cashierOrderInfo);
+        extras.putString(EXTRA_KEY_ORDER_BARCODE, cashierOrderInfo.getPosTradeNo());
+        extras.putSerializable(EXTRA_KEY_HUMAN, cashierOrderInfo.getVipMember());
+        data.putExtras(extras);
         getActivity().setResult(Activity.RESULT_OK, data);
         getActivity().finish();
     }

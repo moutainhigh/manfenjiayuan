@@ -17,8 +17,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * 字母
- * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
+ * 搜索商品
+ * Created by bingshanguxue on 15/8/5.
  */
 public class QueryGoodsAdapter
         extends RegularAdapter<PosProductEntity, QueryGoodsAdapter.MenuOptioinViewHolder> {
@@ -29,6 +29,7 @@ public class QueryGoodsAdapter
 
     public interface AdapterListener {
         void onItemClick(View view, int position);
+        void onItemLongClick(int position, PosProductEntity goods);
     }
 
     private AdapterListener adapterListener;
@@ -40,7 +41,7 @@ public class QueryGoodsAdapter
     @Override
     public MenuOptioinViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new MenuOptioinViewHolder(mLayoutInflater
-                .inflate(R.layout.itemview_querygods, parent, false));
+                .inflate(R.layout.itemview_localcategory_goods, parent, false));
     }
 
     @Override
@@ -83,6 +84,19 @@ public class QueryGoodsAdapter
                     if (adapterListener != null) {
                         adapterListener.onItemClick(v, position);
                     }
+                }
+            });
+
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    int position = getAdapterPosition();
+                    PosProductEntity goods = getEntity(position);
+
+                    if (goods != null && adapterListener != null) {
+                        adapterListener.onItemLongClick(position, goods);
+                    }
+                    return false;
                 }
             });
 

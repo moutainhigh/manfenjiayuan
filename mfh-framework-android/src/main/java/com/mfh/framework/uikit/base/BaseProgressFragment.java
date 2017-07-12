@@ -28,7 +28,7 @@ public abstract class BaseProgressFragment extends BaseFragment {
         bSyncInProgress = false;
         isLoadingMore = false;
         if (!StringUtils.isEmpty(errMessage)){
-            ZLogger.df(errMessage);
+            ZLogger.ef(errMessage);
             showProgressDialog(ProgressDialog.STATUS_ERROR, errMessage, true);
         }
         else{

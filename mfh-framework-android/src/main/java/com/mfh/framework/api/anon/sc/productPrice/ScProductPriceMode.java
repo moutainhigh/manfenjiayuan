@@ -52,7 +52,7 @@ public class ScProductPriceMode {
                     public void onError(Throwable e) {
                         super.onError(e);
 
-                        ZLogger.df("加载前台类目商品失败:" + e.toString());
+                        ZLogger.ef("加载前台类目商品失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.toString());
                         }
@@ -83,7 +83,7 @@ public class ScProductPriceMode {
                     public void onError(Throwable e) {
                         super.onError(e);
 
-                        ZLogger.df("加载前台类目商品失败:" + e.toString());
+                        ZLogger.ef("加载前台类目商品失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.toString());
                         }

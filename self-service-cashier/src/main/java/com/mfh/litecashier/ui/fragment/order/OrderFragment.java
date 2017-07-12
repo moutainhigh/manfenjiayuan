@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.bingshanguxue.cashier.hardware.printer.PrinterAgent;
 import com.bingshanguxue.cashier.hardware.printer.PrinterContract;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -67,7 +67,7 @@ public class OrderFragment extends BaseFragment {
     @BindView(R.id.button_print)
     Button btnPrint;
 
-    private PosOrder mPosOrder;
+    private GoodsOrder mPosOrder;
     private int printTimes = 1;//打印次数，默认是1
 
     public static OrderFragment newInstance(Bundle args) {
@@ -237,7 +237,7 @@ public class OrderFragment extends BaseFragment {
         Bundle args = event.getArgs();
         ZLogger.d(String.format("OrderEvent(%d-%s)", eventId, StringUtils.decodeBundle(args)));
         if (eventId == OrderEvent.EVENT_ID_LOAD_POSORDER_ITEMS) {
-            PosOrder posOrder = (PosOrder) args.getSerializable("order");
+            GoodsOrder posOrder = (GoodsOrder) args.getSerializable("order");
             reloadOrderItems(posOrder);
         }
     }
@@ -256,7 +256,7 @@ public class OrderFragment extends BaseFragment {
     /**
      * 加载订单明细
      * */
-    private void reloadOrderItems(PosOrder posOrder){
+    private void reloadOrderItems(GoodsOrder posOrder){
         mPosOrder = posOrder;
         if (mPosOrder != null) {
             tvGoodsQunatity.setText(MUtils.formatDouble("商品数", "：", mPosOrder.getBcount(), "无", null, null));

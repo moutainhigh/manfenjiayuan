@@ -103,7 +103,7 @@
             app:bottomTextColor="@color/black_70"
             app:bottomTextSize="16sp"
             app:topText="0.00"
-            app:topTextColor="#FE5000"
+            app:topTextColor="@color/mf_red"
             app:topTextSize="30sp"/>
 
     </LinearLayout>

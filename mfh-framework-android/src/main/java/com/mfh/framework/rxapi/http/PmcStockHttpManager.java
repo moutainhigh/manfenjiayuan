@@ -2,6 +2,7 @@ package com.mfh.framework.rxapi.http;
 
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.pmcstock.GoodsItem;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.entity.MRspQuery;
 import com.mfh.framework.rxapi.func.MQueryResponseFunc;
@@ -38,6 +39,20 @@ public class PmcStockHttpManager extends BaseHttpManager{
         @GET("pmcstock/findGoodsItemList")
         Observable<MResponse<MRspQuery<GoodsItem>>> findGoodsItemList(@QueryMap Map<String, String> options);
 
+        /**
+         * 查询订单列表，包括pos、团购等；若指定btype则只查询此类订单。
+         * /pmcstock/getGoodsOrderListByHuman?humanId=&btype=&subTypes=&orderStatus=&sellOffices=
+         * */
+        @GET("pmcstock/findGoodsOrderList")
+        Observable<MResponse<MRspQuery<GoodsOrder>>> findGoodsOrderList(@QueryMap Map<String, String> options);
+
+        /**
+         * 查询一个人的订单列表，包括pos、团购等；若指定btype则只查询此类订单。
+         * /pmcstock/getGoodsOrderListByHuman?humanId=&btype=
+         * */
+        @GET("pmcstock/getGoodsOrderListByHuman")
+        Observable<MResponse<MRspQuery<GoodsOrder>>> getGoodsOrderListByHuman(@QueryMap Map<String, String> options);
+
     }
 
     public void findMarketRulesByOrderInfos(Map<String, String> options,
@@ -53,6 +68,30 @@ public class PmcStockHttpManager extends BaseHttpManager{
         PmcStockService mfhApi = RxHttpManager.createService(PmcStockService.class);
         Observable observable = mfhApi.findGoodsItemList(options)
                 .map(new MQueryResponseFunc<GoodsItem>());
+        toSubscribe(observable, subscriber);
+    }
+
+    /**
+     * 订单预支付
+     * @param btype 业务类型, 3-商城(必填)
+     * @param subTypes 子业务类型,2,3,4
+     * @param orderStatus 订单状态
+     * @param sellOffices 销售网点
+     * @param pageInfo 分页信息
+     * */
+    public void findGoodsOrderList(Map<String, String> options,
+                                   MQuerySubscriber<GoodsOrder> subscriber) {
+        PmcStockService mfhApi = RxHttpManager.createService(PmcStockService.class);
+        Observable observable = mfhApi.findGoodsOrderList(options)
+                .map(new MQueryResponseFunc<GoodsOrder>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void getGoodsOrderListByHuman(Map<String, String> options,
+                                         MQuerySubscriber<GoodsItem> subscriber) {
+        PmcStockService mfhApi = RxHttpManager.createService(PmcStockService.class);
+        Observable observable = mfhApi.getGoodsOrderListByHuman(options)
+                .map(new MQueryResponseFunc<GoodsOrder>());
         toSubscribe(observable, subscriber);
     }
 

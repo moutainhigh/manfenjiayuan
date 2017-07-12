@@ -158,7 +158,7 @@ public class HostServerFragment extends BaseProgressFragment {
         if (tenantInfo == null) {
             return;
         }
-        ZLogger.df("选择租户：" + JSON.toJSONString(tenantInfo));
+        ZLogger.d("选择租户：" + JSON.toJSONString(tenantInfo));
 
         String requestUrl = String.format("http://%s/pmc/",
                 tenantInfo.getId());

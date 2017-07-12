@@ -15,7 +15,7 @@ import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -26,10 +26,10 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.ExpressOrderFlowEvent;
-import com.mfh.litecashier.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
 import com.mfh.litecashier.ui.fragment.order.PosOrderItemsAdapter;
-import com.mfh.litecashier.ui.view.IOrderflowView;
+import com.manfenjiayuan.business.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,7 +46,7 @@ import butterknife.OnClick;
  * 快递代发订单流水
  * Created by bingshanguxue on 15/8/31.
  */
-public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> implements IOrderflowView {
+public class ExpressOrderFlowFragment extends BaseListFragment<GoodsOrder> implements IOrderflowView {
     @BindView(R.id.swiperefreshlayout)
     SwipeRefreshLayout mSwipeRefreshLayout;
     @BindView(R.id.order_list)
@@ -243,7 +243,7 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<PosOrder> dataList) {
+    public void onSuccess(PageInfo pageInfo, List<GoodsOrder> dataList) {
 
         try {
             mPageInfo = pageInfo;
@@ -288,7 +288,7 @@ public class ExpressOrderFlowFragment extends BaseListFragment<PosOrder> impleme
     public synchronized boolean readCache(){
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_ORDERFLOW_EXPRESS);
-        List<PosOrder> cacheData = JSONArray.parseArray(cacheStr, PosOrder.class);
+        List<GoodsOrder> cacheData = JSONArray.parseArray(cacheStr, GoodsOrder.class);
         if (cacheData != null && cacheData.size() > 0){
             ZLogger.d(String.format("加载缓存数据(%s): %d条快递代揽订单流水", ACacheHelper.CK_ORDERFLOW_EXPRESS, cacheData.size()));
             if (orderListAdapter != null) {

@@ -57,7 +57,7 @@ public class DemoIntentService extends GTIntentService {
 
     @Override
     public void onReceiveServicePid(Context context, int pid) {
-        ZLogger.df("个推 onReceiveServicePid -> " + pid);
+        ZLogger.d("个推 onReceiveServicePid -> " + pid);
     }
 
     @Override
@@ -90,10 +90,10 @@ public class DemoIntentService extends GTIntentService {
 
     @Override
     public void onReceiveClientId(Context context, String clientid) {
-        ZLogger.df("onReceiveClientId -> " + "clientid = " + clientid);
+        ZLogger.d("onReceiveClientId -> " + "clientid = " + clientid);
 
         if (clientid != null) {
-            ZLogger.df(String.format("个推 clientId=%s-%s",
+            ZLogger.i2f(String.format("个推 clientId=%s-%s",
                     PushManager.getInstance().getClientid(CashierApp.getAppContext()),
                     clientid));
             IMConfig.savePushClientId(clientid);
@@ -108,7 +108,7 @@ public class DemoIntentService extends GTIntentService {
 
     @Override
     public void onReceiveOnlineState(Context context, boolean online) {
-        ZLogger.df("onReceiveOnlineState -> " + (online ? "online" : "offline"));
+        ZLogger.d("onReceiveOnlineState -> " + (online ? "online" : "offline"));
     }
 
     @Override
@@ -214,7 +214,7 @@ public class DemoIntentService extends GTIntentService {
         String content = bodyObj.getString("content");
         Integer bizType = msgBeanObj.getIntValue("bizType");//获取推送的数据类型
         String time = msgBeanObj.getString("time");
-        ZLogger.df(String.format("<--%d\n%s\ncontent=%s", bizType, data, content));
+        ZLogger.d(String.format("<--%d\n%s\ncontent=%s", bizType, data, content));
 
         //SKU更新
         if (IMBizType.TENANT_SKU_UPDATE == bizType) {
@@ -258,7 +258,7 @@ public class DemoIntentService extends GTIntentService {
 
             //保留最近一个小时的消息
             if (createTime == null) {
-                ZLogger.df("消息无效: time＝null");
+                ZLogger.w("消息无效: time＝null");
                 return;
             }
 
@@ -268,13 +268,13 @@ public class DemoIntentService extends GTIntentService {
             Calendar minTrigger = Calendar.getInstance();
             minTrigger.add(Calendar.HOUR_OF_DAY, -1);
             if (minTrigger.after(msgTrigger)) {
-                ZLogger.d(String.format("消息过期--当前时间:%s,消息创建时间:%s",
+                ZLogger.w(String.format("消息过期--当前时间:%s,消息创建时间:%s",
                         TimeUtil.format(rightNow, TimeCursor.FORMAT_YYYYMMDDHHMMSS),
                         TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
                 return;
             }
 
-            ZLogger.df(String.format("现金超过授权额度--当前时间:%s,消息创建时间:%s",
+            ZLogger.i(String.format("现金超过授权额度--当前时间:%s,消息创建时间:%s",
                     TimeUtil.format(rightNow, TimeCursor.FORMAT_YYYYMMDDHHMMSS),
                     TimeUtil.format(createTime, TimeCursor.FORMAT_YYYYMMDDHHMMSS)));
 
@@ -306,7 +306,7 @@ public class DemoIntentService extends GTIntentService {
         Long remoteId = jsonObject.getLong("remoteId");
         String remoteInfo = jsonObject.getString("remoteInfo");
         String remoteData = jsonObject.getString("data");
-        ZLogger.df(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
+        ZLogger.i2f(String.format("<--远程控制: %d %s\n%s", remoteId, remoteInfo, remoteData));
 
         if (remoteId.equals(1L)) {
             RemoteControlClient.getInstance().remoteFeedback();

@@ -356,16 +356,16 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
         }
     }
 
-    private void payBayCustomerStep2(Long payHumanId, final Double amount) {
+    private void payBayCustomerStep2(Human human, final Double amount) {
         final CashierOrderInfo cashierOrderInfo = CashierAgent.settle(PosType.POS_STANDARD,
                 curOrderTradeNo, null, PosOrderEntity.ORDER_STATUS_PROCESS,
-                productAdapter.getEntityList(), false);
-        ZLogger.df(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
+                productAdapter.getEntityList(), human, false);
+        ZLogger.d(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
 
         PosOrderEntity orderEntity = CashierProvider.fetchOrderEntity(cashierOrderInfo.getPosTradeNo());
 
         Map<String, String> options = new HashMap<>();
-        options.put("humanId", String.valueOf(payHumanId));
+        options.put("humanId", String.valueOf(human.getId()));
         options.put("amount", MUtils.formatDouble(amount, ""));
         options.put("bizType", String.valueOf(BizType.POS));
         options.put("orderId", CashierFactory.genTradeNo(orderEntity.getId(), true));
@@ -393,7 +393,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
                                 PosOrderPayEntity.PAY_STATUS_FINISH,
                                 amount, amount, 0D,
                                 null);
-                        ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
+                        ZLogger.d(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
 
                         payBayCustomerStep3(cashierOrderInfo, paymentInfo);
                     }
@@ -456,8 +456,8 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
         mProgressBar.setVisibility(View.VISIBLE);
         CashierOrderInfo cashierOrderInfo = CashierAgent.settle(PosType.POS_STANDARD,
                 curOrderTradeNo, null, PosOrderEntity.ORDER_STATUS_PROCESS,
-                productAdapter.getEntityList());
-        ZLogger.df(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
+                productAdapter.getEntityList(), null);
+        ZLogger.d(String.format("准备退单:%s", JSONObject.toJSONString(cashierOrderInfo)));
 
         //2016-07-09 需注意，这里的
 //        PaymentInfo paymentInfo = PaymentInfoImpl.genPaymentInfo(curOrderTradeNo, WayType.CASH,
@@ -469,7 +469,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
                 cashierOrderInfo.getFinalAmount(),
                 cashierOrderInfo.getFinalAmount(), 0D,
                 null);
-        ZLogger.df(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
+        ZLogger.d(String.format("退单支付:%s", JSONObject.toJSONString(paymentInfo)));
 
         PayAmount payAmount = cashierOrderInfo.getPayAmount();
 
@@ -638,7 +638,7 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
     @Override
     public void onICustomerViewSuccess(int type, String content, Human human) {
         if (human != null) {
-            payBayCustomerStep2(human.getId(), productAdapter.getFinalCustomerAmount());
+            payBayCustomerStep2(human, productAdapter.getFinalCustomerAmount());
         } else {
             DialogUtil.showHint("未查询到用户");
         }

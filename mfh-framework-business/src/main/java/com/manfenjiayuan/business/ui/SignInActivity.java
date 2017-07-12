@@ -84,7 +84,7 @@ public class SignInActivity extends SkinBaseActivity {
     @Override
     protected void initViews() {
         super.initViews();
-        ZLogger.df(">>>进入登录页面");
+        ZLogger.d(">>>进入登录页面");
         rootView = findViewById(R.id.rootview);
         loginFormView = findViewById(R.id.login_form);
         etUserName = (EditText) findViewById(R.id.et_username);
@@ -250,7 +250,7 @@ public class SignInActivity extends SkinBaseActivity {
 
             @Override
             public void onNext(UserMixInfo userMixInfo) {
-                ZLogger.df("登录成功：");//登录成功
+                ZLogger.d("登录成功：");//登录成功
                 DialogUtil.showHint("登录成功");
 
                 MfhLoginService.get().saveUserMixInfo(username, password, userMixInfo);
@@ -328,19 +328,19 @@ public class SignInActivity extends SkinBaseActivity {
                 new ILoaderListener() {
                     @Override
                     public void onStart() {
-                        ZLogger.df("正在切换主题");
+                        ZLogger.d("正在切换主题");
 //                        dialog.show();
                     }
 
                     @Override
                     public void onSuccess() {
-                        ZLogger.df("切换主题成功");
+                        ZLogger.d("切换主题成功");
                         DialogUtil.showHint("切换租户成功");
                     }
 
                     @Override
                     public void onFailed(String errMsg) {
-                        ZLogger.df("切换主题失败:" + errMsg);
+                        ZLogger.d("切换主题失败:" + errMsg);
                         DialogUtil.showHint(errMsg);
                     }
 

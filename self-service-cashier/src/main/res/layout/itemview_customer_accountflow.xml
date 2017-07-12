@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              style="@style/mfh_form_content"
+              android:layout_height="wrap_content"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:paddingBottom="@dimen/spacing_micro"
+              android:paddingTop="@dimen/spacing_micro">
+
+    <TextView
+        android:id="@+id/tv_date"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text="日期"/>
+
+    <TextView
+        android:id="@+id/tv_biztype"
+        style="@style/singleline_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center_vertical|end"
+        android:text="备注"/>
+
+    <TextView
+        android:id="@+id/tv_amount"
+        style="@style/singleline_text"
+
+        android:gravity="center_vertical|end"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="余额"/>
+
+</LinearLayout>

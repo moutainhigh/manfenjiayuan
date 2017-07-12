@@ -13,7 +13,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.BizType;
-import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
@@ -24,15 +24,14 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
-import com.mfh.litecashier.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
-import com.mfh.litecashier.ui.view.IOrderflowView;
+import com.manfenjiayuan.business.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +40,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 
-
 /**
  * 线上销售－－待配送/已配送
  * Created by bingshanguxue on 15/8/31.
  */
-public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOrderflowView{
+public class GoodsListFragment extends BaseListFragment<GoodsOrder> implements IOrderflowView {
     public static final String EXTRA_KEY_STATUS = "status";
     public static final String EXTRA_KEY_CACHE_KEY = "cacheKey";
     public static final String EXTRA_KEY_ID = "id";
@@ -169,8 +167,8 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
         ZLogger.d(String.format("PlatformProviderFragment: GoodsListEvent(%d)", event.getEventId()));
         if (event.getEventId() == GoodsListEvent.EVENT_ID_RELOAD_DATA) {
             Bundle args = event.getArgs();
-            if (args != null){
-                if (status.equals(args.getString(EXTRA_KEY_STATUS, ""))){
+            if (args != null) {
+                if (status.equals(args.getString(EXTRA_KEY_STATUS, ""))) {
                     reload();
                 }
             }
@@ -220,7 +218,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<PosOrder> dataList) {
+    public void onSuccess(PageInfo pageInfo, List<GoodsOrder> dataList) {
         try {
             ZLogger.d(String.format("保存线上销售订单流水, 请求%d/%d--%d/%d",
                     pageInfo.getPageNo(), pageInfo.getTotalPage(),
@@ -231,8 +229,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
             if (mPageInfo.getPageNo() == 1) {
                 if (entityList == null) {
                     entityList = new ArrayList<>();
-                }
-                else{
+                } else {
                     entityList.clear();
                 }
 //                    ZLogger.d("缓存线下门店订单流水第一页数据");
@@ -245,7 +242,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
                 }
             }
 
-            if (dataList != null){
+            if (dataList != null) {
                 entityList.addAll(dataList);
             }
         } catch (Throwable ex) {
@@ -268,7 +265,7 @@ public class GoodsListFragment extends BaseListFragment<PosOrder> implements IOr
     public synchronized boolean readCache() {
         //读取缓存，如果有则加载缓存数据，否则重新加载类目；应用每次启动都会加载类目
         String cacheStr = ACacheHelper.getAsString(cacheKey);
-        List<PosOrder> cacheData = JSONArray.parseArray(cacheStr, PosOrder.class);
+        List<GoodsOrder> cacheData = JSONArray.parseArray(cacheStr, GoodsOrder.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载缓存数据(%s): %d条线上销售订单", cacheKey, cacheData.size()));
 //            refreshCategoryGoodsTab(entity.getCategoryId(), cacheData);

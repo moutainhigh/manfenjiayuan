@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.bingshanguxue.cashier.model.wrapper.ResMenu;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.utils.NoDoubleClickListener;
 
 import java.util.List;
 
@@ -66,9 +67,23 @@ public class CashierMenuAdapter
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new NoDoubleClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (entityList == null || position < 0 || position >= entityList.size()) {
+////                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+//                        return;
+//                    }
+//
+//                    if (adapterListener != null) {
+//                        adapterListener.onItemClick(v, position);
+//                    }
+//                }
+
                 @Override
-                public void onClick(View v) {
+                public void onClickOnce(View v) {
+                    super.onClickOnce(v);
                     int position = getAdapterPosition();
                     if (entityList == null || position < 0 || position >= entityList.size()) {
 //                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));

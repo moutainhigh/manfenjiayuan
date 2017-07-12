@@ -1,14 +1,16 @@
 package com.bingshanguxue.cashier.hardware.printer;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderEntity;
-import com.mfh.framework.api.ProductAggDate;
-import com.mfh.framework.api.pmcstock.GoodsItem;
-import com.mfh.framework.api.pmcstock.PosOrder;
 import com.bingshanguxue.cashier.model.wrapper.DailysettleInfo;
 import com.bingshanguxue.cashier.model.wrapper.HandOverBill;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
+import com.mfh.framework.api.ProductAggDate;
+import com.mfh.framework.api.pmcstock.GoodsItem;
 import com.mfh.framework.api.pmcstock.StockOutItem;
 import com.mfh.framework.api.scOrder.ScOrder;
+import com.mfh.framework.rxapi.bean.CommonAccountFlow;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
+import com.mfh.framework.rxapi.bean.GroupBuyOrder;
 
 import java.util.List;
 
@@ -48,9 +50,9 @@ public interface IPrinterManager {
     void printSendOrder(final ScOrder scOrder);
 
     /**
-     * 打印提货单
+     * 打印自提单
      */
-    void printPickupOrder(final ScOrder scOrder);
+    void printPickupOrder(final List<GroupBuyOrder> groupBuyOrders);
 
     /**
      * 出库单
@@ -70,7 +72,7 @@ public interface IPrinterManager {
     /**
      * 订单流水
      * */
-    void printPosOrder(final PosOrder posOrder, final int printTimes);
+    void printPosOrder(final GoodsOrder posOrder, final int printTimes);
 
     /**
      * 测试页
@@ -82,7 +84,7 @@ public interface IPrinterManager {
      * */
     void printGoodsFlow(List<GoodsItem> goodsItems);
 
-    /**
+     /**
      * 对账流水
      *
      * @param subType 产品线名称
@@ -90,5 +92,16 @@ public interface IPrinterManager {
      * @param goodsItems 商品明细
      * */
     void printReconcile(String subType, String aggDateStr, List<ProductAggDate> goodsItems);
+
+    /**
+     * 会员商品订单流水
+     * */
+    void printCustomerGoodsOrder(List<GoodsOrder> goodsOrders);
+    /**
+     * 会员账户订单流水
+     * */
+    void printCustomerAccountFlow(List<CommonAccountFlow> accountFlows);
+
+
 
 }

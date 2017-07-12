@@ -41,7 +41,7 @@ public class StoreInPresenter {
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("商品建档失败: " + e.toString());
+                ZLogger.e("商品建档失败: " + e.toString());
                 if (mStoreInView != null) {
                     mStoreInView.onIStoreInViewError(e.getMessage());
                 }

@@ -22,12 +22,15 @@ import com.mfh.framework.anlaysis.DeviceUuidFactory;
 import com.mfh.framework.anlaysis.crash.AppException;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.configure.UConfigCache;
+import com.mfh.framework.core.utils.AbbreviationUtil;
+import com.mfh.framework.core.utils.AbbreviationUtilV2;
 import com.mfh.framework.core.utils.DataConvertUtil;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.EncryptUtil;
 import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.PhoneUtils;
+import com.mfh.framework.core.utils.PinyinUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
@@ -435,7 +438,7 @@ public class MfhApplication extends Application {
             ZLogger.d(String.format("FileUtil.IS_SDCARD_EXIST=%s",
                     String.valueOf(FileUtil.IS_SDCARD_EXIST)));
         } else {
-            ZLogger.df(getAppContext().getString(R.string.permission_not_granted,
+            ZLogger.d(getAppContext().getString(R.string.permission_not_granted,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE));
         }
 
@@ -602,6 +605,11 @@ public class MfhApplication extends Application {
                 "b59fb451d718d8bdeff216bbedc503ed0eb15906",
                 "51313a52e04695c9",
                 EncryptUtil.decodePwd("51313a52e04695c9", "b59fb451d718d8bdeff216bbedc503ed0eb15906")));
+
+        ZLogger.d(AbbreviationUtilV2.cn2py("荷兰土豆"));//OK
+        ZLogger.d(AbbreviationUtil.cn2py("荷兰土豆"));//NOT OK
+        ZLogger.d(PinyinUtils.getFirstSpell("荷兰土豆"));//OK
+        ZLogger.d(PinyinUtils.getPingYin("荷兰土豆"));
     }
 
 }

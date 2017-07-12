@@ -203,7 +203,7 @@ public class OrderPrintPreviewDialog extends CommonDialog {
                     //明细：商品信息
                     sbHtml.append("<p>--------------------------------</p>\n");
                     List<PosOrderItemEntity> posOrderItemEntityList = CashierProvider
-                            .fetchOrderItems(mPosOrderEntity);
+                            .fetchOrderItems(mPosOrderEntity.getId());
                     if (posOrderItemEntityList != null && posOrderItemEntityList.size() > 0) {
                         sbHtml.append("<table border=\"0\">\n");
                         sbHtml.append("<tr>" +

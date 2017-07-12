@@ -202,6 +202,13 @@
             android:launchMode="singleTop"
             android:screenOrientation="landscape"
             android:theme="@style/DialogActivity"/>
+
+        <activity
+            android:name=".components.pay.CashierPayActivity"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="landscape"
+            android:theme="@style/DialogActivity"/>
         <activity
             android:name=".ui.prepare.PrepareActivity"
             android:configChanges="keyboardHidden|keyboard|orientation|screenSize"

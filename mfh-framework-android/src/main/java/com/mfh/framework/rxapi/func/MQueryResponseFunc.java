@@ -18,14 +18,13 @@ public class MQueryResponseFunc<T> implements Func1<MResponse<MRspQuery<T>>, MRs
             throw new ApiException(mRspQueryMResponse.getMsg(), mRspQueryMResponse.getCode());
         } else {
             MRspQuery<T> rspQuery = mRspQueryMResponse.getData();
-            if (rspQuery != null){
+            if (rspQuery != null) {
                 ZLogger.d(String.format("返回查询结果：total=%d", rspQuery.getTotal()));
-            }
-            else{
+            } else {
                 ZLogger.d("返回查询结果为空");
             }
 
-            return mRspQueryMResponse.getData();
+            return rspQuery;
         }
     }
 }

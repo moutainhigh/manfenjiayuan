@@ -20,12 +20,12 @@
             android:hint=""
             android:inputType="numberDecimal"
             android:maxLength="8"
+            android:maxLines="1"
             android:padding="16dp"
             android:text="@string/default_amount"
             android:textColor="#FE5000"
             android:textIsSelectable="false"
-            android:textSize="@dimen/textsize_huge"
-            android:maxLines="1"/>
+            android:textSize="@dimen/textsize_huge"/>
 
         <TextView
             android:id="@+id/tv_unit"
@@ -44,6 +44,7 @@
         layout="@layout/view_mf_keyboard_number"
         android:layout_width="match_parent"
         android:layout_height="240dp"/>
+
     <include layout="@layout/horizontal_line"/>
 
 
@@ -52,8 +53,8 @@
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:gravity="center"
-                  android:padding="@dimen/spacing_4x"
-                  android:orientation="vertical">
+                  android:orientation="vertical"
+                  android:padding="@dimen/spacing_4x">
 
         <Button
             android:id="@+id/button_update"
@@ -64,33 +65,33 @@
             android:gravity="center"
             android:text="修改零售价"
             android:textColor="@color/material_white"
-            android:textSize="16sp" />
+            android:textSize="16sp"/>
 
         <Button
             android:id="@+id/button_delete"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
             android:background="@drawable/btn_corner_red"
             android:gravity="center"
             android:text="删除商品"
-            android:layout_marginTop="@dimen/spacing_double"
             android:textColor="@color/material_white"
             android:textSize="16sp"
-            android:visibility="visible" />
+            android:visibility="visible"/>
 
         <Button
             android:id="@+id/button_sellout"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginTop="@dimen/spacing_double"
             android:background="@drawable/btn_corner_orange"
             android:gravity="center"
             android:text="售罄"
-            android:layout_marginTop="@dimen/spacing_double"
             android:textColor="@color/material_white"
             android:textSize="16sp"
-            android:visibility="visible" />
+            android:visibility="visible"/>
 
     </LinearLayout>
 

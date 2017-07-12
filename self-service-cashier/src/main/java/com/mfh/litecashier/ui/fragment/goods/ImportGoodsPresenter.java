@@ -41,7 +41,7 @@ public class ImportGoodsPresenter {
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("导入商品到本店仓储失败, " + e.toString());
+                ZLogger.e("导入商品到本店仓储失败, " + e.toString());
                 if (mIImportGoodsView != null) {
                     mIImportGoodsView.onIImportGoodsViewError(e.getMessage());
                 }
@@ -72,7 +72,7 @@ public class ImportGoodsPresenter {
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("导入前台类目商品失败, " + e.toString());
+                ZLogger.e("导入前台类目商品失败, " + e.toString());
                 if (mIImportGoodsView != null) {
                     mIImportGoodsView.onIImportGoodsViewError(e.getMessage());
                 }

@@ -105,7 +105,7 @@
                 android:layout_marginTop="@dimen/spacing_normal"
                 android:background="@color/mfhtheme_maskPrimary"
                 android:orientation="horizontal"
-                app:inputNumberLabelView_inputHint="商品条码"
+                app:inputHint="商品条码"
                 app:editTextColor="@color/black"
                 app:editTextColorHint="@color/mfh_textColorHint"/>
         </RelativeLayout>

@@ -46,7 +46,7 @@ public class EslSyncManager {
     public String getEslStartCursor() {
         String startCursor = SharedPrefesManagerFactory.getString(GreenTagsApi.PREF_GREENTAGS,
                 GreenTagsApi.PK_S_GREENTAGS_LASTCURSOR);
-        ZLogger.df(String.format("最后一次价签同步的更新时间(%s)。", startCursor));
+        ZLogger.d(String.format("最后一次价签同步的更新时间(%s)。", startCursor));
 
 //        //得到指定模范的时间
         if (!StringUtils.isEmpty(startCursor)) {
@@ -55,7 +55,7 @@ public class EslSyncManager {
                 Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
-                    ZLogger.df(String.format("上次价签同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.w(String.format("上次价签同步更新游标大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();

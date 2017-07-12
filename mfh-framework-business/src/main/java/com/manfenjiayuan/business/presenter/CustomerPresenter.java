@@ -100,7 +100,7 @@ public class CustomerPresenter {
 
             @Override
             public void onSuccess(Human data) {
-
+//                {"code":"0","msg":"查询成功!","version":"1","data":null}
                 if (mICustomerView != null) {
                     mICustomerView.onICustomerViewSuccess(type, content, data);
                 }

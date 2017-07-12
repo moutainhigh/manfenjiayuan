@@ -152,7 +152,7 @@ public class DataDownloadManager {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_WHAT_SYNC_TIMER: {
-                    ZLogger.df("定时任务激活：同步商品库");
+                    ZLogger.d("定时任务激活：同步商品库");
 //                    DataDownloadManager.get().syncProducts();
                 }
                 break;
@@ -175,12 +175,12 @@ public class DataDownloadManager {
                 handler.sendMessage(message);
             }
         }, 10 * 1000, 8 * 60 * 60 * 1000);
-        ZLogger.df("开启定时下载数据任务...");
+        ZLogger.i("开启定时下载数据任务...");
     }
 
     public void cancelTimer() {
-        ZLogger.df("取消定时下载数据任务...");
         if (mTimer != null) {
+            ZLogger.i("取消定时下载数据任务...");
             mTimer.cancel();
             mTimer = null;
         }
@@ -212,10 +212,10 @@ public class DataDownloadManager {
         queue |= step;
 
         if (currentStep == NA) {
-            ZLogger.df(String.format(Locale.US, "当前无任务在执行，立刻启动 %d", step));
+            ZLogger.i2f(String.format(Locale.US, "当前无任务在执行，立刻启动 %d", step));
             processQueue();
         } else {
-            ZLogger.df(String.format(Locale.US, "正在执行任务%d，跳过并将该步骤加到队列中", currentStep));
+            ZLogger.wf(String.format(Locale.US, "正在执行任务%d，跳过并将该步骤加到队列中", currentStep));
         }
     }
 
@@ -223,7 +223,7 @@ public class DataDownloadManager {
      * 同步
      */
     private void processQueue() {
-        ZLogger.df(String.format(Locale.US, "当前同步队列: %d", queue));
+        ZLogger.d(String.format(Locale.US, "当前同步队列: %d", queue));
 
         this.bSyncInProgress = true;
 
@@ -258,7 +258,7 @@ public class DataDownloadManager {
      */
     private void onUpdate(int eventId, String message) {
         if (!StringUtils.isEmpty(message)) {
-            ZLogger.df(message);
+            ZLogger.d(message);
         }
         bSyncInProgress = false;
         EventBus.getDefault().post(new DataDownloadEvent(eventId));
@@ -269,7 +269,7 @@ public class DataDownloadManager {
      */
     private void onNotifyNext(String message) {
         if (!StringUtils.isEmpty(message)) {
-            ZLogger.df(message);
+            ZLogger.d(message);
         }
         processQueue();
     }
@@ -279,7 +279,7 @@ public class DataDownloadManager {
      */
     private void onNotifyCompleted(String message) {
         if (!StringUtils.isEmpty(message)) {
-            ZLogger.df(message);
+            ZLogger.d(message);
         }
         bSyncInProgress = false;
         currentStep = NA;
@@ -300,7 +300,7 @@ public class DataDownloadManager {
 
                 String startCursor = DataManagerHelper.getPosLastUpdateCursor();
                 if (StringUtils.isEmpty(startCursor)) {
-                    ZLogger.df("商品档案同步游标为空，需要全量更新，假删除数据");
+                    ZLogger.w("商品档案同步游标为空，需要全量更新，假删除数据");
                     PosProductService.get().pretendDelete();
                 }
 
@@ -380,7 +380,7 @@ public class DataDownloadManager {
                 //TODO 使用事务
                 if (goodses != null && goodses.size() > 0) {
                     if (mPageInfo != null) {
-                        ZLogger.df(String.format("保存 (%d/%d) 个商品档案（%s）开始",
+                        ZLogger.d(String.format("保存 (%d/%d) 个商品档案（%s）开始",
                                 mPageInfo.getPageNo(),
                                 mPageInfo.getTotalPage(), startCursor));
                     }
@@ -400,7 +400,7 @@ public class DataDownloadManager {
 
                 //更新游标
                 SharedPreferencesUltimate.setSyncProductsCursor(cussor);
-                ZLogger.df(String.format("更新商品档案游标（%s）",
+                ZLogger.d(String.format("更新商品档案游标（%s）",
                         SharedPreferencesUltimate.getSyncProductsCursor()));
 
                 subscriber.onNext(startCursor);
@@ -447,7 +447,7 @@ public class DataDownloadManager {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        ZLogger.df("查询指定网点可同步sku总数失败：" + e.toString());
+                        ZLogger.e("查询指定网点可同步sku总数失败：" + e.toString());
                         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_POSPRODUCTS_UPDATED));
 
                         processQueue();
@@ -466,7 +466,7 @@ public class DataDownloadManager {
         Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
-                ZLogger.df(String.format("网点可同步sku总数:%s", data));
+                ZLogger.d(String.format("网点可同步sku总数:%s", data));
 
                 int skuNum = 0;
                 if (data != null) {
@@ -482,10 +482,10 @@ public class DataDownloadManager {
                         .queryAllByDesc(String.format("tenantId = '%d'",
                                 MfhLoginService.get().getSpid()));
                 int posNum = (entities != null ? entities.size() : 0);
-                ZLogger.df(String.format("本地商品档案库sku总数:%d", posNum));
+                ZLogger.d(String.format("本地商品档案库sku总数:%d", posNum));
 
                 if (posNum != skuNum) {
-                    ZLogger.df("本地商品档案和云端数据不一致，重置时间戳，下一次需要全量同步商品库");
+                    ZLogger.wf("本地商品档案和云端数据不一致，重置时间戳，下一次需要全量同步商品库");
 
                     //初始化游标并设置下次需要全量更新
                     SharedPreferencesUltimate.setSyncProductsCursor("");
@@ -694,7 +694,7 @@ public class DataDownloadManager {
                         try {
                             if (data != null) {
                                 Long code = Long.valueOf(data);
-                                ZLogger.df("新建前台类目成功:" + data);
+                                ZLogger.d("新建前台类目成功:" + data);
                                 SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_L_CATETYPE_POS_ID, code);
 
                                 CategoryInfo categoryInfo = new CategoryInfo();
@@ -747,7 +747,7 @@ public class DataDownloadManager {
 
                     int count = PosLocalCategoryService.get().getCount();
                     int cloudNum = categoryInfos.size();
-                    ZLogger.df(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
+                    ZLogger.d(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
                             cloudNum, count));
                 }
 
@@ -869,7 +869,7 @@ public class DataDownloadManager {
                 SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                         TimeUtil.format(cussor, TimeUtil.FORMAT_YYYYMMDDHHMMSS));
 
-                ZLogger.df(String.format("保存商品类目关系表结束（%s）",
+                ZLogger.d(String.format("保存商品类目关系表结束（%s）",
                         SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR)));
 
                 subscriber.onNext(startCursor);
@@ -927,14 +927,14 @@ public class DataDownloadManager {
                             if (data != null) {
                                 skuNum = Integer.valueOf(data);
                             }
-                            ZLogger.df(String.format("计算有多少可同步的商品类目关系:%d，并删除无效数据", skuNum));
+                            ZLogger.d(String.format("计算有多少可同步的商品类目关系:%d，并删除无效数据", skuNum));
 
                             //删除无效的数据
                             ProductCatalogService.getInstance()
                                     .deleteBy(String.format("isCloudActive = '%d'", 0));
                             int count = ProductCatalogService.getInstance().getCount();
 
-                            ZLogger.df(String.format("商品类目关系表,（云端／本地）= (%d／%d)", skuNum, count));
+                            ZLogger.i(String.format("商品类目关系表,（云端／本地）= (%d／%d)", skuNum, count));
                             if (count != skuNum) {
                                 SharedPreferencesUltimate.set(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR,
                                         "");
@@ -979,7 +979,7 @@ public class DataDownloadManager {
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("加载后台类目树失败, " + e.toString());
+                ZLogger.e("加载后台类目树失败, " + e.toString());
                 processQueue();
             }
 
@@ -999,7 +999,7 @@ public class DataDownloadManager {
      * 保存后台类目树
      */
     private void listBackendCategoryStep2(List<CategoryOption> options) {
-        ZLogger.df(String.format("保存POS %d个后台类目",
+        ZLogger.d(String.format("保存POS %d个后台类目",
                 (options != null ? options.size() : 0)));
         //缓存数据
         JSONArray cacheArrays = new JSONArray();
@@ -1143,19 +1143,19 @@ public class DataDownloadManager {
                 mCompanyHumanPageInfo = pageInfo;
                 //第一页，清空旧数据
                 if (mCompanyHumanPageInfo != null && mCompanyHumanPageInfo.getPageNo() == 1) {
-                    ZLogger.df("清空旧账号数据");
+                    ZLogger.i("清空旧账号数据");
                     CompanyHumanService.get().clear();
                 }
 
 //                    int retSize = rs.getReturnNum();
                 if (companyHumen != null && companyHumen.size() > 0) {
-                    ZLogger.df(String.format("保存 %d 个账号数据", companyHumen.size()));
+                    ZLogger.i(String.format("保存 %d 个账号数据", companyHumen.size()));
 
                     for (CompanyHuman wrapper : companyHumen) {
                         CompanyHumanService.get().saveOrUpdate(wrapper);
                     }
                 } else {
-                    ZLogger.df("保存 0 个账号数据");
+                    ZLogger.w("保存 0 个账号数据");
                 }
 
                 subscriber.onNext(null);

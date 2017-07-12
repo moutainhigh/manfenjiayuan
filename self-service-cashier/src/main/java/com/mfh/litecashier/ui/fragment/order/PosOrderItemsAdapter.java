@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.mfh.framework.api.pmcstock.PosOrderItem;
+import com.mfh.framework.rxapi.bean.GoodsOrderItem;
 import com.bumptech.glide.Glide;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
@@ -23,9 +23,9 @@ import butterknife.ButterKnife;
  * Created by bingshanguxue on 15/8/5.
  */
 public class PosOrderItemsAdapter
-        extends RegularAdapter<PosOrderItem, PosOrderItemsAdapter.ProductViewHolder> {
+        extends RegularAdapter<GoodsOrderItem, PosOrderItemsAdapter.ProductViewHolder> {
 
-    public PosOrderItemsAdapter(Context context, List<PosOrderItem> entityList) {
+    public PosOrderItemsAdapter(Context context, List<GoodsOrderItem> entityList) {
         super(context, entityList);
     }
 
@@ -47,7 +47,7 @@ public class PosOrderItemsAdapter
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
-        PosOrderItem entity = entityList.get(position);
+        GoodsOrderItem entity = entityList.get(position);
 
         Glide.with(mContext).load(entity.getImgUrl()).error(R.mipmap.ic_image_error)
                 .into(holder.ivHeader);
@@ -101,7 +101,7 @@ public class PosOrderItemsAdapter
     }
 
     @Override
-    public void setEntityList(List<PosOrderItem> entityList) {
+    public void setEntityList(List<GoodsOrderItem> entityList) {
         super.setEntityList(entityList);
 
         if (adapterListener != null) {

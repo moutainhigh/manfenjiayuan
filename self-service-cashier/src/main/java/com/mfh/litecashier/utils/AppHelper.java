@@ -174,7 +174,7 @@ public class AppHelper {
      * 恢复出厂设置
      * */
     public static void resetFactoryData(Context context){
-        ZLogger.df("恢复出厂设置");
+        ZLogger.i2f("恢复出厂设置");
         clearAppData();
 
         //删除SharedPreference
@@ -207,7 +207,7 @@ public class AppHelper {
      * </ol>
      */
     public static void clearAppData() {
-        ZLogger.df("清除数据（文件，设置，账户，数据库等）");
+        ZLogger.i2f("清除数据（文件，设置，账户，数据库等）");
         CashierShopcartService.getInstance().clear();
         PosCategoryGodosTempService.getInstance().clear();
         PosProductService.get().clear();//商品库
@@ -226,7 +226,7 @@ public class AppHelper {
      * 清空缓存数据
      */
     public static void clearCacheData() {
-        ZLogger.df("清空缓存数据");
+        ZLogger.i2f("清空缓存数据");
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_ORDER_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_SUPPLY_DATA);
         ACacheHelper.remove(ACacheHelper.TCK_PURCHASE_CREATERECEIPT_GOODS_DATA);

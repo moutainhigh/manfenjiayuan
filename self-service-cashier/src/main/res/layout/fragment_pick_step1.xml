@@ -79,10 +79,10 @@
                 android:layout_height="44dp"
                 android:layout_marginStart="32dp"
                 app:editInputType="barcode"
-                app:inputNumberLabelView_inputHint="请扫描订单编号"
+                app:inputHint="请扫描订单编号"
                 app:editTextColor="@color/material_black"
                 app:editTextColorHint="@color/mfh_textColorHint"
-                app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_key_enter"/>
+                app:rightImageButtonSrc="@mipmap/ic_key_enter"/>
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

@@ -243,7 +243,7 @@ public class ScGoodsSkuMode {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
+                        ZLogger.ef("查询失败: " + errMsg);
                         if (listener != null) {
                             listener.onError(errMsg);
                         }
@@ -282,7 +282,7 @@ public class ScGoodsSkuMode {
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("查询失败: " + e.toString());
+                ZLogger.ef("查询失败: " + e.toString());
                 if (listener != null) {
                     listener.onError(e.toString());
                 }
@@ -326,7 +326,7 @@ public class ScGoodsSkuMode {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        ZLogger.df("加载库存商品失败:" + e.toString());
+                        ZLogger.ef("加载库存商品失败:" + e.toString());
 
                         if (listener != null) {
                             listener.onError(e.toString());
@@ -370,7 +370,7 @@ public class ScGoodsSkuMode {
             @Override
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
-                ZLogger.df("加载库存商品失败:" + errMsg);
+                ZLogger.ef("加载库存商品失败:" + errMsg);
                 if (listener != null) {
                     listener.onError(errMsg);
                 }
@@ -406,7 +406,7 @@ public class ScGoodsSkuMode {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("加载库存商品失败:" + errMsg);
+                        ZLogger.ef("加载库存商品失败:" + errMsg);
                         if (listener != null) {
                             listener.onError(errMsg);
                         }

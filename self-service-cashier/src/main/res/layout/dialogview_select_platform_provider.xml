@@ -16,7 +16,7 @@
         android:layout_width="300dp"
         android:layout_height="44dp"
         android:layout_margin="8dp"
-        app:inputNumberLabelView_inputHint="速记码"
+        app:inputHint="速记码"
         app:editTextColor="@color/black"
         app:editTextColorHint="@color/mfh_textColorHint"/>
 

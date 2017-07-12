@@ -59,10 +59,10 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 384
+        versionCode 388
 
         // Defines a user-friendly version name for your app.
-        versionName "1.23.7"
+        versionName "1.23.8"
 
         multiDexEnabled true
 
@@ -159,9 +159,6 @@ android {
         mixicook {
             manifestPlaceholders = [UMENG_CHANNEL_VALUE: "mixicook"]
         }
-        poslab {
-            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "poslab"]
-        }
     }
 
     /**
@@ -207,6 +204,6 @@ dependencies {
     compile rootProject.ext.dependencies["butterknife"]
     apt rootProject.ext.dependencies["butterknife-compiler"]
     compile rootProject.ext.dependencies["getui"]
-//    compile 'me.drakeet.multitype:multitype:2.0.0'
+
 
 }

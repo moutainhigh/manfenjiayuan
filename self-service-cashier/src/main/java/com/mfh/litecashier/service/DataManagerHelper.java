@@ -24,7 +24,7 @@ public class DataManagerHelper {
      */
     public static String getPosLastUpdateCursor() {
         String startCursor = SharedPreferencesUltimate.getSyncProductsCursor();
-        ZLogger.df(String.format("商品档案同步游标:(%s)。", startCursor));
+        ZLogger.d(String.format("商品档案同步游标:(%s)。", startCursor));
 
 //        //得到指定模范的时间
         if (!StringUtils.isEmpty(startCursor)) {
@@ -33,7 +33,7 @@ public class DataManagerHelper {
                 Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
-                    ZLogger.df(String.format("商品档案同步游标大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.wf(String.format("商品档案同步游标大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();
@@ -49,7 +49,7 @@ public class DataManagerHelper {
      */
     public static String getProductCatalogStartCursor() {
         String startCursor = SharedPreferencesUltimate.getText(SharedPreferencesUltimate.PK_SYNC_PRODUCTCATALOG_STARTCURSOR);
-        ZLogger.df(String.format("上次商品和类目关系表更新游标(%s)。", startCursor));
+        ZLogger.d(String.format("上次商品和类目关系表更新游标(%s)。", startCursor));
 
 //        //得到指定模范的时间
         if (!StringUtils.isEmpty(startCursor)) {
@@ -58,7 +58,7 @@ public class DataManagerHelper {
                 Date rightNow = TimeUtil.getCurrentDate();
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
-                    ZLogger.df(String.format("上次商品和类目关系表更新游标大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.wf(String.format("上次商品和类目关系表更新游标大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();
@@ -75,7 +75,7 @@ public class DataManagerHelper {
     public static String getPosOrderStartCursor() {
         String lastSyncCursor = SharedPreferencesUltimate
                 .getText(SharedPreferencesUltimate.PK_S_POSORDER_SYNC_STARTCURSOR);
-        ZLogger.df(String.format("上次订单同步时间游标(%s)。", lastSyncCursor));
+        ZLogger.d(String.format("上次订单同步时间游标(%s)。", lastSyncCursor));
 
         //与当前时间相比，取最小当时间
         if (!StringUtils.isEmpty(lastSyncCursor)) {
@@ -86,7 +86,7 @@ public class DataManagerHelper {
                 if (lastSyncDate.compareTo(rightNow) > 0) {
                     lastSyncCursor = TimeCursor.InnerFormat.format(rightNow);
 //                    SharedPreferencesUltimate.setPosOrderLastUpdate(d2);
-                    ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", lastSyncCursor));
+                    ZLogger.wf(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", lastSyncCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();
@@ -114,7 +114,7 @@ public class DataManagerHelper {
             startDate = orderEntity.getUpdatedDate();
         }
         String startCursor = TimeUtil.format(startDate, TimeUtil.FORMAT_YYYYMMDDHHMMSS);
-        ZLogger.df(String.format("上次订单同步时间游标(%s)。",startCursor));
+        ZLogger.d(String.format("上次订单同步时间游标(%s)。",startCursor));
 
         //与当前时间相比，取最小当时间
         if (!StringUtils.isEmpty(startCursor)) {
@@ -125,7 +125,7 @@ public class DataManagerHelper {
                 if (d1.compareTo(rightNow) > 0) {
                     startCursor = TimeCursor.InnerFormat.format(rightNow);
 //                    SharedPreferencesUltimate.setPosOrderLastUpdate(d2);
-                    ZLogger.df(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", startCursor));
+                    ZLogger.wf(String.format("上次订单同步时间大于当前时间，使用当前时间(%s)。", startCursor));
                 }
             } catch (ParseException e) {
 //            e.printStackTrace();

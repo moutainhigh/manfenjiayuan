@@ -12,16 +12,16 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.ui.fragment.components.CashQuotaFragment;
-import com.mfh.litecashier.ui.fragment.components.ExchangeScoreFragment;
-import com.mfh.litecashier.ui.fragment.components.OneKeyFeedbackFragment;
-import com.mfh.litecashier.ui.fragment.topup.TransferFragment;
+import com.mfh.litecashier.components.CashQuotaFragment;
+import com.mfh.litecashier.components.OneKeyFeedbackFragment;
+import com.mfh.litecashier.components.customer.CustomerTransactionFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.DailySettleFragment;
 import com.mfh.litecashier.ui.fragment.dailysettle.HandoverFragment;
 import com.mfh.litecashier.ui.fragment.goods.GoodsSalesFragment;
 import com.mfh.litecashier.ui.fragment.goods.ScSkuGoodsStoreInFragment;
 import com.mfh.litecashier.ui.fragment.inventory.GreateScSkuGoodsFragment;
-import com.mfh.litecashier.ui.fragment.pay.PayHistoryFragment;
+import com.mfh.litecashier.ui.fragment.orderflow.PayHistoryFragment;
+import com.mfh.litecashier.components.pickup.PickupFragment;
 import com.mfh.litecashier.ui.fragment.prepareorder.PrepareAbleOrdersFragment;
 import com.mfh.litecashier.ui.fragment.purchase.PurchaseGoodsDetailFragment;
 import com.mfh.litecashier.ui.fragment.purchase.SelectInvRecvOrderFragment;
@@ -29,8 +29,8 @@ import com.mfh.litecashier.ui.fragment.purchase.SelectWholesalerWithTenantFragme
 import com.mfh.litecashier.ui.fragment.tenant.TenantCategoryListFragment;
 import com.mfh.litecashier.ui.goodsflow.BackendCategoryListFragment;
 import com.mfh.litecashier.ui.goodsflow.GoodsFlowFragment;
-import com.mfh.litecashier.ui.reconcile.ProdLineListFragment;
-import com.mfh.litecashier.ui.reconcile.ReconcileFragment;
+import com.mfh.litecashier.components.reconcile.ProdLineListFragment;
+import com.mfh.litecashier.components.reconcile.ReconcileFragment;
 
 import butterknife.BindView;
 
@@ -52,8 +52,6 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FT_CANARY_CASH_QUOTA = 0x08;//现金授权
     public static final int FT_PAY_HISTORY = 0x09;//支付记录
     public static final int FT_GOODS_SALESHISTORY = 0x10;//商品销量记录
-    public static final int FT_EXCHANGE_SCORE = 0x11;//积分兑换
-    public static final int FT_CUSTOMER_TOPUP = 0x12;//会员充值
 
     public static final int FT_TENANT_POSCATEGORYLIST = 0x13;//租户pos前台类目
     public static final int FT_GOODS_FLOW = 0x14;//商品流水
@@ -63,8 +61,12 @@ public class SimpleDialogActivity extends BaseActivity {
     public static final int FT_PROD_LINE_LIST = 0x23;//产品线列表
 
 
+    public static final int FT_CUSTOMER_TRANSACTION = 0x33;//会员交易查询
+    public static final int FT_CUSTOMER_PICKUP = 0x34;//团购订单自提
 
-    public static final int FT_ONEKEY_FEEDBACK = 0x31;//一键反馈
+
+
+    public static final int FT_ONEKEY_FEEDBACK = 0x41;//一键反馈
 
 
     private int serviceType = 0;
@@ -297,13 +299,13 @@ public class SimpleDialogActivity extends BaseActivity {
                 }
             }
             break;
-            case FT_EXCHANGE_SCORE: {
-                ExchangeScoreFragment fragment;
+            case FT_CUSTOMER_TRANSACTION: {
+                CustomerTransactionFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
-                    fragment = ExchangeScoreFragment.newInstance(intent.getExtras());
+                    fragment = CustomerTransactionFragment.newInstance(intent.getExtras());
                 } else {
-                    fragment = ExchangeScoreFragment.newInstance(null);
+                    fragment = CustomerTransactionFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
@@ -311,13 +313,13 @@ public class SimpleDialogActivity extends BaseActivity {
                         .commit();
             }
             break;
-            case FT_CUSTOMER_TOPUP: {
-                TransferFragment fragment;
+            case FT_CUSTOMER_PICKUP: {
+                PickupFragment fragment;
                 Intent intent = this.getIntent();
                 if (intent != null) {
-                    fragment = TransferFragment.newInstance(intent.getExtras());
+                    fragment = PickupFragment.newInstance(intent.getExtras());
                 } else {
-                    fragment = TransferFragment.newInstance(null);
+                    fragment = PickupFragment.newInstance(null);
                 }
                 getSupportFragmentManager().beginTransaction()
 //                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)

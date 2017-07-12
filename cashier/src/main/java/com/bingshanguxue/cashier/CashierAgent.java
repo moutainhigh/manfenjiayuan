@@ -123,11 +123,11 @@ public class CashierAgent {
      */
     public static CashierOrderInfo settle(Integer subType, String orderBarCode,
                                           String outTradeNo, int status,
-                                          List<CashierShopcartEntity> shopcartEntities) {
+                                          List<CashierShopcartEntity> shopcartEntities, Human human) {
         //创建or更新订单，保存or更新订单明细
         simpleSettle(subType, orderBarCode, outTradeNo, shopcartEntities, true);
         //生成订单支付信息
-        CashierOrderInfo cashierOrderInfo = CashierProvider.createCashierOrderInfo(orderBarCode, null);
+        CashierOrderInfo cashierOrderInfo = CashierProvider.createCashierOrderInfo(orderBarCode, human);
         // 7/5/16  修复初始状态，订单金额为空的问题。
         updateCashierOrder(cashierOrderInfo, null, status);
 
@@ -136,11 +136,11 @@ public class CashierAgent {
 
     public static CashierOrderInfo settle(Integer subType, String orderBarCode,
                                           String outTradeNo, int status,
-                                          List<CashierShopcartEntity> shopcartEntities, boolean isCash) {
+                                          List<CashierShopcartEntity> shopcartEntities, Human human, boolean isCash) {
         //创建or更新订单，保存or更新订单明细
         simpleSettle(subType, orderBarCode, outTradeNo, shopcartEntities, isCash);
         //生成订单支付信息
-        CashierOrderInfo cashierOrderInfo = CashierProvider.createCashierOrderInfo(orderBarCode, null);
+        CashierOrderInfo cashierOrderInfo = CashierProvider.createCashierOrderInfo(orderBarCode, human);
         // 7/5/16  修复初始状态，订单金额为空的问题。
         updateCashierOrder(cashierOrderInfo, null, status);
 
@@ -331,7 +331,7 @@ public class CashierAgent {
         }
 
         PosOrderService.get().saveOrUpdate(orderEntity);
-        ZLogger.df(String.format("更新订单 %s_%d:\n%s", orderEntity.getBarCode(),
+        ZLogger.d(String.format("更新订单 %s_%d:\n%s", orderEntity.getBarCode(),
                 orderEntity.getId(), JSONObject.toJSONString(orderEntity)));
         return true;
     }
@@ -364,7 +364,7 @@ public class CashierAgent {
         orderEntity.setStatus(PosOrderEntity.ORDER_STATUS_STAY_PAY);
         orderEntity.setUpdatedDate(rightNow);
         PosOrderService.get().saveOrUpdate(orderEntity);
-        ZLogger.df(String.format("更新订单：\n%s", JSONObject.toJSONString(orderEntity)));
+        ZLogger.d(String.format("更新订单：\n%s", JSONObject.toJSONString(orderEntity)));
 
         return true;
     }

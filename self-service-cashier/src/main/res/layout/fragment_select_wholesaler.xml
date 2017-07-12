@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/spacing_double"
-        app:inputNumberLabelView_inputHint="速记码"
+        app:inputHint="速记码"
         app:editTextColor="@color/black"
         app:editTextColorHint="@color/mfh_textColorHint"/>
 

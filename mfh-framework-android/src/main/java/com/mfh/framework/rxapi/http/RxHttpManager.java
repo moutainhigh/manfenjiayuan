@@ -7,12 +7,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.posorder.BatchInOrder;
-import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
 import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.api.posorder.BatchInOrder;
+import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
 import com.mfh.framework.api.tenant.SassInfo;
 import com.mfh.framework.api.tenant.TenantInfo;
@@ -335,14 +334,6 @@ public class RxHttpManager {
         toSubscribe(observable, subscriber);
     }
 
-
-    public void findGoodsOrderList(Map<String, String> options,
-                                   MQuerySubscriber<PosOrder> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.findGoodsOrderList(options)
-                .map(new MQueryResponseFunc<PosOrder>());
-        toSubscribe(observable, subscriber);
-    }
 
     public void findShopOtherBarcodes(Map<String, String> options, MQuerySubscriber<ProductSkuBarcode> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);

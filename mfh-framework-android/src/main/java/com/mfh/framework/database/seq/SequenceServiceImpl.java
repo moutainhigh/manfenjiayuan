@@ -92,11 +92,11 @@ public class SequenceServiceImpl implements SequenceService{
             if (sequence.getMaxValue() > 0 && nextValue >= sequence.getMaxValue()) {
                 if (sequence.isCycle()){
                     nextValue = sequence.getMinValue();
-                    ZLogger.df(String.format("序列(%d)已经达到最大值(%d),使用最小值(%d)重新生成新的序列!",
+                    ZLogger.wf(String.format("序列(%d)已经达到最大值(%d),使用最小值(%d)重新生成新的序列!",
                             nextValue, sequence.getMaxValue(), sequence.getMinValue()));
                 }
                 else{
-                    ZLogger.df(String.format("序列(%d)已经达到最大值(%d),不能生成新的序列!",
+                    ZLogger.ef(String.format("序列(%d)已经达到最大值(%d),不能生成新的序列!",
                             nextValue, sequence.getMaxValue()));
                     throw new RuntimeException(String.format("序列(%d)已经达到最大值(%d),不能生成新的序列!",
                             nextValue, sequence.getMaxValue()));
@@ -162,7 +162,7 @@ public class SequenceServiceImpl implements SequenceService{
             sequence.setSequenceValue(curValue);
             sequenceDao.updateSequence(sequence);
         }
-        ZLogger.df(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
+        ZLogger.d(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
 
     }
 
@@ -187,7 +187,7 @@ public class SequenceServiceImpl implements SequenceService{
 
         sequenceDao.updateSequence(sequence);
 
-        ZLogger.df(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
+        ZLogger.d(String.format("Sequence: %s", JSONObject.toJSONString(sequence)));
 
     }
 }

@@ -86,10 +86,9 @@ public class PayProcessView extends RelativeLayout{
     public static final int STATE_ERROR = 3;
     public static final int STATE_SUCCESS = 4;
     public void setState(int state, String message){
-        tvProcess.setText(message);
-
         switch (state){
             case STATE_PROCESS:{
+                tvProcess.setText(message);
                 tvProcess.setTextColor(Color.parseColor("#FF000000"));
 
                 progressBar.setVisibility(View.VISIBLE);
@@ -107,6 +106,7 @@ public class PayProcessView extends RelativeLayout{
             }
             break;
             case STATE_SUCCESS:{
+                tvProcess.setText("");
                 tvProcess.setTextColor(AppHelper.getOkTextColor());
 
                 progressBar.setVisibility(View.GONE);
@@ -121,11 +121,14 @@ public class PayProcessView extends RelativeLayout{
             break;
             case STATE_FAILED:
             case STATE_ERROR:{
+                tvProcess.setText(message);
                 tvProcess.setTextColor(AppHelper.getErrorTextColor());
 
                 progressBar.setVisibility(View.GONE);
-                fabCancel.setVisibility(View.VISIBLE);
-                fabRefresh.setVisibility(View.VISIBLE);
+                if (payCountDownTimer != null) {
+                    fabCancel.setVisibility(View.VISIBLE);
+                    fabRefresh.setVisibility(View.VISIBLE);
+                }
 
                 tvCountdown.setText("");
                 tvCountdown.setVisibility(GONE);

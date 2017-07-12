@@ -404,7 +404,7 @@ public class UmsipsDialog extends CommonDialog {
         this.transCFX.setDevPath(SerialManager.getUmsipsPort());
         //波特率(baudRate)	int		8	是	波特率
         this.transCFX.setBaudRate(Integer.valueOf(SerialManager.getUmsipsBaudrate()));
-        ZLogger.df("初始化交易基础信息: " + this.transCFX.toString());
+        ZLogger.d("初始化交易基础信息: " + this.transCFX.toString());
     }
 
     /**
@@ -424,7 +424,7 @@ public class UmsipsDialog extends CommonDialog {
         /**交易附加域(transMemo)	String		VAR	是	"交易类型附加信息域，域格式为data1&data2&......&dataN
          例如：手机充值需要传入运营商和手机号，则填充：01&15866668888"*/
         this.request.setTransMemo("01");
-        ZLogger.df("初始化交易请求: " + this.request.toString());
+        ZLogger.d("初始化交易请求: " + this.request.toString());
     }
 
 

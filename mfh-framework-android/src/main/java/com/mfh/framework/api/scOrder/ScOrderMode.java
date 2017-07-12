@@ -62,7 +62,7 @@ public class ScOrderMode {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("查询失败: " + errMsg);
+                        ZLogger.ef("查询失败: " + errMsg);
                         if (listener != null) {
                             listener.onError(errMsg);
                         }
@@ -107,7 +107,7 @@ public class ScOrderMode {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df("查询失败: " + e.toString());
+                        ZLogger.ef("查询失败: " + e.toString());
                         if (listener != null) {
                             listener.onError(e.getMessage());
                         }

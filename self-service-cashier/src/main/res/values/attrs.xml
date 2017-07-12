@@ -19,18 +19,18 @@
     <declare-styleable name="InputNumberLabelView">
         <attr name="inputNumberLabelView_title" format="string"/>
         <attr name="inputNumberLabelView_titleWidth" format="dimension"/>
-
         <attr name="editTextColor"/>
         <attr name="editTextSize"/>
         <attr name="editTextColorHint"/>
-        <attr name="inputNumberLabelView_inputHint" format="string"/>
+        <attr name="inputHint" format="string"/>
         <attr name="editInputType"/>
         <attr name="editBackground"/>
         <attr name="editFocusable"/>
         <attr name="editFocusableInTouchMode"/>
-        <attr name="inputNumberLabelView_rightButtonWidth" format="dimension"/>
-        <attr name="inputNumberLabelView_rightImageButtonSrc" format="reference"/>
+        <attr name="rightButtonWidth" format="dimension"/>
+        <attr name="rightImageButtonSrc" format="reference"/>
         <attr name="clearOnClickDel" format="boolean"/>
+        <attr name="rightAction1Visible" format="boolean"/>
         <attr name="softKeyboardEnabled"/>
     </declare-styleable>
 

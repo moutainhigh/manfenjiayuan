@@ -51,7 +51,7 @@ public class GreenTagsApiImpl extends GreenTagsApi {
         request.addProperty("goodsInfoExArray", goodsInfoEXArray);
 //        request.addProperty("goodsInfoExArray", new ArrayOfGoodsInfoEX(arrayGoodsInfoEx));
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-            ZLogger.df(String.format("ESLPushGoodsInfoExPack.request: %s", request.toString()));
+            ZLogger.d(String.format("ESLPushGoodsInfoExPack.request: %s", request.toString()));
         }
 
         //Step 2: Create envelope

@@ -196,7 +196,7 @@ public class PrepareTakeoutFragment extends BaseFragment {
 
         CashierOrderInfo cashierOrderInfo = CashierAgent.settle(mBizSubTypeWrapper.getSubType(),
                 posTradeNo, outterTradeNo,
-                PosOrderEntity.ORDER_STATUS_FINISH, mShopcartEntities);
+                PosOrderEntity.ORDER_STATUS_FINISH, mShopcartEntities, null);
 
         hideProgressDialog();
 

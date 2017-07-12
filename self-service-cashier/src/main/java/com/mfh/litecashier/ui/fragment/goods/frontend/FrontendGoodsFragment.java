@@ -44,7 +44,6 @@ import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 import com.mfh.litecashier.ui.fragment.goods.IImportGoodsView;
 import com.mfh.litecashier.ui.fragment.goods.ImportGoodsPresenter;
-import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryGoodsEvent;
 import com.mfh.litecashier.ui.fragment.goods.backend.BackendCategoryGoodsFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -498,7 +497,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
     @Override
     public void onIScGoodsSkuViewError(String errorMsg) {
         hideProgressDialog();
-        ZLogger.df(errorMsg);
+        ZLogger.e(errorMsg);
         DialogUtil.showHint("加载商品信息失败");
     }
 
@@ -539,7 +538,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("导入商品到本店仓储失败, " + e.toString());
+                ZLogger.e("导入商品到本店仓储失败, " + e.toString());
                 DialogUtil.showHint("添加商品失败");
                 hideProgressDialog();
             }
@@ -569,7 +568,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("导入前台类目商品失败, " + e.toString());
+                ZLogger.e("导入前台类目商品失败, " + e.toString());
                 DialogUtil.showHint("添加商品失败");
                 hideProgressDialog();
             }
@@ -638,7 +637,6 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
             return;
         }
 
-
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
 
         JSONObject jsonObject = new JSONObject();
@@ -657,7 +655,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("修改零售价失败, " + e.toString());
+                ZLogger.e("修改零售价失败, " + e.toString());
                 DialogUtil.showHint("修改零售价失败");
                 hideProgressDialog();
             }
@@ -717,7 +715,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
 
             @Override
             public void onError(Throwable e) {
-                ZLogger.df("删除商品失败, " + e.toString());
+                ZLogger.e("删除商品失败, " + e.toString());
                 DialogUtil.showHint("删除商品失败");
                 hideProgressDialog();
             }

@@ -12,7 +12,7 @@ import android.widget.ProgressBar;
 import com.alibaba.fastjson.JSONArray;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.pmcstock.PosOrder;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.ObjectsCompact;
@@ -22,8 +22,9 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.presenter.OrderflowPresenter;
-import com.mfh.litecashier.ui.view.IOrderflowView;
+import com.manfenjiayuan.business.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.view.IOrderflowView;
+import com.mfh.litecashier.components.order.GoodsOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,7 +40,7 @@ import butterknife.OnClick;
  * 线下门店订单流水
  * Created by bingshanguxue on 15/8/31.
  */
-public class PosOrderFragment extends BaseListFragment<PosOrder>
+public class PosOrderFragment extends BaseListFragment<GoodsOrder>
         implements IOrderflowView {
 
     public static final String EXTRA_KEY_BTYPE = "btype";
@@ -57,7 +58,7 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
     @BindView(R.id.empty_view)
     View emptyView;
     private LinearLayoutManager linearLayoutManager;
-    private PosOrderAdapter orderListAdapter;
+    private GoodsOrderAdapter orderListAdapter;
 
     private OrderflowPresenter orderflowPresenter;
     private Integer mBizType;
@@ -120,8 +121,8 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
         orderRecyclerView.setEmptyView(emptyView);
         orderRecyclerView.addOnScrollListener(orderListScrollListener);
 
-        orderListAdapter = new PosOrderAdapter(CashierApp.getAppContext(), null);
-        orderListAdapter.setOnAdapterListener(new PosOrderAdapter.OnAdapterListener() {
+        orderListAdapter = new GoodsOrderAdapter(CashierApp.getAppContext(), null);
+        orderListAdapter.setOnAdapterListener(new GoodsOrderAdapter.OnAdapterListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Bundle args = new Bundle();
@@ -241,16 +242,12 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
     }
 
     @Override
-    public void onSuccess(PageInfo pageInfo, List<PosOrder> dataList) {
+    public void onSuccess(PageInfo pageInfo, List<GoodsOrder> dataList) {
         try {
-            ZLogger.d(String.format("保存线下门店订单流水, 请求%d/%d--%d/%d",
-                    pageInfo.getPageNo(), pageInfo.getTotalPage(),
-                    (dataList == null ? 0 : dataList.size()), mPageInfo.getPageSize()));
-
             mPageInfo = pageInfo;
 
             //第一页，缓存数据
-            if (mPageInfo.getPageNo() == 1) {
+            if (mPageInfo == null || mPageInfo.getPageNo() == 1) {
 //                    ZLogger.d("缓存线下门店订单流水第一页数据");
                 if (orderListAdapter != null) {
                     orderListAdapter.setEntityList(dataList);
@@ -270,14 +267,14 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
                 }
             }
 
+            ZLogger.d(String.format("更新线下门店订单流水, 请求%d/%d ,已加载(%d/%d)",
+                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
+                    orderListAdapter.getItemCount(), mPageInfo.getTotalCount()));
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
             ZLogger.e(String.format("加载线下门店订单流水失败: %s", ex.toString()));
         }
 
-        ZLogger.d(String.format("更新线下门店订单流水, 请求%d/%d ,已加载(%d/%d)",
-                mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
-                orderListAdapter.getItemCount(), mPageInfo.getTotalCount()));
         onLoadFinished();
     }
 
@@ -288,7 +285,7 @@ public class PosOrderFragment extends BaseListFragment<PosOrder>
      */
     public synchronized boolean readCache() {
         String cacheStr = ACacheHelper.getAsString(ACacheHelper.CK_ORDERFLOW_STORE);
-        List<PosOrder> cacheData = JSONArray.parseArray(cacheStr, PosOrder.class);
+        List<GoodsOrder> cacheData = JSONArray.parseArray(cacheStr, GoodsOrder.class);
         if (cacheData != null && cacheData.size() > 0) {
             ZLogger.d(String.format("加载门店收银缓存数据(%s): %d条订单流水", ACacheHelper.CK_ORDERFLOW_STORE, cacheData.size()));
             if (orderListAdapter != null) {

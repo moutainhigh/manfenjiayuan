@@ -657,7 +657,7 @@ public class MfhLoginService implements IService {
                 NetProcessor.Processor<UserMixInfo>>(new NetProcessor.Processor<UserMixInfo>() {
             @Override
             public void processResult(IResponseData rspData) {
-                ZLogger.df("登录成功：");
+                ZLogger.d("登录成功：");
 
                 UserMixInfo um = null;
                 if (rspData != null){
@@ -676,7 +676,7 @@ public class MfhLoginService implements IService {
             @Override
             protected void processFailure(Throwable t, String errMsg) {
                 super.processFailure(t, errMsg);
-                ZLogger.df("登录失败：" + errMsg);
+                ZLogger.ef("登录失败：" + errMsg);
 
                 if (loginCallback != null) {
                     loginCallback.loginFailed(errMsg);

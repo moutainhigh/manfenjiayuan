@@ -55,7 +55,6 @@ public abstract class RegularAdapter<D, VH extends RecyclerView.ViewHolder>
 
         this.entityList.addAll(entityList);
         notifyDataSetChanged();
-
     }
 	
     /**

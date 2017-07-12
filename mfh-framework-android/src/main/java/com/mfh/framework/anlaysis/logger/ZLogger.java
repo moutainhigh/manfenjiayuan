@@ -414,14 +414,14 @@ public class ZLogger {
             try {
                 //文件名格式是2016-01-01.log，所以格式不对的，也要删除。系统中可能存在很多2016-0001-01.log等等这样的文件。
                 if (StringUtils.isEmpty(name) || name.length() != 14) {
-                    ZLogger.df(String.format("删除无效日志文件 %s", name));
+                    ZLogger.d(String.format("删除无效日志文件 %s", name));
                     child.delete();
                     continue;
                 }
                 Date date = DATE_FORMAT.parse(name);
 //                ZLogger.d(" child:" + DATE_FORMAT.format(date));
                 if (date.before(calendar.getTime())) {
-                    ZLogger.df(String.format("日志已经过期，删除%s", name));
+                    ZLogger.d(String.format("日志已经过期，删除%s", name));
                     child.delete();
                 } else {
 //                    ZLogger.d(String.format("日志有效，%s", child.getName()));

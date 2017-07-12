@@ -3,8 +3,8 @@ package com.bingshanguxue.cashier.database.service;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.dao.PosOrderPayDao;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
-import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.bingshanguxue.cashier.model.PaymentInfo;
+import com.bingshanguxue.cashier.model.wrapper.PayWayType;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.account.Human;
@@ -192,6 +192,8 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
      * @param member    会员信息
      */
     public void savePayInfo(Long orderId, PaymentInfo paymentInfo, Human member) {
+        ZLogger.d(String.format("savePayInfo：\n%s", JSONObject.toJSONString(paymentInfo)));
+
         //商户交易订单号
         String outTradeNo = paymentInfo.getOutTradeNo();
         Double paidRemain = paymentInfo.getPaidAmount();//实际支付
@@ -220,32 +222,32 @@ public class PosOrderPayService extends BaseService<PosOrderPayEntity, String, P
                     outTradeNo, paymentInfo.getPayType(),
                     PayWayType.TYPE_VIP_BALANCE, changeRemain,
                     status, member, null, null);
-
-            PayAmount payAmount = paymentInfo.getDiscountInfo();
-            if (payAmount != null) {
-                //会员优惠
-                saveOrUpdate(orderId,
-                        outTradeNo, WayType.RULES,
-                        PayWayType.TYPE_VIP_DISCOUNT,
-                        payAmount.getItemRuleAmount(),
-                        status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
-                //促销优惠
-                saveOrUpdate(orderId,
-                        outTradeNo, WayType.RULES,
-                        PayWayType.TYPE_VIP_PROMOTION,
-                        payAmount.getPackRuleAmount(),
-                        status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
-                //优惠券
-                saveOrUpdate(orderId,
-                        outTradeNo, WayType.RULES,
-                        PayWayType.TYPE_VIP_COUPONS,
-                        payAmount.getCoupAmount(),
-                        status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
-            }
         } else if ((payType & WayType.WX_F2F) == WayType.WX_F2F) {
             amountType = PayWayType.TYPE_WEPAY_F2F;
         } else if ((payType & WayType.TAKEOUT) == WayType.TAKEOUT) {
             amountType = PayWayType.TYPE_THIRD_PARTY;
+        }
+
+        PayAmount payAmount = paymentInfo.getDiscountInfo();
+        if (payAmount != null && member != null) {
+            //会员优惠
+            saveOrUpdate(orderId,
+                    outTradeNo, WayType.RULES,
+                    PayWayType.TYPE_VIP_DISCOUNT,
+                    payAmount.getItemRuleAmount(),
+                    status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
+            //促销优惠
+            saveOrUpdate(orderId,
+                    outTradeNo, WayType.RULES,
+                    PayWayType.TYPE_VIP_PROMOTION,
+                    payAmount.getPackRuleAmount(),
+                    status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
+            //优惠券
+            saveOrUpdate(orderId,
+                    outTradeNo, WayType.RULES,
+                    PayWayType.TYPE_VIP_COUPONS,
+                    payAmount.getCoupAmount(),
+                    status, member, payAmount.getCouponsIds(), payAmount.getRuleIds());
         }
         //保存实际支付金额
         saveOrUpdate(orderId,

@@ -40,7 +40,9 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
 
     public interface OnResponseCallback {
         void onAction1(Double value);
+
         void onAction2();
+
         void onAction3();
     }
 
@@ -48,7 +50,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
     private View rootView;
     private EditText etValue;
     private TextView tvUnit;
-    private Button btnAction3;
+    private Button btnAction1, btnAction2, btnAction3;
     private Double hintValue = 0D;
     private String unit;
     private boolean minimumIntCheckEnabled = false;
@@ -189,18 +191,20 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
                 return true;
             }
         });
-        rootView.findViewById(R.id.button_update).setOnClickListener(new View.OnClickListener() {
+        btnAction1 = (Button) rootView.findViewById(R.id.button_update);
+        btnAction1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 submit();
             }
         });
-        rootView.findViewById(R.id.button_delete).setOnClickListener(new View.OnClickListener() {
+        btnAction2 = (Button) rootView.findViewById(R.id.button_delete);
+        btnAction2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
 
-                if (mListener != null){
+                if (mListener != null) {
                     mListener.onAction2();
                 }
             }
@@ -212,7 +216,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
 //                DialogUtil.showHint(R.string.coming_soon);
                 dismiss();
 
-                if (mListener != null){
+                if (mListener != null) {
                     mListener.onAction3();
                 }
             }
@@ -248,7 +252,7 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
     }
 
     public void initialzie(int decimalDigits, Double hintValue, String unit,
-                     OnResponseCallback callback) {
+                           OnResponseCallback callback) {
         this.hintValue = hintValue;
         this.unit = unit;
         this.mListener = callback;
@@ -261,16 +265,35 @@ public class FrontCategoryGoodsDialog extends CommonDialog {
         etValue.setFilters(new InputFilter[]{new DecimalInputFilter(DECIMAL_DIGITS)});
         etValue.requestFocus();
 
-        if (StringUtils.isEmpty(unit)){
+        if (StringUtils.isEmpty(unit)) {
             tvUnit.setVisibility(View.GONE);
-        }
-        else{
+        } else {
             tvUnit.setText(unit);
             tvUnit.setVisibility(View.VISIBLE);
         }
     }
 
-    public void setAction3(String text){
+    public void setActions(boolean action1Enable, boolean action2Enable, boolean action3Enabled) {
+        if (action1Enable) {
+            btnAction1.setVisibility(View.VISIBLE);
+        } else {
+            btnAction1.setVisibility(View.GONE);
+        }
+
+        if (action2Enable) {
+            btnAction2.setVisibility(View.VISIBLE);
+        } else {
+            btnAction2.setVisibility(View.GONE);
+        }
+
+        if (action3Enabled) {
+            btnAction3.setVisibility(View.VISIBLE);
+        } else {
+            btnAction3.setVisibility(View.GONE);
+        }
+    }
+
+    public void setAction3(String text) {
         btnAction3.setText(text);
     }
 

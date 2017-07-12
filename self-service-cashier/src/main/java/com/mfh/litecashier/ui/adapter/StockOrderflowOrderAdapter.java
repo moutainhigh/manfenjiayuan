@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.litecashier.R;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
-import com.mfh.framework.api.pmcstock.PosOrder;
-import com.mfh.framework.api.pmcstock.PosOrderItem;
+import com.mfh.framework.rxapi.bean.GoodsOrder;
+import com.mfh.framework.rxapi.bean.GoodsOrderItem;
 
 import java.util.List;
 
@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
  * Created by Nat.ZZN on 15/8/5.
  */
 public class StockOrderflowOrderAdapter
-        extends RegularAdapter<PosOrder, StockOrderflowOrderAdapter.ProductViewHolder> {
-    private PosOrder curPosOrder = null;
+        extends RegularAdapter<GoodsOrder, StockOrderflowOrderAdapter.ProductViewHolder> {
+    private GoodsOrder curPosOrder = null;
 
-    public StockOrderflowOrderAdapter(Context context, List<PosOrder> entityList) {
+    public StockOrderflowOrderAdapter(Context context, List<GoodsOrder> entityList) {
         super(context, entityList);
     }
 
@@ -50,7 +50,7 @@ public class StockOrderflowOrderAdapter
 
     @Override
     public void onBindViewHolder(final ProductViewHolder holder, final int position) {
-        PosOrder entity = entityList.get(position);
+        GoodsOrder entity = entityList.get(position);
 
         if (curPosOrder != null && curPosOrder.getId().compareTo(entity.getId()) == 0) {
             holder.rootView.setSelected(true);
@@ -107,7 +107,7 @@ public class StockOrderflowOrderAdapter
     }
 
     @Override
-    public void setEntityList(List<PosOrder> entityList) {
+    public void setEntityList(List<GoodsOrder> entityList) {
         this.entityList = entityList;
         this.curPosOrder = null;
 
@@ -117,14 +117,14 @@ public class StockOrderflowOrderAdapter
         }
     }
 
-    public PosOrder getCurPosOrder() {
+    public GoodsOrder getCurPosOrder() {
         return curPosOrder;
     }
 
     /**
      * 获取当前订单明细
      */
-    public List<PosOrderItem> getCurrentOrderItems() {
+    public List<GoodsOrderItem> getCurrentOrderItems() {
         if (curPosOrder == null) {
             return null;
         }

@@ -41,11 +41,6 @@ import android_serialport_api.SerialPortFinder;
 
 public class PeripheralService extends Service {
     private int comMode = 1;
-    /**
-     * The queue of ComBean from serial port.
-     */
-    private PriorityBlockingQueue<ComBean> mSerialQueue = new PriorityBlockingQueue<>();
-    private SerialDispatcher mSerialDispatcher;//线程数据分发器
 
     private DispQueueThread mDispQueueThread;//刷新显示线程
     private SerialPortFinder mSerialPortFinder;//串口设备搜索
@@ -307,15 +302,15 @@ public class PeripheralService extends Service {
                     return;
                 }
 
-                ZLogger.df("准备打开串口:" + serialHelper.getPort());
+                ZLogger.d("准备打开串口:" + serialHelper.getPort());
                 serialHelper.open();
-                ZLogger.df("打开串口成功:" + serialHelper.getPort());
+                ZLogger.d("打开串口成功:" + serialHelper.getPort());
             } catch (SecurityException e) {
-                ZLogger.ef("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
+                ZLogger.e("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
             } catch (IOException e) {
-                ZLogger.ef("打开串口失败:未知错误!" + serialHelper.getPort());
+                ZLogger.e("打开串口失败:未知错误!" + serialHelper.getPort());
             } catch (InvalidParameterException e) {
-                ZLogger.ef("打开串口失败:参数错误!" + serialHelper.getPort());
+                ZLogger.e("打开串口失败:参数错误!" + serialHelper.getPort());
             }
         }
     }
@@ -350,6 +345,12 @@ public class PeripheralService extends Service {
             mComBeanQueue.add(ComData);
         }
     }
+
+    /**
+     * The queue of ComBean from serial port.
+     */
+    private PriorityBlockingQueue<ComBean> mSerialQueue = new PriorityBlockingQueue<>();
+    private SerialDispatcher mSerialDispatcher;//线程数据分发器
 
     /**
      * Provides a thread to process data from serial port.
@@ -437,16 +438,18 @@ public class PeripheralService extends Service {
                     Double netWeight = AHScaleHelper.parseACSP215(comBean.bRec);
                     if (netWeight != null) {
                         GlobalInstance.getInstance().setNetWeight(netWeight);
-                    } else {
-                        GlobalInstance.getInstance().reset();
                     }
+//                    else {
+//                        GlobalInstance.getInstance().reset();
+//                    }
                 } else if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_DS_781A) {
                     DS781A ds781A = SMScaleHelper.parseData(comBean.bRec);
                     if (ds781A != null) {
                         GlobalInstance.getInstance().setNetWeight(ds781A.getNetWeight());
-                    } else {
-                        GlobalInstance.getInstance().reset();
                     }
+//                    else {
+//                        GlobalInstance.getInstance().reset();
+//                    }
                 } else {
                     GlobalInstance.getInstance().reset();
                 }
@@ -478,7 +481,7 @@ public class PeripheralService extends Service {
                 if (ScaleProvider.isEnabled()) {
                     Long interval1 = rightNow - lastScaleTriggle;
                     if (interval1 > MINUTE) {
-                        ZLogger.df(String.format("(%s)超过1分钟没有收到电子秤串口消息，自动重新打开串口",
+                        ZLogger.i(String.format("(%s)超过1分钟没有收到电子秤串口消息，自动重新打开串口",
                                 ScaleProvider.getPort()));
                         GlobalInstance.getInstance().setNetWeight(0D);
 

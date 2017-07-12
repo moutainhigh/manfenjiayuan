@@ -4,7 +4,6 @@ package com.mfh.framework.rxapi.http;
 import com.mfh.framework.api.CompanyHuman;
 import com.mfh.framework.api.account.Human;
 import com.mfh.framework.api.account.UserMixInfo;
-import com.mfh.framework.api.pmcstock.PosOrder;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
 import com.mfh.framework.api.scGoodsSku.ProductSkuBarcode;
@@ -149,13 +148,10 @@ public interface RxMfhService {
     @POST("posOrder/batchInOrders")
     Observable<MResponse<String>> batchInOrders(@Query("JSESSIONID") String JSESSIONID,
                                                 @Query("jsonStr") String jsonStr);
-    @GET("pmcstock/findGoodsOrderList")
-    Observable<MResponse<MRspQuery<PosOrder>>> findGoodsOrderList(@QueryMap Map<String, String> options);
 
     //获取指定pos机编号在服务器端已经生成的最大订单id号
     @GET("posOrder/getMaxPosOrderId")
     Observable<MResponse<MValue<String>>> getMaxPosOrderId(@Query("posId") String jsonStr);
-
 
 
     @POST("exit")

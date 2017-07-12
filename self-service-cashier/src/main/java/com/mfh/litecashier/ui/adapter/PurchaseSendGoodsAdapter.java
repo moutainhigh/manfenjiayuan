@@ -58,7 +58,7 @@ public class PurchaseSendGoodsAdapter
             holder.tvBuyprice.setText(MUtils.formatDouble(entity.getPrice(), "无"));
         }
         else{
-            holder.tvBuyprice.setText(MUtils.formatDoubleWithSuffix(entity.getPrice(), "/", entity.getBuyUnit()));
+            holder.tvBuyprice.setText(MUtils.formatDouble(entity.getPrice(), "", "/", entity.getBuyUnit()));
         }
         holder.tvQuantity.setText(MUtils.formatDouble(entity.getAskTotalCount(), "无"));
         holder.tvReceiveCount.setText(MUtils.formatDouble(entity.getReceiveCount(), "无"));

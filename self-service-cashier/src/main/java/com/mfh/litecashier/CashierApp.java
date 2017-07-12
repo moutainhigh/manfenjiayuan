@@ -28,7 +28,7 @@ import java.io.IOException;
 
 
 /**
- * Created by Nat.ZZN(bingshanguxue) on 2015/7/10.
+ * Created by bingshanguxue on 2015/7/10.
  */
 public class CashierApp extends MfhApplication {
     private RefWatcher mRefWatcher;
@@ -84,12 +84,8 @@ public class CashierApp extends MfhApplication {
             initSkinLoader();
         }
 
-//        ZLogger.d(AbbreviationUtilV2.cn2py("荷兰土豆"));//OK
-//        ZLogger.d(AbbreviationUtil.cn2py("荷兰土豆"));//NOT OK
-//        ZLogger.d(PinyinUtils.getFirstSpell("荷兰土豆"));//OK
-//        ZLogger.d(PinyinUtils.getPingYin("荷兰土豆"));
 
-        ZLogger.df(String.format("initialize finished(%s)", processAppName));
+        ZLogger.d(String.format("initialize finished(%s)", processAppName));
     }
 
     @Override

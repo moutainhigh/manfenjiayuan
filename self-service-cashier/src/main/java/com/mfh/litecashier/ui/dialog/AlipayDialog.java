@@ -277,7 +277,7 @@ public class AlipayDialog extends CommonDialog {
         // 商户订单号
         outTradeNo = CashierFactory.genTradeNo(mQuickPayInfo.getBizType(),
                 WayType.ALI_F2F, 0L, true);
-        ZLogger.df(String.format("支付宝支付－交易编号：%s", outTradeNo));
+        ZLogger.d(String.format("支付宝支付－交易编号：%s", outTradeNo));
 
         JSONObject orderInfo = new JSONObject();
         orderInfo.put("out_trade_no", outTradeNo);
@@ -328,7 +328,7 @@ public class AlipayDialog extends CommonDialog {
         bPayProcessing = true;
         onProcessing("正在发送支付请求...");
 
-        ZLogger.df(String.format("支付宝条码支付：金额:%.2f, 授权码：%s, 业务类型：%s",
+        ZLogger.i(String.format("支付宝条码支付：金额:%.2f, 授权码：%s, 业务类型：%s",
                 mQuickPayInfo.getAmount(), authCode, mQuickPayInfo.getBizType()));
         JSONObject jsonStr = generateOrderInfo(mQuickPayInfo.getAmount(), authCode);
 
@@ -351,7 +351,7 @@ public class AlipayDialog extends CommonDialog {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df("支付宝条码支付异常:" + e.toString());
+                        ZLogger.ef("支付宝条码支付异常:" + e.toString());
                         onBarpayFailed(e.getMessage(),
                                 AppHelper.getErrorTextColor(), true);
                     }
@@ -359,7 +359,7 @@ public class AlipayDialog extends CommonDialog {
                     @Override
                     public void onNext(MResponse<String> stringMResponse) {
                         if (stringMResponse == null){
-                            ZLogger.df("支付宝支付失败");
+                            ZLogger.w("支付宝支付失败");
                             onBarpayFailed("支付宝支付失败，无响应", AppHelper.getErrorTextColor(), false);
                             return;
                         }
@@ -433,7 +433,7 @@ public class AlipayDialog extends CommonDialog {
                             onBarpayFailed("支付宝条码支付状态查询，无响应", AppHelper.getErrorTextColor(), true);
                             return;
                         }
-                        ZLogger.df(String.format("支付宝条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        ZLogger.d(String.format("支付宝条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
                             //业务处理成功
@@ -478,7 +478,7 @@ public class AlipayDialog extends CommonDialog {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("撤单失败:" + errMsg);
+                        ZLogger.e("撤单失败:" + errMsg);
                         onBarpayFailed(errMsg, Color.parseColor("#FE5000"), true);
                     }
 
@@ -531,7 +531,7 @@ public class AlipayDialog extends CommonDialog {
                             onBarpayFailed("支付宝条码支付取消订单，无响应", AppHelper.getErrorTextColor(), false);
                             return;
                         }
-                        ZLogger.df(String.format("支付宝条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
+                        ZLogger.d(String.format("支付宝条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
                             case 0:
@@ -752,7 +752,7 @@ public class AlipayDialog extends CommonDialog {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.df("判读是否清分失败：" + errMsg);
+                        ZLogger.e("判读是否清分失败：" + errMsg);
                         enterStandardMode();
                     }
                 }
@@ -791,7 +791,7 @@ public class AlipayDialog extends CommonDialog {
                                 boolean isNeedLock = Boolean.parseBoolean(ret[0]);
                                 Double amount = Double.valueOf(ret[1]);
 
-                                ZLogger.df(String.format(Locale.getDefault(),
+                                ZLogger.i(String.format(Locale.getDefault(),
                                         "判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
                                         isNeedLock, amount));
                                 if (isNeedLock && amount >= 0.01) {
@@ -806,7 +806,7 @@ public class AlipayDialog extends CommonDialog {
                                     dismiss();
                                 }
                             } else {
-                                ZLogger.df("判断是否需要锁定POS机:" + result);
+                                ZLogger.i("判断是否需要锁定POS机:" + result);
                                 dismiss();
                                 enterStandardMode();
                             }
@@ -822,7 +822,7 @@ public class AlipayDialog extends CommonDialog {
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
                         //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.df("判读是否锁定POS机失败：" + errMsg);
+                        ZLogger.e("判读是否锁定POS机失败：" + errMsg);
 
                         enterStandardMode();
                     }

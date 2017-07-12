@@ -48,7 +48,7 @@ public class PosRegisterMode {
 
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df(String.format("注册设备失败,%s", e.toString()));
+                        ZLogger.ef(String.format("注册设备失败,%s", e.toString()));
 
                         if (listener != null) {
                             listener.onError(e.toString());
@@ -57,7 +57,7 @@ public class PosRegisterMode {
 
                     @Override
                     public void onNext(String s) {
-                        ZLogger.df(String.format("注册设备成功,%s", s));
+                        ZLogger.d(String.format("注册设备成功,%s", s));
 
                         SharedPrefesManagerFactory.setTerminalId(s);
                         if (listener != null) {
@@ -81,7 +81,7 @@ public class PosRegisterMode {
                         if (rspData != null) {
                             RspValue<String> retValue = (RspValue<String>) rspData;
                             String retStr = retValue.getValue();
-                            ZLogger.df("注册设备成功:" + retStr);
+                            ZLogger.d("注册设备成功:" + retStr);
                             if (!StringUtils.isEmpty(retStr)) {
                                 String[] retA = retStr.split(",");
                                 if (retA.length > 1) {
@@ -122,7 +122,7 @@ public class PosRegisterMode {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df(String.format("get terminal id failed(%s),please set manual", errMsg));
+                        ZLogger.ef(String.format("get terminal id failed(%s),please set manual", errMsg));
                         if (listener != null) {
                             listener.onError(errMsg);
                         }

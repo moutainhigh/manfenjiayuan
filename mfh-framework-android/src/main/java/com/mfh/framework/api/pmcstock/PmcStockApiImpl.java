@@ -1,6 +1,5 @@
 package com.mfh.framework.api.pmcstock;
 
-import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.AfinalFactory;
@@ -146,36 +145,4 @@ public class PmcStockApiImpl extends PmcStockApi {
         AfinalFactory.postDefault(PmcStockApi.URL_PRE_PAY_ORDER, params, responseCallback);
     }
 
-    /**
-     * 订单预支付
-     * @param btype 业务类型, 3-商城(必填)
-     * @param subTypes 子业务类型,2,3,4
-     * @param orderStatus 订单状态
-     * @param sellOffices 销售网点
-     * @param pageInfo 分页信息
-     * */
-    public static void findGoodsOrderList(Integer btype, String subTypes,
-                                   String orderStatus, String sellOffices,
-                                   PageInfo pageInfo,
-                                   AjaxCallBack<? extends Object> responseCallback){
-        AjaxParams params = new AjaxParams();
-        if (btype != null){
-            params.put("btype", String.valueOf(btype));
-        }
-        if (!StringUtils.isEmpty(subTypes)){
-            params.put("subTypes", subTypes);
-        }
-        if (!StringUtils.isEmpty(orderStatus)){
-            params.put("orderStatus", orderStatus);
-        }
-        if (!StringUtils.isEmpty(sellOffices)){
-            params.put("sellOffices", sellOffices);
-        }
-        if (pageInfo != null){
-            params.put("page", Integer.toString(pageInfo.getPageNo()));
-            params.put("rows", Integer.toString(pageInfo.getPageSize()));
-        }
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        AfinalFactory.postDefault(PmcStockApi.URL_FIND_GOODS_ORDERLIST, params, responseCallback);
-    }
 }

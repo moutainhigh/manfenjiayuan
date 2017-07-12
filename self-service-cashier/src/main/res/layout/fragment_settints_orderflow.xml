@@ -82,7 +82,7 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:background="@color/mfhtheme_maskPrimary"
             android:orientation="horizontal"
-            app:inputNumberLabelView_inputHint="订单编号"
+            app:inputHint="订单编号"
             app:editTextColor="@color/black"
             app:editTextColorHint="@color/mfh_textColorHint"/>
 
@@ -95,7 +95,7 @@
             android:layout_marginTop="@dimen/spacing_normal"
             android:background="@color/mfhtheme_maskPrimary"
             android:orientation="horizontal"
-            app:inputNumberLabelView_inputHint="订单流水号"
+            app:inputHint="订单流水号"
             app:editTextColor="@color/black"
             app:editTextColorHint="@color/mfh_textColorHint"/>
 

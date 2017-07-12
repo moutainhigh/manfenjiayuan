@@ -65,11 +65,11 @@ public class NetStateService implements IService {
      */
     public void register(Context context) {
         if (context == null || networkStateReceiver == null){
-            ZLogger.df("注册网络状态事件接收器失败");
+            ZLogger.wf("注册网络状态事件接收器失败");
             return;
         }
 
-        ZLogger.df("注册网络状态事件接收器...");
+        ZLogger.d("注册网络状态事件接收器...");
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         context.registerReceiver(networkStateReceiver, filter);

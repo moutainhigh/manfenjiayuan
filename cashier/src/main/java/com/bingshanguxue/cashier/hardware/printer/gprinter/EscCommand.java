@@ -46,8 +46,10 @@ public class EscCommand {
                 var4.printStackTrace();
             }
 
-            for(int i = 0; i < bs.length; ++i) {
-                this.Command.add(Byte.valueOf(bs[i]));
+            if (bs != null) {
+                for (byte b : bs) {
+                    this.Command.add(Byte.valueOf(b));
+                }
             }
         }
 
@@ -62,8 +64,8 @@ public class EscCommand {
                 var5.printStackTrace();
             }
 
-            for(int i = 0; i < bs.length; ++i) {
-                this.Command.add(Byte.valueOf(bs[i]));
+            for (byte b : bs) {
+                this.Command.add(Byte.valueOf(b));
             }
         }
 
@@ -139,13 +141,13 @@ public class EscCommand {
             String in = var6[var4];
             byte[] output = GpUtils.string2Cp864(in);
 
-            for(int i = 0; i < output.length; ++i) {
-                if(output[i] == -16) {
-                    this.addArrayToCommand(new byte[]{(byte)27, (byte)116, (byte)29, (byte)-124, (byte)27, (byte)116, (byte)22});
-                } else if(output[i] == 127) {
-                    this.Command.add(Byte.valueOf((byte)-41));
+            for (byte anOutput : output) {
+                if (anOutput == -16) {
+                    this.addArrayToCommand(new byte[]{(byte) 27, (byte) 116, (byte) 29, (byte) -124, (byte) 27, (byte) 116, (byte) 22});
+                } else if (anOutput == 127) {
+                    this.Command.add(Byte.valueOf((byte) -41));
                 } else {
-                    this.Command.add(Byte.valueOf(output[i]));
+                    this.Command.add(Byte.valueOf(anOutput));
                 }
             }
         }

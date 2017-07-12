@@ -35,7 +35,6 @@ import com.mfh.litecashier.R;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
-import com.mfh.litecashier.ui.fragment.goods.LocalFrontCategoryGoodsEvent;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,7 +49,7 @@ import butterknife.OnClick;
 
 /**
  * POS-前台类目商品
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class FrontendCategoryGoodsFragment extends BaseFragment {
     @BindView(R.id.tab_category_goods)
@@ -270,7 +269,7 @@ public class FrontendCategoryGoodsFragment extends BaseFragment {
                 jsonObject, new MValueSubscriber<String>() {
                     @Override
                     public void onError(Throwable e) {
-                        ZLogger.df("创建前台类目失败, " + e.getMessage());
+                        ZLogger.e("创建前台类目失败, " + e.getMessage());
                         hideProgressDialog();
                     }
 
@@ -334,7 +333,7 @@ public class FrontendCategoryGoodsFragment extends BaseFragment {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("创建前台类目失败, " + errMsg);
+                        ZLogger.e("创建前台类目失败, " + errMsg);
                     }
 
                     @Override
@@ -407,7 +406,7 @@ public class FrontendCategoryGoodsFragment extends BaseFragment {
                     @Override
                     protected void processFailure(Throwable t, String errMsg) {
                         super.processFailure(t, errMsg);
-                        ZLogger.df("创建前台类目失败, " + errMsg);
+                        ZLogger.e("创建前台类目失败, " + errMsg);
                     }
 
                     @Override

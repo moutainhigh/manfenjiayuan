@@ -83,7 +83,7 @@ public class InputSearchView extends LinearLayout {
         float inputTextSize = ta.getDimension(R.styleable.InputNumberLabelView_editTextSize, 16);
         int inputTextColor = ta.getColor(R.styleable.InputNumberLabelView_editTextColor, 0);
         int inputTextColorHint = ta.getColor(R.styleable.InputNumberLabelView_editTextColorHint, 0);
-        String inputHint = ta.getString(R.styleable.InputNumberLabelView_inputNumberLabelView_inputHint);
+        String inputHint = ta.getString(R.styleable.InputNumberLabelView_inputHint);
         softKeyboardEnabled = ta.getBoolean(R.styleable.InputNumberLabelView_softKeyboardEnabled, false);
 
         ta.recycle();

@@ -28,8 +28,9 @@
             android:layout_marginStart="32dp"
             app:editInputType="price"
             app:editTextColor="@color/material_black"
-            app:inputNumberLabelView_inputHint="@string/hint_money"
-            app:inputNumberLabelView_rightImageButtonSrc="@mipmap/ic_key_enter"
+            app:inputHint="@string/hint_money"
+            app:rightAction1Visible="false"
+            app:rightImageButtonSrc="@mipmap/ic_key_enter"
             app:editTextColorHint="@color/mfh_textColorHint"/>
     </LinearLayout>
 

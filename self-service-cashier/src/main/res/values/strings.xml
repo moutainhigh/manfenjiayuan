@@ -7,6 +7,20 @@
     <string name="original_amount">原价</string>
     <string name="customer_amount">会员价</string>
 
+    <string name="old_password">原密码</string>
+    <string name="hint_old_password">请输入原密码</string>
+    <string name="new_password">新密码</string>
+    <string name="hint_new_password">请输入新密码</string>
+    <string name="confirm_password">再次确认</string>
+    <string name="hint_confirm_password">请输入确认密码</string>
+    <string name="hint_confirm_password_error">两次输入密码不一致</string>
+    <string name="tip_vip_pay">会员支付方便又实惠</string>
+
+
+    <string name="hint_customer_account">会员帐号</string>
+    <string name="tip_please_select_order">请选择订单</string>
+    <string name="tip_cannot_find_customer">未找到会员信息</string>
+
     <!--日志-->
 
     <!--提示文字-->
@@ -21,6 +35,7 @@
     <string name="hint_">金额</string>
     <string name="hint_backcard_tradeno">请输入银行单号</string>
     <string name="hint_pay_password">请输入支付密码</string>
+    <string name="hint_customer_empty">会员帐号不能为空</string>
 
 
     <string name="toast_login_username_empty">用户名不能为空!</string>
@@ -48,11 +63,12 @@
     <string name="btn_service_back">返回</string>
     <string name="button_accept">接收</string>
     <string name="button_rebuff">回绝</string>
-    <string name="button_confirm">确认</string>
+    <string name="button_confirm">Confirm</string>
     <string name="button_cancel">取消</string>
     <string name="button_category_back">返回</string>
     <string name="button_follow">关注</string>
     <string name="button_print_pickup_order">打印取货单</string>
+    <string name="button_pay">支付</string>
 
 
     <!--标签-->
@@ -106,6 +122,11 @@
     <string name="action_close">Close</string>
     <string name="title_activity_settings">Settings</string>
     <string name="title_activity_test">Sign in</string>
+    <string name="title_exchange_score">积分兑换</string>
+    <string name="title_change_pay_password">修改支付密码</string>
+    <string name="title_transfer">充值</string>
+    <string name="title_cashier">收银</string>
+    <string name="title_query_customer">查询会员</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

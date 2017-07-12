@@ -231,7 +231,7 @@ public class ScGoodsSkuPresenter {
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
-                        ZLogger.df("加载库存商品失败:" + e.toString());
+                        ZLogger.e("加载库存商品失败:" + e.toString());
 
                         if (mIScGoodsSkuView != null){
                             mIScGoodsSkuView.onIScGoodsSkuViewError(e.getMessage());

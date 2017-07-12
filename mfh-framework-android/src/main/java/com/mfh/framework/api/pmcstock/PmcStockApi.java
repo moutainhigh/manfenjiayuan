@@ -25,12 +25,6 @@ public class PmcStockApi {
      */
     static String URL_STOCK_FINDHUMAN_BYSECRET = URL_PMCSTOCK + "findHumanBySecret";
 
-
-    /**
-     * 查询订单列表 /pmcstock/findGoodsOrderList?orderStatus=4&btype=7
-     */
-    public static String URL_FIND_GOODS_ORDERLIST = URL_PMCSTOCK + "findGoodsOrderList";
-
     /**
      * pos端提交客户编号和订单基础信息获取可用卡券
      * /pmcstock/findConpousByOrderInfo?humanId=..&jsonStr={productId:[1,2,3], officeId:.., orderAmount:...}
@@ -57,7 +51,6 @@ public class PmcStockApi {
 
         URL_STOCK_FINDHUMAN_BYSECRET = URL_PMCSTOCK + "findHumanBySecret";
 
-        URL_FIND_GOODS_ORDERLIST = URL_PMCSTOCK + "findGoodsOrderList";
         URL_FINDCOUPONS_BYORDERINFO = URL_PMCSTOCK + "findConpousByOrderInfo";
         URL_FINDGOODSORDERLIST_BYHUMAN = URL_PMCSTOCK + "getGoodsOrderListByHuman";
         URL_PRE_PAY_ORDER = URL_PMCSTOCK + "prePayOrder";

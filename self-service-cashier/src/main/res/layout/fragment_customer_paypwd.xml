@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar"/>
+
+    <!--会员信息-->
+    <com.mfh.litecashier.ui.widget.CustomerView
+        android:id="@+id/customer_view"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/appbar"/>
+
+    <View
+        android:id="@+id/top_line"
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_below="@+id/customer_view"
+        android:layout_marginTop="0dp"
+        android:background="#D2D2D2"/>
+
+    <!--支付-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button_submit"
+        android:layout_below="@+id/top_line"
+        android:background="@color/material_white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingEnd="@dimen/spacing_4x"
+        android:paddingStart="@dimen/spacing_4x">
+
+        <com.mfh.litecashier.ui.widget.InputNumberLabelView
+            android:id="@+id/inlv_old_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            app:editInputType="numberPassword"
+            app:editTextColor="@color/material_black"
+            app:editTextColorHint="@color/mfh_textColorHint"
+            app:editTextSize="@dimen/textsize_normal"
+            app:inputHint="@string/hint_old_password"
+            app:inputNumberLabelView_title="@string/old_password"
+            app:inputNumberLabelView_titleWidth="120dp"
+            app:rightAction1Visible="false"
+            app:rightButtonWidth="140dp"
+            app:softKeyboardEnabled="true"/>
+
+        <com.mfh.litecashier.ui.widget.InputNumberLabelView
+            android:id="@+id/inlv_new_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_marginTop="@dimen/spacing_double"
+            app:editInputType="numberPassword"
+            app:editTextColor="@color/material_black"
+            app:editTextColorHint="@color/mfh_textColorHint"
+            app:editTextSize="@dimen/textsize_normal"
+            app:inputHint="@string/hint_new_password"
+            app:inputNumberLabelView_title="@string/new_password"
+            app:inputNumberLabelView_titleWidth="120dp"
+            app:rightAction1Visible="false"
+            app:rightButtonWidth="140dp"
+            app:softKeyboardEnabled="true"/>
+
+        <com.mfh.litecashier.ui.widget.InputNumberLabelView
+            android:id="@+id/inlv_confirm_pwd"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_marginTop="@dimen/spacing_double"
+            app:editInputType="numberPassword"
+            app:editTextColor="@color/material_black"
+            app:editTextColorHint="@color/mfh_textColorHint"
+            app:editTextSize="@dimen/textsize_normal"
+            app:inputHint="@string/hint_confirm_password"
+            app:inputNumberLabelView_title="@string/confirm_password"
+            app:inputNumberLabelView_titleWidth="120dp"
+            app:rightAction1Visible="false"
+            app:rightButtonWidth="140dp"
+            app:softKeyboardEnabled="true"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/button_submit"
+        style="?android:attr/buttonBarButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_rectange_primary"
+        android:gravity="center"
+        android:text="@string/button_confirm"
+        android:textColor="@color/material_white"
+        android:textSize="24sp"/>
+
+</RelativeLayout>
+

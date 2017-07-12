@@ -4,8 +4,8 @@ package com.manfenjiayuan.business.utils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
@@ -76,18 +76,28 @@ public class MUtils {
                 simpleDateFormat.format(date));
     }
 
-    public static String formatDoubleWithSuffix(Double amount,
-                                                String separator, String suffix){
-        if (amount == null){
-            return "无";
-        }
+    public static String formatDouble(Double amount){
+        return formatDouble(amount, "");
+    }
 
-        if (StringUtils.isEmpty(suffix)){
-            return String.format("%.2f", amount);
+    public static String formatDouble(Double amount, String amountNullDesc){
+        StringBuilder sb = new StringBuilder();
+        if (amount != null){
+            sb.append(String.format("%.2f", amount));
         }
         else{
-            return String.format("%.2f%s%s", amount, separator, suffix);
+            sb.append(amountNullDesc);
         }
+
+        return sb.toString();
+    }
+
+    public static String formatDouble(String prefix, String separator, Double amount, String amountNullDesc){
+        return formatDouble(prefix, separator, amount, "", null, null);
+    }
+
+    public static String formatDouble(Double amount, String amountNullDesc, String separator, String suffix){
+        return formatDouble(null, null, amount, "", separator, suffix);
     }
 
     /**
@@ -118,18 +128,6 @@ public class MUtils {
         if (!StringUtils.isEmpty(suffix)){
             sb.append(sufSeparator);
             sb.append(suffix);
-        }
-
-        return sb.toString();
-    }
-
-    public static String formatDouble(Double amount, String amountNullDesc){
-        StringBuilder sb = new StringBuilder();
-        if (amount != null){
-            sb.append(String.format("%.2f", amount));
-        }
-        else{
-            sb.append(amountNullDesc);
         }
 
         return sb.toString();
@@ -224,7 +222,7 @@ public class MUtils {
             humanId = humanId.substring(1, humanId.length());
         }
         if (SharedPrefesManagerFactory.isSuperPermissionGranted()){
-            ZLogger.df(String.format("验证会员付款码: <%s> --> <%s>",
+            ZLogger.d(String.format("验证会员付款码: <%s> --> <%s>",
                     paycode, humanId));
         }
 

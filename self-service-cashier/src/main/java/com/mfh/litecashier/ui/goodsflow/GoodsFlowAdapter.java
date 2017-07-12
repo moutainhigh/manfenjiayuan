@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 /**
  * 商品流水
- * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class GoodsFlowAdapter
         extends RegularAdapter<GoodsItem, GoodsFlowAdapter.ProductViewHolder> {

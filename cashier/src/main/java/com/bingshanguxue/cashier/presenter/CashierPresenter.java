@@ -48,7 +48,7 @@ public class CashierPresenter {
             return;
         }
 
-        ZLogger.df(String.format("搜索标准商品 条码：%s", barcode));
+        ZLogger.d(String.format("搜索标准商品 条码：%s", barcode));
 
         int packFlag = 0;//是否是箱规：0不是；1是
         //Step 1:查询商品
@@ -96,7 +96,7 @@ public class CashierPresenter {
             //有小数点，单位克转换成千克。
             String weightStr = String.format("%s.%s", barcode.substring(7, 9), barcode.substring(9, 12));
             Double weight = Double.valueOf(weightStr);
-            ZLogger.df(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",
+            ZLogger.d(String.format("搜索生鲜商品 条码：%s, PLU码：%s, 重量：%f",
                     barcode, plu, weight));
 
             int packFlag = 0;//是否是箱规：0不是；1是

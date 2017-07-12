@@ -39,14 +39,14 @@ public class FTPManager {
         FTPClient ftpClient = new FTPClient();
         try {
             if (StringUtils.isEmpty(FTP_HOST)){
-                ZLogger.df("未设置ftp hostname");
+                ZLogger.w("未设置ftp hostname");
                 return;
             }
 
-            ZLogger.df(String.format("connect to %s:%d", FTP_HOST, FTP_PORT));
+            ZLogger.i(String.format("connect to %s:%d", FTP_HOST, FTP_PORT));
             ftpClient.connect(FTP_HOST, FTP_PORT);
 
-            ZLogger.df(String.format("login %s:%s", FTP_USER, FTP_PASS));
+            ZLogger.d(String.format("login %s:%s", FTP_USER, FTP_PASS));
             //it.sauronsoftware.ftp4j.FTPException [code=530, message= Login authentication failed]
             ftpClient.login(FTP_USER, FTP_PASS);
 

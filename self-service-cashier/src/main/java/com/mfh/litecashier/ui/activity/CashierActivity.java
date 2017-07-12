@@ -47,9 +47,11 @@ import android_serialport_api.SerialPortFinder;
 
 /**
  * 首页
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public abstract class CashierActivity extends BaseActivity {
+    private int comMode = 1;
+    private SendQueueThread mSendQueueThread;
     private DispQueueThread mDispQueueThread;//刷新显示线程
     private SerialPortFinder mSerialPortFinder;//串口设备搜索
     protected SerialControl comDisplay, comPrint, comScale;//串口
@@ -95,26 +97,6 @@ public abstract class CashierActivity extends BaseActivity {
         super.onNewIntent(intent);
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-//        hideSystemUI();
-    }
-//
-//    @Override
-//    public void onWindowFocusChanged(boolean hasFocus) {
-//        super.onWindowFocusChanged(hasFocus);
-//        //Any time the window receives focus, simply set the IMMERSIVE mode.
-//        if (hasFocus) {
-//            hideSystemUI();
-//        }
-//    }
 
     @Override
     protected void onDestroy() {
@@ -135,6 +117,11 @@ public abstract class CashierActivity extends BaseActivity {
         if (mDispQueueThread != null) {
             mDispQueueThread.interrupt();
             mDispQueueThread = null;
+        }
+
+        if (mSendQueueThread != null) {
+            mSendQueueThread.interrupt();
+            mSendQueueThread = null;
         }
 
         unbindService(ttsServiceConnection);
@@ -180,6 +167,55 @@ public abstract class CashierActivity extends BaseActivity {
             //线程定时刷新显示，目前只接收并处理电子秤发送的数据
             mDispQueueThread.addQueue(comBean);
         }
+    }
+
+    /**
+     * 刷新显示线程
+     * 数据接收量大或接收时弹出软键盘，界面会卡顿,可能和6410的显示性能有关
+     * 直接刷新显示，接收数据量大时，卡顿明显，但接收与显示同步。
+     * 用线程定时刷新显示可以获得较流畅的显示效果，但是接收数据速度快于显示速度时，显示会滞后。
+     * 最终效果差不多-_-，线程定时刷新稍好一些(推荐)。
+     */
+    private class SendQueueThread extends Thread {
+        private Queue<byte[]> mQueue = new LinkedList<>();
+
+        @Override
+        public void run() {
+            super.run();
+            // TODO: 8/9/16 java.util.NoSuchElementException
+            try {
+                while (!isInterrupted()) {
+                    final byte[] data;
+                    while ((data = pollQueue()) != null) {
+                        printData(data);
+
+                        Thread.sleep(500);//显示性能高的话，可以把此数值调小。
+                        break;
+                    }
+                }
+            } catch (Exception e) {
+//                        e.printStackTrace();
+                ZLogger.ef(e.toString());
+            }
+        }
+
+        public void addQueue(byte[] data) {
+            synchronized(mQueue) {
+                mQueue.add(data);
+            }
+        }
+
+        private byte[] pollQueue() {
+            synchronized(mQueue) {
+                return mQueue.poll();
+            }
+        }
+    }
+
+    /**
+     * 打印数据*/
+    private void printData(byte[] data) {
+        sendPortData(comPrint, data);
     }
 
     /**
@@ -235,7 +271,7 @@ public abstract class CashierActivity extends BaseActivity {
 //                            comBean.sRecTime, port,
 //                            new String(comBean.bRec),
 //                            DataConvertUtil.ByteArrToHex(comBean.bRec));
-                    ZLogger.df("电子秤串口数据:" + DataConvertUtil.ByteArrToHex(comBean.bRec));
+                    ZLogger.d("电子秤串口数据:" + DataConvertUtil.ByteArrToHex(comBean.bRec));
                 }
 
                 lastScaleTriggle = rightNow;
@@ -269,7 +305,7 @@ public abstract class CashierActivity extends BaseActivity {
         ZLogger.d(String.format("interval＝%d, rightNow=%d, lastAhscaleTriggle=%d",
                 interval, rightNow, lastScaleTriggle));
         if (interval > 2 * MINUTE) {
-            ZLogger.df(String.format("(%s)超过2分钟没有收到电子秤串口消息，自动重新打开串口",
+            ZLogger.i2f(String.format("(%s)超过2分钟没有收到电子秤串口消息，自动重新打开串口",
                     ScaleProvider.getPort()));
             GlobalInstance.getInstance().reset();
 
@@ -284,7 +320,6 @@ public abstract class CashierActivity extends BaseActivity {
         }
     }
 
-    private int comMode = 1;
     /**
      * The queue of ComBean from serial port.
      */
@@ -370,6 +405,9 @@ public abstract class CashierActivity extends BaseActivity {
             mSerialDispatcher.start();
         }
 
+        mSendQueueThread = new SendQueueThread();
+        mSendQueueThread.start();
+
         setControls();
     }
 
@@ -388,9 +426,9 @@ public abstract class CashierActivity extends BaseActivity {
                     return;
                 }
 
-                ZLogger.df("准备打开串口:" + serialHelper.getPort());
+                ZLogger.d("准备打开串口:" + serialHelper.getPort());
                 serialHelper.open();
-                ZLogger.df("打开串口成功:" + serialHelper.getPort());
+                ZLogger.d("打开串口成功:" + serialHelper.getPort());
             } catch (SecurityException e) {
                 ZLogger.ef("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
             } catch (IOException e) {
@@ -421,9 +459,9 @@ public abstract class CashierActivity extends BaseActivity {
                     return;
                 }
 
-                ZLogger.df("准备打开串口:" + serialHelper.getPort());
+                ZLogger.d("准备打开串口:" + serialHelper.getPort());
                 serialHelper.open();
-                ZLogger.df("打开串口成功:" + serialHelper.getPort());
+                ZLogger.d("打开串口成功:" + serialHelper.getPort());
                 serialHelper.send(bOutArray);
             } catch (SecurityException e) {
                 ZLogger.ef("打开串口失败:没有串口读/写权限!" + serialHelper.getPort());
@@ -477,7 +515,7 @@ public abstract class CashierActivity extends BaseActivity {
         if (serialHelper != null && serialHelper.isOpen()) {
             serialHelper.send(bOutArray);
         } else {
-            ZLogger.df("串口未打开, 暂停打印，重新打开串口");
+            ZLogger.w("串口未打开, 暂停打印，重新打开串口");
             //使用线程，避免界面卡顿
             new Thread(new OpenPortRunnable2(serialHelper, bOutArray)).start();
         }
@@ -552,7 +590,8 @@ public abstract class CashierActivity extends BaseActivity {
                 sendPortData(comDisplay, event.getCmd(), true);
             }
         } else if (event.getType() == SerialPortEvent.RINTER_PRINT_PRIMITIVE) {
-            sendPortData(comPrint, event.getCmdBytes());
+//            sendPortData(comPrint, event.getCmdBytes());
+            mSendQueueThread.addQueue(event.getCmdBytes());
         } else if (event.getType() == SerialPortEvent.UPDATE_PORT_GPRINTER) {
             CloseComPort(comPrint);
 
@@ -672,7 +711,7 @@ public abstract class CashierActivity extends BaseActivity {
                 if (ScaleProvider.isEnabled()) {
                     Long interval1 = rightNow - lastScaleTriggle;
                     if (interval1 > 1000 * 60) {
-                        ZLogger.df(String.format("(%s)超过1分钟没有收到电子秤串口消息，自动重新打开串口", ScaleProvider.getPort()));
+                        ZLogger.w(String.format("(%s)超过1分钟没有收到电子秤串口消息，自动重新打开串口", ScaleProvider.getPort()));
                         CloseComPort(comScale);
                         if (ScaleProvider.getScaleType() == ScaleProvider.SCALE_TYPE_ACS_P215) {
                             comScale = new SerialControl(ScaleProvider.getPort(), ScaleProvider.getBaudrate(), 50);

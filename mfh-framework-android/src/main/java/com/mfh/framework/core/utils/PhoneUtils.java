@@ -43,7 +43,7 @@ public class PhoneUtils {
             }
         }
         else{
-            ZLogger.df(context.getString(R.string.permission_not_granted,
+            ZLogger.wf(context.getString(R.string.permission_not_granted,
                     Manifest.permission.READ_PHONE_STATE));
             return null;
         }
@@ -65,7 +65,7 @@ public class PhoneUtils {
             }
         }
         else{
-            ZLogger.df(context.getString(R.string.permission_not_granted,
+            ZLogger.wf(context.getString(R.string.permission_not_granted,
                     Manifest.permission.READ_PHONE_STATE));
             return null;
         }
@@ -96,7 +96,7 @@ public class PhoneUtils {
                 return null;
             }
         } else {
-            ZLogger.df(context.getString(R.string.permission_not_granted,
+            ZLogger.wf(context.getString(R.string.permission_not_granted,
                     Manifest.permission.READ_PHONE_STATE));
             return null;
         }

@@ -101,7 +101,7 @@ public class BaseAlipayFragment extends BasePayFragment {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
                             case 0: {
-                                onBarpayFinished(lastPaidAmount, "支付成功", getOkTextColor());
+                                onBarpayFinished(lastPaidAmount, stringMResponse.getMsg(), getOkTextColor());
                             }
                             break;
                             //下单成功等待用户输入密码
@@ -174,7 +174,7 @@ public class BaseAlipayFragment extends BasePayFragment {
                             //业务处理成功
                             // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
                             case 0:
-                                onBarpayFinished(paidAmount, "支付成功", getOkTextColor());
+                                onBarpayFinished(paidAmount, stringMResponse.getMsg(), getOkTextColor());
                                 break;
                             //{"code":"-1","msg":"Success","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
@@ -242,7 +242,7 @@ public class BaseAlipayFragment extends BasePayFragment {
 
                         switch (stringMResponse.getCode()) {
                             case 0:
-                                onBarpayFailed(PosOrderPayEntity.PAY_STATUS_CANCELED, "订单已取消",
+                                onBarpayFailed(PosOrderPayEntity.PAY_STATUS_CANCELED, stringMResponse.getMsg(),
                                         getErrorTextColor(), false);
                                 break;
                             //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款

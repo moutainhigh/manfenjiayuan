@@ -8,24 +8,40 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.database.entity.PosProductEntity;
+import com.bingshanguxue.cashier.database.entity.ProductCatalogEntity;
 import com.bingshanguxue.cashier.database.service.PosProductService;
+import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
+import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.network.NetFactory;
+import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.http.ProductCatalogManager;
 import com.mfh.framework.uikit.base.BaseListFragment;
+import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 import com.mfh.litecashier.ui.widget.InputNumberLabelView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -33,10 +49,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+
 /**
- * 商品查询MsgMgrAdapter
+ * 商品搜索
  * <p>
- * Created by Nat.ZZN(bingshanguxue) on 15/8/31.
+ * Created by bingshanguxue on 18/5/31.
  */
 public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 
@@ -47,6 +64,8 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
     private GridLayoutManager linearLayoutManager;
     private QueryGoodsAdapter goodsListAdapter;
 
+    @BindView(R.id.rl_keyboard)
+    RelativeLayout rlKeyboard;
     @BindView(R.id.inlv_barcode)
     InputNumberLabelView inlvBarcode;
 
@@ -54,7 +73,15 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
     RecyclerViewEmptySupport letterRecyclerView;
     private LetterAdapter mLetterAdapter;
 
+    @BindView(R.id.fab_toggle)
+    ImageButton ibToggle;
+    @BindView(R.id.animProgress)
+    ProgressBar progressBar;
+
+
     private String keyword;
+    private FrontCategoryGoodsDialog mFrontCategoryGoodsDialog = null;
+
 
     public interface OnFragmentListener {
         void onAddGoods(PosProductEntity productEntity);
@@ -91,7 +118,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
     @Override
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         initGoodsRecyclerView();
-        initOrderBarcodeView();
+        InputNumberLabelView();
         initLetterRecyclerView();
 
         refresh();
@@ -105,7 +132,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
         }
     }
 
-    private void initOrderBarcodeView() {
+    private void InputNumberLabelView() {
         inlvBarcode.registerIntercept(new int[]{KeyEvent.KEYCODE_ENTER},
                 new InputNumberLabelView.OnInterceptListener() {
                     @Override
@@ -122,8 +149,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
         inlvBarcode.registerOnViewListener(new InputNumberLabelView.OnViewListener() {
             @Override
             public void onClickAction1(String text) {
-                keyword = text;
-                reload();
+                hideKeyboard();
             }
 
             @Override
@@ -153,11 +179,8 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
      * 初始化商品列表
      */
     private void initGoodsRecyclerView() {
-        linearLayoutManager = new GridLayoutManager(getActivity(), 1,
-                GridLayoutManager.HORIZONTAL, false);
-
-//        linearLayoutManager = new LinearLayoutManager(CashierApp.getAppContext());
-//        linearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        linearLayoutManager = new GridLayoutManager(getActivity(), 5,
+                GridLayoutManager.VERTICAL, false);
         goodsRecyclerView.setLayoutManager(linearLayoutManager);
         //enable optimizations if all item views are of the same height and width for
         //signficantly smoother scrolling
@@ -180,6 +203,12 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                 if (productEntity != null && mOnFragmentListener != null) {
                     mOnFragmentListener.onAddGoods(productEntity);
                 }
+                toggleKeyboard();
+            }
+
+            @Override
+            public void onItemLongClick(int position, PosProductEntity goods) {
+                modifyGoods(position, goods);
             }
         });
 
@@ -207,6 +236,12 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                 }
             } else if (dy < 0) {
                 isLoadingMore = false;
+            }
+
+            if (dy > 0) {
+                if (rlKeyboard.getVisibility() == View.VISIBLE) {
+                    hideKeyboard();
+                }
             }
         }
     };
@@ -249,6 +284,23 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
         mLetterAdapter.setEntityList(letters);
     }
 
+    @OnClick(R.id.ib_enter)
+    public void search() {
+        keyword = inlvBarcode.getInputString();
+        reload();
+    }
+
+    @OnClick(R.id.fab_toggle)
+    public void toggleKeyboard() {
+        ibToggle.setVisibility(View.GONE);
+        rlKeyboard.setVisibility(View.VISIBLE);
+    }
+
+    private void hideKeyboard() {
+        ibToggle.setVisibility(View.VISIBLE);
+        rlKeyboard.setVisibility(View.GONE);
+    }
+
     private void refresh() {
 //        spinnerTenant.setSelection(0);
 //        spinnerStatus.setSelection(0);
@@ -267,6 +319,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
             return;
         }
 
+        goodsListAdapter.setEntityList(null);
         onLoadStart();
 //        mPageInfo = new PageInfo(1, MAX_SYNC_PAGESIZE);
         mPageInfo.reset();
@@ -296,6 +349,18 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
             ZLogger.d("加载本地商品库，已经是最后一页。");
             onLoadFinished();
         }
+    }
+
+    @Override
+    public void onLoadStart() {
+        super.onLoadStart();
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onLoadFinished() {
+        super.onLoadFinished();
+        progressBar.setVisibility(View.GONE);
     }
 
     /**
@@ -358,6 +423,7 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
 
                     @Override
                     public void onError(Throwable e) {
+                        DialogUtil.showHint(e.getMessage());
                         onLoadFinished();
                     }
 
@@ -368,6 +434,8 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                         }
                         if (posProductEntities != null) {
                             entityList.addAll(posProductEntities);
+                        } else {
+                            DialogUtil.showHint("未找到商品");
                         }
                         ZLogger.d(String.format("共有 %d 个商品", entityList.size()));
 
@@ -375,11 +443,220 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
                             goodsListAdapter.setEntityList(entityList);
                         }
                         goodsRecyclerView.smoothScrollToPosition(0);
+                        hideKeyboard();
 
                         onLoadFinished();
                     }
 
                 });
     }
+
+
+    /**
+     * 修改商品
+     */
+    private void modifyGoods(final int position, final PosProductEntity goods) {
+        if (goods == null) {
+            return;
+        }
+
+        Double costPrice = goods.getCostPrice() != null ? goods.getCostPrice() : 0D;
+        if (mFrontCategoryGoodsDialog == null) {
+            mFrontCategoryGoodsDialog = new FrontCategoryGoodsDialog(getActivity());
+            mFrontCategoryGoodsDialog.setCancelable(true);
+            mFrontCategoryGoodsDialog.setCanceledOnTouchOutside(true);
+        }
+        mFrontCategoryGoodsDialog.initialzie(2, costPrice, "元",
+                new FrontCategoryGoodsDialog.OnResponseCallback() {
+                    @Override
+                    public void onAction1(Double value) {
+//                        if (ObjectsCompact.equals(value, costPrice)) {
+//                            ZLogger.d("价格没有变化，不需要修改");
+//                            return;
+//                        }
+                        changePrice(position, goods, value);
+                    }
+
+                    @Override
+                    public void onAction2() {
+//                        deleteGoods(position, goods);
+                    }
+
+                    @Override
+                    public void onAction3() {
+                        updateStatus(position, goods);
+                    }
+                });
+        mFrontCategoryGoodsDialog.setActions(true, false, true);
+        if (goods.getStatus() == 1) {
+            mFrontCategoryGoodsDialog.setAction3("售罄");
+        } else {
+            mFrontCategoryGoodsDialog.setAction3("补货");
+        }
+        if (!mFrontCategoryGoodsDialog.isShowing()) {
+            mFrontCategoryGoodsDialog.show();
+        }
+    }
+
+    /**
+     * 修改零售价
+     */
+    private void changePrice(final int position, final PosProductEntity goods, final Double costPrice) {
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(getString(R.string.toast_network_error));
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", goods.getId());
+        jsonObject.put("costPrice", costPrice);
+        jsonObject.put("tenantId", MfhLoginService.get().getSpid());
+
+        Map<String, String> options = new HashMap<>();
+        options.put("jsonStr", jsonObject.toJSONString());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.e("修改零售价失败, " + e.toString());
+                DialogUtil.showHint("修改零售价失败");
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onNext(String s) {
+                DialogUtil.showHint("修改零售价成功");
+                goods.setCostPrice(costPrice);
+//                        adapter.notifyDataSetChanged();
+                goodsListAdapter.notifyItemChanged(position);
+
+                hideProgressDialog();
+            }
+
+        });
+
+    }
+
+    /**
+     * 删除商品
+     */
+    private void deleteGoods(final int position, final PosProductEntity goods) {
+        if (goods == null) {
+            return;
+        }
+
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+        //查询商品所属前台类目
+        ProductCatalogEntity catalogEntity = null;
+        String sqlWhere = String.format("cataItemId = '%d'", goods.getProductId());
+        List<ProductCatalogEntity> catalogs = ProductCatalogService.getInstance().queryAllBy(sqlWhere);
+        if (catalogs != null && catalogs.size() > 0) {
+            catalogEntity = catalogs.get(0);
+        }
+        if (catalogEntity == null) {
+            ZLogger.d("删除商品失败，没有找到商品对应的类目关系");
+            return;
+        }
+
+
+        //删除该前台类目下的商品
+        final ProductCatalogEntity finalCatalogEntity = catalogEntity;
+        Map<String, String> options = new HashMap<>();
+        options.put("id", String.valueOf(catalogEntity.getId()));
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        ProductCatalogManager.getInstance().delete(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.e("删除商品失败, " + e.toString());
+                DialogUtil.showHint("删除商品失败");
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onNext(String s) {
+                DialogUtil.showHint("删除商品成功");
+                ProductCatalogService.getInstance()
+                        .deleteById(String.valueOf(finalCatalogEntity.getId()));
+                reload();
+
+                hideProgressDialog();
+            }
+
+        });
+    }
+
+
+    /**
+     * 更新商品
+     */
+    private void updateStatus(final int position, final PosProductEntity goods) {
+        if (goods == null) {
+            return;
+        }
+
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(getString(R.string.toast_network_error));
+            return;
+        }
+
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+        int newStatus = 0;
+        if (goods.getStatus() == 0) {
+            newStatus = 1;
+        }
+
+        final int finalNewStatus = newStatus;
+        Map<String, String> options = new HashMap<>();
+        options.put("status", String.valueOf(newStatus));
+        options.put("barcode", goods.getBarcode());
+        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
+        InvSkuStoreHttpManager.getInstance().updateStatus(options, new Subscriber<String>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ZLogger.d("更新商品失败, " + e.toString());
+                DialogUtil.showHint("更新商品失败");
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onNext(String s) {
+                DialogUtil.showHint("更新商品成功");
+                //修改门店商品状态后台不推送消息，所以这里直接本地修改，下次同步数据时再去更新。
+                goods.setStatus(finalNewStatus);
+                PosProductService.get().saveOrUpdate(goods);
+                goodsListAdapter.notifyItemChanged(position);
+
+                hideProgressDialog();
+            }
+
+        });
+    }
+
+
+
 
 }
