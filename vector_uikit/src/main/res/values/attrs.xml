@@ -63,6 +63,7 @@
         <enum name="textPassword" value="5"/>
         <enum name="phone" value="6"/>
         <enum name="number" value="7"/>
+        <enum name="numberPassword" value="8"/>
     </attr>
 
     <declare-styleable name="SettingsItem">

@@ -118,7 +118,6 @@ public class IMClient {
                     public void onNext(BizMsgParamWithSession bizMsgParamWithSession) {
                         ZLogger.df(String.format("注册消息桥成功: %s", JSON.toJSON(bizMsgParamWithSession)));
                         IMConfig.updateIdentify(guid);
-
                     }
 
                 });

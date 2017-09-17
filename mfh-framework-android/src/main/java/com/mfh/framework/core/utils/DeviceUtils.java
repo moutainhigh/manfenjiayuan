@@ -9,11 +9,11 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
@@ -207,5 +207,16 @@ public class DeviceUtils {
             return size.y;
         }
         return display.getHeight();
+    }
+
+    private static DisplayMetrics getDisplayMetrics(Context context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager wm = (WindowManager)
+                context.getSystemService(Context.WINDOW_SERVICE);
+        if (wm != null) {
+            displayMetrics = new DisplayMetrics();
+            wm.getDefaultDisplay().getMetrics(displayMetrics);
+        }
+        return displayMetrics;
     }
 }

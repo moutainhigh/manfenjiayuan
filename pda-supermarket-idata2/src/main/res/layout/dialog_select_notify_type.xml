@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/spacing_micro">
+
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableStart="@mipmap/ic_notify_phone"
+        android:minHeight="@dimen/minimum_touch_height"
+        android:drawablePadding="@dimen/spacing_normal"
+        android:padding="10dp"
+        android:gravity="center_vertical"
+        android:text="电话"/>
+
+    <View
+        android:id="@+id/top_line"
+        style="@style/separator_horizontal"
+        android:layout_height="1dp"
+        android:layout_below="@+id/tv_phone"/>
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/top_line"
+        android:minHeight="@dimen/minimum_touch_height"
+        android:gravity="center_vertical"
+        android:drawableStart="@mipmap/ic_notify_message"
+        android:drawablePadding="@dimen/spacing_normal"
+        android:padding="10dp"
+        android:text="消息通知"/>
+
+</RelativeLayout>

@@ -2,7 +2,6 @@ package com.mfh.framework.core.utils;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiInfo;
@@ -10,15 +9,16 @@ import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.system.PermissionUtil;
 
 /**
  * 网络工具类
  * Created by bingshanguxue on 2014/11/6.
  */
 public class NetworkUtils {
-    public static final String DEFAULT_WIFI_MACADDRESS = "00-00-00-00-00-00";
-    public static final String G2G3 = "2G/3G";
-    public static final String WIFI = "Wi-Fi";
+    private static final String DEFAULT_WIFI_MACADDRESS = "00-00-00-00-00-00";
+    private static final String G2G3 = "2G/3G";
+    private static final String WIFI = "Wi-Fi";
 
     /**
      * Check whether the device has connected network or not.<br>
@@ -29,11 +29,9 @@ public class NetworkUtils {
             return false;
         }
 
-        PackageManager packageManager = context.getPackageManager();
-        //java.lang.SecurityException: ConnectivityService: Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE.
-        if (packageManager.checkPermission(Manifest.permission.ACCESS_NETWORK_STATE,
-                context.getPackageName()) != PackageManager.PERMISSION_GRANTED) {
+        if (!PermissionUtil.checkSelfPermissions(context, new String[]{Manifest.permission.ACCESS_NETWORK_STATE})) {
             ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+            return false;
         }
 
         ConnectivityManager conManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -68,16 +66,20 @@ public class NetworkUtils {
      * @return
      */
     public static boolean isWifiConnected(Context context) {
-        if (context != null) {
-            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
-                    .getSystemService(Context.CONNECTIVITY_SERVICE);
-            NetworkInfo mWiFiNetworkInfo = mConnectivityManager
-                    .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            if (mWiFiNetworkInfo != null) {
-                return mWiFiNetworkInfo.isAvailable();
-            }
+        if (context == null) {
+            return false;
         }
-        return false;
+
+        if (!PermissionUtil.checkSelfPermissions(context, new String[]{Manifest.permission.ACCESS_NETWORK_STATE})) {
+            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+            return false;
+        }
+
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWiFiNetworkInfo = mConnectivityManager
+                .getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        return mWiFiNetworkInfo != null && mWiFiNetworkInfo.isAvailable();
     }
 
     /**
@@ -85,6 +87,15 @@ public class NetworkUtils {
      * is wifi or mobile (it could be something else).
      */
     public static String getNetworkType(Context context) {
+        if (context == null) {
+            return null;
+        }
+
+        if (!PermissionUtil.checkSelfPermissions(context, new String[]{Manifest.permission.ACCESS_NETWORK_STATE})) {
+            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+            return null;
+        }
+
         ConnectivityManager cm = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
@@ -126,26 +137,28 @@ public class NetworkUtils {
     public static String[] getNetworkState(Context context) {
         String[] arrayOfString = new String[]{"Unknown", "Unknown"};
 
+        if (context == null) {
+            return arrayOfString;
+        }
+
+        if (!PermissionUtil.checkSelfPermissions(context, new String[]{Manifest.permission.ACCESS_NETWORK_STATE})) {
+            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+            return arrayOfString;
+        }
+
         try {
-            PackageManager packageManager = context.getPackageManager();
-            //java.lang.SecurityException: ConnectivityService: Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE.
-            if (packageManager.checkPermission(Manifest.permission.ACCESS_NETWORK_STATE,
-                    context.getPackageName()) != PackageManager.PERMISSION_GRANTED) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            if (connectivityManager == null) {
                 arrayOfString[0] = "Unknown";
             } else {
-                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                if (connectivityManager == null) {
-                    arrayOfString[0] = "Unknown";
+                NetworkInfo wifiNetworkInfo = connectivityManager.getNetworkInfo(1);
+                if (wifiNetworkInfo != null && wifiNetworkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                    arrayOfString[0] = WIFI;
                 } else {
-                    NetworkInfo wifiNetworkInfo = connectivityManager.getNetworkInfo(1);
-                    if (wifiNetworkInfo != null && wifiNetworkInfo.getState() == NetworkInfo.State.CONNECTED) {
-                        arrayOfString[0] = WIFI;
-                    } else {
-                        NetworkInfo networkInfo = connectivityManager.getNetworkInfo(0);
-                        if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
-                            arrayOfString[0] = G2G3;
-                            arrayOfString[1] = networkInfo.getSubtypeName();
-                        }
+                    NetworkInfo networkInfo = connectivityManager.getNetworkInfo(0);
+                    if (networkInfo != null && networkInfo.getState() == NetworkInfo.State.CONNECTED) {
+                        arrayOfString[0] = G2G3;
+                        arrayOfString[1] = networkInfo.getSubtypeName();
                     }
                 }
             }
@@ -166,26 +179,40 @@ public class NetworkUtils {
      * </ol>
      */
     public static String getWifiMacAddress(Context context) {
-        if (context != null) {
-            WifiManager wifimanage = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wifiinfo = wifimanage.getConnectionInfo();
-            if (wifiinfo != null) {
-                String address = wifiinfo.getMacAddress();
-                if (!StringUtils.isEmpty(address)) {
-                    return address;
-                }
+        if (context == null) {
+            return null;
+        }
+
+        if (!PermissionUtil.checkSelfPermissions(context, new String[]{Manifest.permission.ACCESS_WIFI_STATE})) {
+            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+            return null;
+        }
+
+        WifiManager wifimanage = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiinfo = wifimanage.getConnectionInfo();
+        if (wifiinfo != null) {
+            String address = wifiinfo.getMacAddress();
+            if (!StringUtils.isEmpty(address)) {
+                return address;
             }
         }
         return DEFAULT_WIFI_MACADDRESS;
     }
 
     public static String getWifiIpAddress(Context context) {
-        if (context != null) {
-            WifiManager e = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wifiInfo = e.getConnectionInfo();
-            if (wifiInfo != null) {
-                return convertIntToIp(wifiInfo.getIpAddress());
-            }
+        if (context == null) {
+            return null;
+        }
+
+        if (!PermissionUtil.checkSelfPermissions(context, new String[]{Manifest.permission.ACCESS_WIFI_STATE})) {
+            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+            return null;
+        }
+
+        WifiManager e = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = e.getConnectionInfo();
+        if (wifiInfo != null) {
+            return convertIntToIp(wifiInfo.getIpAddress());
         }
 
         return null;

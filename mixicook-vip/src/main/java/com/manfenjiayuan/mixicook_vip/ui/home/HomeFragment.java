@@ -23,11 +23,11 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.presenter.PosRegisterPresenter;
+import com.manfenjiayuan.business.mvp.presenter.ScGoodsSkuPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
-import com.manfenjiayuan.business.view.IPosRegisterView;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.manfenjiayuan.business.mvp.view.IPosRegisterView;
+import com.manfenjiayuan.business.mvp.view.IScGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.ValidateManager;
@@ -81,17 +81,16 @@ import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.tencent.bugly.beta.Beta;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 import me.drakeet.multitype.Item;
 import me.drakeet.multitype.MultiTypeAdapter;
 
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by bingshanguxue on 6/28/16.
@@ -449,7 +448,7 @@ public class HomeFragment extends BaseFragment
         if (curCompanyInfo != null){
             extras.putSerializable(ShopcartFragment.EXTRA_KEY_COMPANYINFO, curCompanyInfo);
         }
-        Intent intent = new Intent(context, FragmentActivity.class);
+        Intent intent = new Intent(getContext(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, ARCode.ARC_SHOPCART);
     }
@@ -609,7 +608,7 @@ public class HomeFragment extends BaseFragment
     private void loadInitStep1() {
         if (MfhLoginService.get().haveLogined()) {
             showProgressDialog(ProgressView.STATUS_PROCESSING, "加载地址...", false);
-            mReciaddrPresenter.getDefaultAddrsByHuman(MfhLoginService.get().getCurrentGuId());
+            mReciaddrPresenter.getDefaultAddrsByHuman(MfhLoginService.get().getHumanId());
         }
     }
 

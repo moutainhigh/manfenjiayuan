@@ -3,6 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:gravity="center"
+              android:background="@color/material_white"
               android:orientation="vertical">
 
     <TextView
@@ -47,19 +48,35 @@
         android:padding="@dimen/spacing_normal">
 
 
-        <ImageButton
-            android:id="@+id/fab_cancel"
-            style="@style/FloatImageButton"
-            android:layout_margin="@dimen/spacing_double"
-            android:contentDescription="@null"
-            android:src="@mipmap/ic_cancel_white_64"/>
+        <Button
+            android:id="@+id/button_action1"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_hollow_green"
+            android:text="重新支付"
+            android:textColor="@color/black_65"
+            android:textSize="16sp"/>
 
-        <ImageButton
-            android:id="@+id/fab_refresh"
-            style="@style/FloatImageButton"
-            android:layout_margin="@dimen/spacing_double"
-            android:contentDescription="@null"
-            android:src="@mipmap/ic_refresh_white_64"/>
+        <Button
+            android:id="@+id/button_action2"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_hollow_green"
+            android:text="查询订单"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:textColor="@color/black_65"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/button_action3"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_double"
+            android:background="@drawable/btn_hollow_red"
+            android:text="撤销订单"
+            android:textColor="@color/black_65"
+            android:textSize="16sp"/>
+
 
     </LinearLayout>
 

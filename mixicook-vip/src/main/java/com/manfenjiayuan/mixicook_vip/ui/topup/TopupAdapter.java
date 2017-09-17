@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 /**
  * 菜单
- * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
+ * Created by bingshanguxue on 15/8/5.
  */
 public class TopupAdapter extends RegularAdapter<TopAmount, TopupAdapter.MenuOptioinViewHolder> {
 

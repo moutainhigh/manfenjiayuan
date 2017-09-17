@@ -4,19 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.mfh.comn.net.data.IResponseData;
@@ -39,6 +34,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.widget.PayProcessView;
 import com.mfh.litecashier.utils.AppHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -47,12 +43,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import rx.Subscriber;
 
 /**
  * 微信刷卡支付
- *
+ * <p>
  * {"code":"-1","msg":"支付失败:请扫描微信支付授权码（以10/11/12/13/14/15为前缀的18位数字）","version":"1","data":""}
  *
  * @see <a href="https://pay.weixin.qq.com/wiki/doc/api/micropay.php?chapter=5_4">微信刷卡支付支付流程</a>
@@ -64,21 +59,9 @@ public class WepayTopupFragment extends BaseTopupFragment {
     EditText etBarCode;//扫码枪扫描到的用户手机钱包中的付款条码
     @BindView(R.id.ll_pay_info)
     LinearLayout llPayInfo;
-    @BindView(R.id.ll_pay_loading)
-    LinearLayout llPayLoading;
-    @BindView(R.id.animProgress)
-    ProgressBar progressBar;
-    @BindView(R.id.tv_process)
-    TextView tvProcess;
-    @BindView(R.id.tv_countdown)
-    TextView tvCountdown;
-    @BindView(R.id.button_query_orderstatus)
-    Button btnQueryOrderStatus;
-    @BindView(R.id.button_cancel_order)
-    Button btnCancelAliBarPay;
 
-    private BarPayCountDownTimer payCountDownTimer;
-    private boolean payTimerRunning;
+    @BindView(R.id.payProcessView)
+    PayProcessView payProcessView;
 
     @Override
     protected int getLayoutResId() {
@@ -89,34 +72,16 @@ public class WepayTopupFragment extends BaseTopupFragment {
     @Override
     protected void onPayProcess(String message) {
         llPayInfo.setVisibility(View.GONE);
-        llPayLoading.setVisibility(View.VISIBLE);
-        tvProcess.setText(message);
-        tvProcess.setTextColor(Color.parseColor("#FF000000"));
-        progressBar.setVisibility(View.VISIBLE);
-        btnCancelAliBarPay.setVisibility(View.GONE);
-        btnQueryOrderStatus.setVisibility(View.GONE);
-
-        if (!payTimerRunning) {
-            payCountDownTimer.start();
-            payTimerRunning = true;
-        }
+        payProcessView.setState(PayProcessView.STATE_PROCESS, message);
     }
 
     @Override
     protected void onPayFailed(int payStatus, String msg, int color, boolean isException) {
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
         if (isException) {
-            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-            btnQueryOrderStatus.setVisibility(View.VISIBLE);
+            payProcessView.setState(PayProcessView.STATE_ERROR, msg);
         } else {
-            btnCancelAliBarPay.setVisibility(View.GONE);
-            btnQueryOrderStatus.setVisibility(View.GONE);
+            payProcessView.setState(PayProcessView.STATE_FAILED, msg);
         }
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
 
         etBarCode.getText().clear();//清空授权码
 
@@ -126,7 +91,6 @@ public class WepayTopupFragment extends BaseTopupFragment {
                 EventBus.getDefault().post(new TopupActionEvent(TopupActionEvent.TOPUP_ERROR, null));
 
                 llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
                 etBarCode.requestFocus();
                 etBarCode.setSelection(etBarCode.length());
 
@@ -137,15 +101,8 @@ public class WepayTopupFragment extends BaseTopupFragment {
 
     @Override
     protected void onPayFinished(Double paidAmount, String msg, int color) {
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
-        btnCancelAliBarPay.setVisibility(View.GONE);
-        btnQueryOrderStatus.setVisibility(View.GONE);
+        payProcessView.setState(PayProcessView.STATE_SUCCESS, msg);
 
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
 
         etBarCode.getText().clear();//清空授权码
 
@@ -155,14 +112,13 @@ public class WepayTopupFragment extends BaseTopupFragment {
                 EventBus.getDefault().post(new TopupActionEvent(TopupActionEvent.TOPUP_SUCCEED, null));
 
                 llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
 
                 etBarCode.requestFocus();
                 etBarCode.setSelection(etBarCode.length());
 
                 bPayProcessing = false;
             }
-        }, 500);
+        }, 200);
     }
 
     @Override
@@ -174,7 +130,37 @@ public class WepayTopupFragment extends BaseTopupFragment {
 
         initBarCodeInput();
 
-        payCountDownTimer = new BarPayCountDownTimer(30 * 1000, 1000);
+        payProcessView.init(120, "点击重试", "查询订单", "撤销订单",
+                new PayProcessView.onCustomerViewListener() {
+
+                    @Override
+                    public void onAction1() {
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+                    }
+
+                    /**
+                     * 查询订单状态
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction2() {
+                        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+                            DialogUtil.showHint(R.string.toast_network_error);
+                            return;
+                        }
+                        queryOrder(outTradeNo, lastPaidAmount);
+                    }
+
+                    /**
+                     * 撤单
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction3() {
+                        cancelOrder(outTradeNo);
+                    }
+
+                });
     }
 
     @Override
@@ -196,9 +182,8 @@ public class WepayTopupFragment extends BaseTopupFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (payCountDownTimer != null) {
-            payCountDownTimer.cancel();
-            payCountDownTimer = null;
+        if (payProcessView != null) {
+            payProcessView.onDestory();
         }
     }
 
@@ -218,6 +203,7 @@ public class WepayTopupFragment extends BaseTopupFragment {
                     if (extras != null) {
                         etBarCode.setText("");
                         etBarCode.requestFocus();
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
                         paidAmount = extras.getDouble(EXTRA_KEY_TOTAL_AMOUNT);
                         customerId = extras.getLong(EXTRA_KEY_CUSTOMER_ID);
                     }
@@ -226,28 +212,6 @@ public class WepayTopupFragment extends BaseTopupFragment {
         };
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
-    }
-
-    /**
-     * 查询订单状态
-     * 因网络或系统异常导致支付状态不明时调用
-     */
-    @OnClick(R.id.button_query_orderstatus)
-    public void queryWepayStatus() {
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-        queryOrder(outTradeNo, lastPaidAmount);
-    }
-
-    /**
-     * 撤单
-     * 因网络或系统异常导致支付状态不明时调用
-     */
-    @OnClick(R.id.button_cancel_order)
-    public void cancelAliBarPay() {
-        cancelOrder(outTradeNo);
     }
 
 
@@ -293,42 +257,11 @@ public class WepayTopupFragment extends BaseTopupFragment {
     }
 
     /**
-     * 倒计时
-     */
-    public class BarPayCountDownTimer extends CountDownTimer {
-
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        public BarPayCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            if (tvCountdown != null) {
-                tvCountdown.setText(String.format("%d秒", millisUntilFinished / 1000));
-            }
-        }
-
-        @Override
-        public void onFinish() {
-            if (tvCountdown != null) {
-                tvCountdown.setText("");
-            }
-//            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-        }
-    }
-
-    /**
      * 支付宝条码支付--POS发起支付请求，后台向支付宝请求支付<br>
      * <b>应用场景实例：</b>收银员使用扫码设备读取用户手机支付宝“付款码”后，将二维码或条码信息通过本接口上送至支付宝发起支付。<br>
      * 免密支付,直接返回支付结果，
      * 验密支付,返回10003(支付处理中)状态,然后POS轮询查询订单状态
+     *
      * @param authCode 支付宝支付授权码
      */
     @Override
@@ -375,7 +308,8 @@ public class WepayTopupFragment extends BaseTopupFragment {
                         ZLogger.e("微信条码支付异常:" + e.toString());
 
                         onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
-                                AppHelper.getErrorTextColor(), true);                    }
+                                AppHelper.getErrorTextColor(), true);
+                    }
 
                     @Override
                     public void onNext(MResponse<String> stringMResponse) {

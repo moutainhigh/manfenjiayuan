@@ -60,6 +60,8 @@
     <uses-permission
         android:name="android.permission.SET_TIME"
         tools:ignore="ProtectedPermissions"/>
+    <uses-permission android:name="com.android.launcher.permission.SET_TIME_ZONE"/>
+
 
     <!-- EXT 桌面快捷方式权限 -->
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT"/>
@@ -297,7 +299,7 @@
         <activity
             android:name="com.tencent.bugly.beta.ui.BetaActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen"/>
-
+        <!--注意：如果您想兼容Android N或者以上的设备，必须要在AndroidManifest.xml文件中配置FileProvider来访问共享路径的文件。-->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileProvider"

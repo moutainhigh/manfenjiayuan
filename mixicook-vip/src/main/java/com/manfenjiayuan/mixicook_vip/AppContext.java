@@ -3,6 +3,7 @@ package com.manfenjiayuan.mixicook_vip;
 import android.content.ComponentCallbacks2;
 import android.os.Environment;
 
+import com.manfenjiayuan.im.BuildConfig;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.mixicook_vip.ui.mutitype.MultiTypeInstaller;
 import com.mfh.framework.BizConfig;
@@ -12,6 +13,8 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
+
+import net.sourceforge.simcpux.WXHelper;
 
 
 /**
@@ -43,14 +46,15 @@ public class AppContext extends MfhApplication {
 //            ZLogger.d("测试版    本");
             ZLogger.LOG_ENABLED = true;
 //            ACacheHelper.CACHE_NAME = "ACache_Dev";
+
+            debugPrint();
         }
 
         MultiTypeInstaller.register();
-
+        WXHelper.initialize(this);
 //        //注册应用id到微信
 //        WXAPIFactory.createWXAPI(this, WXConstants.APP_ID, false).registerApp(WXConstants.APP_ID);
 //
-        debugPrint();
 
         int pid = android.os.Process.myPid();
         String processAppName = getProcessName(this, pid);

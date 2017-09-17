@@ -11,13 +11,16 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.BitmapUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.TimeUtil;
-import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
-import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
-import com.tencent.mm.sdk.modelmsg.WXTextObject;
-import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
-import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.SendAuth;
+import com.tencent.mm.sdk.openapi.SendMessageToWX;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+import com.tencent.mm.sdk.openapi.WXAppExtendObject;
+import com.tencent.mm.sdk.openapi.WXFileObject;
+import com.tencent.mm.sdk.openapi.WXMediaMessage;
+import com.tencent.mm.sdk.openapi.WXMusicObject;
+import com.tencent.mm.sdk.openapi.WXTextObject;
+import com.tencent.mm.sdk.openapi.WXWebpageObject;
 
 import net.sourceforge.simcpux.wxapi.Constants;
 
@@ -35,7 +38,7 @@ import java.util.Map;
 
 /**
  * 微信帮助类
- * Created by NAT.ZZN on 2015/6/12.
+ * Created by bingshanguxue on 2015/6/12.
  */
 public class WXHelper {
     private static final String TAG = WXHelper.class.getSimpleName();
@@ -47,37 +50,58 @@ public class WXHelper {
     private static IWXAPI api;
 
     private static WXHelper instance;
-    public static WXHelper getInstance(Context context){
-        if (instance == null){
-            return new WXHelper(context);
-        }
 
+    private WXHelper(Context context) {
+        this.context = context;
+        regToWx();
+    }
+
+    public static void initialize(Context context) {
+        if (instance == null) {
+            synchronized (WXHelper.class) {
+                if (instance == null) {
+                    instance = new WXHelper(context.getApplicationContext());
+                }
+            }
+        }
+    }
+
+    public static WXHelper getInstance() {
         return instance;
     }
 
-    public WXHelper(Context context){
-        this.context = context;
-//        api = WXAPIFactory.createWXAPI(context, Constants.APP_ID);
-        api = WXAPIFactory.createWXAPI(context, null);
-        // 将该app注册到微信
-        api.registerApp(Constants.APP_ID);
-    }
+    private boolean wxRegisted = false;
 
+    private synchronized void regToWx() {
+        if (!wxRegisted) {
+            //通过WXAPIFactory工厂获取 IWXAPI的实例。
+            api = WXAPIFactory.createWXAPI(context, Constants.APP_ID, true);
+            //将应用的APP_ID注册到微信
+            wxRegisted = api.registerApp(Constants.APP_ID);
+            if (!wxRegisted) {
+                ZLogger.w("register app failed for wechat app signature check failed : " + Constants.APP_ID);
+            } else {
+                ZLogger.d("registerApp " + Constants.APP_ID + " success");
+            }
+        } else {
+            ZLogger.w("already register to wx");
+        }
+    }
 
     /**
      * 统一下单
      * 除被扫支付场景以外，商户系统先调用该接口在微信支付服务后台生成预支付交易单，返回正确的预支付
      * 交易回话标识后再按扫码、JSAPI、APP等不同场景生成交易串调起支付。
-     * */
-    public void getPrepayId(){
+     */
+    public void getPrepayId() {
         GetPrepayIdTask getPrepayId = new GetPrepayIdTask();
         getPrepayId.execute();
     }
 
     /**
      * App支付生成预支付订单
-     * */
-    private class GetPrepayIdTask extends AsyncTask<Void, Void, Map<String,String>> {
+     */
+    private class GetPrepayIdTask extends AsyncTask<Void, Void, Map<String, String>> {
 
         private ProgressDialog dialog;
 
@@ -88,7 +112,7 @@ public class WXHelper {
         }
 
         @Override
-        protected void onPostExecute(Map<String,String> result) {
+        protected void onPostExecute(Map<String, String> result) {
             if (dialog != null) {
                 dialog.dismiss();
             }
@@ -114,7 +138,7 @@ public class WXHelper {
         }
 
         @Override
-        protected Map<String,String> doInBackground(Void... params) {
+        protected Map<String, String> doInBackground(Void... params) {
             //统一下单
 //            String entity = genProductArgs(1, new String("微信充值测试"), Constants.NOTIFY_URL, WXUtil.genOutTradNo());
 //            String entity = genProductArgs(1, "weixin pay test", Constants.NOTIFY_URL, WXUtil.genOutTradNo());
@@ -139,7 +163,7 @@ public class WXHelper {
 //            </xml>
             String content = new String(buf);
 
-            Map<String,String> xml= WXUtil.decodeXml(content);
+            Map<String, String> xml = WXUtil.decodeXml(content);
 
             return xml;
         }
@@ -147,24 +171,25 @@ public class WXHelper {
 
     /**
      * 生成产品参数
-     * @param fee 订单总金额，只能为整数, 支付金额单位为【分】，参数值不能带小数
-     * @param body 商品或支付单简要描述
-     * @param notifyUrl 回掉地址
-     * @param tradeNo 商户系统内部的订单号,32个字符内、可包含字母,
      *
-     * 格式如下：
-     //            <xml>
-     //            <appid>wx1dbac2f50c918d7d</appid>
-     //            <body>weixin</body>
-     //            <mch_id>1250378401</mch_id>
-     //            <nonce_str>3546ab441e56fa333f8b44b610d95691</nonce_str>
-     //            <notify_url>http://121.40.35.3/test</notify_url>
-     //            <out_trade_no>73f9ddba165b5c59c61dd64960ba8b2d</out_trade_no>
-     //            <spbill_create_ip>127.0.0.1</spbill_create_ip>
-     //            <total_fee>1</total_fee>
-     //            <trade_type>APP</trade_type>
-     //            <sign>8D0D16631F8EF447AD6BAFA20053A426</sign>
-     //            </xml>
+     * @param fee       订单总金额，只能为整数, 支付金额单位为【分】，参数值不能带小数
+     * @param body      商品或支付单简要描述
+     * @param notifyUrl 回掉地址
+     * @param tradeNo   商户系统内部的订单号,32个字符内、可包含字母,
+     *                  <p>
+     *                  格式如下：
+     *                  //            <xml>
+     *                  //            <appid>wx1dbac2f50c918d7d</appid>
+     *                  //            <body>weixin</body>
+     *                  //            <mch_id>1250378401</mch_id>
+     *                  //            <nonce_str>3546ab441e56fa333f8b44b610d95691</nonce_str>
+     *                  //            <notify_url>http://121.40.35.3/test</notify_url>
+     *                  //            <out_trade_no>73f9ddba165b5c59c61dd64960ba8b2d</out_trade_no>
+     *                  //            <spbill_create_ip>127.0.0.1</spbill_create_ip>
+     *                  //            <total_fee>1</total_fee>
+     *                  //            <trade_type>APP</trade_type>
+     *                  //            <sign>8D0D16631F8EF447AD6BAFA20053A426</sign>
+     *                  //            </xml>
      */
     private String genProductArgs(int fee, String body, String notifyUrl, String tradeNo) {
         try {
@@ -175,7 +200,7 @@ public class WXHelper {
             packageParams.add(new BasicNameValuePair("nonce_str", WXUtil.genNonceStr()));//随机字符串，不长于32位
             packageParams.add(new BasicNameValuePair("notify_url", notifyUrl));//通知地址，接收微信支付异步通知回调地址
             packageParams.add(new BasicNameValuePair("out_trade_no", tradeNo));//商户系统内部的订单号,32个字符内、可包含字母
-            packageParams.add(new BasicNameValuePair("spbill_create_ip","127.0.0.1"));//终端IP,APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
+            packageParams.add(new BasicNameValuePair("spbill_create_ip", "127.0.0.1"));//终端IP,APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
             packageParams.add(new BasicNameValuePair("total_fee", String.valueOf(fee)));//订单总金额，只能为整数
             packageParams.add(new BasicNameValuePair("trade_type", "APP"));//交易类型，取值如下：JSAPI，NATIVE，APP，WAP,详细说明见
 
@@ -194,51 +219,78 @@ public class WXHelper {
 
     /**
      * 生成App支付参数
-     * */
-    public PayReq genPayReq(String prepayId){
-        PayReq req = new PayReq();
+     */
+//    public PayReq genPayReq(String prepayId) {
+//        PayReq req = new PayReq();
+//
+//        req.appId = Constants.APP_ID;
+//        req.partnerId = Constants.MCH_ID;
+//        req.prepayId = prepayId;
+//        req.packageValue = "Sign=WXPay";
+//        req.nonceStr = WXUtil.genNonceStr();
+//        req.timeStamp = String.valueOf(TimeUtil.genTimeStamp());
+//
+//        //按签名规范重新生成签名
+//        List<NameValuePair> signParams = new LinkedList<>();
+//        signParams.add(new BasicNameValuePair("appid", req.appId));
+//        signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
+//        signParams.add(new BasicNameValuePair("package", req.packageValue));
+//        signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
+//        signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
+//        signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));//时间戳
+//
+////        req.sign = WXUtil.genSian(WXUtil.toString(signParams));
+//        req.sign = WXUtil.genSign(signParams);
+//
+//        return req;
+//    }
 
-        req.appId = Constants.APP_ID;
-        req.partnerId = Constants.MCH_ID;
-        req.prepayId = prepayId;
-        req.packageValue = "Sign=WXPay";
-        req.nonceStr = WXUtil.genNonceStr();
-        req.timeStamp = String.valueOf(TimeUtil.genTimeStamp());
-
-        //按签名规范重新生成签名
-        List<NameValuePair> signParams = new LinkedList<>();
-        signParams.add(new BasicNameValuePair("appid", req.appId));
-        signParams.add(new BasicNameValuePair("noncestr", req.nonceStr));
-        signParams.add(new BasicNameValuePair("package", req.packageValue));
-        signParams.add(new BasicNameValuePair("partnerid", req.partnerId));
-        signParams.add(new BasicNameValuePair("prepayid", req.prepayId));
-        signParams.add(new BasicNameValuePair("timestamp", req.timeStamp));//时间戳
-
-//        req.sign = WXUtil.genSian(WXUtil.toString(signParams));
-        req.sign = WXUtil.genSign(signParams);
-
-        return req;
-    }
 
     /**
      * APP发送微信支付请求，需要重新签名
-     * */
-    public void sendPayReq(String prepayId){
-        if(prepayId != null){
+     */
+    public void sendPayReq(String prepayId) {
+        if (prepayId != null) {
+            regToWx();
 //            DialogUtil.showHint("发送支付请求");
-            api.registerApp(Constants.APP_ID);
-            api.sendReq(genPayReq(prepayId));
-        }else {
+//            api.registerApp(Constants.APP_ID);
+//            api.sendReq(genPayReq(prepayId));
+        } else {
             DialogUtil.showHint("prepayId 不能为空");
         }
     }
 
     /**
+     * 发送授权登录信息，来获取code
+     */
+    public void sendAuthReq() {
+        final SendAuth.Req req = new SendAuth.Req();
+        //应用的作用域，获取个人信息
+        req.scope = "snsapi_userinfo, snsapi_message";
+        /**
+         * 用于保持请求和回调的状态，授权请求后原样带回给第三方
+         * 为了防止csrf攻击（跨站请求伪造攻击），后期改为随机数加session来校验
+         */
+        req.state = "mixiyun_vip";
+
+        regToWx();
+        if (!api.isWXAppInstalled()) {
+            DialogUtil.showHint("请先安装微信");
+        } else if (!api.isWXAppSupportAPI()) {
+            DialogUtil.showHint("微信App不支持");
+        } else {
+            ZLogger.d("sendAuthReq");
+            api.sendReq(req);
+        }
+    }
+
+    /**
      * 分享·发送文本到微信
-     * @param text content
+     *
+     * @param text  content
      * @param scene SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
-     * */
-    public void sendTextToWX(String text, int scene){
+     */
+    public void sendTextToWX(String text, int scene) {
         // 初始化一个WXTextObject对象
         WXTextObject textObj = new WXTextObject();
         textObj.text = text;
@@ -250,22 +302,17 @@ public class WXHelper {
         // msg.title = "Will be ignored";
         msg.description = text;
 
-        // 构造一个Req
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction(TRANSACTION_TYPE_TEXT);
-        req.message = msg;
-        req.scene = scene;
+        sendReq(TRANSACTION_TYPE_TEXT, msg, scene);
 
-        // 调用api接口发送数据到微信
-        api.sendReq(req);
     }
 
     /**
      * 分享·发送网页到微信
+     *
      * @param webpageUrl content
-     * @param scene SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
-     * */
-    public void sendWebpageToWX(String webpageUrl, String title, String description, Bitmap thumb, int scene){
+     * @param scene      SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
+     */
+    public void sendWebpageToWX(String webpageUrl, String title, String description, Bitmap thumb, int scene) {
         // 初始化一个WXTextObject对象
         WXWebpageObject webpage = new WXWebpageObject();
         webpage.webpageUrl = webpageUrl;
@@ -276,24 +323,23 @@ public class WXHelper {
         msg.description = description;
         msg.thumbData = BitmapUtils.bmpToByteArray(thumb, true);
 
-        // 构造一个Req
-        SendMessageToWX.Req req = new SendMessageToWX.Req();
-        req.transaction = buildTransaction(TRANSACTION_TYPE_WEBPAGE);
-        req.message = msg;
-        req.scene = scene;
+        sendReq(TRANSACTION_TYPE_WEBPAGE, msg, scene);
 
-        // 调用api接口发送数据到微信
-        api.sendReq(req);
     }
+
+//    private void sendReq(String type, ) {
+//        regToWx();
+//    }
 
     /**
      * 分享·发送网页到微信
+     *
      * @param webpageUrl content
-     * @param scene SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
-     * */
+     * @param scene      SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
+     */
     public void sendWebpageToWX(final String webpageUrl, final String title,
-                                final String description, final String imageUrl, final int scene){
-        Thread thread = new Thread(new Runnable(){
+                                final String description, final String imageUrl, final int scene) {
+        Thread thread = new Thread(new Runnable() {
 
             @Override
             public void run() {
@@ -329,7 +375,7 @@ public class WXHelper {
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     Bitmap bmp = BitmapFactory.decodeStream(input);
-                    if (bmp != null){
+                    if (bmp != null) {
                         Bitmap thumbBmp = Bitmap.createScaledBitmap(bmp, 150, 150, true);
                         bmp.recycle();
                         msg.setThumbImage(thumbBmp);
@@ -338,14 +384,8 @@ public class WXHelper {
                     e.printStackTrace();
                 }
 
-                // 构造一个Req
-                SendMessageToWX.Req req = new SendMessageToWX.Req();
-                req.transaction = buildTransaction(TRANSACTION_TYPE_WEBPAGE);
-                req.message = msg;
-                req.scene = scene;
+                sendReq(TRANSACTION_TYPE_WEBPAGE, msg, scene);
 
-                // 调用api接口发送数据到微信
-                api.sendReq(req);
             }
         });
         thread.start();
@@ -354,4 +394,125 @@ public class WXHelper {
     private String buildTransaction(final String type) {
         return (type == null) ? String.valueOf(System.currentTimeMillis()) : type + System.currentTimeMillis();
     }
+
+    public void openWXApp() {
+        regToWx();
+        api.openWXApp();
+    }
+
+    /**
+     * * 发送文本到微信
+     *
+     * @param text  content
+     * @param scene SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
+     */
+    public void sendMusicToWX(String url, String title, String text, int scene) {
+        // 初始化一个WXTextObject对象
+        WXMusicObject musicObject = new WXMusicObject();
+        musicObject.musicUrl = url;
+
+        // 用WXTextObject对象初始化一个WXMediaMessage对象
+        WXMediaMessage msg = new WXMediaMessage();
+        msg.mediaObject = musicObject;
+        // 发送文本类型的消息时，title字段不起作用
+        msg.title = title;
+        msg.description = text;
+
+        sendReq(TRANSACTION_TYPE_TEXT, msg, scene);
+
+    }
+
+    /**
+     * * 发送文本到微信
+     *
+     * @param text  content
+     * @param scene SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
+     */
+    public void sendAudioToWX(String fileName, String text, int scene) {
+        // 初始化一个WXTextObject对象
+        WXAppExtendObject appExtendObject = new WXAppExtendObject();
+        appExtendObject.fileData = WXUtil.readFromFile(fileName, 0, -1);
+        appExtendObject.extInfo = "this is extra infor";
+
+        // 用WXTextObject对象初始化一个WXMediaMessage对象
+        WXMediaMessage msg = new WXMediaMessage();
+        msg.mediaObject = appExtendObject;
+        // 发送文本类型的消息时，title字段不起作用
+        msg.title = "audio";
+        msg.description = text;
+
+        sendReq(TRANSACTION_TYPE_TEXT, msg, scene);
+    }
+
+    /**
+     * * 发送文本到微信
+     *
+     * @param text  content
+     * @param scene SendMessageToWX.Req.WXSceneTimeline/SendMessageToWX.Req.WXSceneSession
+     */
+    public void sendFileToWX(String fileName, String text, int scene) {
+        // 初始化一个WXTextObject对象
+        WXFileObject wxFileObject = new WXFileObject();
+        wxFileObject.fileData = WXUtil.readFromFile(fileName, 0, -1);
+        wxFileObject.filePath = fileName;
+
+        // 用WXTextObject对象初始化一个WXMediaMessage对象
+        WXMediaMessage msg = new WXMediaMessage();
+        msg.mediaObject = wxFileObject;
+        // 发送文本类型的消息时，title字段不起作用
+        msg.title = "audio";
+        msg.description = text;
+
+        sendReq(TRANSACTION_TYPE_TEXT, msg, scene);
+    }
+
+
+    private void sendReq(String type, WXMediaMessage message, int scene) {
+        // 构造一个Req
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = buildTransaction(type);
+        req.message = message;
+        req.scene = scene;
+
+        // 调用api接口发送数据到微信
+        api.sendReq(req);
+    }
+
+//    public boolean registerMsgListener(long scene, long msgType, int msgState) {
+//        String urlString = new StringBuilder(REGISTER_MSG_LISTENER)
+//                .append("?appid=").append(WXConstants.APP_ID)
+//                .append("&op=1&scene=").append(scene)
+//                .append("&msgType=").append(msgType)
+//                .append("&msgState=").append(msgState).toString();
+//        Cursor cursor = mContext.getContentResolver()
+//                .query(Uri.parse(urlString), null, null, null, null);
+//        if (cursor != null) {
+//            cursor.close();
+//            ZLogger.d("registerMsgListener done");
+//            return true;
+//        } else {
+//            ZLogger.d("registerMsgListener failed");
+//            return false;
+//        }
+//    }
+//
+//    public boolean unregisterMsgListener() {
+//        String urlString = new StringBuilder(REGISTER_MSG_LISTENER).append("?appid=")
+//                .append(WXConstants.APP_ID).append("&op=2").toString();
+//
+//        Cursor cursor = mContext.getContentResolver()
+//                .query(Uri.parse(urlString),
+//                        null, null, null, null);
+//        if (cursor != null) {
+//            cursor.close();
+//            ZLogger.d("unregisterMsgListener done");
+//            return true;
+//        } else {
+//            ZLogger.d("unregisterMsgListener failed");
+//            return false;
+//        }
+//    }
+//    }
+
+
 }

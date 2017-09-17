@@ -16,9 +16,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
+import com.manfenjiayuan.business.mvp.presenter.PosRegisterPresenter;
 import com.manfenjiayuan.business.ui.SignInActivity;
-import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.manfenjiayuan.business.mvp.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.pda_supermarket.AppHelper;
 import com.manfenjiayuan.pda_supermarket.Constants;

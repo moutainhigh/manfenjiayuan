@@ -167,23 +167,23 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
             //TODO,发送错误信息到后台
 //            ErrorService.getInstance().sendError("", ex);
         } catch (Exception e) {
-            ZLogger.ef(e.toString());
+            ZLogger.e(e.toString());
         } finally {
             if (success) {
 //                final Context context = AppManager.getAppManager()
 //                        .currentActivity();
                 // 显示异常信息&发送报告
-                new Thread() {
-                    @Override
-                    public void run() {
-                        Looper.prepare();
-                        // 拿到未捕获的异常，
-//                        UIHelper.sendAppCrashReport(context);
-//                        Toast.makeText(mContext, "程序出现异常，即将退出或者重启！", Toast.LENGTH_SHORT).show();
-
-                        Looper.loop();
-                    }
-                }.start();
+//                new Thread() {
+//                    @Override
+//                    public void run() {
+//                        Looper.prepare();
+//                        // 拿到未捕获的异常，
+////                        UIHelper.sendAppCrashReport(context);
+////                        Toast.makeText(mContext, "程序出现异常，即将退出或者重启！", Toast.LENGTH_SHORT).show();
+//
+//                        Looper.loop();
+//                    }
+//                }.start();
             }
         }
         return success;
@@ -221,40 +221,47 @@ public class AppException extends Exception implements UncaughtExceptionHandler 
         return append;
     }
 
-    private void dumpPhoneInfo(PrintWriter pw) throws NameNotFoundException {
-        // 应用的版本名称和版本号
-        PackageManager pm = mContext.getPackageManager();
-        PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(),
-                PackageManager.GET_ACTIVITIES);
-        pw.print("App Version: ");
-        pw.print(pi.versionName);
-        pw.print('_');
-        pw.println(pi.versionCode);
+    private void dumpPhoneInfo(PrintWriter pw){
+
+       try {
+           // 应用的版本名称和版本号
+           PackageManager pm = mContext.getPackageManager();
+           PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(),
+                   PackageManager.GET_ACTIVITIES);
+           pw.print("App Version: ");
+           pw.print(pi.versionName);
+           pw.print('_');
+           pw.println(pi.versionCode);
 //        pw.println();
 
-        // android版本号
-        pw.print("OS Version: ");
-        pw.print(Build.VERSION.RELEASE);
-        pw.print("_");
-        pw.println(Build.VERSION.SDK_INT);
+           // android版本号
+           pw.print("OS Version: ");
+           pw.print(Build.VERSION.RELEASE);
+           pw.print("_");
+           pw.println(Build.VERSION.SDK_INT);
 //        pw.println();
 
-        // 手机制造商
-        pw.print("Vendor: ");
-        pw.println(Build.MANUFACTURER);
+           // 手机制造商
+           pw.print("Vendor: ");
+           pw.println(Build.MANUFACTURER);
 //        pw.println();
 
-        // 手机型号
-        pw.print("Model: ");
-        pw.println(Build.MODEL);
+           // 手机型号
+           pw.print("Model: ");
+           pw.println(Build.MODEL);
 //        pw.println();
 
-        // cpu架构
-        pw.print("CPU ABI: ");
-        pw.println(Build.CPU_ABI);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            pw.println(Build.SUPPORTED_ABIS);
-        }
+           // cpu架构
+           pw.print("CPU ABI: ");
+           pw.println(Build.CPU_ABI);
+           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+               pw.println(Build.SUPPORTED_ABIS);
+           }
 //        pw.println();
+       } catch (Exception e) {
+           e.printStackTrace();
+           ZLogger.e(e.toString());
+       }
+
     }
 }

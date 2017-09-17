@@ -556,6 +556,7 @@ public class DataDownloadManager extends DataSyncManager {
 
                     @Override
                     public void onNext(String s) {
+                        ZLogger.d("moduleNames>> " + s);
                         MfhLoginService.get().setModuleNames(s);
                         MfhUserManager.getInstance().updateModules();
                         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)) {

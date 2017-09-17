@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
-import com.manfenjiayuan.business.presenter.InvSkuBizPresenter;
-import com.manfenjiayuan.business.view.IInvSkuBizView;
+import com.manfenjiayuan.business.mvp.presenter.InvSkuBizPresenter;
+import com.manfenjiayuan.business.mvp.view.IInvSkuBizView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;

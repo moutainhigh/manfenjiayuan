@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.bizz.ARCode;
-import com.manfenjiayuan.business.presenter.ScOrderPresenter;
-import com.manfenjiayuan.business.view.IScOrderView;
+import com.manfenjiayuan.business.mvp.presenter.ScOrderPresenter;
+import com.manfenjiayuan.business.mvp.view.IScOrderView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.PrimaryActivity;
 import com.mfh.comn.bean.PageInfo;

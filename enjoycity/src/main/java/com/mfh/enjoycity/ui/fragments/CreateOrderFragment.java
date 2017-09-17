@@ -39,7 +39,6 @@ import com.mfh.enjoycity.utils.OrderHelper;
 import com.mfh.enjoycity.utils.ShopcartHelper;
 import com.mfh.enjoycity.wxapi.WXHelper;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.api.invOrder.PayApiImpl;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scOrder.ScOrderApi;
 import com.mfh.framework.api.shoppingCart.CartPack;
@@ -187,7 +186,7 @@ public class CreateOrderFragment extends BaseFragment {
         }
 
 
-        Long humanId = MfhLoginService.get().getCurrentGuId();
+        Long humanId = MfhLoginService.get().getHumanId();
 
         animProgress.setVisibility(View.VISIBLE);
 
@@ -207,7 +206,7 @@ public class CreateOrderFragment extends BaseFragment {
 
 
         JSONArray items = new JSONArray();
-        List<CartPack> productList = orderb
+        List<CartPack> productList = order.getJSONArray("products");
         if (productList != null && productList.size() > 0) {
             for (ShoppingCartEntity entity : productList) {
                 JSONObject item = new JSONObject();

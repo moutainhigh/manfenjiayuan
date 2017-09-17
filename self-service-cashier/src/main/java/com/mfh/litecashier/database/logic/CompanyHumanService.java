@@ -2,7 +2,7 @@ package com.mfh.litecashier.database.logic;
 
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.CompanyHuman;
+import com.mfh.framework.rxapi.bean.CompanyHuman;
 import com.mfh.litecashier.database.dao.CompanyHumanDao;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.comn.bean.PageInfo;
@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * 公司账号管理系统
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 public class CompanyHumanService extends BaseService<CompanyHumanEntity, String, CompanyHumanDao> {
 
@@ -49,7 +49,6 @@ public class CompanyHumanService extends BaseService<CompanyHumanEntity, String,
     public DataSyncStrategy getDataSyncStrategy() {
         return null;
     }
-
 
 
     public CompanyHumanEntity getEntityById(String id){

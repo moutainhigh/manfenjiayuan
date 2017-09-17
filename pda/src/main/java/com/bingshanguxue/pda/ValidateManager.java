@@ -226,6 +226,8 @@ public class ValidateManager {
                         if (serverDateTime != null){
                             //设置时间
                             try{
+//                                E/SystemClock: Unable to set RTC
+//                                java.lang.SecurityException: setTime: Neither user 10131 nor current process has android.permission.SET_TIME.
                                 //Unable to open alarm driver: Permission denied
                                 boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
                                 ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,

@@ -95,7 +95,7 @@ public class DataUploadManager {
         return instance;
     }
 
-    static Handler handler = new Handler() {
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {

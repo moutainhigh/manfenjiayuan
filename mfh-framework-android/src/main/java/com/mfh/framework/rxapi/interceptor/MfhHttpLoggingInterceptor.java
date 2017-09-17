@@ -33,7 +33,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpEngine;
+import okhttp3.internal.http.HttpHeaders;
 import okio.Buffer;
 import okio.BufferedSource;
 
@@ -107,6 +107,7 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
 
     public interface Logger {
         void log(String message);
+
         void logf(String message);
 
         /**
@@ -196,12 +197,13 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
             }
 
             if (!logBody || !hasRequestBody) {
-                logger.logf("--> END " + originalRequest.method());
+                logger.log("--> END " + originalRequest.method());
             } else if (bodyEncoded(originalRequest.headers())) {
-                logger.logf("--> END " + originalRequest.method() + " (encoded body omitted)");
+                logger.log("--> END " + originalRequest.method() + " (encoded body omitted)");
             } else {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
+
                 Charset charset = UTF8;
                 MediaType contentType = requestBody.contentType();
                 if (contentType != null) {
@@ -210,11 +212,11 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
 
                 logger.log("");
                 if (isPlaintext(buffer)) {
-                    logger.logf(buffer.readString(charset));
-                    logger.logf("--> END " + originalRequest.method()
+                    logger.log(buffer.readString(charset));
+                    logger.log("--> END " + originalRequest.method()
                             + " (" + requestBody.contentLength() + "-byte body)");
                 } else {
-                    logger.logf("--> END " + originalRequest.method() + " (binary "
+                    logger.log("--> END " + originalRequest.method() + " (binary "
                             + requestBody.contentLength() + "-byte body omitted)");
                 }
             }
@@ -243,10 +245,10 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
                 logger.log(headers.name(i) + ": " + headers.value(i));
             }
 
-            if (!logBody || !HttpEngine.hasBody(response)) {
-                logger.logf("<-- END HTTP");
+            if (!logBody || !HttpHeaders.hasBody(response)) {
+                logger.log("<-- END HTTP");
             } else if (bodyEncoded(response.headers())) {
-                logger.logf("<-- END HTTP (encoded body omitted)");
+                logger.log("<-- END HTTP (encoded body omitted)");
             } else {
                 BufferedSource source = responseBody.source();
                 source.request(Long.MAX_VALUE); // Buffer the entire body.
@@ -260,7 +262,7 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
                     } catch (UnsupportedCharsetException e) {
                         logger.log("");
                         logger.logf("Couldn't decode the response body; charset is likely malformed.");
-                        logger.logf("<-- END HTTP");
+                        logger.log("<-- END HTTP");
 
                         return response;
                     }
@@ -273,11 +275,11 @@ public final class MfhHttpLoggingInterceptor implements Interceptor {
                 }
 
                 if (contentLength != 0) {
-                    logger.log("");
+                    logger.log("===");
                     logger.logf(buffer.clone().readString(charset));
                 }
 
-                logger.logf("<-- END HTTP (" + buffer.size() + "-byte body)");
+                logger.log("<-- END HTTP (" + buffer.size() + "-byte body)");
             }
         }
 

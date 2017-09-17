@@ -7,6 +7,7 @@ import com.mfh.framework.core.utils.FileUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.system.PermissionUtil;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -208,7 +209,7 @@ public class ZLogger {
 //        if (LOG_ENABLED)
 //        Log.e(TAG, String.format("%s %s", log, callMethodAndLine()));
 
-        printWrapper(ERROR_FILE, TAG, log);
+        printWrapper(ERROR, TAG, log);
     }
 
     /**
@@ -355,27 +356,33 @@ public class ZLogger {
     }
 
     private static void saveToSDCard(String message) {
-//        long timestamp = System.currentTimeMillis();
-        String time = DATE_FORMAT.format(new Date());
-        String fileName = time + ".log";
-
-        File file = FileUtil.getSaveFile(CRASH_FOLDER_PATH, fileName);
-
-        PrintWriter pw = null;
         try {
-            pw = new PrintWriter(new BufferedWriter(new FileWriter(
-                    file, true)));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (pw != null) {
-            // 导出发生异常的时间
-            pw.println(String.format("%s %s",
-                    TimeUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSSZ"), message));
-            // 导出手机信息
+
+//        long timestamp = System.currentTimeMillis();
+            String time = DATE_FORMAT.format(new Date());
+            String fileName = time + ".log";
+
+            File file = FileUtil.getSaveFile(CRASH_FOLDER_PATH, fileName);
+
+            PrintWriter pw = null;
+            try {
+                pw = new PrintWriter(new BufferedWriter(new FileWriter(
+                        file, true)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (pw != null) {
+                // 导出发生异常的时间
+                pw.println(String.format("%s %s",
+                        TimeUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss.SSSZ"), message));
+                // 导出手机信息
 //        dumpPhoneInfo(pw);
-            pw.println();
-            pw.close();
+                pw.println();
+                pw.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ZLogger.e(e.toString());
         }
     }
 

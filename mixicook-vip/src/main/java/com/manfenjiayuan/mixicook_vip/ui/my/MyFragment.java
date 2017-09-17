@@ -56,7 +56,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static com.manfenjiayuan.mixicook_vip.ui.ARCode.ARC_SETTINGS;
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
@@ -308,7 +307,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     public void showBalance() {
         String url = URLHelper.append(Mixicook.URL_ME_ACCOUNT,
                 String.format("ownerId=%d",
-                        MfhLoginService.get().getCurrentGuId()));
+                        MfhLoginService.get().getHumanId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
         redirectToJBWebForResult(url, true, -1);
     }
@@ -320,7 +319,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     public void showRedpacket() {
         String url = URLHelper.append(Mixicook.URL_ME_COUPONS,
                 String.format("ownerId=%d",
-                        MfhLoginService.get().getCurrentGuId()));
+                        MfhLoginService.get().getHumanId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
         redirectToJBWebForResult(url, true, -1);
     }
@@ -332,7 +331,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     public void showScore() {
         String url = URLHelper.append(Mixicook.URL_ME_SCORE,
                 String.format("ownerId=%d&val=1",
-                        MfhLoginService.get().getCurrentGuId()));
+                        MfhLoginService.get().getHumanId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
         redirectToJBWebForResult(url, true, -1);
     }
@@ -344,7 +343,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     public void showOrder() {
         String url = URLHelper.append(Mixicook.URL_ME_ORDER,
                 String.format("ownerId=%d",
-                        MfhLoginService.get().getCurrentGuId()));
+                        MfhLoginService.get().getHumanId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
         redirectToJBWebForResult(url, true, -1);
     }
@@ -380,7 +379,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_TOPUP);
-        Intent intent = new Intent(context, FragmentActivity.class);
+        Intent intent = new Intent(getContext(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, ARCode.ARC_MY_TOPUP);
     }
@@ -392,7 +391,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
     public void showCard() {
         String url = URLHelper.append(Mixicook.URL_ME_CARD,
                 String.format("ownerId=%d",
-                        MfhLoginService.get().getCurrentGuId()));
+                        MfhLoginService.get().getHumanId()));
 //                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
         redirectToJBWebForResult(url, true, -1);
     }
@@ -526,7 +525,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //    public void showBalance() {
 //        String url = URLHelper.append(MobileApi.URL_ME_WALLET,
 //                String.format("humanid=%d",
-//                        MfhLoginService.get().getCurrentGuId()));
+//                        MfhLoginService.get().getHumanId()));
 ////                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
 //        redirectToJBWebForResult(url, true, -1, Constants.ACTIVITY_REQUEST_SUBDIS_SELECT);
 //    }
@@ -534,7 +533,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //    @OnClick(R.id.label_collection)
 //    public void showCollection() {
 //        String url = URLHelper.append(MobileApi.URL_ME_FAVOR_COLLECTION,
-//                String.format("humanid=%d", MfhLoginService.get().getCurrentGuId()));
+//                String.format("humanid=%d", MfhLoginService.get().getHumanId()));
 //        HybridActivity.actionStart(getActivity(), url, true, false, -1);
 //    }
 //
@@ -543,21 +542,21 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //    public void showPendingPayment() {
 //        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
 //                String.format("status=%s&humanid=%d", "1",
-//                        MfhLoginService.get().getCurrentGuId())),
+//                        MfhLoginService.get().getHumanId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
 //    }
 //
 //    @OnClick(R.id.button_pending_receipt)
 //    public void showPendingReceipt() {
 //        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
-//                String.format("status=%s&humanid=%d", "2", MfhLoginService.get().getCurrentGuId())),
+//                String.format("status=%s&humanid=%d", "2", MfhLoginService.get().getHumanId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
 //    }
 //
 //    @OnClick(R.id.button_pending_evaluation)
 //    public void showPendingEvaluation() {
 //        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
-//                String.format("status=%s&humanid=%d", "3", MfhLoginService.get().getCurrentGuId())),
+//                String.format("status=%s&humanid=%d", "3", MfhLoginService.get().getHumanId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
 //    }
 //
@@ -565,7 +564,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //    @OnClick(R.id.item_1_0)
 //    public void showOrder() {
 //        redirectToJBWebForResult(URLHelper.append(MobileApi.URL_ME_ORDER_MALL,
-//                String.format("humanid=%d", MfhLoginService.get().getCurrentGuId())),
+//                String.format("humanid=%d", MfhLoginService.get().getHumanId())),
 //                true, -1, Constants.ACTIVITY_REQUEST_ME_ORDER);
 //    }//跳转至购物车
 //
@@ -582,7 +581,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //    public void showWallet() {
 //        String url = URLHelper.append(MobileApi.URL_ME_WALLET,
 //                String.format("humanid=%d",
-//                        MfhLoginService.get().getCurrentGuId()));
+//                        MfhLoginService.get().getHumanId()));
 ////                    NativeWebViewActivity.actionStart(getActivity(), url, true, false, false);
 //        redirectToJBWebForResult(url, true, -1, Constants.ACTIVITY_REQUEST_SUBDIS_SELECT);
 //    }//跳转至卡包
@@ -592,7 +591,7 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //        HybridActivity.actionStart(getActivity(),
 //                URLHelper.append(MobileApi.URL_ME_CARDPACK,
 //                        String.format("humanid=%d",
-//                                MfhLoginService.get().getCurrentGuId())), true, false, -1);
+//                                MfhLoginService.get().getHumanId())), true, false, -1);
 //    }//跳转至包裹
 //
 //    @OnClick(R.id.item_2_2)
@@ -600,13 +599,13 @@ public class MyFragment extends BaseFragment implements OnTabReselectListener {
 //        HybridActivity.actionStart(getActivity(),
 //                URLHelper.append(MobileApi.URL_ME_PARCEL,
 //                        String.format("humanid=%d",
-//                                MfhLoginService.get().getCurrentGuId())), true, false, -1);
+//                                MfhLoginService.get().getHumanId())), true, false, -1);
 //    }//满分小伙伴
 //
 //    @OnClick(R.id.item_3_0)
 //    public void showMfParter() {
 //        String url = URLHelper.append(MobileApi.URL_ME_MFHPARTER,
-//                String.format("humanid=%d", MfhLoginService.get().getCurrentGuId()));
+//                String.format("humanid=%d", MfhLoginService.get().getHumanId()));
 //
 //        redirectToJBWebForResult(url, true, 0, Constants.ACTIVITY_REQUEST_SUBDIS_SELECT);
 ////

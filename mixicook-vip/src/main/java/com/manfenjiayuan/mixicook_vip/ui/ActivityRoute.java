@@ -13,7 +13,6 @@ import com.mfh.framework.api.reciaddr.Reciaddr;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;
 
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by bingshanguxue on 08/10/2016.
@@ -126,13 +125,13 @@ public class ActivityRoute {
     }
 
     public static void redirect2Topup2(Activity activity) {
-        if (context == null) {
+        if (activity == null) {
             return;
         }
         Bundle extras = new Bundle();
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_TOPUP);
-        Intent intent = new Intent(context, FragmentActivity.class);
+        Intent intent = new Intent(activity, FragmentActivity.class);
         intent.putExtras(extras);
         activity.startActivityForResult(intent, ARCode.ARC_MY_TOPUP);
     }

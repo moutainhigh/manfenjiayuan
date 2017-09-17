@@ -70,8 +70,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-import static com.igexin.push.core.g.R;
-
 
 /**
  * 下单页面
@@ -675,7 +673,7 @@ public class OrderCreateFragment extends BaseFragment {
 //        jsonObject.put("subdisId", new Date());//会员所属小区
         jsonObject.put("items", productsInfo);
 
-        PmcStockApi.findMarketRulesByOrderInfo(jsonObject.toJSONString(), marketRulesRC);
+//        PmcStockApi.findMarketRulesByOrderInfo(jsonObject.toJSONString(), marketRulesRC);
     }
 
     NetCallBack.QueryRsCallBack marketRulesRC = new NetCallBack.QueryRsCallBack<>(new NetProcessor.QueryRsProcessor<MarketRules>(new PageInfo(1, 20)) {

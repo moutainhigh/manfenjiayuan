@@ -8,8 +8,25 @@
     <string name="button_confirm">确定</string>
     <string name="button_sync">同步</string>
 
+
+    <!--团购-->
+    <string name="groupbuy_activity_date">订单时间</string>
+    <string name="groupbuy_activity_title">订单类型</string>
+    <string name="groupbuy_activity_subtitle">自提商品</string>
+    <string name="groupbuy_activity_totalMoney">订单金额</string>
+    <string name="groupbuy_activity_joinHumanNum">订单数量</string>
+    <string name="groupbuy_activity_unTakeHuman">待提数量</string>
+
     <string name="default_amount">0.00</string>
     <string name="default_net_weight">0.000</string>
     <string name="default_amount_unit">¥0.00</string>
+
+
+    <string name="notifyHumanTakeGood">是否群发信息给所有待提订单客户？</string>
+    <string name="notify_human_title">通知客户</string>
+    <string-array name="notify_human_way">
+        <item>电话</item>
+        <item>消息通知</item>
+    </string-array>
 
 </resources>

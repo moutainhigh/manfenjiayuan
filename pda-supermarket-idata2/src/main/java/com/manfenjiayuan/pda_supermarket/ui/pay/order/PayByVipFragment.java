@@ -20,7 +20,7 @@ import com.manfenjiayuan.pda_supermarket.cashier.pay.BasePayFragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;

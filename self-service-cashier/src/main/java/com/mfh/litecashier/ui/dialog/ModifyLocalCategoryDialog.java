@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -160,23 +161,24 @@ public class ModifyLocalCategoryDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        if (getWindow() != null) {
-            getWindow().setGravity(Gravity.CENTER);
-        }
+        Window window = getWindow();
+        if (window != null) {
+            window.setGravity(Gravity.CENTER);
 
-        WindowManager m = getWindow().getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = getWindow().getAttributes();
-//        p.width = d.getWidth() * 2 / 3;
-        p.width = DensityUtil.dip2px(getContext(), 400);
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = getWindow().getAttributes();
+            p.width = DensityUtil.dip2px(getContext(), 400);
+////        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
 //        getWindow().setAttributes(p);
 
-        //hide soft input
-//        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            //hide soft input
+//            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
     }
 
     public void init(PosLocalCategoryEntity categoryEntity, String rawText, DialogListener dialogListener){

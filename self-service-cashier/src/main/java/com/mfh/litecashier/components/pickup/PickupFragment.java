@@ -11,12 +11,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.manfenjiayuan.business.presenter.GroupBuyOrderPresenter;
-import com.manfenjiayuan.business.view.IGroupBuyOrderView;
+import com.manfenjiayuan.business.mvp.presenter.GroupBuyOrderPresenter;
+import com.manfenjiayuan.business.mvp.view.IGroupBuyOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -187,11 +187,17 @@ public class PickupFragment extends BaseListFragment<GroupBuyOrder> implements I
             DialogUtil.showHint(R.string.tip_please_select_order);
             return;
         }
-        DialogUtil.showHint("打印提货单");
         //多选
         PrinterFactory.getPrinterManager().printPickupOrder(groupBuyOrders);
 
-        mGroupBuyOrderPresenter.receiveAndFinishOrder(groupBuyOrders.get(0).getId());
+        StringBuilder sb = new StringBuilder();
+        for (GroupBuyOrder groupBuyOrder : groupBuyOrders) {
+            if (sb.length() > 0) {
+                sb.append(",");
+            }
+            sb.append(groupBuyOrder.getId());
+        }
+        mGroupBuyOrderPresenter.receiveAndFinishOrder(sb.toString());
     }
 
     @OnClick(R.id.empty_view)

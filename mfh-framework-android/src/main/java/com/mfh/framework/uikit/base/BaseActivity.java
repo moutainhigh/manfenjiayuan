@@ -155,6 +155,7 @@ public class BaseActivity extends AppCompatActivity {
 
         registerSystemUiVisibilityChangeListener();
 
+
         initViews();
         initToolBar();
 
@@ -308,6 +309,11 @@ public class BaseActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Permissions required to read and write contacts. Used by the {@link ContactsFragment}.
+     */
+    private static String[] PERMISSIONS_CONTACT = {Manifest.permission.READ_CONTACTS,
+            Manifest.permission.WRITE_CONTACTS};
     /**
      * 获取需要申请的权限，主要需要在AndroidManifest.xml文件中声明权限
      * */

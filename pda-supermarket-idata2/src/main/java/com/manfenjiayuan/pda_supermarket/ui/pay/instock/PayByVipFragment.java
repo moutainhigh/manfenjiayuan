@@ -22,7 +22,7 @@ import com.manfenjiayuan.pda_supermarket.ui.pay.PayEvent;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.scOrder.ScOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;

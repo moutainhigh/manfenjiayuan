@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
-import com.manfenjiayuan.business.presenter.ScProductPricePresenter;
-import com.manfenjiayuan.business.view.IScProcuctPriceView;
+import com.manfenjiayuan.business.mvp.presenter.ScProductPricePresenter;
+import com.manfenjiayuan.business.mvp.view.IScProcuctPriceView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.anon.sc.productPrice.ProductSku;
@@ -61,7 +61,7 @@ public class BackendGoodsFragment extends BaseListFragment<FrontCategoryGoods>
     @BindView(R.id.empty_view)
     View emptyView;
 
-    GridLayoutManager mRLayoutManager;
+    private GridLayoutManager mRLayoutManager;
     private BackendGoodsAdapter adapter;
 
     private Long parentId;
@@ -393,7 +393,7 @@ public class BackendGoodsFragment extends BaseListFragment<FrontCategoryGoods>
                             entityList.clear();
                         }
                         ZLogger.d("缓存第一页前台类目数据");
-                        JSONArray cacheArrays = new JSONArray();
+//                        JSONArray cacheArrays = new JSONArray();
                         if (dataList != null && dataList.size() > 0) {
                             for (ProductSku goodsSku : dataList) {
                                 FrontCategoryGoods goods = new FrontCategoryGoods();
@@ -402,7 +402,7 @@ public class BackendGoodsFragment extends BaseListFragment<FrontCategoryGoods>
                                 goods.setId(goodsSku.getId());
                                 goods.setProductId(goodsSku.getProductId());
                                 entityList.add(goods);
-                                cacheArrays.add(goods);
+//                                cacheArrays.add(goods);
                             }
                         }
 //                        ACacheHelper.put(cacheKey, cacheArrays.toJSONString());

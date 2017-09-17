@@ -57,12 +57,14 @@ import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.TypeEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 类目
@@ -72,31 +74,31 @@ public class CategoryTabActivity extends BaseActivity {
     public static final String EXTRA_KEY_SHOP_ID = "EXTRA_KEY_SHOP_ID";
     public static final String EXTRA_KEY_CATEGORY_ID = "EXTRA_KEY_CATEGORY_ID";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.category_header)
+    @BindView(R.id.category_header)
     View categoryHeaderView;
-    @Bind(R.id.tv_category_current)
+    @BindView(R.id.tv_category_current)
     TextView tvCurrentCategory;
-    @Bind(R.id.tv_category_all)
+    @BindView(R.id.tv_category_all)
     TextView tvCategoryOptions;
-    @Bind(R.id.sticky_category_tab)
+    @BindView(R.id.sticky_category_tab)
     CategorySlidingTabStrip categorySlidingTabStrip;
 
-    @Bind(R.id.tab_viewpager)
+    @BindView(R.id.tab_viewpager)
     ViewPager mViewPager;
     private CategoryFragmentPagerAdapter viewPagerAdapter;
 
-    @Bind(R.id.ll_category) LinearLayout llCategory;
-    @Bind(R.id.recycler_view_category)
+    @BindView(R.id.ll_category) LinearLayout llCategory;
+    @BindView(R.id.recycler_view_category)
     RecyclerView mCategoryRecyclerView;
     private AllProductCategoryAdapter categoryAdapter;
 
 
-    @Bind(R.id.animProgress)
+    @BindView(R.id.animProgress)
     ProgressBar animProgress;
-    @Bind(R.id.fab_shopcart)
+    @BindView(R.id.fab_shopcart)
     FloatShopcartView fabShopcartView;
 
     private Long shopId;

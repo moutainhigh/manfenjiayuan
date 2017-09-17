@@ -7,7 +7,7 @@ import com.mfh.framework.api.invSendOrder.InvSendOrderItem;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.api.invSendOrder.InvSendOrderItemMode;
 import com.mfh.framework.api.invSendOrder.InvSendOrderMode;
-import com.manfenjiayuan.business.view.IInvSendOrderView;
+import com.manfenjiayuan.business.mvp.view.IInvSendOrderView;
 
 import java.util.List;
 

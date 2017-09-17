@@ -20,7 +20,6 @@ import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 import com.tencent.bugly.Bugly;
-import com.tencent.bugly.BuglyStrategy;
 import com.tencent.bugly.beta.Beta;
 
 import java.io.File;
@@ -35,8 +34,8 @@ public class CashierApp extends MfhApplication {
 
     @Override
     protected boolean isReleaseVersion() {
-//        return false;
-        return SharedPrefesManagerFactory.isReleaseVersion();
+        return false;
+//        return SharedPrefesManagerFactory.isReleaseVersion();
     }
 
     @Override
@@ -166,7 +165,7 @@ public class CashierApp extends MfhApplication {
 //        Beta.canShowUpgradeActs.add(MainActivity.class);
 
         /***** Bugly高级设置 *****/
-        BuglyStrategy strategy = new BuglyStrategy();
+//        BuglyStrategy strategy = new BuglyStrategy();
         /**
          * 设置app渠道号
          */

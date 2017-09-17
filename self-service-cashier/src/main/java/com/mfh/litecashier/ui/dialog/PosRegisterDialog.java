@@ -8,19 +8,20 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
-import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
+import com.manfenjiayuan.business.mvp.presenter.PosRegisterPresenter;
+import com.manfenjiayuan.business.mvp.view.IPosRegisterView;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.uikit.dialog.CommonDialog;
-import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.litecashier.R;
 
 
@@ -145,17 +146,24 @@ public class PosRegisterDialog extends CommonDialog implements IPosRegisterView 
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        if (getWindow() != null) {
-            getWindow().setGravity(Gravity.CENTER);
-        }
-        WindowManager m = getWindow().getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = getWindow().getAttributes();
-        p.width = DensityUtil.dip2px(getContext(), 400);
+        Window window = getWindow();
+        if (window != null) {
+            window.setGravity(Gravity.CENTER);
+
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = getWindow().getAttributes();
+            p.width = DensityUtil.dip2px(getContext(), 400);
+////        p.width = d.getWidth() * 2 / 3;
+////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
 //        getWindow().setAttributes(p);
+
+            //hide soft input
+//            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
     }
 
     @Override

@@ -13,7 +13,7 @@ import com.mfh.enjoycity.database.ReceiveAddressEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,11 +26,14 @@ public class AddressAdapter extends BaseAdapter {
     private List<ReceiveAddressEntity> data = new ArrayList<>();
 
     static class ViewHolder {
-//        @Bind(R.id.iv_marker) ImageView ivMarker;
-        @Bind(R.id.tv_name) TextView tvName;
-        @Bind(R.id.tv_telephone) TextView tvTel;
-        @Bind(R.id.tv_address) TextView tvAddr;
-        @Bind(R.id.iv_arrow)
+        //        @Bind(R.id.iv_marker) ImageView ivMarker;
+        @BindView(R.id.tv_name)
+        TextView tvName;
+        @BindView(R.id.tv_telephone)
+        TextView tvTel;
+        @BindView(R.id.tv_address)
+        TextView tvAddr;
+        @BindView(R.id.iv_arrow)
         ImageView ivArrow;
 
         public ViewHolder(View view) {

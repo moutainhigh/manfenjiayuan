@@ -13,4 +13,5 @@ public interface EditInputType {
     int TEXT_PASSWORD = 5;//密码
     int PHONE = 6;//电话号码
     int NUMBER = 7;//数字，number
+    int NUMBER_PASSWORD = 8;//数字，number
 }

@@ -236,7 +236,7 @@ public class ClientLogListFragment extends BaseListFragment<CompanyInfo>
             mPageInfo = pageInfo;
 
             //第一页，缓存数据
-            if (mPageInfo.getPageNo() == 1) {
+            if (mPageInfo != null && mPageInfo.getPageNo() == 1) {
                 if (companyAdapter != null) {
                     companyAdapter.setEntityList(dataList);
                 }

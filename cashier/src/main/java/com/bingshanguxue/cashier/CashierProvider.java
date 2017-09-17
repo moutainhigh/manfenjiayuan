@@ -11,7 +11,7 @@ import com.bingshanguxue.cashier.model.CashierOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.HangupOrder;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.MathCompact;

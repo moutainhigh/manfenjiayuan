@@ -136,7 +136,7 @@ public class ResetLoginPwdFragment extends BaseFragment {
 
         };
 
-        CommonUserAccountApi.changePayPassword(MfhLoginService.get().getCurrentGuId(), null,
-                newPwd, responseCallback);
+//        CommonUserAccountApi.changePayPassword(MfhLoginService.get().getHumanId(), null,
+//                newPwd, responseCallback);
     }
 }

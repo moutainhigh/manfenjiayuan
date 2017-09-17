@@ -1,4 +1,4 @@
-package com.mfh.litecashier.ui.fragment.purchase.intelligent;
+package com.manfenjiayuan.business.intelligent;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

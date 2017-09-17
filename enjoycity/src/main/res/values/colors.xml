@@ -16,8 +16,6 @@
     <color name="TextColorBlack">#FF000000</color>
     <color name="TextColorWhite">#FFFFFFFF</color>
     <color name="BgColor">#ffd1dce9</color>
-    <color name="navpage">#FFE1E8EB</color>
-    <color name="semitransparent">#80000000</color>
 
     <color name="green_nomal">#00CC33</color>
     <color name="green_select">#ff329b4e</color>

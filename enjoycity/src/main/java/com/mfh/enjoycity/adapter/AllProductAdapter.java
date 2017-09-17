@@ -14,7 +14,7 @@ import com.mfh.framework.uikit.widget.ChildGridView;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -102,11 +102,11 @@ public class AllProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     }
 
     public class CategoryProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_title)
+        @BindView(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.button_more)
+        @BindView(R.id.button_more)
         Button btnMore;
-        @Bind(R.id.grid_products)
+        @BindView(R.id.grid_products)
         ChildGridView gridView;
 
         public CategoryProductViewHolder(final View itemView) {

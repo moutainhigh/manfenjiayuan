@@ -30,9 +30,10 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
-import de.greenrobot.event.EventBus;
 import me.drakeet.multitype.ItemViewProvider;
 
 

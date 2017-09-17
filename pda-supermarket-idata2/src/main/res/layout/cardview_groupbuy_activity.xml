@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_margin="@dimen/spacing_micro"
+                                    app:cardBackgroundColor="@color/material_white"
+                                    app:cardCornerRadius="2dp"
+                                    app:cardElevation="5dp"
+                                    app:cardPreventCornerOverlap="true"
+                                    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/spacing_normal">
+        <!-- 订单时间-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/label_activity_date"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_toStartOf="@+id/tv_tag"
+            app:startText="@string/groupbuy_activity_date"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+
+        <TextView
+            android:id="@+id/tv_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/btn_corner_orange"
+            android:gravity="center"
+            android:maxLines="1"
+            android:minWidth="80dp"
+            android:visibility="invisible"
+            android:text="超期"
+            android:textColor="@color/material_white"
+            android:textSize="@dimen/textsize_normal"/>
+        <!-- 订单类型-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/label_activity_title"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_below="@+id/label_activity_date"
+            app:startText="@string/groupbuy_activity_title"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+        <!-- 自提商品-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/label_activity_subtitle"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_below="@+id/label_activity_title"
+            app:startText="@string/groupbuy_activity_subtitle"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+        <!-- 订单金额-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/label_activity_total_money"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_below="@+id/label_activity_subtitle"
+            app:startText="@string/groupbuy_activity_totalMoney"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+        <!-- 订单数量-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/label_activity_joinHumanNum"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_below="@+id/label_activity_total_money"
+            app:startText="@string/groupbuy_activity_joinHumanNum"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+        <!-- 代替数量-->
+        <com.bingshanguxue.vector_uikit.widget.TextLabelView
+            android:id="@+id/label_activity_unTakeHuman"
+            style="@style/mfh_textlabelview"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/minimum_touch_height"
+            android:layout_below="@+id/label_activity_joinHumanNum"
+            app:startText="@string/groupbuy_activity_unTakeHuman"
+            app:startTextGravity="end"
+            app:startTextWidth="90dp"/>
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

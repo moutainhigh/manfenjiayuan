@@ -25,7 +25,7 @@ import butterknife.OnClick;
 
 /**
  * 采购商品详情
- * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
+ * Created by bingshanguxue on 15/12/15.
  */
 public class PurchaseGoodsDetailFragment extends BaseFragment {
     public static final String EXTRA_KEY_SKU_NAME   = "skuname";
@@ -34,20 +34,18 @@ public class PurchaseGoodsDetailFragment extends BaseFragment {
 
     @BindView(R.id.tv_header_title)
     TextView tvHeaderTitle;
-
     @BindView(R.id.iv_header)
     ImageView ivHeader;
     @BindView(R.id.tv_product_name)
     TextView tvProductName;
     @BindView(R.id.tv_barcode)
     TextView tvBarcode;
-
     @BindView(R.id.tab_page)
     TopSlidingTabStrip mTabStrip;
     @BindView(R.id.viewpager_pagecontent)
     ViewPager mViewPager;
-    private TopFragmentPagerAdapter viewPagerAdapter;
 
+    private TopFragmentPagerAdapter viewPagerAdapter;
     private String skuName = "";
     private String barcode = "";
     private String imageUrl = "";
@@ -82,13 +80,12 @@ public class PurchaseGoodsDetailFragment extends BaseFragment {
             imageUrl = args.getString(EXTRA_KEY_IMAGE_URL);
         }
 
-        tvHeaderTitle.setText("商品详情");
+        tvHeaderTitle.setText(R.string.title_goods_detail);
         Glide.with(getContext()).load(imageUrl).error(R.mipmap.ic_image_error).into(ivHeader);
         tvProductName.setText(skuName);
         tvBarcode.setText(barcode);
 
         initTabs();
-
     }
 
     @Override
@@ -106,7 +103,6 @@ public class PurchaseGoodsDetailFragment extends BaseFragment {
 
     private void initTabs() {
         mTabStrip.setOnClickTabListener(null);
-        //TODO
         mTabStrip.setOnPagerChange(new TopSlidingTabStrip.OnPagerChangeLis() {
             @Override
             public void onChanged(int page) {

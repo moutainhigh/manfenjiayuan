@@ -18,7 +18,7 @@ import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.CompanyHuman;
+import com.mfh.framework.rxapi.bean.CompanyHuman;
 import com.mfh.framework.api.anon.sc.ProductCatalog;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CategoryInfo;
@@ -36,6 +36,7 @@ import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.CompanyHumanHttpManager;
 import com.mfh.framework.rxapi.http.ProductCatalogManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
@@ -147,7 +148,7 @@ public class DataDownloadManager {
         return instance;
     }
 
-    static Handler handler = new Handler() {
+    private static Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -1117,8 +1118,7 @@ public class DataDownloadManager {
             options.put("rows", Integer.toString(pageInfo.getPageSize()));
         }
         options.put("JSESSIONID", MfhLoginService.get().getCurrentSessionId());
-
-        RxHttpManager.getInstance().findCompUserPwdInfo(options,
+        CompanyHumanHttpManager.getInstance().findCompUserPwdInfo(options,
                 new MQuerySubscriber<CompanyHuman>(pageInfo) {
                     @Override
                     public void onQueryNext(PageInfo pageInfo, List<CompanyHuman> dataList) {

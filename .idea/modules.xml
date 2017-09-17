@@ -3,9 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MFH-Android.iml" filepath="$PROJECT_DIR$/MFH-Android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/almigod/almigod.iml" filepath="$PROJECT_DIR$/almigod/almigod.iml" />
       <module fileurl="file://$PROJECT_DIR$/cashier/cashier.iml" filepath="$PROJECT_DIR$/cashier/cashier.iml" />
       <module fileurl="file://$PROJECT_DIR$/enjoycity/enjoycity.iml" filepath="$PROJECT_DIR$/enjoycity/enjoycity.iml" />
       <module fileurl="file://$PROJECT_DIR$/im/im.iml" filepath="$PROJECT_DIR$/im/im.iml" />
+      <module fileurl="file://$PROJECT_DIR$/launcher/launcher.iml" filepath="$PROJECT_DIR$/launcher/launcher.iml" />
       <module fileurl="file://$PROJECT_DIR$/litecashier-display/litecashier-display.iml" filepath="$PROJECT_DIR$/litecashier-display/litecashier-display.iml" />
       <module fileurl="file://$PROJECT_DIR$/loveshopping/loveshopping.iml" filepath="$PROJECT_DIR$/loveshopping/loveshopping.iml" />
       <module fileurl="file://$PROJECT_DIR$/mfh-framework-all/mfh-framework-all.iml" filepath="$PROJECT_DIR$/mfh-framework-all/mfh-framework-all.iml" />
@@ -14,13 +16,14 @@
       <module fileurl="file://$PROJECT_DIR$/mfowner/mfowner.iml" filepath="$PROJECT_DIR$/mfowner/mfowner.iml" />
       <module fileurl="file://$PROJECT_DIR$/mixicook-vip/mixicook-vip.iml" filepath="$PROJECT_DIR$/mixicook-vip/mixicook-vip.iml" />
       <module fileurl="file://$PROJECT_DIR$/pda/pda.iml" filepath="$PROJECT_DIR$/pda/pda.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pda-supermarket/pda-supermarket.iml" filepath="$PROJECT_DIR$/pda-supermarket/pda-supermarket.iml" />
-      <module fileurl="file://$PROJECT_DIR$/pda-supermarket-gpio/pda-supermarket-gpio.iml" filepath="$PROJECT_DIR$/pda-supermarket-gpio/pda-supermarket-gpio.iml" />
       <module fileurl="file://$PROJECT_DIR$/pda-supermarket-idata2/pda-supermarket-idata2.iml" filepath="$PROJECT_DIR$/pda-supermarket-idata2/pda-supermarket-idata2.iml" />
       <module fileurl="file://$PROJECT_DIR$/pda-wholesaler/pda-wholesaler.iml" filepath="$PROJECT_DIR$/pda-wholesaler/pda-wholesaler.iml" />
       <module fileurl="file://$PROJECT_DIR$/self-service-cashier/self-service-cashier.iml" filepath="$PROJECT_DIR$/self-service-cashier/self-service-cashier.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skin-lanlj/skin-lanlj.iml" filepath="$PROJECT_DIR$/skin-lanlj/skin-lanlj.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skin-mixicook/skin-mixicook.iml" filepath="$PROJECT_DIR$/skin-mixicook/skin-mixicook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skin-qianwj/skin-qianwj.iml" filepath="$PROJECT_DIR$/skin-qianwj/skin-qianwj.iml" />
+      <module fileurl="file://$PROJECT_DIR$/skinloader/skinloader.iml" filepath="$PROJECT_DIR$/skinloader/skinloader.iml" />
       <module fileurl="file://$PROJECT_DIR$/vector_uikit/vector_uikit.iml" filepath="$PROJECT_DIR$/vector_uikit/vector_uikit.iml" />
-      <module fileurl="file://$PROJECT_DIR$/vector_user/vector_user.iml" filepath="$PROJECT_DIR$/vector_user/vector_user.iml" />
     </modules>
   </component>
 </project>

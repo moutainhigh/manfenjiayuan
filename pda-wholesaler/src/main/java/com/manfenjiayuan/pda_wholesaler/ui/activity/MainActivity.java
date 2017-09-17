@@ -26,7 +26,7 @@ import com.bingshanguxue.pda.utils.DialogManager;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.ui.SignInActivity;
-import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.manfenjiayuan.business.mvp.view.IPosRegisterView;
 import com.manfenjiayuan.pda_wholesaler.AppHelper;
 import com.manfenjiayuan.pda_wholesaler.R;
 import com.manfenjiayuan.pda_wholesaler.utils.DataCacheHelper;
@@ -50,8 +50,6 @@ import java.util.List;
 
 import butterknife.Bind;
 import de.greenrobot.event.EventBus;
-
-import static com.igexin.push.core.g.R;
 
 
 /**

@@ -34,7 +34,6 @@
                 android:layout_height="44dp"
                 android:text=""
                 android:gravity="center_vertical"
-                android:drawableEnd="@drawable/toggle_menu_normal"
                 android:background="@color/window_background_primary"
                 android:paddingStart="@dimen/mf_spac_horizontal_primary"
                 android:paddingEnd="@dimen/mf_spac_horizontal_primary"/>

@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.mvp.view.IChainGoodsSkuView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.database.entity.DistributionSignEntity;
 import com.manfenjiayuan.pda_supermarket.database.logic.DistributionSignService;

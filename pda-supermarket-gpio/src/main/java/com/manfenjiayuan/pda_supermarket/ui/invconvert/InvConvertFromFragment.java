@@ -10,9 +10,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
+import com.manfenjiayuan.business.mvp.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IInvSkuGoodsView;
+import com.manfenjiayuan.business.mvp.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.bean.wrapper.ChangeSkuStoreItem;
 import com.manfenjiayuan.pda_supermarket.scanner.PDAScanFragment;

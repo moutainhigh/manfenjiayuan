@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              style="@style/NavPage"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/sign_et"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:hint="Input Signature"/>
+
+            <Button
+                android:id="@+id/start_oauth_btn"
+                style="@style/MMLineActionButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="微信授权登录"/>
+
+            <Button
+                android:id="@+id/start_qrcode_btn"
+                style="@style/MMLineActionButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="扫码登录"/>
+
+            <Button
+                android:id="@+id/stop_oauth_btn"
+                style="@style/MMLineActionButton"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_auth"/>
+
+            <Button
+                android:id="@+id/btn_jumpToChattingUI"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="JUMP 2 CHATTING UI"
+                android:textColor="#000000"
+                android:textStyle="normal"/>
+
+            <Button
+                android:id="@+id/btn_recorder"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="录音"
+                android:textColor="#000000"
+                android:textStyle="normal"/>
+
+            <Button
+                android:id="@+id/btn_open_weixin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="打开微信"
+                android:textColor="#000000"
+                android:textStyle="normal"/>
+
+            <Button
+                android:id="@+id/button_check_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="检查 AccessibilityService"
+                android:textColor="#000000"
+                android:textStyle="normal"/>
+
+            <Button
+                android:id="@+id/button_set_service"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="设置 AccessibilityService"
+                android:textColor="#000000"
+                android:textStyle="normal"/>
+
+            <TextView
+                android:id="@+id/qrcode_status_tv"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="50dp"
+                android:textSize="20sp"/>
+            <ImageView
+                android:id="@+id/qrcode_iv"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:paddingTop="50dp"/>
+
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

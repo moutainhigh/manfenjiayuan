@@ -19,7 +19,7 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.invOrder.InvOrderApi;
 import com.mfh.framework.api.invSendIoOrder.InvSendIoOrder;

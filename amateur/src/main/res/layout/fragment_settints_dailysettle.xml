@@ -47,7 +47,7 @@
                 android:layout_gravity="center_horizontal"
                 app:inputNumberLabelView_inputTextColor="@color/black"
                 app:inputNumberLabelView_inputTextColorHint="@color/black_35"
-                app:inputNumberLabelView_inputHint="订单编号"
+                app:inputHint="订单编号"
                 android:layout_marginStart="@dimen/spacing_normal"
                 android:background="@color/mfhtheme_maskPrimary"/>
 

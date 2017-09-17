@@ -12,8 +12,8 @@ import android.widget.ProgressBar;
 
 import com.manfenjiayuan.business.bean.InvSendOrder;
 import com.mfh.framework.api.invSendIoOrder.InvSendOrderItem;
-import com.manfenjiayuan.business.presenter.InvSendOrderPresenter;
-import com.manfenjiayuan.business.view.IInvSendOrderView;
+import com.manfenjiayuan.business.mvp.presenter.InvSendOrderPresenter;
+import com.manfenjiayuan.business.mvp.view.IInvSendOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.Constants;
 import com.manfenjiayuan.pda_supermarket.R;

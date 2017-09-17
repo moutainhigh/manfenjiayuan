@@ -16,18 +16,21 @@ import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
+import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.ui.dialog.EnterPasswordDialog;
 import com.mfh.litecashier.ui.widget.PayProcessView;
+import com.mfh.litecashier.utils.NoDoubleClickListener;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,7 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 import static com.bingshanguxue.cashier.pay.BasePayStepFragment.EXTRA_KEY_PAY_SUBTYPE;
 
@@ -70,7 +72,6 @@ public class PayByVipFragment extends BasePayFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -83,6 +84,54 @@ public class PayByVipFragment extends BasePayFragment {
             mHuman = (Human) args.getSerializable(EXTRA_KEY_MEMBERINFO);
             paySubType = args.getInt(EXTRA_KEY_PAY_SUBTYPE);
         }
+
+        payProcessView.init(120, "点击重试", null, null,
+                new PayProcessView.onCustomerViewListener() {
+
+                    @Override
+                    public void onAction1() {
+//                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+                        payProcessView.setVisibility(View.GONE);
+                    }
+
+                    /**
+                     * 查询订单状态
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction2() {
+                    }
+
+                    /**
+                     * 撤单
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction3() {
+                    }
+
+                });
+
+        btnSubmit.setOnClickListener(new NoDoubleClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (entityList == null || position < 0 || position >= entityList.size()) {
+////                        ZLogger.d(String.format("do nothing because posiion is %d when dataset changed.", position));
+//                        return;
+//                    }
+//
+//                    if (adapterListener != null) {
+//                        adapterListener.onItemClick(v, position);
+//                    }
+//                }
+
+            @Override
+            public void onClickOnce(View v) {
+                super.onClickOnce(v);
+                submitOrder();
+            }
+        });
 
         onActiveMode();
     }
@@ -100,6 +149,15 @@ public class PayByVipFragment extends BasePayFragment {
     public void onPause() {
         super.onPause();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (payProcessView != null) {
+            payProcessView.onDestory();
+        }
+    }
+
 
     @Override
     public void onActiveMode() {
@@ -126,6 +184,8 @@ public class PayByVipFragment extends BasePayFragment {
                     Bundle extras = intent.getExtras();
                     if (extras != null) {
                         handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT);
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+
                         calculateCharge();
                     }
                 }
@@ -180,15 +240,21 @@ public class PayByVipFragment extends BasePayFragment {
         payDirect(options);
     }
 
-
     /**
      * 会员支付
      */
-    @OnClick(R.id.button_submit)
+//    @OnClick(R.id.button_submit)
     @Override
     public void submitOrder() {
-        super.submitOrder();
         btnSubmit.setEnabled(false);
+
+        super.submitOrder();
+        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+            DialogUtil.showHint(R.string.toast_network_error);
+            bPayProcessing = false;
+            btnSubmit.setEnabled(true);
+            return;
+        }
 
         if (paySubType == 2) {
             enterPayPassword();
@@ -227,12 +293,13 @@ public class PayByVipFragment extends BasePayFragment {
                         handleAmount, handleAmount, 0D,
                         null);
                 payProcessView.setState(PayProcessView.STATE_FAILED, e.getMessage());
-                btnSubmit.setEnabled(true);
 
                 Bundle args = new Bundle();
                 args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO, paymentInfo);
                 args.putString(PayStep1Event.KEY_ERROR_MESSAGE, e.getMessage());
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FAILED, args));
+
+                btnSubmit.setEnabled(true);
             }
 
             @Override
@@ -252,13 +319,13 @@ public class PayByVipFragment extends BasePayFragment {
                         handleAmount, handleAmount,
                         balance,
                         null);
-                payProcessView.setState(PayProcessView.STATE_SUCCESS, data);
+                payProcessView.setState(PayProcessView.STATE_SUCCESS, "支付成功");
 
                 Bundle args = new Bundle();
                 args.putSerializable(PayStep1Event.KEY_PAYMENT_INFO, paymentInfo);
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
 
-                btnSubmit.setEnabled(true);
+//                btnSubmit.setEnabled(true);
             }
 
         });

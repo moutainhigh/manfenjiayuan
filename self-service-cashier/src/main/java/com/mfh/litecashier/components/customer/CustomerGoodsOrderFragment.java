@@ -12,8 +12,8 @@ import android.widget.ProgressBar;
 
 import com.alibaba.fastjson.JSONArray;
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.manfenjiayuan.business.presenter.OrderflowPresenter;
-import com.manfenjiayuan.business.view.IOrderflowView;
+import com.manfenjiayuan.business.mvp.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.mvp.view.IOrderflowView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.core.utils.DialogUtil;

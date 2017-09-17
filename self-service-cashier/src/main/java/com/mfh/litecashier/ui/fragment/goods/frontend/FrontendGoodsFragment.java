@@ -17,8 +17,8 @@ import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;
@@ -282,7 +282,7 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
                 try {
                     String sqlWhere = String.format("paramValueId = '%d'", categoryId);
                     List<ProductCatalogEntity> entities = ProductCatalogService.getInstance().queryAll(sqlWhere, pageInfo);
-                    if (entities != null || entities.size() > 0) {
+                    if (entities != null && entities.size() > 0) {
                         ZLogger.d(String.format("共找到%d条类目商品关系(%d/%d-%d)", entities.size(),
                                 pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
@@ -523,64 +523,6 @@ public class FrontendGoodsFragment extends BaseListFragment<LocalFrontCategoryGo
         }
     }
 
-    /**
-     * 建档
-     */
-    private void importFromCenterSkus(final String productIds, String proSkuIds) {
-        Map<String, String> options = new HashMap<>();
-        options.put("proSkuIds", proSkuIds);
-        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        InvSkuStoreHttpManager.getInstance().importFromCenterSkus(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.e("导入商品到本店仓储失败, " + e.toString());
-                DialogUtil.showHint("添加商品失败");
-                hideProgressDialog();
-            }
-
-            @Override
-            public void onNext(String s) {
-                ZLogger.d("导入商品到本店仓储成功");
-                add2Category(productIds);
-            }
-
-        });
-    }
-
-    /**
-     * 导入类目
-     */
-    private void add2Category(String productIds) {
-        Map<String, String> options = new HashMap<>();
-        options.put("groupIds", String.valueOf(categoryId));
-        options.put("productIds", productIds);
-        options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        ProductCatalogManager.getInstance().addToCatalog(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.e("导入前台类目商品失败, " + e.toString());
-                DialogUtil.showHint("添加商品失败");
-                hideProgressDialog();
-            }
-
-            @Override
-            public void onNext(String s) {
-                ZLogger.d("导入前台类目商品成功");
-                hideProgressDialog();
-            }
-
-        });
-    }
 
     /**
      * 修改商品

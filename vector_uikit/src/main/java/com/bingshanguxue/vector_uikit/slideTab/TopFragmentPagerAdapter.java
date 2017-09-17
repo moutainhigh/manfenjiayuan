@@ -60,18 +60,22 @@ public class TopFragmentPagerAdapter extends FragmentStatePagerAdapter {
             return;
         }
 
+        View v;
         // 加入tab title
-        View v = LayoutInflater.from(mContext).inflate(
-                tabResId, null, false);
-        v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
-        TextView title = (TextView) v.findViewById(R.id.tab_title);
-        if (title != null){
-            title.setText(info.title);
-        }
-        mPagerStrip.addTab(v);
+        if (tabResId != 0) {
+            v = LayoutInflater.from(mContext).inflate(
+                    tabResId, null, false);
+            v.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            TextView title = (TextView) v.findViewById(R.id.tab_title);
+            if (title != null){
+                title.setText(info.title);
+            }
 
-        mTabs.add(info);
+            mPagerStrip.addTab(v);
+
+            mTabs.add(info);
+        }
     }
 
     /**

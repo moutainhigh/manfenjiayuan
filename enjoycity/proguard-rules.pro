@@ -62,3 +62,13 @@
 #-keep class com.alipay.sdk.app.PayTask{ public *;}
 #-keep class com.alipay.sdk.app.AuthTask{ public *;}
 # 支付宝 结束
+
+-keep class com.tencent.mm.opensdk.** {
+   *;
+}
+-keep class com.tencent.wxop.** {
+   *;
+}
+-keep class com.tencent.mm.sdk.** {
+   *;
+}

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.IData95Activity;
 import com.bingshanguxue.pda.ValidateManager;
@@ -24,7 +27,7 @@ import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.widget.NaviAddressView;
 import com.igexin.sdk.PushManager;
 import com.manfenjiayuan.business.ui.SignInActivity;
-import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.manfenjiayuan.business.mvp.view.IPosRegisterView;
 import com.manfenjiayuan.im.IMClient;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
@@ -35,6 +38,7 @@ import com.manfenjiayuan.pda_supermarket.event.AffairEvent;
 import com.manfenjiayuan.pda_supermarket.service.DataDownloadManager;
 import com.manfenjiayuan.pda_supermarket.service.DataUploadManager;
 import com.manfenjiayuan.pda_supermarket.service.DemoPushService;
+import com.manfenjiayuan.pda_supermarket.ui.store.ResourcesManager;
 import com.manfenjiayuan.pda_supermarket.utils.AlertBeepManager;
 import com.manfenjiayuan.pda_supermarket.utils.DataCacheHelper;
 import com.mfh.framework.BizConfig;
@@ -76,11 +80,16 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     NaviAddressView addressView;
     @BindView(R.id.menu_option)
     RecyclerView menuRecyclerView;
+
+    @BindView(R.id.animProgress)
+    ProgressBar progressBar;
+
     private GridLayoutManager mRLayoutManager;
     private HomeAdapter menuAdapter;
     private AlertBeepManager mBeepManager;
 
     boolean isWaitForExit = false;
+    private MenuItem menuLogin = null;
 
     public static void actionStart(Context context, Bundle extras) {
         Intent intent = new Intent(context, MainActivity.class);
@@ -94,8 +103,6 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     protected int getLayoutResId() {
         return R.layout.activity_main;
     }
-
-    MenuItem menuLogin = null;
 
     @Override
     protected void initToolBar() {
@@ -176,6 +183,7 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     protected void onResume() {
         super.onResume();
 
+        hideProgressBar();
 //        hideSystemUI();
 
 //        refreshToolbar();
@@ -265,6 +273,18 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
     }
 
 
+    private void showProgressBar() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void hideProgressBar() {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     /**
      * 初始化快捷菜单
      */
@@ -308,6 +328,22 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         configMenuOptions();
     }
 
+
+    private class MainHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MSG_WHAT_UPDATE_MENUS: {
+
+                }
+                break;
+            }
+        }
+    }
+    private static final int MSG_WHAT_UPDATE_MENUS = 0x01;
+    private MainHandler mainHandler = new MainHandler();
+
     /**
      * 配置菜单
      */
@@ -316,65 +352,22 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 
         List<HomeMenu> menus = new ArrayList<>();
 
+        ZLogger.d("configMenuOptions。。。");
+
         //门店：门店管理
         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPM_MANAGER)) {
             ZLogger.d("当前登录用户具有门店管理能力");
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_CASHIER,
-                    "收银", R.mipmap.ic_cashier));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_GOODS,
-                    "商品", R.mipmap.ic_goods));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_STORE_IN,
-                    "商品建档", R.mipmap.ic_goods_storein));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_SENDORDER_NEW,
-                    "订货", R.mipmap.ic_order_goods));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_RECVORDER_NEW,
-                    "收货", R.mipmap.ic_receive_goods));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_RECVORDER_CONVERT,
-                    "转换收货", R.mipmap.ic_invrecvorder_convert));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_RETURNORDER,
-                    "退货", R.mipmap.ic_return_goods));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_OUT,
-                    "出库", R.mipmap.ic_stock_out));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_STOCK_IN,
-                    "入库", R.mipmap.ic_stock_in));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INV_CONVERT,
-                    "库存转换", R.mipmap.ic_inv_convert));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_QUERY_BILL,
-                    "单据查询", R.mipmap.ic_query_bill));
-
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_PRINT_TAGS,
-                    "价签打印", R.mipmap.ic_print_tags));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_BIND_GOODS_2_TAGS,
-                    "电子价签", R.mipmap.ic_bind_tags));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_WHOLESALER_GOODS_SHELVES,
-                    "货架号", R.mipmap.ic_shelves));
-
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_CREATE_INV_LOSSORDER,
-                    "报损", R.mipmap.ic_report_loss));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INVLOSSORDER_STOCKTAKE,
-                    "报损盘点", R.mipmap.ic_invlossorder_stock));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INVCHECKORDER_STOCKTAKE,
-                    "盘点", R.mipmap.ic_stocktake));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_PICKUP_ORDER,
-                    "自提定安", R.mipmap.ic_package));
+            menus.addAll(ResourcesManager.STORE_MENUS);
         }
         //买手：拣货
         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_BUY)) {
             ZLogger.d("当前登录用户具有买手能力");
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_BUY_SCORDER,
-                    "买手订单", R.mipmap.ic_buy_scorder));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_BUY_PREPARE,
-                    "组货", R.mipmap.ic_buy_prepare));
+            menus.addAll(ResourcesManager.BUY_MENUS);
         }
         //骑手：妥投&揽件
         if (MfhUserManager.getInstance().containsModule(Priv.FUNC_SUPPORT_STOCK)) {
             ZLogger.d("当前登录用户具有骑手能力");
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_INSTOCK_SCORDER,
-                    "骑手订单", R.mipmap.ic_instock_scorder));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_EMBRACE,
-                    "揽件", R.mipmap.ic_lanjian));
-            menus.add(new HomeMenu(HomeMenu.OPTION_ID_TUOTOU,
-                    "妥投", R.mipmap.ic_tuotou));
+            menus.addAll(ResourcesManager.STOCK_MENUS);
         }
 //        menus.add(new HomeMenu(HomeMenu.OPTION_ID_ONLINE_ORDER,
 //                "线上订单", R.mipmap.ic_online_order));
@@ -532,18 +525,24 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
         ZLogger.d(String.format("ValidateManagerEvent(%d)", eventId));
         switch (eventId) {
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_START: {
+                showProgressBar();
+                configMenuOptions();
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_RETRYLOGIN_SUCCEED: {
+                configMenuOptions();
                 loadOffices();
+                hideProgressBar();
 //                Beta.checkUpgrade(false, false);
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_NEED_LOGIN: {
+                hideProgressBar();
                 redirectToLogin();
             }
             break;
             case ValidateManager.ValidateManagerEvent.EVENT_ID_VALIDATE_PLAT_NOT_REGISTER: {
+                hideProgressBar();
                 DialogManager.getInstance().registerPos(MainActivity.this);
             }
             break;
@@ -551,6 +550,8 @@ public class MainActivity extends IData95Activity implements IPosRegisterView {
 //                Beta.checkUpgrade(false, false);
 
                 configMenuOptions();
+                hideProgressBar();
+
                 DataDownloadManager.get().launcherSync();
             }
             break;

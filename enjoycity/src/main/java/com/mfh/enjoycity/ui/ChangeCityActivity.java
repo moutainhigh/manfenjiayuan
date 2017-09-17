@@ -12,6 +12,7 @@ import com.mfh.enjoycity.adapter.CityAdapter;
 import com.mfh.framework.uikit.base.BaseActivity;
 
 import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -19,9 +20,9 @@ import butterknife.Bind;
  *
  * */
 public class ChangeCityActivity extends BaseActivity {
-    @Bind(R.id.tool_bar)
+    @BindView(R.id.tool_bar)
     Toolbar toolbar;
-    @Bind(R.id.listView)
+    @BindView(R.id.listView)
     ListView mListView;
     private CityAdapter mAdapter;
 

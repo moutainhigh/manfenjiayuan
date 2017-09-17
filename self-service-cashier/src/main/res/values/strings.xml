@@ -126,7 +126,11 @@
     <string name="title_change_pay_password">修改支付密码</string>
     <string name="title_transfer">充值</string>
     <string name="title_cashier">收银</string>
+    <string name="title_query_cashier">切换账号</string>
     <string name="title_query_customer">查询会员</string>
+    <string name="title_goods_detail">商品详情</string>
+    <!--<string name="title_query_cashier">切换账号</string>-->
+    <!--<string name="title_query_cashier">切换账号</string>-->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>

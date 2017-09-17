@@ -33,7 +33,7 @@ import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListene
 import java.text.DecimalFormat;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -239,16 +239,16 @@ public class CreateOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 收货地址
      */
     public class AddressViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_marker)
+        @BindView(R.id.iv_marker)
         ImageView ivMarker;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_address)
+        @BindView(R.id.tv_address)
         TextView tvAddress;
-        @Bind(R.id.tv_telephone)
+        @BindView(R.id.tv_telephone)
         TextView tvTelephone;
 
-        @Bind(R.id.iv_arrow)
+        @BindView(R.id.iv_arrow)
         ImageView ivArrow;
 
         public AddressViewHolder(final View itemView) {
@@ -267,21 +267,21 @@ public class CreateOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 店铺订单详情
      */
     public class ShopViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_shop_icon)
+        @BindView(R.id.iv_shop_icon)
         ImageView ivShopIcon;
-        @Bind(R.id.tv_shop_name)
+        @BindView(R.id.tv_shop_name)
         TextView tvShopName;
-        @Bind(R.id.ll_less)
+        @BindView(R.id.ll_less)
         LinearLayout llLess;
-        @Bind(R.id.ll_more)
+        @BindView(R.id.ll_more)
         LinearLayout llMore;
-        @Bind(R.id.ll_toggle)
+        @BindView(R.id.ll_toggle)
         LinearLayout llToggle;
-        @Bind(R.id.tv_total_description)
+        @BindView(R.id.tv_total_description)
         TextView tvTotalDescription;
-        @Bind(R.id.tv_toggle)
+        @BindView(R.id.tv_toggle)
         TextView tvToggle;
-        @Bind(R.id.iv_arrow)
+        @BindView(R.id.iv_arrow)
         ImageView ivArrow;
 
         public ShopViewHolder(final View itemView) {
@@ -321,7 +321,7 @@ public class CreateOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 送货时间
      */
     public class DeliverViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_time)
+        @BindView(R.id.tv_time)
         TextView tvTime;
 
         public DeliverViewHolder(final View itemView) {
@@ -350,15 +350,15 @@ public class CreateOrderAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
      * 结算
      */
     public class SettleViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.labelTotalAmount)
+        @BindView(R.id.labelTotalAmount)
         SimpleLabel slbTotalAmount;
-        @Bind(R.id.labelDistribute)
+        @BindView(R.id.labelDistribute)
         SimpleLabel slbDistribute;
-        @Bind(R.id.labelDiscountCoupon)
+        @BindView(R.id.labelDiscountCoupon)
         SimpleLabel slbDiscountCoupon;
-        @Bind(R.id.labelMemberDiscount)
+        @BindView(R.id.labelMemberDiscount)
         SimpleLabel slbMemberDiscont;
-        @Bind(R.id.tv_total_amount)
+        @BindView(R.id.tv_total_amount)
         TextView tvTotalAmount;
 
         public SettleViewHolder(final View itemView) {

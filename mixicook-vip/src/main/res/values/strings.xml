@@ -6,12 +6,6 @@
     <string name="bottombar_title_shopcart">购物车</string>
     <string name="bottombar_title_me">我的</string>
 
-    <!-- 微信分享返回结果-->
-    <string name="errcode_success">发送成功</string>
-    <string name="errcode_cancel">发送取消</string>
-    <string name="errcode_deny">发送被拒绝</string>
-    <string name="errcode_unknown">发送返回</string>
-
 
     <string name="topbar_title_login">登录</string>
     <string name="topbar_title_homepage">首页</string>

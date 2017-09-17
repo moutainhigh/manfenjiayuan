@@ -8,7 +8,6 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:scaleType="centerInside"
-        android:src="@drawable/material_clothes"
         android:layout_centerHorizontal="true"
         android:contentDescription="" />
 

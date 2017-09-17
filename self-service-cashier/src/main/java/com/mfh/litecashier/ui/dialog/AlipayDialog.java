@@ -20,8 +20,8 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.cashier.CashierFactory;
-import com.bingshanguxue.cashier.model.PayStatus;
 import com.bingshanguxue.cashier.database.service.PosTopupService;
+import com.bingshanguxue.cashier.model.PayStatus;
 import com.bingshanguxue.cashier.model.wrapper.QuickPayInfo;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.manfenjiayuan.business.utils.MUtils;
@@ -30,7 +30,6 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
-import com.mfh.framework.api.analysis.AnalysisApiImpl;
 import com.mfh.framework.api.cashier.CashierApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
@@ -46,11 +45,16 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.http.AliPayHttpManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.alarm.AlarmManagerHelper;
 import com.mfh.litecashier.bean.EmptyEntity;
+import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.utils.AppHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -468,43 +472,6 @@ public class AlipayDialog extends CommonDialog {
      */
     private void cancelOrder(String outTradeNo) {
         onProcessing("正在发送撤单请求...");
-        NetCallBack.RawNetTaskCallBack payRespCallback = new NetCallBack.RawNetTaskCallBack<EmptyEntity,
-                NetProcessor.RawProcessor<EmptyEntity>>(
-                new NetProcessor.RawProcessor<EmptyEntity>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-                    }
-
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.e("撤单失败:" + errMsg);
-                        onBarpayFailed(errMsg, Color.parseColor("#FE5000"), true);
-                    }
-
-                    @Override
-                    public void processResult(ResponseBody rspBody) {
-                        ZLogger.d(String.format("支付宝条码支付取消订单:%s--%s",
-                                rspBody.getRetCode(), rspBody.getReturnInfo()));
-
-                        //业务处理成功
-                        // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                        if (rspBody.getRetCode().equals("0")) {
-                            onBarpayFailed("订单已取消", Color.parseColor("#FE5000"), false);
-                        }
-                        //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
-                        //10000--"trade_status": "TRADE_CLOSED",未付款交易超时关闭，支付完成后全额退款
-                        //10000--"trade_status": "TRADE_FINISHED",交易结束，不可退款
-                        // 处理失败,交易不存在
-                        //40004--"sub_code": "ACQ.TRADE_NOT_EXIST",
-                        else {//-1
-                            onBarpayFailed(rspBody.getReturnInfo(), Color.parseColor("#FE5000"), true);
-                        }
-                    }
-                }
-                , EmptyEntity.class
-                , CashierApp.getAppContext()) {
-        };
 
         Map<String, String> options = new HashMap<>();
         options.put("out_trade_no", outTradeNo);
@@ -722,45 +689,41 @@ public class AlipayDialog extends CommonDialog {
             return;
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
-                    @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"查询成功!","version":"1","data":{"val":"10.4"}}
-                        try {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            Double amount = Double.valueOf(retValue.getValue());
-                            if (amount >= 0.01) {
-                                if (mQuickPayInfo != null) {
-                                    mQuickPayInfo.setMinAmount(amount);
-                                    mQuickPayInfo.setAmount(amount);
-                                    tvHandleAmount.setText(String.format(Locale.getDefault(), "%.2f", mQuickPayInfo.getAmount()));
-                                }
-                                enterStandardMode();
-                            } else {
-                                dismiss();
-                            }
+        RxHttpManager.getInstance().haveNoMoneyEnd(MfhLoginService.get().getCurrentSessionId(),
+                new MValueSubscriber<String>() {
 
-                        } catch (NumberFormatException e) {
-                            e.printStackTrace();
+                    @Override
+                    public void onError(Throwable e) {
+                        enterStandardMode();
+                    }
+
+                    @Override
+                    public void onValue(String data) {
+                        super.onValue(data);
+                        if (data != null) {
+                            try {
+                                Double amount = Double.valueOf(data);
+                                if (amount >= 0.01) {
+                                    if (mQuickPayInfo != null) {
+                                        mQuickPayInfo.setMinAmount(amount);
+                                        mQuickPayInfo.setAmount(amount);
+                                        tvHandleAmount.setText(String.format(Locale.getDefault(), "%.2f", mQuickPayInfo.getAmount()));
+                                    }
+                                    enterStandardMode();
+                                } else {
+                                    ZLogger.i2f(String.format("清分完成: %.2f, 可以正常使用POS机", amount));
+                                    dismiss();
+                                }
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                                enterStandardMode();
+                            }
+                        } else {
                             enterStandardMode();
                         }
                     }
 
-                    @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.e("判读是否清分失败：" + errMsg);
-                        enterStandardMode();
-                    }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
-
-        AnalysisApiImpl.haveNoMoneyEnd(responseCallback);
+                });
     }
 
 
@@ -775,62 +738,55 @@ public class AlipayDialog extends CommonDialog {
             return;
         }
 
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        RxHttpManager.getInstance().needLockPos(MfhLoginService.get().getCurrentSessionId(),
+                MfhLoginService.get().getCurOfficeId(),
+                new Subscriber<String>() {
+
                     @Override
-                    public void processResult(IResponseData rspData) {
-//                        {"code":"0","msg":"查询成功!","version":"1","data":"false,8.99"}
-                        try {
-                            RspValue<String> retValue = (RspValue<String>) rspData;
-                            String result = retValue.getValue();
-                            String[] ret = result.split(",");
-                            if (ret.length >= 2) {
-//                                Boolean.parseBoolean()1
-//                                boolean isNeedLock = Boolean.valueOf(ret[0]).booleanValue();
-                                boolean isNeedLock = Boolean.parseBoolean(ret[0]);
-                                Double amount = Double.valueOf(ret[1]);
+                    public void onCompleted() {
 
-                                ZLogger.i(String.format(Locale.getDefault(),
-                                        "判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
-                                        isNeedLock, amount));
-                                if (isNeedLock && amount >= 0.01) {
-                                    if (mQuickPayInfo != null) {
-                                        mQuickPayInfo.setMinAmount(amount);
-                                        mQuickPayInfo.setAmount(amount);
-                                        tvHandleAmount.setText(String.format(Locale.getDefault(),
-                                                "%.2f", mQuickPayInfo.getAmount()));
-                                    }
-                                    enterStandardMode();
-                                } else {
-                                    dismiss();
-                                }
-                            } else {
-                                ZLogger.i("判断是否需要锁定POS机:" + result);
-                                dismiss();
-                                enterStandardMode();
-                            }
-                        } catch (NumberFormatException e) {
-//                            e.printStackTrace();
-                            ZLogger.ef(e.toString());
-
-                            enterStandardMode();
-                        }
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        //{"code":"1","msg":"指定的日结流水已经日结过：17","version":"1","data":null}
-                        ZLogger.e("判读是否锁定POS机失败：" + errMsg);
-
+                    public void onError(Throwable e) {
+                        ZLogger.ef("判读是否锁定POS机失败：" + e.toString());
                         enterStandardMode();
                     }
-                }
-                , String.class
-                , CashierApp.getAppContext()) {
-        };
 
-        CashierApiImpl.needLockPos(responseCallback);
+                    @Override
+                    public void onNext(String data) {
+                        ZLogger.d("判断是否需要锁定POS机:" + data);
+
+                        if (StringUtils.isEmpty(data)){
+                            enterStandardMode();
+
+                            return;
+                        }
+                        String[] ret = data.split(",");
+                        if (ret.length >= 2) {
+//                                Boolean.parseBoolean()1
+//                                boolean isNeedLock = Boolean.valueOf(ret[0]).booleanValue();
+                            boolean isNeedLock = Boolean.parseBoolean(ret[0]);
+                            Double amount = Double.valueOf(ret[1]);
+
+//                            ZLogger.df(String.format("判断是否需要锁定POS机，isNeedLock=%b, amount=%.2f",
+//                                    isNeedLock, amount));
+                            if (isNeedLock && amount >= 0.01) {
+                                if (mQuickPayInfo != null) {
+                                    mQuickPayInfo.setMinAmount(amount);
+                                    mQuickPayInfo.setAmount(amount);
+                                    tvHandleAmount.setText(String.format(Locale.getDefault(),
+                                            "%.2f", mQuickPayInfo.getAmount()));
+                                }
+                                enterStandardMode();
+                            } else {
+                                dismiss();
+                            }
+                        } else {
+                            enterStandardMode();
+
+                        }
+                    }
+                });
     }
 }

@@ -332,7 +332,7 @@ public class MyProfileFragment extends BaseFragment implements OnTabReselectList
                         , MfhApplication.getAppContext())
                 {};
 
-                UserApiImpl.uploadUserHeader(MfhLoginService.get().getCurrentGuId(),
+                UserApiImpl.uploadUserHeader(MfhLoginService.get().getHumanId(),
                         protraitFile, responseCallback);
             } catch (Exception e) {
 

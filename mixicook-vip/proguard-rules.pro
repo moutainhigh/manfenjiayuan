@@ -229,3 +229,14 @@ public static final int *;
 
 -keepattributes *JavascriptInterface*
 -keep class android.webkit.JavascriptInterface {*;}
+
+
+-keep class com.tencent.mm.opensdk.** {
+   *;
+}
+-keep class com.tencent.wxop.** {
+   *;
+}
+-keep class com.tencent.mm.sdk.** {
+   *;
+}

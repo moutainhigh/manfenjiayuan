@@ -154,6 +154,6 @@ public class ChangeLoginPwdFragment extends BaseFragment {
 
         };
 
-        UserApiImpl.updateUserPassword(MfhLoginService.get().getCurrentGuId(), oldPwd, newPwd, responseCallback);
+        UserApiImpl.updateUserPassword(MfhLoginService.get().getHumanId(), oldPwd, newPwd, responseCallback);
     }
 }

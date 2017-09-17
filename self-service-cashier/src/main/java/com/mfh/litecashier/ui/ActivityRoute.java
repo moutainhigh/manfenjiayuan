@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.litecashier.components.customer.CustomerTransactionFragment;

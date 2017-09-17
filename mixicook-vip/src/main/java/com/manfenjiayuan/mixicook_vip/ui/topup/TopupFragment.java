@@ -20,6 +20,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.sdk.app.PayTask;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.ProfileView;
+import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.manfenjiayuan.business.utils.MUtils;
 import com.manfenjiayuan.mixicook_vip.AlipayConstants;
 import com.manfenjiayuan.mixicook_vip.R;
@@ -33,10 +34,10 @@ import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.api.pay.AppPrePayRsp;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.payOrder.PayOrderApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
@@ -53,6 +54,8 @@ import com.mfh.framework.uikit.base.BaseFragment;
 
 import net.sourceforge.simcpux.WXHelper;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -60,8 +63,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
-
 
 
 /**
@@ -86,6 +87,8 @@ public class TopupFragment extends BaseFragment {
     private static final int PAY_ACTION_ALIPAY = 1;
     private static final int PAY_ACTION_WEPAY = 2;
     private int curPayAction = PAY_ACTION_ALIPAY;
+
+
 
 
     public TopupFragment() {
@@ -319,7 +322,7 @@ public class TopupFragment extends BaseFragment {
             }
         } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
             if (!BizConfig.RELEASE) {
-                WXHelper.getInstance(getContext()).getPrepayId();
+                WXHelper.getInstance().getPrepayId();
             } else {
                 topupStep2(WayType.WEPAY_APP, MUtils.formatDouble(amount, ""));
             }
@@ -391,8 +394,8 @@ public class TopupFragment extends BaseFragment {
                     , MfhApplication.getAppContext()) {
             };
 
-            PayOrderApiImpl.prePay(PayApi.ALIPAY_CONFIGID_MIXICOOK,
-                    MfhLoginService.get().getCurrentGuId(), amount, wayType,
+            PayOrderApiImpl.prePay(Long.valueOf(MfhApi.ALIPAY_CHANNEL_ID),
+                    MfhLoginService.get().getHumanId(), amount, wayType,
                     WXUtil.genNonceStr(), responseCallback);
         } else if (WayType.WEPAY_APP.equals(wayType)) {
             NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<AppPrePayRsp,
@@ -413,7 +416,7 @@ public class TopupFragment extends BaseFragment {
                             String prepayId = prePayResponse.getPrepayId();
 
                             if (prepayId != null) {
-                                WXHelper.getInstance(getContext()).sendPayReq(prepayId);
+                                WXHelper.getInstance().sendPayReq(prepayId);
                             } else {
                                 topupFailed(-1);
                                 DialogUtil.showHint("prepayId 不能为空");
@@ -424,8 +427,8 @@ public class TopupFragment extends BaseFragment {
                     , MfhApplication.getAppContext()) {
             };
 
-            PayOrderApiImpl.prePayForApp(PayApi.WEPAY_CONFIGID_MIXICOOK,
-                    MfhLoginService.get().getCurrentGuId(), amount, wayType,
+            PayOrderApiImpl.prePayForApp(Long.valueOf(MfhApi.WXPAY_CHANNEL_ID),
+                    MfhLoginService.get().getGuidLong(), amount, wayType,
                     WXUtil.genNonceStr(), BizType.RECHARGE, responseCallback);
         } else {
 //            animProgress.setVisibility(View.GONE);
@@ -450,7 +453,7 @@ public class TopupFragment extends BaseFragment {
         Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AlipayConstants.APPID,
                 OrderInfoUtil2_0.ALIPAY_TRADE_APPPAY, AlipayConstants.CHARSET,
                 TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS),
-                AlipayConstants.ALIPAY_NOTIFY_URL + "/" + PayApi.ALIPAY_CONFIGID_MIXICOOK,
+                AlipayConstants.ALIPAY_NOTIFY_URL + "/" + MfhApi.ALIPAY_CHANNEL_ID,
                 bizContent);
         String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
         ZLogger.d("orderParam: \n" + orderParam);

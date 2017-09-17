@@ -158,18 +158,29 @@ public class MainActivity extends BaseActivity
             // Handle the camera action
         } else if (id == R.id.nav_remotecontrol) {
             showRemoteControlFragment();
-
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_share) {
-
+            showShareFragment();
         } else if (id == R.id.nav_send) {
-
+            showDemoFragment();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private DemoFragment mDemoFragment;
+    private void showDemoFragment(){
+//        toolbar.setTitle("分享");
+        if (mDemoFragment == null){
+            mDemoFragment = new DemoFragment();
+        }
+        getSupportFragmentManager().beginTransaction()
+//                    .add(R.id.fragment_container, purchaseShopcartFragment).show(purchaseShopcartFragment)
+                .replace(R.id.fragment_container, mDemoFragment)
+                .commitAllowingStateLoss();
     }
 
     private HomeFragment homeFragment;
@@ -186,7 +197,6 @@ public class MainActivity extends BaseActivity
 
     private RemoteControlFragment mRemoteControlFragment;
     private void showRemoteControlFragment(){
-//        toolbar.setTitle("分享");
         if (mRemoteControlFragment == null){
             mRemoteControlFragment = new RemoteControlFragment();
         }

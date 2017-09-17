@@ -20,6 +20,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
@@ -167,16 +168,16 @@ public class ShopCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * 收货地址
      */
     public class AddressViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.iv_marker)
+        @BindView(R.id.iv_marker)
         ImageView ivMarker;
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_address)
+        @BindView(R.id.tv_address)
         TextView tvAddress;
-        @Bind(R.id.tv_telephone)
+        @BindView(R.id.tv_telephone)
         TextView tvTelephone;
 
-        @Bind(R.id.iv_arrow)
+        @BindView(R.id.iv_arrow)
         ImageView ivArrow;
 
         public AddressViewHolder(final View itemView) {
@@ -198,7 +199,7 @@ public class ShopCartAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * 店铺商品详情
      */
     public class ShopViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.shopView)
+        @BindView(R.id.shopView)
         ShopcartShopView shopView;
 
         public ShopViewHolder(final View itemView) {

@@ -11,11 +11,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.bizz.invloss.InvLossOrderAdapter;
 import com.bingshanguxue.pda.database.service.InvCheckGoodsService;
-import com.manfenjiayuan.business.presenter.InvLossOrderPresenter;
-import com.manfenjiayuan.business.view.IInvLossOrderView;
+import com.manfenjiayuan.business.mvp.presenter.InvLossOrderPresenter;
+import com.manfenjiayuan.business.mvp.view.IInvLossOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.PrimaryActivity;
@@ -48,6 +49,10 @@ public class InvLossOrderListFragment extends BaseListFragment<InvLossOrder> imp
     private LinearLayoutManager linearLayoutManager;
     @BindView(R.id.empty_view)
     View emptyView;
+
+    @BindView(R.id.animProgress)
+    ProgressBar progressBar;
+
     private InvLossOrderAdapter orderListAdapter;
 
     private InvLossOrderPresenter mInvLossOrderPresenter;
@@ -252,6 +257,20 @@ public class InvLossOrderListFragment extends BaseListFragment<InvLossOrder> imp
             ZLogger.d("加载类目商品，已经是最后一页。");
             onLoadFinished();
         }
+    }
+
+    @Override
+    public void onLoadStart() {
+        super.onLoadStart();
+        progressBar.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void onLoadFinished() {
+
+        progressBar.setVisibility(View.GONE);
+
     }
 
     @Override

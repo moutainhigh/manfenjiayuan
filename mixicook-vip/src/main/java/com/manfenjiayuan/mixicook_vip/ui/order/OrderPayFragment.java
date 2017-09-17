@@ -28,10 +28,10 @@ import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.WayType;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -47,12 +47,13 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import net.sourceforge.simcpux.WXHelper;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.Date;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -295,20 +296,20 @@ public class OrderPayFragment extends BaseFragment {
 
     @OnClick(R.id.button_submit)
     public void submit() {
-        btnSubmit.setEnabled(false);
-
-        if ((curPayAction & PAY_ACTION_ALIPAY) == PAY_ACTION_ALIPAY) {
-            prePayOrder(WayType.ALIPAY_APP, PayApi.ALIPAY_CONFIGID_MIXICOOK,
-                    mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
-        } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
-            prePayOrder(WayType.WEPAY_APP, PayApi.WEPAY_CONFIGID_MIXICOOK,
-                    mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
-        } else if ((curPayAction & PAY_ACTION_ACCOUNT) == PAY_ACTION_ACCOUNT) {
-            scAccountPay();
-        } else {
-            DialogUtil.showHint("请选择支付方式");
-            btnSubmit.setEnabled(true);
-        }
+//        btnSubmit.setEnabled(false);
+//
+//        if ((curPayAction & PAY_ACTION_ALIPAY) == PAY_ACTION_ALIPAY) {
+//            prePayOrder(WayType.ALIPAY_APP, MfhApi.ALIPAY_CHANNEL_ID,
+//                    mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
+//        } else if ((curPayAction & PAY_ACTION_WEPAY) == PAY_ACTION_WEPAY) {
+//            prePayOrder(WayType.WEPAY_APP, MfhApi.WXPAY_CHANNEL_ID,
+//                    mPayOrderBrief.getBizType(), mPayOrderBrief.getOrderIds());
+//        } else if ((curPayAction & PAY_ACTION_ACCOUNT) == PAY_ACTION_ACCOUNT) {
+//            scAccountPay();
+//        } else {
+//            DialogUtil.showHint("请选择支付方式");
+//            btnSubmit.setEnabled(true);
+//        }
     }
 
     /**
@@ -323,7 +324,7 @@ public class OrderPayFragment extends BaseFragment {
 
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候..", false);
         CommonUserAccountApiImpl.scAccountPay(BizType.SC, mPayOrderBrief.getOrderIds(),
-                MfhLoginService.get().getCurrentGuId(),
+                MfhLoginService.get().getHumanId(),
                 null, scAccountPayRC);
 
 //        if (paymentDialog == null) {
@@ -438,7 +439,7 @@ public class OrderPayFragment extends BaseFragment {
                             if (prepayId != null) {
 //                                    hideProgressDialog();
                                 btnSubmit.setEnabled(true);
-                                WXHelper.getInstance(getContext()).sendPayReq(prepayId);
+                                WXHelper.getInstance().sendPayReq(prepayId);
                             } else {
                                 notifyPayResult(-1);
                                 DialogUtil.showHint("prepayId 不能为空");
@@ -450,7 +451,7 @@ public class OrderPayFragment extends BaseFragment {
                 , MfhApplication.getAppContext()) {
         };
 
-        PmcStockApiImpl.prePayOrder(MfhLoginService.get().getCurrentGuId(), wayType, configId,
+        PmcStockApiImpl.prePayOrder(MfhLoginService.get().getHumanId(), wayType, configId,
                 orderIds, btype, WXUtil.genNonceStr(), responseCallback);
     }
 
@@ -477,7 +478,7 @@ public class OrderPayFragment extends BaseFragment {
         Map<String, String> params = OrderInfoUtil2_0.buildOrderParamMap(AlipayConstants.APPID,
                 OrderInfoUtil2_0.ALIPAY_TRADE_APPPAY, AlipayConstants.CHARSET,
                 TimeUtil.format(new Date(), TimeUtil.FORMAT_YYYYMMDDHHMMSS),
-                AlipayConstants.ALIPAY_NOTIFY_URL + "/" + PayApi.ALIPAY_CONFIGID_MIXICOOK, bizContent);
+                AlipayConstants.ALIPAY_NOTIFY_URL + "/" + MfhApi.ALIPAY_CHANNEL_ID, bizContent);
         String orderParam = OrderInfoUtil2_0.buildOrderParam(params);
         String sign = OrderInfoUtil2_0.getSign(params, AlipayConstants.RSA_PRIVATE);
 

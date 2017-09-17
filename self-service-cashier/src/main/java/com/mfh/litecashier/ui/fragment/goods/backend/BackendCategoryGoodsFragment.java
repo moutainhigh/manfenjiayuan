@@ -117,7 +117,7 @@ public class BackendCategoryGoodsFragment extends BaseFragment implements IImpor
         reload();
     }
 
-    public void init(Bundle args) {
+    private void init(Bundle args) {
         if (args != null) {
             this.posFrontCategoryId = args.getLong(EXTRA_CATEGORY_ID_POS);
         }
@@ -141,7 +141,7 @@ public class BackendCategoryGoodsFragment extends BaseFragment implements IImpor
     /**
      * 加载数据
      */
-    public void reload() {
+    private void reload() {
     }
 
     /**

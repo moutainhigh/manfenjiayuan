@@ -89,16 +89,6 @@ public class CashierApiImpl extends CashierApi {
         AfinalFactory.getHttp(true).post(URL_MFHORDER_SAVE_LAUNDRYORDER, params, responseCallback);
     }
 
-    /**
-     * 判断是否需要锁定pos，由pos端主动发起询问
-     * */
-    public static void needLockPos(AjaxCallBack<? extends Object> responseCallback) {
-        AjaxParams params = new AjaxParams();
-        params.put("netId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
-        params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-
-        AfinalFactory.getHttp(true).post(URL_NEEDLOCKPOS, params, responseCallback);
-    }
 
     /**
      * 查询限额情况,第一个是限额（0代表没有设置或限额无穷大），第二个是未缴现金

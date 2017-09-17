@@ -135,7 +135,7 @@ public class ChangeNicknameFragment extends BaseFragment {
         };
 
         JSONObject object = new JSONObject();
-        object.put("id", MfhLoginService.get().getCurrentGuId());
+        object.put("id", MfhLoginService.get().getHumanId());
         object.put("name", nickName);
         UserApiImpl.updateProfile(object.toJSONString(), responseCallback);
     }

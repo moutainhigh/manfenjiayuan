@@ -52,12 +52,13 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
 /**
  * 购物车
@@ -221,7 +222,7 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
     @Override
     public void reload() {
         super.reload();
-        mShopcartPresenter.list(curCompanyInfo.getId(), MfhLoginService.get().getCurrentGuId(), null);
+        mShopcartPresenter.list(curCompanyInfo.getId(), MfhLoginService.get().getHumanId(), null);
 
 //        mAddressView.setPrimaryText();
 //        holder.tvReceiveName.setText(entity.getReceiveName());
@@ -273,7 +274,7 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
         createOrderBrief.setCompanyInfo(curCompanyInfo);
         createOrderBrief.setPacks(goodsListAdapter.retrieveSelectedPacks());
         createOrderBrief.setTransFee(transFee);
-        createOrderBrief.setHumanId(MfhLoginService.get().getCurrentGuId());
+        createOrderBrief.setHumanId(MfhLoginService.get().getHumanId());
 
         Bundle extras = new Bundle();
 //        extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
@@ -356,7 +357,7 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
 
         if (curAddress == null) {
             showProgressDialog(ProgressView.STATUS_PROCESSING, "加载地址...", false);
-            mReciaddrPresenter.getDefaultAddrsByHuman(MfhLoginService.get().getCurrentGuId());
+            mReciaddrPresenter.getDefaultAddrsByHuman(MfhLoginService.get().getHumanId());
         } else {
             if (curCompanyInfo == null) {
                 loadInitStep2();
@@ -456,10 +457,10 @@ public class ShopcartFragment extends BaseListFragment<ShoppingCart>
 
         if (curCompanyInfo != null) {
             tvShopName.setText(curCompanyInfo.getName());
-            mShopcartPresenter.list(curCompanyInfo.getId(), MfhLoginService.get().getCurrentGuId(), null);
+            mShopcartPresenter.list(curCompanyInfo.getId(), MfhLoginService.get().getHumanId(), null);
         } else {
             tvShopName.setText("");
-            mShopcartPresenter.list(null, MfhLoginService.get().getCurrentGuId(), null);
+            mShopcartPresenter.list(null, MfhLoginService.get().getHumanId(), null);
         }
     }
 

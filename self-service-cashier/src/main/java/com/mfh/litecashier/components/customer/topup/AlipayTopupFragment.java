@@ -4,19 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.mfh.comn.net.data.IResponseData;
@@ -40,6 +35,7 @@ import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.widget.PayProcessView;
 import com.mfh.litecashier.utils.AppHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -48,7 +44,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 import rx.Subscriber;
 
 /**
@@ -74,23 +69,8 @@ public class AlipayTopupFragment extends BaseTopupFragment {
     EditText etBarCode;//扫码枪扫描到的用户手机钱包中的付款条码
     @BindView(R.id.ll_pay_info)
     LinearLayout llPayInfo;
-
-    @BindView(R.id.ll_pay_loading)
-    LinearLayout llPayLoading;
-    @BindView(R.id.animProgress)
-    ProgressBar progressBar;
-    @BindView(R.id.tv_process)
-    TextView tvProcess;
-    @BindView(R.id.tv_countdown)
-    TextView tvCountdown;
-
-    @BindView(R.id.button_query_orderstatus)
-    Button btnQueryOrderStatus;
-    @BindView(R.id.button_cancel_order)
-    Button btnCancelAliBarPay;
-
-    private BarPayCountDownTimer payCountDownTimer;
-    private boolean payTimerRunning;
+    @BindView(R.id.payProcessView)
+    PayProcessView payProcessView;
 
     public static AlipayTopupFragment newInstance(Bundle args) {
         AlipayTopupFragment fragment = new AlipayTopupFragment();
@@ -108,35 +88,18 @@ public class AlipayTopupFragment extends BaseTopupFragment {
 
     @Override
     protected void onPayProcess(String message) {
+        ZLogger.d(message);
         llPayInfo.setVisibility(View.GONE);
-        llPayLoading.setVisibility(View.VISIBLE);
-        tvProcess.setText(message);
-        tvProcess.setTextColor(Color.parseColor("#FF000000"));
-        progressBar.setVisibility(View.VISIBLE);
-        btnCancelAliBarPay.setVisibility(View.GONE);
-        btnQueryOrderStatus.setVisibility(View.GONE);
-
-        if (!payTimerRunning) {
-            payCountDownTimer.start();
-            payTimerRunning = true;
-        }
+        payProcessView.setState(PayProcessView.STATE_PROCESS, message);
     }
 
     @Override
     protected void onPayFailed(int payStatus, String msg, int color, boolean isException) {
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
         if (isException) {
-            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-            btnQueryOrderStatus.setVisibility(View.VISIBLE);
+            payProcessView.setState(PayProcessView.STATE_ERROR, msg);
         } else {
-            btnCancelAliBarPay.setVisibility(View.GONE);
-            btnQueryOrderStatus.setVisibility(View.GONE);
+            payProcessView.setState(PayProcessView.STATE_FAILED, msg);
         }
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
 
         etBarCode.getText().clear();//清空授权码
 
@@ -146,7 +109,6 @@ public class AlipayTopupFragment extends BaseTopupFragment {
                 EventBus.getDefault().post(new TopupActionEvent(TopupActionEvent.TOPUP_ERROR, null));
 
                 llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
                 etBarCode.requestFocus();
                 etBarCode.setSelection(etBarCode.length());
 
@@ -157,15 +119,7 @@ public class AlipayTopupFragment extends BaseTopupFragment {
 
     @Override
     protected void onPayFinished(Double paidAmount, String msg, int color) {
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
-        btnCancelAliBarPay.setVisibility(View.GONE);
-        btnQueryOrderStatus.setVisibility(View.GONE);
-
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
+        payProcessView.setState(PayProcessView.STATE_SUCCESS, msg);
 
         etBarCode.getText().clear();//清空授权码
 
@@ -175,14 +129,12 @@ public class AlipayTopupFragment extends BaseTopupFragment {
                 EventBus.getDefault().post(new TopupActionEvent(TopupActionEvent.TOPUP_SUCCEED, null));
 
                 llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
-
                 etBarCode.requestFocus();
                 etBarCode.setSelection(etBarCode.length());
 
                 bPayProcessing = false;
             }
-        }, 500);
+        }, 200);
     }
 
     @Override
@@ -199,7 +151,37 @@ public class AlipayTopupFragment extends BaseTopupFragment {
 
         initBarCodeInput();
 
-        payCountDownTimer = new BarPayCountDownTimer(30 * 1000, 1000);
+        payProcessView.init(120, "点击重试", "查询订单", "撤销订单",
+                new PayProcessView.onCustomerViewListener() {
+
+                    @Override
+                    public void onAction1() {
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+                    }
+
+                    /**
+                     * 查询订单状态
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction2() {
+                        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+                            DialogUtil.showHint(R.string.toast_network_error);
+                            return;
+                        }
+                        queryOrder(outTradeNo, lastPaidAmount);
+                    }
+
+                    /**
+                     * 撤单
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction3() {
+                        cancelOrder(outTradeNo);
+                    }
+
+                });
     }
 
     @Override
@@ -220,9 +202,8 @@ public class AlipayTopupFragment extends BaseTopupFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (payCountDownTimer != null) {
-            payCountDownTimer.cancel();
-            payCountDownTimer = null;
+        if (payProcessView != null) {
+            payProcessView.onDestory();
         }
     }
 
@@ -237,41 +218,25 @@ public class AlipayTopupFragment extends BaseTopupFragment {
             @Override
             public void onReceive(Context context, Intent intent) {
                 ZLogger.d("onReceive.action=" + intent.getAction());
-                if (intent.getAction().equals(Constants.BA_HANDLE_TOPUPAMOUNT_CHANGED_ALIPAY)) {
+                if (Constants.BA_HANDLE_TOPUPAMOUNT_CHANGED_ALIPAY.equals(intent.getAction())) {
                     Bundle extras = intent.getExtras();
                     if (extras != null) {
-                        etBarCode.setText("");
-                        etBarCode.requestFocus();
-                        paidAmount = extras.getDouble(EXTRA_KEY_TOTAL_AMOUNT);
-                        customerId = extras.getLong(EXTRA_KEY_CUSTOMER_ID);
+                        try {
+                            etBarCode.setText("");
+                            etBarCode.requestFocus();
+                            payProcessView.setState(PayProcessView.STATE_INIT, null);
+
+                            paidAmount = extras.getDouble(EXTRA_KEY_TOTAL_AMOUNT);
+                            customerId = extras.getLong(EXTRA_KEY_CUSTOMER_ID);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         };
         //使用LocalBroadcastManager.getInstance(getActivity())反而不行，接收不到。
         getActivity().registerReceiver(receiver, intentFilter);
-    }
-
-    /**
-     * 查询订单状态
-     * 因网络或系统异常导致支付状态不明时调用
-     */
-    @OnClick(R.id.button_query_orderstatus)
-    public void queryAliBarpayStatus() {
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-        queryOrder(outTradeNo, lastPaidAmount);
-    }
-
-    /**
-     * 撤单
-     * 因网络或系统异常导致支付状态不明时调用
-     */
-    @OnClick(R.id.button_cancel_order)
-    public void cancelAliBarPay() {
-        cancelOrder(outTradeNo);
     }
 
     private void initBarCodeInput() {
@@ -316,51 +281,24 @@ public class AlipayTopupFragment extends BaseTopupFragment {
 
 
     /**
-     * 倒计时
-     */
-    public class BarPayCountDownTimer extends CountDownTimer {
-
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        public BarPayCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            tvCountdown.setText(String.format("%d秒", millisUntilFinished / 1000));
-        }
-
-        @Override
-        public void onFinish() {
-            tvCountdown.setText("");
-//            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-        }
-    }
-
-
-    /**
      * 支付宝条码支付--POS发起支付请求，后台向支付宝请求支付<br>
      * <b>应用场景实例：</b>收银员使用扫码设备读取用户手机支付宝“付款码”后，将二维码或条码信息通过本接口上送至支付宝发起支付。<br>
      * 免密支付,直接返回支付结果，
      * 验密支付,返回10003(支付处理中)状态,然后POS轮询查询订单状态
+     *
      * @param authCode 支付宝支付授权码
      */
     @Override
     protected void submitOrder(String authCode) {
         if (bPayProcessing) {
-            ZLogger.d("正在进行支付宝支付，不用重复发起请求");
+            ZLogger.w("正在进行支付宝支付，不用重复发起请求");
             return;
         }
 
         if (StringUtils.isEmpty(authCode)) {
             bPayProcessing = false;
             DialogUtil.showHint("请输入授权码");
+            ZLogger.w("请输入授权码");
             return;
         }
 
@@ -447,7 +385,7 @@ public class AlipayTopupFragment extends BaseTopupFragment {
      * 3. 调用扫码支付请求后，如果结果返回处理中（返回结果中的code等于10003）的状态；<br>
      * 4. 调用撤销接口API之前，需确认该笔交易目前支付状态。<br>
      */
-    protected void queryOrder(final String outTradeNo, final Double paidAmount) {
+    private void queryOrder(final String outTradeNo, final Double paidAmount) {
         onPayProcess("正在查询订单状态...");
 
         Map<String, String> options = new HashMap<>();
@@ -511,7 +449,7 @@ public class AlipayTopupFragment extends BaseTopupFragment {
      * 撤销只支持24小时内的交易，超过24小时要退款可以调用申请退款接口，如果需要明确订单状态可以调用查询订单接口。<br>
      * 只有发生支付系统超时或者支付结果未知时可调用撤销，其他正常支付 的单如需实现相同功能请调用申请退款 API。提交支付交易后调用【查询订单 API】， 没有明确的支付结果再调用【撤销订单 API】。
      */
-    protected void cancelOrder(String outTradeNo) {
+    private void cancelOrder(String outTradeNo) {
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             return;

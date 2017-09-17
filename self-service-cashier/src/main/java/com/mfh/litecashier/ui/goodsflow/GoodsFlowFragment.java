@@ -268,8 +268,10 @@ public class GoodsFlowFragment extends BaseProgressFragment {
 //                btnItems.get(0).setDetailText(MfhLoginService.get().getHumanName());
 //                break;
             case 1://相册
-                mCategoryOption = (CategoryOption) intent.getSerializableExtra("CategoryOption");
-                labelCategory.setLabelText(mCategoryOption.getValue());
+                if (intent != null) {
+                    mCategoryOption = (CategoryOption) intent.getSerializableExtra("CategoryOption");
+                    labelCategory.setLabelText(mCategoryOption.getValue());
+                }
                 reload();
                 break;
         }

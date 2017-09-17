@@ -31,7 +31,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.igexin.push.core.g.R;
 
 /**
  * 我的收货地址
@@ -151,7 +150,7 @@ public class AddressListFragment extends BaseListFragment<Reciaddr> implements I
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getCurrentGuId());
+        mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getHumanId());
 
         mPageInfo.setPageNo(1);
     }

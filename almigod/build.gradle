@@ -140,7 +140,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
 //    compile 'com.android.support:design:24.2.1'
     testCompile 'junit:junit:4.12'
 
@@ -152,7 +152,7 @@ dependencies {
     compile project(':mfh-framework-business')
     compile project(path: ':vector_uikit')
     compile rootProject.ext.dependencies["rxjava"]
-    compile rootProject.ext.dependencies["bugly_crash_upgrade"]
+    compile rootProject.ext.dependencies["crashreport_upgrade"]
     compile rootProject.ext.dependencies["rxandroid"]
     compile 'com.getui:sdk:2.9.0.0'
     compile rootProject.ext.dependencies["butterknife"]

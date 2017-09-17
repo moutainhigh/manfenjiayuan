@@ -18,8 +18,8 @@ import java.util.Calendar;
  * Created by bingshanguxue on 16/2/24.
  */
 public class AlarmManagerHelper {
-    public static final int REQUEST_CODE_DAILYSETTLE = 100;
-    public static final int REQUEST_CODE_BUGLY_UPGRADE = 101;
+    private static final int REQUEST_CODE_DAILYSETTLE = 100;
+    private static final int REQUEST_CODE_BUGLY_UPGRADE = 101;
 
     /**
      * 触发下一次日结

@@ -249,6 +249,22 @@ public class StringUtils {
         return sb.toString();
     }
 
+    public static String genNonceStringByLength(String tag, int length) {
+        String base = "abcdefghijklmnopqrstuvwxyz0123456789";
+        int baseN = base.length();
+
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        if (!isEmpty(tag)) {
+            sb.append(tag).append(":");
+        }
+        for (int i = 0; i < length; i++) {
+            int number = random.nextInt(baseN);
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
+    }
+
     public static String getNonceDecimalString(int length) {
         String base = "0123456789";
         Random random = new Random();

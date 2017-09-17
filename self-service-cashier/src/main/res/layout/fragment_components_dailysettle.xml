@@ -213,7 +213,7 @@
             </LinearLayout>
 
             <include
-                layout="@layout/itemview_analysis_acc_header"
+                layout="@layout/itemview_analysis_acc2_header"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginTop="8dp"/>

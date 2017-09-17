@@ -14,11 +14,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/spacing_normal">
+
+        <TextView
+            android:id="@+id/tv_terminal_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="@color/material_black"
+            android:layout_alignParentTop="true"
+            android:maxLines="1"/>
         <TextView
             android:id="@+id/tv_loginName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/tv_terminal_id"
             android:text=""
             android:textColor="@color/material_black"
             android:maxLines="1"/>
@@ -65,8 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_errorTime"
             android:layout_marginTop="@dimen/spacing_micro"
-            android:text=""
-            android:maxLines="1"/>
+            android:text=""/>
 
     </RelativeLayout>
 </android.support.v7.widget.CardView>

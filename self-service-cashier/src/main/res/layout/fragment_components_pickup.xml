@@ -28,10 +28,10 @@
     <com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport
         android:id="@+id/order_list"
         android:layout_width="match_parent"
-        android:layout_margin="@dimen/spacing_normal"
         android:layout_height="match_parent"
         android:layout_above="@+id/button_print"
-        android:layout_below="@+id/space_line"/>
+        android:layout_below="@+id/space_line"
+        android:layout_margin="@dimen/spacing_normal"/>
 
     <!--空视图-->
     <ImageView

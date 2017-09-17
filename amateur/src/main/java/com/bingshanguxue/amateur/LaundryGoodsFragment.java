@@ -24,9 +24,9 @@ import com.mfh.litecashier.R;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.litecashier.event.AddLaunchGoodsEvent;
 import com.mfh.litecashier.event.LaundryGoodsEvent;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.presenter.ChainGoodsSkuPresenter;
 import com.mfh.litecashier.ui.adapter.LaundryGoodsAdapter;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.mvp.view.IChainGoodsSkuView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import java.util.ArrayList;

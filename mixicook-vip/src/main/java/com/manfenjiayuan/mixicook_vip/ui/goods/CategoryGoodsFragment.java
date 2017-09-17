@@ -15,8 +15,8 @@ import android.widget.TextView;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IScGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
 import com.manfenjiayuan.mixicook_vip.model.CartBrief;
@@ -42,13 +42,13 @@ import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import de.greenrobot.event.EventBus;
 
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
@@ -222,7 +222,7 @@ public class CategoryGoodsFragment extends BaseListFragment<ScGoodsSku> implemen
         extras.putInt(BaseActivity.EXTRA_KEY_ANIM_TYPE, BaseActivity.ANIM_TYPE_NEW_FLOW);
         extras.putInt(FragmentActivity.EXTRA_KEY_FRAGMENT_TYPE, FragmentActivity.FT_SHOPCART);
 
-        Intent intent = new Intent(context, FragmentActivity.class);
+        Intent intent = new Intent(getContext(), FragmentActivity.class);
         intent.putExtras(extras);
         startActivityForResult(intent, ARCode.ARC_SHOPCART);
     }

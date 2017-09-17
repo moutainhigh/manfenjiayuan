@@ -12,7 +12,7 @@ import android.widget.Button;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;

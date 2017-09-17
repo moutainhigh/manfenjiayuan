@@ -1,5 +1,6 @@
 package com.manfenjiayuan.mixicook_vip.ui.mutitype;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,7 +18,6 @@ import java.util.List;
 
 import me.drakeet.multitype.ItemViewProvider;
 
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
@@ -49,10 +49,12 @@ public class Card6ViewProvider extends ItemViewProvider<Card6,
         private ImageView ivBottomLeft;
         private ImageView ivBottomRight;
 
+        private Context mContext;
         private List<StoreRackCardItem> mCardItems;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            mContext = itemView.getContext();
             ivLeft = (ImageView) itemView.findViewById(R.id.iv_left);
             ivTop = (ImageView) itemView.findViewById(R.id.iv_top);
             ivBottomLeft = (ImageView) itemView.findViewById(R.id.iv_bottom_left);
@@ -107,22 +109,22 @@ public class Card6ViewProvider extends ItemViewProvider<Card6,
                     continue;
                 }
                 if (i == 0){
-                    Glide.with(context)
+                    Glide.with(mContext)
                             .load(cardItem.getImageUrl())
                             .error(R.mipmap.ic_image_error).into(ivLeft);
                 }
                 else if (i == 1){
-                    Glide.with(context)
+                    Glide.with(mContext)
                             .load(cardItem.getImageUrl())
                             .error(R.mipmap.ic_image_error).into(ivTop);
                 }
                 else if (i == 2){
-                    Glide.with(context)
+                    Glide.with(mContext)
                             .load(cardItem.getImageUrl())
                             .error(R.mipmap.ic_image_error).into(ivBottomLeft);
                 }
                 else if (i == 3){
-                    Glide.with(context)
+                    Glide.with(mContext)
                             .load(cardItem.getImageUrl())
                             .error(R.mipmap.ic_image_error).into(ivBottomRight);
                 }

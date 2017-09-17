@@ -9,13 +9,11 @@ import android.widget.TextView;
 
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.database.AnonymousAddressEntity;
-import com.mfh.enjoycity.database.AnonymousAddressService;
-import com.mfh.enjoycity.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -31,9 +29,9 @@ public class AnonymousAddressDialogAdapter extends BaseAdapter {
 
 
     static class ViewHolder {
-        @Bind(R.id.iv_marker) ImageView ivMarker;
-        @Bind(R.id.tv_name) TextView tvName;
-        @Bind(R.id.tv_address) TextView tvAddr;
+        @BindView(R.id.iv_marker) ImageView ivMarker;
+        @BindView(R.id.tv_name) TextView tvName;
+        @BindView(R.id.tv_address) TextView tvAddr;
 //        @Bind(R.id.iv_arrow) ImageView ivArrow;
 
         public ViewHolder(View view) {
@@ -52,9 +50,9 @@ public class AnonymousAddressDialogAdapter extends BaseAdapter {
         this.data = data;
 
 
-        String currentId = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
-                .getString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, null);
-        currentEntity =  AnonymousAddressService.get().getEntityById(currentId);
+//        String currentId = SharedPrefesBase.getPreferences(Constants.PREF_NAME_APP_BIZ)
+//                .getString(Constants.PREF_KEY_ANONYMOUS_ADDR_ID, null);
+//        currentEntity =  AnonymousAddressService.get().getEntityById(currentId);
     }
 
     @Override

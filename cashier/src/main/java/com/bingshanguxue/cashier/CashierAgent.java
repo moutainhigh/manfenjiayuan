@@ -14,7 +14,7 @@ import com.bingshanguxue.cashier.model.wrapper.CouponRule;
 import com.bingshanguxue.cashier.model.wrapper.LastOrderInfo;
 import com.bingshanguxue.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.commonuseraccount.PayItem;

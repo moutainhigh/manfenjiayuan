@@ -283,7 +283,9 @@ public class ReconcileFragment extends BaseProgressFragment {
 //                btnItems.get(0).setDetailText(MfhLoginService.get().getHumanName());
 //                break;
             case 1://相册
-                mCategoryInfo = (CategoryInfo) intent.getSerializableExtra("categoryInfo");
+                if (intent != null) {
+                    mCategoryInfo = (CategoryInfo) intent.getSerializableExtra("categoryInfo");
+                }
                 if (mCategoryInfo != null) {
                     labelCategory.setLabelText(mCategoryInfo.getNameCn());
                 }

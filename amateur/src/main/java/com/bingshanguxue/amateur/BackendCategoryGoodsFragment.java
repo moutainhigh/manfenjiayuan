@@ -9,8 +9,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.scGoodsSku.ScGoodsSku;

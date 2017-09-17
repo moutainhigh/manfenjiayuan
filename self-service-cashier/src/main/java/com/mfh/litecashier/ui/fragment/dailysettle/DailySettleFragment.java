@@ -446,7 +446,7 @@ public class DailySettleFragment extends BaseProgressFragment {
      * TODO,加载等待窗口
      */
     private void analysisAccDateListStep1() {
-        onLoadProcess("正在查询流水分析数据");
+        onLoadProcess("正在查询经营流水...");
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("统计失败，网络未连接，暂停查询日结流水分析数据。");
             return;
@@ -516,7 +516,7 @@ public class DailySettleFragment extends BaseProgressFragment {
      * TODO,加载等待窗口
      */
     private void analysisAcc2DateListStep1() {
-        onLoadProcess("正在查询流水分析数据");
+        onLoadProcess("正在查询充值流水...");
         if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
             onLoadError("统计失败，网络未连接，暂停查询日结流水分析数据。");
             return;

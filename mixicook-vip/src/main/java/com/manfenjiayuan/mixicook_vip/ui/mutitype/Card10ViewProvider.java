@@ -17,7 +17,6 @@ import java.util.List;
 
 import me.drakeet.multitype.ItemViewProvider;
 
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 
 /**
@@ -66,7 +65,7 @@ public class Card10ViewProvider extends ItemViewProvider<Card10,
 
         private void setCardItem(StoreRackCardItem cardItem){
             mCardItem = cardItem;
-            Glide.with(context)
+            Glide.with(mImageView.getContext())
                     .load(mCardItem != null ? mCardItem.getImageUrl() : "")
                     .error(R.mipmap.ic_image_error).into(mImageView);
         }

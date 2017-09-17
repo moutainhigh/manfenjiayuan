@@ -107,7 +107,6 @@ public class MfhApi implements ApiParams {
         StockApi.register();
         SubdistApi.register();
 
-        CompanyHumanApi.register();
         InvOrderApi.register();
 
         InvSkuLabelApi.register();

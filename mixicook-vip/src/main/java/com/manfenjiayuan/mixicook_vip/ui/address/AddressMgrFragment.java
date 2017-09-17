@@ -142,7 +142,7 @@ public class AddressMgrFragment extends BaseListFragment<Reciaddr> implements IR
         }
 
         mPageInfo = new PageInfo(-1, MAX_SYNC_PAGESIZE);
-        mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getCurrentGuId());
+        mReciaddrPresenter.getAllAddrsByHuman(MfhLoginService.get().getHumanId());
 
         mPageInfo.setPageNo(1);
     }
@@ -374,6 +374,6 @@ public class AddressMgrFragment extends BaseListFragment<Reciaddr> implements IR
             return;
         }
         showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
-        ReciaddrApi.setDefaultAddrById(MfhLoginService.get().getCurrentGuId(), id, responseCallback);
+        ReciaddrApi.setDefaultAddrById(MfhLoginService.get().getHumanId(), id, responseCallback);
     }
 }

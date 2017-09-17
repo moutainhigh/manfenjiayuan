@@ -15,8 +15,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bingshanguxue.pda.R;
-import com.manfenjiayuan.business.presenter.PosRegisterPresenter;
-import com.manfenjiayuan.business.view.IPosRegisterView;
+import com.manfenjiayuan.business.mvp.presenter.PosRegisterPresenter;
+import com.manfenjiayuan.business.mvp.view.IPosRegisterView;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;

@@ -32,7 +32,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
         Bundle bundle = intent.getExtras();
         String processName = AlmigodApp.getProcessName(AlmigodApp.getAppContext(),
                 android.os.Process.myPid());
-        ZLogger.df(String.format("个推<%s> -- bundle=%s", processName,
+        ZLogger.d(String.format("个推<%s> -- bundle=%s", processName,
                 StringUtils.decodeBundle(bundle)));
 
         switch (bundle.getInt(PushConsts.CMD_ACTION)) {
@@ -51,7 +51,7 @@ public class PushDemoReceiver extends BroadcastReceiver {
                 // 第三方应用需要将CID上传到第三方服务器，并且将当前用户帐号和CID进行关联，以便日后通过用户帐号查找CID进行消息推送
                 String clientId = bundle.getString(KEY_CLIENT_ID);
                 if (clientId != null) {
-                    ZLogger.df(String.format("个推 clientId=%s", clientId));
+                    ZLogger.d(String.format("个推 clientId=%s", clientId));
                     IMConfig.savePushClientId(clientId);
                 }
 
@@ -69,16 +69,16 @@ public class PushDemoReceiver extends BroadcastReceiver {
             case PushConsts.GET_SDKONLINESTATE:
                 boolean onlineState = bundle.getBoolean("onlineState");
                 String clientId = PushManager.getInstance().getClientid(AlmigodApp.getAppContext());
-                ZLogger.df(String.format("个推 %s-%s, onlineState = %b",
+                ZLogger.d(String.format("个推 %s-%s, onlineState = %b",
                         clientId, IMConfig.getPushClientId(), onlineState));
                 if (!StringUtils.isEmpty(clientId)) {
                     if (!onlineState) {
-                        ZLogger.df("准备开启推送...");
+                        ZLogger.d("准备开启推送...");
                         PushManager.getInstance().turnOnPush(AlmigodApp.getAppContext());
                         offlineTime = System.currentTimeMillis();
                     }
                 } else {
-                    ZLogger.df("准备初始化个推服务...");
+                    ZLogger.d("准备初始化个推服务...");
                     offlineTime = System.currentTimeMillis();
                     PushManager.getInstance().initialize(AlmigodApp.getAppContext());
                 }
@@ -87,10 +87,10 @@ public class PushDemoReceiver extends BroadcastReceiver {
 //                超过5分钟会自动重启
                 Long rightNow = System.currentTimeMillis();
                 Long interval = rightNow - offlineTime;
-                ZLogger.df(String.format("个推服务未启动，%d - %d = %d", rightNow, offlineTime, interval));
+                ZLogger.d(String.format("个推服务未启动，%d - %d = %d", rightNow, offlineTime, interval));
 //                超过5分钟会自动重启
                 if (interval > 10) {
-                    ZLogger.df("准备初始化个推服务...");
+                    ZLogger.d("准备初始化个推服务...");
                     offlineTime = System.currentTimeMillis();
                     PushManager.getInstance().initialize(AlmigodApp.getAppContext());
                 }
@@ -105,6 +105,6 @@ public class PushDemoReceiver extends BroadcastReceiver {
      */
     private static void parsePushPayload(Context context, String data) {
         Integer bizType = PayloadHelper.getJsonMsgType(data);//获取推送的数据类型
-        ZLogger.df(String.format("payload=(%s)%s", bizType, data));
+        ZLogger.d(String.format("payload=(%s)%s", bizType, data));
     }
 }

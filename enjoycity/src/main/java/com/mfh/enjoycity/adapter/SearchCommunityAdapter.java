@@ -9,10 +9,13 @@ import android.widget.TextView;
 
 import com.mfh.enjoycity.R;
 import com.mfh.enjoycity.bean.SubdisBean;
+import com.mfh.framework.api.account.Subdis;
+import com.mfh.framework.api.subdist.SubdisMode;
 
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -22,7 +25,7 @@ public class SearchCommunityAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     private final LayoutInflater mLayoutInflater;
     private Context mContext;
-    private List<SubdisBean> mList;
+    private List<Subdis> mList;
 
     public interface OnAdapterListener
     {
@@ -37,7 +40,7 @@ public class SearchCommunityAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
 
-    public SearchCommunityAdapter(Context context, List<SubdisBean> messageList) {
+    public SearchCommunityAdapter(Context context, List<Subdis> messageList) {
         mList = messageList;
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
@@ -50,7 +53,7 @@ public class SearchCommunityAdapter extends RecyclerView.Adapter<RecyclerView.Vi
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        final SubdisBean itemData = mList.get(position);
+        final Subdis itemData = mList.get(position);
 
         ((CommunityViewHolder)holder).tvName.setText(itemData.getSubdisName());
         ((CommunityViewHolder)holder).tvAddress.setText(itemData.getStreet());
@@ -72,9 +75,9 @@ public class SearchCommunityAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public class CommunityViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_name)
+        @BindView(R.id.tv_name)
         TextView tvName;
-        @Bind(R.id.tv_address)
+        @BindView(R.id.tv_address)
         TextView tvAddress;
 
         public CommunityViewHolder(final View itemView) {
@@ -92,11 +95,11 @@ public class SearchCommunityAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         }
     }
 
-    public List<SubdisBean> getData(){
+    public List<Subdis> getData(){
         return mList;
     }
 
-    public void setData(List<SubdisBean> subdisBeans){
+    public void setData(List<Subdis> subdisBeans){
         this.mList = subdisBeans;
         this.notifyDataSetChanged();
     }

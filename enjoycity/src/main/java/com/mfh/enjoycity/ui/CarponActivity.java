@@ -19,16 +19,17 @@ import com.mfh.framework.api.mobile.MobileApi;
 
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
+import butterknife.BindViews;
 
 
 /**
  * 代金券
- * */
+ */
 public class CarponActivity extends BaseActivity {
-    @Bind(R.id.tool_bar)
+    @BindView(R.id.tool_bar)
     Toolbar toolbar;
-    @Bind({ R.id.item_scan, R.id.item_help })
+    @BindViews({R.id.item_scan, R.id.item_help})
     List<SettingsItem> btnItems;
 
 
@@ -56,21 +57,21 @@ public class CarponActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         btnItems.get(0).setOnClickListener(myOnClickListener);
- btnItems.get(1).setOnClickListener(myOnClickListener);
+        btnItems.get(1).setOnClickListener(myOnClickListener);
     }
 
-    private View.OnClickListener myOnClickListener = new View.OnClickListener(){
+    private View.OnClickListener myOnClickListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View view) {
-            switch(view.getId()){
-                case R.id.item_scan:{
+            switch (view.getId()) {
+                case R.id.item_scan: {
                     //需要处理扫描结果
                     Intent intent = new Intent(CarponActivity.this, ScanActivity.class);
                     startActivityForResult(intent, Constants.ACTIVITY_REQUEST_CODE_ZXING_QRCODE);
                 }
                 break;
-                case R.id.item_help:{
+                case R.id.item_help: {
 
                     StaticWebActivity.actionStart(CarponActivity.this, MobileApi.URL_APP_DESCRIPTION);
                 }
@@ -81,21 +82,19 @@ public class CarponActivity extends BaseActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == Constants.ACTIVITY_REQUEST_CODE_ZXING_QRCODE)
-        {
-            if(resultCode == Activity.RESULT_OK){
-                try{
+        if (requestCode == Constants.ACTIVITY_REQUEST_CODE_ZXING_QRCODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
                     Bundle bundle = data.getExtras();
                     String resultText = bundle.getString("result", "");
 //                Bitmap barcode =  (Bitmap)bundle.getParcelable("bitmap");//扫描截图
 
-                    if(StringUtils.isUrl(resultText)){
+                    if (StringUtils.isUrl(resultText)) {
                         UIHelper.showUrlOption(CarponActivity.this, resultText);
-                    }
-                    else{
+                    } else {
                         UIHelper.showCopyTextOption(CarponActivity.this, resultText);
                     }
-                }catch(Exception ex){
+                } catch (Exception ex) {
                     //TransactionTooLargeException
                     ZLogger.e(ex.toString());
                 }

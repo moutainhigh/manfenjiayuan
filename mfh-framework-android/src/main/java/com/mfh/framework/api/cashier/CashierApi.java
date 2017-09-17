@@ -47,11 +47,6 @@ public class CashierApi {
 
 
     /**
-     * 判断是否需要锁定pos，由pos端主动发起询问,/scNetRealInfo/needLockPos?netId=
-     */
-    public static String URL_NEEDLOCKPOS = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/needLockPos";
-
-    /**
      * 查询限额情况,第一个是限额（-1代表没有设置或限额无穷大,0代表限额就是0），第二个是未缴现金
      * /scNetRealInfo/queryLimitInfo
      */
@@ -71,7 +66,6 @@ public class CashierApi {
         URL_MIMECOUPONS_ABANDONCOUPON_BYID = MfhApi.URL_BASE_SERVER + "/mineCoupons/abandonCouponById";
         URL_MFHORDER_CHECK_PACKAGECODE = MfhApi.URL_BASE_SERVER + "/mfhorder/isPackageCodeExist";
         URL_MFHORDER_SAVE_LAUNDRYORDER = MfhApi.URL_BASE_SERVER + "/mfhorder/saveLaundryOrder";
-        URL_NEEDLOCKPOS = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/needLockPos";
         URL_QUERYLIMITINFO = MfhApi.URL_BASE_SERVER + "/scNetRealInfo/queryLimitInfo";
         URL_ORDERPAYWAY_LIST = MfhApi.URL_BASE_SERVER + "/orderPayWay/list";
 

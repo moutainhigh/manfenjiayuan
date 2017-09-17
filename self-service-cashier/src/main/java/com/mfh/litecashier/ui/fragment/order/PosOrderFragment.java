@@ -22,8 +22,8 @@ import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
-import com.manfenjiayuan.business.presenter.OrderflowPresenter;
-import com.manfenjiayuan.business.view.IOrderflowView;
+import com.manfenjiayuan.business.mvp.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.mvp.view.IOrderflowView;
 import com.mfh.litecashier.components.order.GoodsOrderAdapter;
 import com.mfh.litecashier.utils.ACacheHelper;
 

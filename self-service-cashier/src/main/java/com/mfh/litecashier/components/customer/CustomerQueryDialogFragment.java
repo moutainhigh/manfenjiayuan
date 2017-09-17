@@ -15,10 +15,10 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.manfenjiayuan.business.presenter.CustomerPresenter;
-import com.manfenjiayuan.business.view.ICustomerView;
+import com.manfenjiayuan.business.mvp.presenter.CustomerPresenter;
+import com.manfenjiayuan.business.mvp.view.ICustomerView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
@@ -38,8 +38,9 @@ import butterknife.OnLongClick;
  */
 
 public class CustomerQueryDialogFragment extends BaseDialogFragment implements ICustomerView {
+    public static final String TAG = "CustomerQueryDialogFragment";
 
-    public static final int TARGET_CASHIER_SETTLE = 0x0001;//收银订单支付
+    public static final int TARGET_CASHIER_SETTLE = 0x0002;//收银订单支付
     public static final int TARGET_CUSTOMER_TRANSACTION = 0x0011;//交易查询
     public static final int TARGET_CHANGE_PAY_PASSWORD = 0x0012;//修改支付密码
     public static final int TARGET_PRINT_GROUP_ORDER = 0x0013;//商品自提-团购
@@ -247,10 +248,6 @@ public class CustomerQueryDialogFragment extends BaseDialogFragment implements I
         etInput.getText().clear();
         simulateKeyDown(KeyEvent.KEYCODE_DEL);
         return true;
-    }
-
-    private void simulateKeyDown(int keycode) {
-        getDialog().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keycode));
     }
 
     /**

@@ -16,7 +16,7 @@ import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -324,7 +324,6 @@ public class TransferDialogFragment extends BaseDialogFragment {
     private void notifyPayInfoChanged(int page) {
         final TopAmount topAmount = mTopupAdapter.getCurEntity();
 
-
         Intent intent = new Intent();
         Bundle extras = new Bundle();
         if (topAmount != null) {
@@ -480,6 +479,7 @@ public class TransferDialogFragment extends BaseDialogFragment {
         if (mOnDialogListener != null) {
             mOnDialogListener.onSuccess();
         }
+        dismiss();
     }
 
 }

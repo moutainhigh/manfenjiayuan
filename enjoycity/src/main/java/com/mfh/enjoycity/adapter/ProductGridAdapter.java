@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -46,14 +47,14 @@ public class ProductGridAdapter extends BaseAdapter {
 
 
     static class ViewHolder {
-        @Bind(R.id.iv_product)
+        @BindView(R.id.iv_product)
         ImageView ivProduct;
-        @Bind(R.id.iv_promote_label)
+        @BindView(R.id.iv_promote_label)
         ImageView ivPromoteLabel;
-        @Bind(R.id.tv_discount) TextView tvDiscount;
-        @Bind(R.id.tv_product_name) TextView tvProductName;
-        @Bind(R.id.tv_product_price) TextView tvProductPrice;
-        @Bind(R.id.ib_shopcart)
+        @BindView(R.id.tv_discount) TextView tvDiscount;
+        @BindView(R.id.tv_product_name) TextView tvProductName;
+        @BindView(R.id.tv_product_price) TextView tvProductPrice;
+        @BindView(R.id.ib_shopcart)
         ImageButton ibShopcart;
 
         public ViewHolder(View view) {

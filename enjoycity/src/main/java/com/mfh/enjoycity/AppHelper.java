@@ -27,11 +27,12 @@ import com.mfh.framework.prefs.SharedPrefesBase;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.login.logic.MfhLoginService;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import de.greenrobot.event.EventBus;
 
 /**
  * 应用程序帮助类
@@ -210,7 +211,7 @@ public class AppHelper {
 
     public static void AppExit(){
         // 保存统计数据
-        MobclickAgent.onKillProcess(MfhApplication.getAppContext());
+//        MobclickAgent.onKillProcess(MfhApplication.getAppContext());
 
         //退出程序
         android.os.Process.killProcess(android.os.Process.myPid());

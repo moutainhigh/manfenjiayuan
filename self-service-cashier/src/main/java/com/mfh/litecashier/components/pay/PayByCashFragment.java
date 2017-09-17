@@ -15,9 +15,9 @@ import android.view.ViewGroup;
 
 import com.alibaba.fastjson.JSON;
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
+import com.bingshanguxue.cashier.model.PaymentInfo;
 import com.bingshanguxue.cashier.pay.BasePayFragment;
 import com.bingshanguxue.cashier.pay.PayStep1Event;
-import com.bingshanguxue.cashier.model.PaymentInfo;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.FontFitTextView;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;

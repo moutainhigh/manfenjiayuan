@@ -7,7 +7,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 
-def releaseTime() {
+static def releaseTime() {
     return new Date().format("MMdd", TimeZone.getTimeZone("UTC"))
 }
 
@@ -59,16 +59,16 @@ android {
         targetSdkVersion rootProject.ext.android.targetSdkVersion
 
         // Defines the version number of your app.
-        versionCode 388
+        versionCode 392
 
         // Defines a user-friendly version name for your app.
-        versionName "1.23.8"
+        versionName "1.23.9"
 
         multiDexEnabled true
 
         ndk {
             //设置支持的SO库架构
-            abiFilters 'armeabi' , 'armeabi-v7a'
+            abiFilters 'armeabi', 'armeabi-v7a'//, 'x86', 'x86_64', 'arm64-v8a'
         }
 
         manifestPlaceholders = [
@@ -126,11 +126,11 @@ android {
                 def fileName
                 if (variant.buildType.name == "release") {
                     // 输出apk名称为mfh_cashier_v1.0.1_101915_wandoujia.apk
-                    fileName = "mfh_litecashier" +
+                    fileName = "mixiyun_pos" +
                             "_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}" +
                             "_${variant.productFlavors[0].name}.apk"
                 } else {
-                    fileName = "mfh_litecashier" +
+                    fileName = "mixiyun_pos" +
                             "_v${defaultConfig.versionName}_${releaseTime()}${defaultConfig.versionCode}_beta" +
                             "_${variant.productFlavors[0].name}.apk"
                 }

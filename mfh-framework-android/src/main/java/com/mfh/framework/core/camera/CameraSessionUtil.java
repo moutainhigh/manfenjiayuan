@@ -52,6 +52,7 @@ public class CameraSessionUtil implements IService {
 //                DialogUtil.showHint("Show an expanation");
             }
             else{
+//                "不再显示”
 //                DialogUtil.showHint("No explanation needed");
                 ActivityCompat.requestPermissions(context,
                         new String[]{android.Manifest.permission.CAMERA},

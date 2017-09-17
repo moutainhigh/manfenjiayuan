@@ -14,9 +14,9 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bingshanguxue.cashier.hardware.printer.PrinterFactory;
-import com.manfenjiayuan.business.presenter.ScOrderPresenter;
+import com.manfenjiayuan.business.mvp.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IScOrderView;
+import com.manfenjiayuan.business.mvp.view.IScOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
@@ -448,9 +448,8 @@ public class PrepareAbleOrdersFragment extends BaseListFragment<ScOrder> impleme
                 }
             }
 
-            ZLogger.d(String.format("加载待组货订单结束,pageInfo':page=%d/%d(%d/%d)",
-                    mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
-                    orderAdapter.getItemCount(), mPageInfo.getTotalCount()));
+            ZLogger.d(String.format("加载待组货订单结束,counte=%d",
+                    orderAdapter.getItemCount()));
 
             onLoadFinished();
         } catch (Throwable ex) {

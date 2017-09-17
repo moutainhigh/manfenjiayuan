@@ -11,8 +11,8 @@ import android.widget.ProgressBar;
 
 import com.manfenjiayuan.business.bean.ChainGoodsSku;
 import com.manfenjiayuan.business.bean.CompanyInfo;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.api.constant.IsPrivate;

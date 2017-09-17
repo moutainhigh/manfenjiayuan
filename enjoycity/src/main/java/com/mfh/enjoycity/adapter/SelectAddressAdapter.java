@@ -16,6 +16,7 @@ import com.mfh.enjoycity.utils.Constants;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -47,9 +48,9 @@ public class SelectAddressAdapter extends RecyclerView.Adapter<RecyclerView.View
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
 
-        String currentId = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
-                .getString(Constants.PREF_KEY_LOGIN_ADDR_ID, null);
-        currentEntity = ReceiveAddressService.get().getEntityById(currentId);
+//        String currentId = SharedPreferencesManager.getPreferences(Constants.PREF_NAME_APP_BIZ)
+//                .getString(Constants.PREF_KEY_LOGIN_ADDR_ID, null);
+//        currentEntity = ReceiveAddressService.get().getEntityById(currentId);
     }
 
     @Override
@@ -90,12 +91,12 @@ public class SelectAddressAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public class AddressViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.iv_marker)
+        @BindView(R.id.iv_marker)
         ImageView ivMarker;
-        @Bind(R.id.tv_name) TextView tvName;
-        @Bind(R.id.tv_telephone) TextView tvTel;
-        @Bind(R.id.tv_address) TextView tvAddr;
-//        @Bind(R.id.iv_arrow) ImageView ivArrow;
+        @BindView(R.id.tv_name) TextView tvName;
+        @BindView(R.id.tv_telephone) TextView tvTel;
+        @BindView(R.id.tv_address) TextView tvAddr;
+//        @BindView(R.id.iv_arrow) ImageView ivArrow;
 
         public AddressViewHolder(final View itemView) {
             super(itemView);

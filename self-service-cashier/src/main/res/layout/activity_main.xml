@@ -3,22 +3,33 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:baselineAligned="false"
-              android:showDividers="middle"
               android:divider="@drawable/divider_vertical_line_primary"
-              android:orientation="horizontal">
+              android:orientation="horizontal"
+              android:showDividers="middle">
 
     <LinearLayout
         android:layout_width="70dp"
         android:layout_height="match_parent"
-        android:gravity="center_horizontal"
         android:background="@color/mfh_barBackground"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
+
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
+            android:id="@+id/iv_cashier_avatar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="@dimen/spacing_normal"
+            android:layout_marginTop="@dimen/spacing_normal"
+            android:src="@drawable/chat_tmp_user_head"/>
+
         <!--导航-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/slideMenu"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:paddingBottom="@dimen/spacing_nano"
+            android:paddingTop="@dimen/spacing_nano"/>
 
         <com.bingshanguxue.vector_uikit.SyncButton
             android:id="@+id/button_sync"

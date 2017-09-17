@@ -13,7 +13,7 @@ import com.mfh.enjoycity.database.HistorySearchEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -27,7 +27,7 @@ public class HistorySearchAdapter extends BaseAdapter {
     private int curSelectedId = 0;
 
     static class ViewHolder {
-        @Bind(R.id.tv_query) TextView tvQuery;
+        @BindView((R.id.tv_query) TextView tvQuery;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

@@ -245,11 +245,11 @@ public class AddAddressFragment extends BaseFragment {
         jsonObject.put("longitude", mAddressBrief.getLongitude());
 
         if (mode == 0){
-            ReciaddrApi.createForHuman(MfhLoginService.get().getCurrentGuId(), jsonObject, submitRC);
+            ReciaddrApi.createForHuman(MfhLoginService.get().getHumanId(), jsonObject, submitRC);
         }
         else{
             jsonObject.put("id", mAddressBrief.getId());
-            ReciaddrApi.updateForHuman(MfhLoginService.get().getCurrentGuId(), jsonObject, submitRC);
+            ReciaddrApi.updateForHuman(MfhLoginService.get().getHumanId(), jsonObject, submitRC);
         }
     }
 }

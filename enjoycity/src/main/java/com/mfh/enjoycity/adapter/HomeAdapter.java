@@ -21,6 +21,7 @@ import com.mfh.framework.uikit.widget.ChildGridView;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -147,11 +148,11 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class NaviViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.btn_recent)
+        @BindView(R.id.btn_recent)
         BadgeViewButton btnRecent;
-        @Bind(R.id.btn_hot)
+        @BindView(R.id.btn_hot)
         BadgeViewButton btnHot;
-        @Bind(R.id.btn_all)
+        @BindView(R.id.btn_all)
         BadgeViewButton btnAll;
 
         public NaviViewHolder(final View itemView) {
@@ -194,11 +195,11 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class DiscountViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_title)
+        @BindView(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.button_more)
+        @BindView(R.id.button_more)
         Button btnMore;
-        @Bind(R.id.grid_products)
+        @BindView(R.id.grid_products)
         ChildGridView gridView;
 
         public DiscountViewHolder(final View itemView) {
@@ -218,7 +219,7 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public class CategoryMenuViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.grid_category)
+        @BindView(R.id.grid_category)
         ChildGridView gridView;
 
         public CategoryMenuViewHolder(final View itemView) {
@@ -238,11 +239,11 @@ public class HomeAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
     public class CategoryProductViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tv_title)
+        @BindView(R.id.tv_title)
         TextView tvTitle;
-        @Bind(R.id.button_more)
+        @BindView(R.id.button_more)
         Button btnMore;
-        @Bind(R.id.grid_products)
+        @BindView(R.id.grid_products)
         ChildGridView gridView;
 
         public CategoryProductViewHolder(final View itemView) {

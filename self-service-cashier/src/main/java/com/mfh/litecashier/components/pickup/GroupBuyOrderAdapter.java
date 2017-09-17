@@ -44,7 +44,7 @@ public class GroupBuyOrderAdapter extends RegularAdapter<GroupBuyOrder, GroupBuy
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = mLayoutInflater.inflate(R.layout.cardview_groupbuy_order, null, false);
+        View v = mLayoutInflater.inflate(R.layout.cardview_groupbuy_order, parent, false);
         return new ViewHolder(v);
     }
 
@@ -160,7 +160,7 @@ public class GroupBuyOrderAdapter extends RegularAdapter<GroupBuyOrder, GroupBuy
                 if (order != null && order.isSelected()) {
                     groupBuyOrders.add(order);
                 }
-                ZLogger.d("isSelected=" + order.isSelected());
+//                ZLogger.d("isSelected=" + order.isSelected());
             }
         }
 

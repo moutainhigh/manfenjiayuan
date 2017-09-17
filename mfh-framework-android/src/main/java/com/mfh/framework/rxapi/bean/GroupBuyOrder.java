@@ -17,6 +17,7 @@ public class GroupBuyOrder extends MfhEntity<Long> implements Item {
     private String receivePhone;
     private Double bcount;
     private Integer status;
+    private String statusCaption;
     private Integer btype;
     private String btypename;
     private List<GroupBuyOrderItem> items;
@@ -61,6 +62,14 @@ public class GroupBuyOrder extends MfhEntity<Long> implements Item {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getStatusCaption() {
+        return statusCaption;
+    }
+
+    public void setStatusCaption(String statusCaption) {
+        this.statusCaption = statusCaption;
     }
 
     public Integer getBtype() {

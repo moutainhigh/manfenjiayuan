@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+    <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
+
+        <!---->
+    <!--</RelativeLayout>-->
+
+    <include
+        android:id="@+id/appbar"
+        layout="@layout/appbar"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="448dp"
+        android:background="@color/material_white"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="32dp">
+
+        <com.bingshanguxue.vector_uikit.widget.AvatarView
+            android:id="@+id/iv_header"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/chat_tmp_user_head"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            style="@style/singleline_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text=""
+            android:textSize="18sp"/>
+
+        <LinearLayout
+            android:layout_width="267dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+            <!--锁定-->
+            <Button
+                android:id="@+id/button_lock"
+                style="@style/mfh_button_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/btn_rectange_green"
+                android:gravity="center"
+                android:text="@string/button_lock"/>
+
+
+            <!--交接班-->
+            <Button
+                android:id="@+id/button_handover"
+                style="@style/mfh_button_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_rectange_green"
+                android:gravity="center"
+                android:text="@string/button_handover"/>
+
+            <!--退出-->
+            <Button
+                android:id="@+id/button_logout"
+                style="@style/mfh_button_text"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_rectange_red"
+                android:gravity="center"
+                android:text="@string/button_logout"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="448dp"
+        android:alpha="0.85"
+        android:background="@color/mfh_barBackground">
+
+        <ProgressBar
+            android:id="@+id/animProgressBar"
+            style="@style/loading"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_centerInParent="true"
+            tools:ignore="InconsistentLayout"/>
+
+    </RelativeLayout>
+</RelativeLayout>

@@ -69,10 +69,10 @@
             android:name=".ui.activity.StartActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN"/>-->
+                <!--<category android:name="android.intent.category.LAUNCHER"/>-->
+            <!--</intent-filter>-->
         </activity>
         <!--主界面-->
         <activity
@@ -192,7 +192,7 @@
 
         <!--接收微信的请求及返回值-->
         <activity
-            android:name="com.mfh.enjoycity.wxapi.WXEntryActivity"
+            android:name=".wxapi.WXEntryActivity"
             android:exported="true"
             android:launchMode="singleTop"/>
         <activity
@@ -200,7 +200,15 @@
             android:exported="true"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.Transparent"/>
-
+        <activity
+            android:name=".wxapi.ScanQRCodeLoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
         <!-- alipay sdk begin -->
         <activity
             android:name="com.alipay.sdk.app.H5PayActivity"

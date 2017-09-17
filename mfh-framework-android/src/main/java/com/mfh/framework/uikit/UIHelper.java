@@ -105,7 +105,11 @@ public class UIHelper {
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
 //        intent.setAction(Intent.ACTION_CALL);
 //        intent.setData(Uri.parse("tel:" + phoneNumber));
-        context.startActivity(intent);
+        try {
+            context.startActivity(intent);
+        } catch (Exception e) {
+            ZLogger.e(e.toString());
+        }
     }
 
     /**

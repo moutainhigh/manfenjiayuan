@@ -17,7 +17,9 @@
 package com.mfh.framework.system;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
 
 /**
  * Utility class that wraps access to the runtime permissions API in M and provides basic helper
@@ -40,6 +42,30 @@ public abstract class PermissionUtil {
         // Verify that each required permission has been granted, otherwise return false.
         for (int result : grantResults) {
             if (result != PackageManager.PERMISSION_GRANTED) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public static boolean checkSelfPermissions(Context context, String[] permissions) {
+        // At least one result must be checked.
+        if(permissions.length < 1){
+            return false;
+        }
+
+
+//        PackageManager packageManager = context.getPackageManager();
+//        //java.lang.SecurityException: ConnectivityService: Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE.
+//        if (packageManager.checkPermission(Manifest.permission.ACCESS_NETWORK_STATE,
+//                context.getPackageName()) != PackageManager.PERMISSION_GRANTED) {
+//            ZLogger.wf("Neither user 10103 nor current process has android.permission.ACCESS_NETWORK_STATE");
+//            return false;
+//        }
+        // Verify that each required permission has been granted, otherwise return false.
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
             }
         }

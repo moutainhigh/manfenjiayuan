@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
-import com.manfenjiayuan.business.presenter.CustomerPresenter;
+import com.manfenjiayuan.business.mvp.presenter.CustomerPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.ICustomerView;
-import com.mfh.framework.api.account.Human;
+import com.manfenjiayuan.business.mvp.view.ICustomerView;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
@@ -40,7 +40,7 @@ import com.mfh.litecashier.R;
  * <li>Step 3: 输入用户收到的验证码，然后点击‘验证’按钮验证是否正确。</li>
  * </p>
  * <p/>
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class QueryBalanceDialog extends CommonDialog implements ICustomerView {
 
@@ -215,8 +215,6 @@ public class QueryBalanceDialog extends CommonDialog implements ICustomerView {
     private void loadUserAccount(String cardId){
         refresh2(null);
 
-
-
         if (!NetworkUtils.isConnect(getContext())){
             DialogUtil.showHint(R.string.toast_network_error);
             return;
@@ -224,13 +222,13 @@ public class QueryBalanceDialog extends CommonDialog implements ICustomerView {
 
         progressBar.setVisibility(View.VISIBLE);
 
-        mCustomerPresenter.getCustomerByOther(cardId);
-
         final String cardId2 = MUtils.parseCardId(cardId);
         if (StringUtils.isEmpty(cardId2)) {
             DialogUtil.showHint("芯片号无效");
             return;
         }
+
+        mCustomerPresenter.getCustomerByOther(cardId);
 
 //        Map<String, String> options = new HashMap<>();
 //        if (!StringUtils.isEmpty(cardId2)) {

@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -119,20 +120,24 @@ public class TextInputDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        getWindow().setGravity(Gravity.CENTER);
+        Window window = getWindow();
+        if (window != null) {
+            window.setGravity(Gravity.CENTER);
 
-        WindowManager m = getWindow().getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = getWindow().getAttributes();
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = getWindow().getAttributes();
 //        p.width = d.getWidth() * 2 / 3;
-        p.width = DensityUtil.dip2px(getContext(), 400);
+            p.width = DensityUtil.dip2px(getContext(), 400);
 //
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
 //        getWindow().setAttributes(p);
 
-        //hide soft input
+            //hide soft input
 //        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+
     }
 
     @Override

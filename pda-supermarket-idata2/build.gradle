@@ -22,8 +22,8 @@ android {
 
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
-        versionCode 50
-        versionName "0.2.2"
+        versionCode 53
+        versionName "0.2.4"
         multiDexEnabled true
 
         ndk {

@@ -328,7 +328,7 @@ public class HandoverFragment extends BaseProgressFragment {
                     Map<String, String> caption = entityWrapper.getCaption();
                     aggItem.setBizTypeCaption(caption.get("bizType"));
                     aggItem.setSubTypeCaption(caption.get("subType"));
-                    aggItems.add(entityWrapper.getBean());
+                    aggItems.add(aggItem);
 
                     turnOver += aggItem.getTurnover();
                     origionAmount += aggItem.getOrigionAmount();
@@ -392,7 +392,6 @@ public class HandoverFragment extends BaseProgressFragment {
                 for (MEntityWrapper<AccItem> wrapper : dataList) {
                     AccItem accItem = wrapper.getBean();
                     Map<String, String> caption = wrapper.getCaption();
-
                     accItem.setPayTypeCaption(caption.get("payType"));
                     accItems.add(accItem);
 

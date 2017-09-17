@@ -26,6 +26,7 @@ import com.manfenjiayuan.pda_supermarket.ui.store.InvLabelFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.InvSendOrderNewFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.PackageFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.cashier.CashierFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.groupBuy.GroupBuyActivityFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invIo.CreateInvIoOrderFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invIo.InvIoConvertFromFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invRecv.InvRecvOrderConvertFragment;
@@ -34,8 +35,7 @@ import com.manfenjiayuan.pda_supermarket.ui.store.invcheck.InvCheckListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossOrderListFragment;
 import com.manfenjiayuan.pda_supermarket.ui.store.invloss.InvLossStockFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.pickup.PickupCustomersFragment;
-import com.manfenjiayuan.pda_supermarket.ui.store.pickup.PickupOrderFragment;
+import com.manfenjiayuan.pda_supermarket.ui.store.groupBuy.GroupBuyOrdersFragment;
 import com.mfh.framework.api.invIoOrder.InvIoOrderApi;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.BackHandledInterface;
@@ -477,23 +477,23 @@ public class PrimaryActivity extends IData95Activity implements BackHandledInter
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (fragmentType == FT_INV_PICKUP_ORDER) {
-            PickupOrderFragment fragment;
+            GroupBuyActivityFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = PickupOrderFragment.newInstance(intent.getExtras());
+                fragment = GroupBuyActivityFragment.newInstance(intent.getExtras());
             } else {
-                fragment = PickupOrderFragment.newInstance(null);
+                fragment = GroupBuyActivityFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
                     .commit();
         } else if (fragmentType == FT_INV_PICKUP_ORDER_CUSTOMERS) {
-            PickupCustomersFragment fragment;
+            GroupBuyOrdersFragment fragment;
             Intent intent = this.getIntent();
             if (intent != null) {
-                fragment = PickupCustomersFragment.newInstance(intent.getExtras());
+                fragment = GroupBuyOrdersFragment.newInstance(intent.getExtras());
             } else {
-                fragment = PickupCustomersFragment.newInstance(null);
+                fragment = GroupBuyOrdersFragment.newInstance(null);
             }
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)

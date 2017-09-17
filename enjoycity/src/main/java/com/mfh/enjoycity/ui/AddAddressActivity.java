@@ -32,6 +32,7 @@ import com.mfh.framework.network.NetProcessor;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -39,9 +40,9 @@ import butterknife.Bind;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/5.
  * */
 public class AddAddressActivity extends BaseActivity {
-    @Bind(R.id.tool_bar)
+    @BindView(R.id.tool_bar)
     Toolbar toolbar;
-    @Bind({ R.id.item_receiver, R.id.item_telephone, R.id.item_address, R.id.item_houseNo })
+    @BindView({ R.id.item_receiver, R.id.item_telephone, R.id.item_address, R.id.item_houseNo })
     List<EditItem> btnItems;
 
     private SubdisBean tmpSubdisBean;

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/rootview"
+              android:layout_height="72dp"
+              android:gravity="center"
+              android:orientation="horizontal"
+              android:baselineAligned="false"
+              android:padding="@dimen/spacing_micro"
+              android:layout_width="match_parent">
+
+
+    <TextView
+        android:id="@+id/tv_phonenumber"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textColor="@color/item_groupbuy_order_text"
+        android:textSize="@dimen/textsize_normal"
+        android:maxLines="1"/>
+
+    <TextView
+        android:id="@+id/tv_bcount"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/item_groupbuy_order_text"
+        android:textSize="@dimen/textsize_normal"
+        android:maxLines="1"/>
+    <TextView
+        android:id="@+id/tv_status"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text=""
+        android:textColor="@color/item_groupbuy_order_text"
+        android:textSize="@dimen/textsize_normal"
+        android:maxLines="1"/>
+
+</LinearLayout>

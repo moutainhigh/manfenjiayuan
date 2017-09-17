@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -25,8 +26,8 @@ public class SimpleCommunityAdapter extends BaseAdapter {
     private List<String> data = new ArrayList<>();
 
     static class ViewHolder {
-        @Bind(R.id.tv_title) TextView tvTitle;
-        @Bind(R.id.iv_arrow) ImageView ivArrow;
+        @BindView(R.id.tv_title) TextView tvTitle;
+        @BindView(R.id.iv_arrow) ImageView ivArrow;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

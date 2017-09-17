@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -144,7 +145,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class HotSearchViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.flow_layout)
+        @BindView(R.id.flow_layout)
         FlowLayout flowLayout;
 
         public HotSearchViewHolder(final View itemView) {
@@ -163,9 +164,9 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class HistoryViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.listview_history)
+        @BindView(R.id.listview_history)
         ListView listView;
-        @Bind(R.id.grid_query)
+        @BindView(R.id.grid_query)
         ChildGridView gridView;
 
         public HistoryViewHolder(final View itemView) {
@@ -208,7 +209,7 @@ public class SearchProductAdapter extends RecyclerView.Adapter<RecyclerView.View
     }
 
     public class OperationViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.button_clear_history)
+        @BindView(R.id.button_clear_history)
         Button btnClearHistory;
 
         public OperationViewHolder(final View itemView) {

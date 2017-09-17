@@ -26,10 +26,10 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.ExpressOrderFlowEvent;
-import com.manfenjiayuan.business.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.mvp.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
 import com.mfh.litecashier.ui.fragment.order.PosOrderItemsAdapter;
-import com.manfenjiayuan.business.view.IOrderflowView;
+import com.manfenjiayuan.business.mvp.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;

@@ -402,7 +402,6 @@ public class MfhApplication extends Application {
         }
         jsonObject.put("Security.providers", Security.getProviders());
 
-
         ZLogger.d(jsonObject.toJSONString());
 
         // 从AndroidManifest.xml的meta-data中读取SDK配置信息

@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.manfenjiayuan.business.presenter.ScOrderPresenter;
-import com.manfenjiayuan.business.view.IScOrderView;
+import com.manfenjiayuan.business.mvp.presenter.ScOrderPresenter;
+import com.manfenjiayuan.business.mvp.view.IScOrderView;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;

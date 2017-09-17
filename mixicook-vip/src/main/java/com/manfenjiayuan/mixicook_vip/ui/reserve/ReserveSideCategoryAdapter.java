@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.model.PosCategory;
 import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 

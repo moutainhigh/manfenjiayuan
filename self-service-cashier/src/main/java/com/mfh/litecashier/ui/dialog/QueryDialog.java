@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.bingshanguxue.pda.R;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;

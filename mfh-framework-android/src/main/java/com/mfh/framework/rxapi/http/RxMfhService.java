@@ -1,8 +1,8 @@
 package com.mfh.framework.rxapi.http;
 
 
-import com.mfh.framework.api.CompanyHuman;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.CompanyHuman;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.posRegister.PosRegisterApi;
 import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
@@ -75,6 +75,12 @@ public interface RxMfhService {
 //    @FormUrlEncoded
 //    @POST("analysisAccDate/haveNoMoneyEnd")
 //    Observable<MResponse<String>> haveNoMoneyEnd(@Field("JSESSIONID") String JSESSIONID);
+    /**
+     * 针对当前用户所属网点判断是否存在过清分时余额不足情况
+     * /analysisAccDate/haveNoMoneyEnd?date=2016-02-02
+     *
+     * @param request date可空,默认是昨天。代表昨天包括昨天以前的时间内有无存在余额不足情况。
+     */
     @GET("analysisAccDate/haveNoMoneyEnd")
     Observable<MResponse<MValue<String>>> haveNoMoneyEnd(@Query("JSESSIONID") String JSESSIONID);
     /**会话是否有效*/
@@ -82,6 +88,9 @@ public interface RxMfhService {
 //    @POST("scNetRealInfo/needLockPos")
 //    Observable<MResponse<String>> needLockPos(@Field("JSESSIONID") String JSESSIONID,
 //                                              @Field("netId") Long netId);
+    /**
+     * 判断是否需要锁定pos，由pos端主动发起询问,/scNetRealInfo/needLockPos?netId=
+     */
     @GET("scNetRealInfo/needLockPos")
     Observable<MResponse<String>> needLockPos(@Query("JSESSIONID") String JSESSIONID,
                                               @Query("netId") Long netId);
@@ -91,8 +100,6 @@ public interface RxMfhService {
     /**获取能力信息，可以调用接口获取小伙伴详细信息，包括可能存在的认证信息*/
     @GET("queryPrivList")
     Observable<MResponse<String>> queryPrivList(@Query("JSESSIONID") String JSESSIONID);
-    @GET("companyHuman/findCompUserPwdInfo")
-    Observable<MResponse<MRspQuery<CompanyHuman>>> findCompUserPwdInfo(@QueryMap Map<String, String> options);
 
     @GET("scProductSkuBarcodes/findShopOtherBarcodes")
     Observable<MResponse<MRspQuery<ProductSkuBarcode>>> findShopOtherBarcodes(@QueryMap Map<String, String> options);
@@ -189,12 +196,18 @@ public interface RxMfhService {
     Observable<ResponseBody> getVideoUrl(@Field("weibourl") String weibourl);
 
     /**
+     * 通过关联的私人卡登陆，此时tenantId必须传
+     * /loginByPrivateCard?tenantId=&cardNo=&loginKind=humanId
+     * */
+    @GET("loginByPrivateCard")
+    Observable<MResponse<UserMixInfo>> loginByPrivateCard(@QueryMap Map<String, String> options);
+
+    /**
      * 通用会员识别接口
      * /pmc/customer/getCustomerByOther?mobile|humanId|cardNo|wxopenid=
      * 返回当前账户余额
      * */
     @GET("customer/getCustomerByOther")
     Observable<MResponse<Human>> getCustomerByOther(@QueryMap Map<String, String> options);
-
 
 }

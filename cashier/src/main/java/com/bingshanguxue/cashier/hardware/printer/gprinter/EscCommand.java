@@ -541,9 +541,9 @@ public class EscCommand {
 
     public void addDownloadNvBitImage(Bitmap[] bitmap) {
         if(bitmap == null) {
-            Log.d("BMP", "bmp.  null ");
+            ZLogger.d("BMP", "bmp.  null ");
         } else {
-            Log.d("BMP", "bitmap.length " + bitmap.length);
+            ZLogger.d("BMP", "bitmap.length " + bitmap.length);
             int n = bitmap.length;
             if(n > 0) {
                 byte[] command = new byte[]{(byte)28, (byte)113, (byte)n};
@@ -556,8 +556,8 @@ public class EscCommand {
                     Bitmap rszBitmap = GpUtils.resizeImage(grayBitmap, width, height);
                     byte[] src = GpUtils.bitmapToBWPix(rszBitmap);
                     height = src.length / width;
-                    Log.d("BMP", "bmp  Width " + width);
-                    Log.d("BMP", "bmp  height " + height);
+                    ZLogger.d("BMP", "bmp  Width " + width);
+                    ZLogger.d("BMP", "bmp  height " + height);
                     byte[] codecontent = GpUtils.pixToEscNvBitImageCmd(src, width, height);
 
                     for(int k = 0; k < codecontent.length; ++k) {

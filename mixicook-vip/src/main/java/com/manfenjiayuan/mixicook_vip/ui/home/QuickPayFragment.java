@@ -53,7 +53,7 @@ public class QuickPayFragment extends BaseFragment {
                     }
                 });
         try {
-            String barcode = MUtils.genQuickpamentCode(String.valueOf(MfhLoginService.get().getCurrentGuId()), 15);
+            String barcode = MUtils.genQuickpamentCode(String.valueOf(MfhLoginService.get().getHumanId()), 15);
             ivCode128.setImageBitmap(QrCodeUtils
                     .Create2DCode(barcode, BarcodeFormat.CODE_128, 800, 240, null));
             tvBarcode.setText(barcode);

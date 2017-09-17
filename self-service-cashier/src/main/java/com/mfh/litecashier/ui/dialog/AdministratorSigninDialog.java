@@ -8,18 +8,19 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspValue;
 import com.mfh.framework.MfhApplication;
-import com.mfh.framework.core.utils.NetworkUtils;
+import com.mfh.framework.api.commonuseraccount.CommonUserAccountApi;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DialogUtil;
+import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
@@ -184,14 +185,13 @@ public class AdministratorSigninDialog extends CommonDialog {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
+        Window window = getWindow();
         if (getWindow() != null) {
-            getWindow().setGravity(Gravity.CENTER);
-        }
-        
-        WindowManager m = getWindow().getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = getWindow().getAttributes();
-        p.width = DensityUtil.dip2px(getContext(), 400);
+            window.setGravity(Gravity.CENTER);
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = getWindow().getAttributes();
+            p.width = DensityUtil.dip2px(getContext(), 400);
 //        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //
@@ -199,8 +199,11 @@ public class AdministratorSigninDialog extends CommonDialog {
 //        p.y = (int)a.getDimension(0, 44);
 //        getWindow().setAttributes(p);
 
-        //hide soft input
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+            //hide soft input
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        }
+        
+
     }
 
 //    @Override

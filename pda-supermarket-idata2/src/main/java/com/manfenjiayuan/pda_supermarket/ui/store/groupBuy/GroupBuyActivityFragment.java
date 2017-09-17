@@ -6,14 +6,12 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
-import com.manfenjiayuan.business.presenter.GroupBuyOrderPresenter;
-import com.manfenjiayuan.business.view.IGroupBuyOrderView;
+import com.manfenjiayuan.business.mvp.presenter.GroupBuyOrderPresenter;
+import com.manfenjiayuan.business.mvp.view.IGroupBuyOrderView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.R;
 import com.manfenjiayuan.pda_supermarket.ui.PrimaryActivity;
@@ -24,6 +22,7 @@ import com.mfh.framework.api.scOrder.ScOrder;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.rxapi.bean.GroupBuyActivity;
+import com.mfh.framework.rxapi.bean.GroupBuyOrder;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -37,7 +36,7 @@ import butterknife.OnClick;
  * 团购活动列表
  * Created by bingshanguxue on 15/8/30.
  */
-public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> implements IGroupBuyOrderView {
+public class GroupBuyActivityFragment extends BaseListFragment<InvLossOrder> implements IGroupBuyOrderView {
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -48,12 +47,15 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
     private LinearLayoutManager linearLayoutManager;
     @BindView(R.id.empty_view)
     View emptyView;
+    @BindView(R.id.animProgress)
+    ProgressBar progressBar;
+
     private GroupBuyActivityAdapter mGroupBuyActivityAdapter;
 
     private GroupBuyOrderPresenter mGroupBuyOrderPresenter;
 
-    public static GroupBuyHomeFragment newInstance(Bundle args) {
-        GroupBuyHomeFragment fragment = new GroupBuyHomeFragment();
+    public static GroupBuyActivityFragment newInstance(Bundle args) {
+        GroupBuyActivityFragment fragment = new GroupBuyActivityFragment();
 
         if (args != null) {
             fragment.setArguments(args);
@@ -85,13 +87,6 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
         reload();
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_inv_check, menu);
-
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
     /**
      * 设置toolbar
      */
@@ -110,20 +105,6 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
                         getActivity().onBackPressed();
                     }
                 });
-        // Set an OnMenuItemClickListener to handle menu item clicks
-        mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                // Handle the menu item
-                int id = item.getItemId();
-                if (id == R.id.action_sync) {
-                    reload();
-                }
-                return true;
-            }
-        });
-        // Inflate a menu to be displayed in the toolbar
-        mToolbar.inflateMenu(R.menu.menu_inv_check);
     }
 
     /**
@@ -189,17 +170,49 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
         orderRecyclerView.setAdapter(mGroupBuyActivityAdapter);
     }
 
+
+//    public void selectNotifyWay() {
+//        new AlertDialog.Builder(getContext(), R.style.Theme_AppCompat_Light_Dialog_Alert).setTitle(R.string.notify_human_title)
+//                .setSingleChoiceItems(R.array.notify_human_way, 0, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(final DialogInterface dialog, final int which) {
+//                        switch (which) {
+//                            case 0:
+//                                UIHelper.callPhone(getContext(), "15250065084");
+//
+//                                break;
+//                            case 1:
+//                                DialogUtil.showHint("weichat");
+////                                mGroupBuyOrderPresenter.notifyHumanTakeGood(groupBuyOrder.getId());
+//                                break;
+//                        }
+//                    }
+//                })
+////                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(final DialogInterface dialog, final int which) {
+////                        onTxDataSourceChanged();
+////                    }
+////                })
+//                .setNegativeButton(R.string.cancel, null).show();
+//    }
+
     /**
      * 加载盘点订单列表列表
      */
     @OnClick({R.id.empty_view})
     public void reload() {
+
         if (!NetworkUtils.isConnect(AppContext.getAppContext())) {
             DialogUtil.showHint(R.string.toast_network_error);
             onLoadFinished();
             return;
         }
 
+        if (bSyncInProgress) {
+            onLoadFinished();
+            return;
+        }
         onLoadStart();
 
         //初始化
@@ -296,15 +309,26 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
     }
 
     @Override
+    public void onLoadStart() {
+        super.onLoadStart();
+        progressBar.setVisibility(View.VISIBLE);
+
+    }
+
+    @Override
+    public void onLoadFinished() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onIGroupBuyOrderViewProcess() {
         onLoadStart();
-
     }
 
     @Override
     public void onIGroupBuyOrderViewError(String errorMsg) {
         onLoadFinished();
-
+        DialogUtil.showHint(errorMsg);
     }
 
     @Override
@@ -325,15 +349,22 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
                 }
             }
 
-            ZLogger.d(String.format("加载商品采购订单结束,pageInfo':page=%d/%d(%d/%d)",
+            ZLogger.d(String.format("加载团购活动结束,pageInfo':page=%d/%d(%d/%d)",
                     mPageInfo.getPageNo(), mPageInfo.getTotalPage(),
                     mGroupBuyActivityAdapter.getItemCount(), mPageInfo.getTotalCount()));
-
+//            for (GroupBuyActivity activity : mGroupBuyActivityAdapter.getEntityList()) {
+//                ZLogger.d(JSONObject.toJSONString(activity));
+//            }
         } catch (Throwable ex) {
 //            throw new RuntimeException(ex);
-            ZLogger.ef(String.format("加载商品采购订单失败: %s", ex.toString()));
+            ZLogger.ef(String.format("加载团购活动失败: %s", ex.toString()));
         }
         onLoadFinished();
+    }
+
+    @Override
+    public void onQueryGroupBuyOrderSuccess(PageInfo pageInfo, List<GroupBuyOrder> dataList) {
+
     }
 
     @Override
@@ -343,6 +374,11 @@ public class GroupBuyHomeFragment extends BaseListFragment<InvLossOrder> impleme
 
     @Override
     public void onNotifyTakeGoodsSuccess(String data) {
+
+    }
+
+    @Override
+    public void onNotifyReceiveAndFinishOrderSuccess(String data) {
 
     }
 }

@@ -49,7 +49,11 @@ public class ReceiveOrderAddressAdapter extends ArrayAdapter<ReceiveOrderHumanIn
         }
 
         ReceiveOrderHumanInfo entity = getItem(i);
-        viewHolder.tvAddress.setText(entity.getAddress());
+        if (entity != null) {
+            viewHolder.tvAddress.setText(entity.getAddress());
+        } else {
+            viewHolder.tvAddress.setText("");
+        }
         return view;
     }
 

@@ -2,3 +2,6 @@
 /.idea
 /.gradle
 /gradle
+
+#.iml文件包含与本地机器有关的配置，不建议加入到版本控制
+*.iml

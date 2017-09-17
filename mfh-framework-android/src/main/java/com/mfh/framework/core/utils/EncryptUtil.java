@@ -9,7 +9,7 @@ import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 
 /**
- * Created by Nat.ZZN(bingshanguxue) on 15/11/23.
+ * Created by bingshanguxue on 15/11/23.
  */
 public class EncryptUtil {
 
@@ -21,7 +21,6 @@ public class EncryptUtil {
             ZLogger.d(Base64.encode(hashPassword));
             ZLogger.d(new String(hashPassword));
             return MD5Util.byteArrayToHexString(hashPassword);
-
 
         }
         catch(Exception e) {

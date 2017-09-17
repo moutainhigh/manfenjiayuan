@@ -8,9 +8,9 @@ import android.widget.Button;
 
 import com.alibaba.fastjson.JSONObject;
 import com.manfenjiayuan.business.bean.InvSkuGoods;
-import com.manfenjiayuan.business.presenter.InvSkuGoodsPresenter;
+import com.manfenjiayuan.business.mvp.presenter.InvSkuGoodsPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IInvSkuGoodsView;
+import com.manfenjiayuan.business.mvp.view.IInvSkuGoodsView;
 import com.manfenjiayuan.pda_supermarket.AppContext;
 import com.manfenjiayuan.pda_supermarket.DataSyncManager;
 import com.manfenjiayuan.pda_supermarket.R;

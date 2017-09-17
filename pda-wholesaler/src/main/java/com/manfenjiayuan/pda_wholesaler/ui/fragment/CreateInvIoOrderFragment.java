@@ -50,8 +50,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import rx.Subscriber;
 
-import static com.igexin.push.core.g.R;
-import static com.igexin.push.core.g.v;
 
 
 /**

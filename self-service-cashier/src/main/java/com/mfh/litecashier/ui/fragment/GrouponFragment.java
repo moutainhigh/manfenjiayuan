@@ -30,7 +30,7 @@ import butterknife.OnClick;
 
 /**
  * 团购
- * Created by Nat.ZZN(bingshanguxue) on 15/12/15.
+ * Created by bingshanguxue on 15/12/15.
  */
 public class GrouponFragment extends BaseFragment {
     public static final String EXTRA_KEY_ROOT_URL = "extra_key_root_url";

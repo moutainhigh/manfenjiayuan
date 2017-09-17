@@ -3,14 +3,17 @@
   <component name="GradleSettings">
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
-        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="$APPLICATION_HOME_DIR$/gradle/gradle-2.14.1" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/almigod" />
             <option value="$PROJECT_DIR$/cashier" />
             <option value="$PROJECT_DIR$/enjoycity" />
             <option value="$PROJECT_DIR$/im" />
+            <option value="$PROJECT_DIR$/launcher" />
             <option value="$PROJECT_DIR$/litecashier-display" />
             <option value="$PROJECT_DIR$/loveshopping" />
             <option value="$PROJECT_DIR$/mfh-framework-all" />
@@ -19,38 +22,17 @@
             <option value="$PROJECT_DIR$/mfowner" />
             <option value="$PROJECT_DIR$/mixicook-vip" />
             <option value="$PROJECT_DIR$/pda" />
-            <option value="$PROJECT_DIR$/pda-supermarket" />
-            <option value="$PROJECT_DIR$/pda-supermarket-gpio" />
             <option value="$PROJECT_DIR$/pda-supermarket-idata2" />
             <option value="$PROJECT_DIR$/pda-wholesaler" />
             <option value="$PROJECT_DIR$/self-service-cashier" />
+            <option value="$PROJECT_DIR$/skin-lanlj" />
+            <option value="$PROJECT_DIR$/skin-mixicook" />
+            <option value="$PROJECT_DIR$/skin-qianwj" />
+            <option value="$PROJECT_DIR$/skinloader" />
             <option value="$PROJECT_DIR$/vector_uikit" />
-            <option value="$PROJECT_DIR$/vector_user" />
           </set>
         </option>
-        <option name="myModules">
-          <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/cashier" />
-            <option value="$PROJECT_DIR$/enjoycity" />
-            <option value="$PROJECT_DIR$/im" />
-            <option value="$PROJECT_DIR$/litecashier-display" />
-            <option value="$PROJECT_DIR$/loveshopping" />
-            <option value="$PROJECT_DIR$/mfh-framework-all" />
-            <option value="$PROJECT_DIR$/mfh-framework-android" />
-            <option value="$PROJECT_DIR$/mfh-framework-business" />
-            <option value="$PROJECT_DIR$/mfowner" />
-            <option value="$PROJECT_DIR$/mixicook-vip" />
-            <option value="$PROJECT_DIR$/pda" />
-            <option value="$PROJECT_DIR$/pda-supermarket" />
-            <option value="$PROJECT_DIR$/pda-supermarket-gpio" />
-            <option value="$PROJECT_DIR$/pda-supermarket-idata2" />
-            <option value="$PROJECT_DIR$/pda-wholesaler" />
-            <option value="$PROJECT_DIR$/self-service-cashier" />
-            <option value="$PROJECT_DIR$/vector_uikit" />
-            <option value="$PROJECT_DIR$/vector_user" />
-          </set>
-        </option>
+        <option name="resolveModulePerSourceSet" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

@@ -19,11 +19,11 @@ import android.widget.TextView;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
-import com.manfenjiayuan.business.presenter.CustomerPresenter;
+import com.manfenjiayuan.business.mvp.presenter.CustomerPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.ICustomerView;
+import com.manfenjiayuan.business.mvp.view.ICustomerView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.framework.core.utils.DeviceUtils;
@@ -52,7 +52,7 @@ import rx.Subscriber;
  * <li>Step 3: 输入用户收到的验证码，然后点击‘验证’按钮验证是否正确。</li>
  * </p>
  * <p/>
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class InitCardByStepDialog extends CommonDialog implements ICustomerView {
 

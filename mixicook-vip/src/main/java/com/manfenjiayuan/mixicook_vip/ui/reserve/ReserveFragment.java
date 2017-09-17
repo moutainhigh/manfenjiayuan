@@ -10,41 +10,35 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONArray;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IChainGoodsSkuView;
 import com.manfenjiayuan.mixicook_vip.AppContext;
 import com.manfenjiayuan.mixicook_vip.R;
-import com.manfenjiayuan.mixicook_vip.model.PosCategory;
 import com.manfenjiayuan.mixicook_vip.utils.ACacheHelper;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.comn.net.data.RspBean;
-import com.mfh.comn.net.data.RspListBean;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.category.CateApi;
 import com.mfh.framework.api.category.CateApiImpl;
 import com.mfh.framework.api.category.CategoryInfo;
 import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.category.CategoryQueryInfo;
-import com.mfh.framework.api.category.ScCategoryInfoApi;
 import com.mfh.framework.api.scChainGoodsSku.ChainGoodsSku;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import rx.Subscriber;
 
 
 /**
@@ -291,25 +285,25 @@ public class ReserveFragment extends BaseProgressFragment
 
         Map<String, String> options = new HashMap<>();
         options.put("parentId", option.getCode());
-        RxHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
-            @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.df("加载前台自定义（私有）二级类目 失败, " + e.toString());
-                readCategoryInfoCache();
-            }
-
-            @Override
-            public void onNext(List<CategoryInfo> categoryInfos) {
-                saveFreshFrontendCategoryInfoCache(categoryInfos);
-
-                readCategoryInfoCache();
-            }
-        });
+//        RxHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
+//            @Override
+//            public void onCompleted() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.df("加载前台自定义（私有）二级类目 失败, " + e.toString());
+//                readCategoryInfoCache();
+//            }
+//
+//            @Override
+//            public void onNext(List<CategoryInfo> categoryInfos) {
+//                saveFreshFrontendCategoryInfoCache(categoryInfos);
+//
+//                readCategoryInfoCache();
+//            }
+//        });
     }
 
     /**

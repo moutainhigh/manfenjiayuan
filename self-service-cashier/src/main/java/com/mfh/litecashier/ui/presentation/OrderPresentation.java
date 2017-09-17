@@ -16,7 +16,7 @@ import com.bingshanguxue.cashier.CashierProvider;
 import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.uikit.adv.AdvLocalPic;
 import com.mfh.framework.uikit.adv.AdvLocalPicAdapter;

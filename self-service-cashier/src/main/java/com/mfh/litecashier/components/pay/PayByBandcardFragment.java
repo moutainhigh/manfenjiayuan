@@ -117,21 +117,36 @@ public class PayByBandcardFragment extends BasePayFragment {
     protected void createViewInner(View rootView, ViewGroup container, Bundle savedInstanceState) {
         super.createViewInner(rootView, container, savedInstanceState);
 
-        payProcessView.init(120, new PayProcessView.OnIViewListener() {
-            @Override
-            public void onCancel() {
-                llPayInfo.setVisibility(View.VISIBLE);
-                payProcessView.setVisibility(View.GONE);
 
-//                revocation(handleAmount);
-            }
+        payProcessView.init(120, "点击重试", "查询订单", "撤销订单",
+                new PayProcessView.onCustomerViewListener() {
 
-            @Override
-            public void onRefresh() {
-                // TODO: 4/8/16 继续支付
-                submitOrder();
-            }
-        });
+                    @Override
+                    public void onAction1() {
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+                    }
+
+                    /**
+                     * 查询订单状态
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction2() {
+                        submitOrder();
+
+                    }
+
+                    /**
+                     * 撤单
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction3() {
+                        llPayInfo.setVisibility(View.VISIBLE);
+                        payProcessView.setVisibility(View.GONE);
+                    }
+
+                });
 
 //        Intent service = new Intent("com.chinaums.mis.umsips");
 //        bindService(service, conn, Service.BIND_AUTO_CREATE);
@@ -179,8 +194,9 @@ public class PayByBandcardFragment extends BasePayFragment {
                     Bundle extras = intent.getExtras();
                     if (extras != null) {
                         isRunningThread = false;
-
                         handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT);
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+
                         calculateCharge();
                     }
                 }
@@ -385,7 +401,7 @@ public class PayByBandcardFragment extends BasePayFragment {
 
                     bPayProcessing = false;
                 }
-            }, 500);
+            }, 300);
         } catch (Exception ex) {
             ZLogger.ef(ex.toString());
         }
@@ -556,8 +572,7 @@ public class PayByBandcardFragment extends BasePayFragment {
                         }
 
                     });
-        }
-        else {
+        } else {
             PayOrderApiImpl.create(jsonObject.toJSONString(), responseCallback);
         }
     }

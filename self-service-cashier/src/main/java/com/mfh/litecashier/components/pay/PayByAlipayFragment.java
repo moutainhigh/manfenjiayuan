@@ -4,19 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bingshanguxue.cashier.database.entity.PosOrderPayEntity;
 import com.bingshanguxue.cashier.model.PaymentInfo;
@@ -31,11 +26,11 @@ import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.ui.widget.PayProcessView;
 
 import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 
 /**
@@ -61,23 +56,8 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
     EditText etBarCode;//扫码枪扫描到的用户手机钱包中的付款条码
     @BindView(R.id.ll_pay_info)
     LinearLayout llPayInfo;
-
-    @BindView(R.id.ll_pay_loading)
-    LinearLayout llPayLoading;
-    @BindView(R.id.animProgress)
-    ProgressBar progressBar;
-    @BindView(R.id.tv_process)
-    TextView tvProcess;
-    @BindView(R.id.tv_countdown)
-    TextView tvCountdown;
-
-    @BindView(R.id.button_query_orderstatus)
-    Button btnQueryOrderStatus;
-    @BindView(R.id.button_cancel_order)
-    Button btnCancelAliBarPay;
-
-    private BarPayCountDownTimer payCountDownTimer;
-    private boolean payTimerRunning;
+    @BindView(R.id.payProcessView)
+    PayProcessView payProcessView;
 
     public static PayByAlipayFragment newInstance(Bundle args) {
         PayByAlipayFragment fragment = new PayByAlipayFragment();
@@ -109,7 +89,36 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
 
         initBarCodeInput();
 
-        payCountDownTimer = new BarPayCountDownTimer(30 * 1000, 1000);
+        payProcessView.init(120, "点击重试", "查询订单", "撤销订单",
+                new PayProcessView.onCustomerViewListener() {
+
+                    @Override
+                    public void onAction1() {
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
+                    }
+                    /**
+                     * 查询订单状态
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction2() {
+                        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
+                            DialogUtil.showHint(R.string.toast_network_error);
+                            return;
+                        }
+                        queryOrder(outTradeNo, lastPaidAmount);
+                    }
+
+                    /**
+                     * 撤单
+                     * 因网络或系统异常导致支付状态不明时调用
+                     */
+                    @Override
+                    public void onAction3() {
+                        cancelOrder(outTradeNo);
+                    }
+
+                });
     }
 
     @Override
@@ -122,37 +131,14 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
         EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_WAYTYPE_UPDATED, null));
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (payCountDownTimer != null) {
-            payCountDownTimer.cancel();
-            payCountDownTimer = null;
+        if (payProcessView != null) {
+            payProcessView.onDestory();
         }
     }
 
-    /**
-     * 查询订单状态
-     * 因网络或系统异常导致支付状态不明时调用
-     */
-    @OnClick(R.id.button_query_orderstatus)
-    public void queryAliBarpayStatus() {
-        if (!NetworkUtils.isConnect(CashierApp.getAppContext())) {
-            DialogUtil.showHint(R.string.toast_network_error);
-            return;
-        }
-        queryOrder(outTradeNo, lastPaidAmount);
-    }
-
-    /**
-     * 撤单
-     * 因网络或系统异常导致支付状态不明时调用
-     */
-    @OnClick(R.id.button_cancel_order)
-    public void cancelAliBarPay() {
-        cancelOrder(outTradeNo);
-    }
 
     private void initBarCodeInput() {
         etBarCode.setFocusable(true);
@@ -211,6 +197,7 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
                         handleAmount = extras.getDouble(EXTRA_KEY_HANDLE_AMOUNT);
                         etBarCode.setText("");
                         etBarCode.requestFocus();
+                        payProcessView.setState(PayProcessView.STATE_INIT, null);
                         calculateCharge();
                     }
                 }
@@ -260,17 +247,7 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
     @Override
     protected void onBarpayProcessing(String msg) {
         llPayInfo.setVisibility(View.GONE);
-        llPayLoading.setVisibility(View.VISIBLE);
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(Color.parseColor("#FF000000"));
-        progressBar.setVisibility(View.VISIBLE);
-        btnCancelAliBarPay.setVisibility(View.GONE);
-        btnQueryOrderStatus.setVisibility(View.GONE);
-
-        if (!payTimerRunning) {
-            payCountDownTimer.start();
-            payTimerRunning = true;
-        }
+        payProcessView.setState(PayProcessView.STATE_PROCESS, msg);
     }
 
     /**
@@ -278,15 +255,7 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
      */
     @Override
     protected void onBarpayFinished(final Double paidAmount, String msg, int color) {
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
-        btnCancelAliBarPay.setVisibility(View.GONE);
-        btnQueryOrderStatus.setVisibility(View.GONE);
-
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
+        payProcessView.setState(PayProcessView.STATE_SUCCESS, msg);
 
         etBarCode.getText().clear();//清空授权码
 
@@ -302,14 +271,13 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED, args));
 
                 llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
 
                 etBarCode.requestFocus();
                 etBarCode.setSelection(etBarCode.length());
 
                 bPayProcessing = false;
             }
-        }, 500);
+        }, 300);
     }
 
     /**
@@ -317,19 +285,11 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
      */
     @Override
     protected void onBarpayFailed(final int payStatus, final String msg, int color, boolean isException) {
-        tvProcess.setText(msg);
-        tvProcess.setTextColor(color);
-        progressBar.setVisibility(View.GONE);
         if (isException) {
-            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-            btnQueryOrderStatus.setVisibility(View.VISIBLE);
+            payProcessView.setState(PayProcessView.STATE_ERROR, msg);
         } else {
-            btnCancelAliBarPay.setVisibility(View.GONE);
-            btnQueryOrderStatus.setVisibility(View.GONE);
+            payProcessView.setState(PayProcessView.STATE_FAILED, msg);
         }
-        tvCountdown.setText("");
-        payCountDownTimer.cancel();
-        payTimerRunning = false;
 
         etBarCode.getText().clear();//清空授权码
 
@@ -344,42 +304,12 @@ public class PayByAlipayFragment extends BaseAlipayFragment {
                 EventBus.getDefault().post(new PayStep1Event(PayStep1Event.PAY_ACTION_PAYSTEP_FAILED, args));
 
                 llPayInfo.setVisibility(View.VISIBLE);
-                llPayLoading.setVisibility(View.GONE);
                 etBarCode.requestFocus();
                 etBarCode.setSelection(etBarCode.length());
 
                 bPayProcessing = false;
             }
-        }, 2000);
-    }
-
-
-    /**
-     * 倒计时
-     */
-    public class BarPayCountDownTimer extends CountDownTimer {
-
-        /**
-         * @param millisInFuture    The number of millis in the future from the call
-         *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-         *                          is called.
-         * @param countDownInterval The interval along the way to receive
-         *                          {@link #onTick(long)} callbacks.
-         */
-        public BarPayCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            tvCountdown.setText(String.format("%d秒", millisUntilFinished / 1000));
-        }
-
-        @Override
-        public void onFinish() {
-            tvCountdown.setText("");
-//            btnCancelAliBarPay.setVisibility(View.VISIBLE);
-        }
+        }, 1500);
     }
 
 

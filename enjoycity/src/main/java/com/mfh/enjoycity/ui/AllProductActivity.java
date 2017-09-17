@@ -64,25 +64,25 @@ public class AllProductActivity extends BaseActivity {
     public static final String EXTRA_KEY_SHOP_ID = "EXTRA_KEY_SHOP_ID";
     public static final String EXTRA_KEY_CATEGORY_ID = "EXTRA_KEY_CATEGORY_ID";
 
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @Bind(R.id.tv_category_current)
+    @BindView(R.id.tv_category_current)
     TextView tvCurrentCategory;
-    @Bind(R.id.sticky_category_tab)
+    @BindView(R.id.sticky_category_tab)
     CategorySlidingTabStrip categorySlidingTabStrip;
-    @Bind(R.id.my_recycler_view)
+    @BindView(R.id.my_recycler_view)
     RecyclerView mRecyclerView;
 
     private int mBaseTranslationY;
     private ProductAdapter productAdapter;
 
-    @Bind(R.id.ll_category) LinearLayout llCategory;
-    @Bind(R.id.recycler_view_category)
+    @BindView(R.id.ll_category) LinearLayout llCategory;
+    @BindView(R.id.recycler_view_category)
     RecyclerView mCategoryRecyclerView;
 
 
-    @Bind(R.id.fab_shopcart)
+    @BindView(R.id.fab_shopcart)
     FloatShopcartView fabShopcartView;
 
     private Long shopId;

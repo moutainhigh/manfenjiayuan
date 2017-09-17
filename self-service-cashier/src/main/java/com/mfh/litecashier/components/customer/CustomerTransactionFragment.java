@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;

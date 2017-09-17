@@ -293,15 +293,16 @@ public class ValidateManager {
                     if (retA.length > 1) {
                         SharedPrefesManagerFactory.setTerminalId(retA[0]);
                         // TODO: 8/22/16 修改本地系统时间
-                        ZLogger.d(String.format("当前系统时间1: %s",
+                        ZLogger.df(String.format("当前系统时间1: %s",
                                 TimeUtil.format(TimeUtil.getCurrentDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
                         Date serverDateTime = TimeUtil.parse(retA[1], TimeUtil.FORMAT_YYYYMMDDHHMMSS);
 //                                Date serverDateTime = TimeUtil.parse("2016-08-22 13:09:57", TimeUtil.FORMAT_YYYYMMDDHHMMSS);
                         if (serverDateTime != null) {
                             //设置时间
                             try {
+                                // java.lang.SecurityException: setTime: Neither user 10098 nor current process has android.permission.SET_TIME.
                                 boolean isSuccess = SystemClock.setCurrentTimeMillis(serverDateTime.getTime());
-                                ZLogger.d(String.format("修改系统时间 %b: %s", isSuccess,
+                                ZLogger.df(String.format("修改系统时间 %b: %s", isSuccess,
                                         TimeUtil.format(TimeUtil.getCurrentDate(), TimeUtil.FORMAT_YYYYMMDDHHMMSS)));
                             } catch (Exception e) {
                                 ZLogger.ef("修改系统时间失败:" + e.toString());

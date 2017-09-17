@@ -184,9 +184,11 @@ public class FrontendCategoryAdapterV2 extends RecyclerView.Adapter<RecyclerView
         } else {
             this.entityList.clear();
         }
-        if (goodsList != null) {
+        if (goodsList != null && goodsList.size() > 0) {
             this.entityList.addAll(goodsList);
-            curEntity = this.entityList.get(0);
+            if (curEntity == null) {
+                curEntity = this.entityList.get(0);
+            }
         }
 
         PosLocalCategoryEntity action = new PosLocalCategoryEntity();

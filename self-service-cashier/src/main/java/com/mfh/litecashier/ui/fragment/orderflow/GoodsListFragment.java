@@ -24,9 +24,9 @@ import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
 import com.mfh.litecashier.event.GoodsListEvent;
 import com.mfh.litecashier.event.OnlineOrderFlowEvent;
-import com.manfenjiayuan.business.presenter.OrderflowPresenter;
+import com.manfenjiayuan.business.mvp.presenter.OrderflowPresenter;
 import com.mfh.litecashier.ui.adapter.StockOrderflowOrderAdapter;
-import com.manfenjiayuan.business.view.IOrderflowView;
+import com.manfenjiayuan.business.mvp.view.IOrderflowView;
 import com.mfh.litecashier.utils.ACacheHelper;
 
 import org.greenrobot.eventbus.EventBus;
@@ -234,7 +234,9 @@ public class GoodsListFragment extends BaseListFragment<GoodsOrder> implements I
                 }
 //                    ZLogger.d("缓存线下门店订单流水第一页数据");
                 JSONArray cacheArrays = new JSONArray();
-                cacheArrays.addAll(dataList);
+                if (dataList != null) {
+                    cacheArrays.addAll(dataList);
+                }
                 ACacheHelper.put(cacheKey, cacheArrays.toJSONString());
             } else {
                 if (entityList == null) {

@@ -20,7 +20,7 @@
             android:layout_width="26dp"
             android:layout_height="26dp"
             android:id="@+id/iv_tag"
-            android:src="@drawable/material_favorite"
+            android:src="@drawable/ic_launcher"
             android:layout_centerVertical="true"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"

@@ -50,10 +50,10 @@ import com.mfh.enjoycity.wxapi.WXUtil;
 import com.mfh.framework.Constants;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
+import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.api.commonuseraccount.CommonUserAccountApiImpl;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.pay.AppPrePayRsp;
-import com.mfh.framework.api.pay.PayApi;
 import com.mfh.framework.api.pay.PreOrderRsp;
 import com.mfh.framework.api.payOrder.PayOrderApiImpl;
 import com.mfh.framework.api.pmcstock.PmcStockApiImpl;
@@ -966,7 +966,7 @@ public class BrowserFragment extends BaseFragment {
             {
             };
 
-            PayOrderApiImpl.prePayForApp(PayApi.WEPAY_CONFIGID_ENJOYCITY,
+            PayOrderApiImpl.prePayForApp(MfhApi.WXPAY_CHANNEL_ID,
                     MfhLoginService.get().getCurrentGuId(), amount, wayType,
                     WXUtil.genNonceStr(), BizType.RECHARGE, responseCallback);
         }else{

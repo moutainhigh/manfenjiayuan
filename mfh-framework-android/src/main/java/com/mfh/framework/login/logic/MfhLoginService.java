@@ -135,6 +135,7 @@ public class MfhLoginService implements IService {
         sessionId = spLogin.getString(MfhLoginPreferences.PK_SESSION_ID, null);
         curStockId = spLogin.getString(MfhLoginPreferences.PK_STOCK_CURRENT_ID, null);
         moduleNames = spLogin.getString(MfhLoginPreferences.PK_MODULE_NAMES, null);
+        ZLogger.d("moduleNames>> " + moduleNames);
         subdisNames = spLogin.getString(MfhLoginPreferences.PK_SUBDIS_NAMES, null);
         telephone = spLogin.getString(MfhLoginPreferences.PK_TELEPHONE, "");
         humanName = spLogin.getString(MfhLoginPreferences.PK_HUMAN_NAME, "");
@@ -189,6 +190,7 @@ public class MfhLoginService implements IService {
         loginEditor.putString(MfhLoginPreferences.PK_STOCK_CURRENT_ID, curStockId);
         loginEditor.putString(MfhLoginPreferences.PK_SUBDIS_NAMES, subdisNames);
         loginEditor.putLong(MfhLoginPreferences.PK_SESSION_DATE, sessionDate);
+        ZLogger.d("moduleNames>> " + moduleNames);
         loginEditor.putString(MfhLoginPreferences.PK_MODULE_NAMES, moduleNames);
         loginEditor.commit();
     }
@@ -231,6 +233,7 @@ public class MfhLoginService implements IService {
 
 
     public void setModuleNames(String moduleNames) {
+        ZLogger.d("moduleNames>> " + moduleNames);
         this.moduleNames = moduleNames;
         MfhLoginPreferences.set(MfhLoginPreferences.PREF_NAME_LOGIN,
                 MfhLoginPreferences.PK_MODULE_NAMES, moduleNames);
@@ -242,8 +245,10 @@ public class MfhLoginService implements IService {
      * @return
      */
     public String[] getModuleNameArray() {
-        if (StringUtils.isBlank(moduleNames))
+        ZLogger.d(moduleNames);
+        if (StringUtils.isBlank(moduleNames)) {
             return null;
+        }
         return StringUtils.splitByWholeSeparator(moduleNames, ",");
     }
 
@@ -788,6 +793,8 @@ public class MfhLoginService implements IService {
                 loginService.spid = userComInfo.getSpid();
 
                 loginService.moduleNames = userComInfo.getModuleNames();
+                ZLogger.d("moduleNames>> " + loginService.moduleNames);
+
                 loginService.mySubdisIds = userComInfo.getSubdisIds();
                 loginService.curOfficeId = userComInfo.getCurOffice();
 

@@ -19,9 +19,9 @@ import com.bingshanguxue.pda.database.service.InvSendIoGoodsService;
 import com.bingshanguxue.vector_uikit.widget.EditLabelView;
 import com.bingshanguxue.vector_uikit.widget.ScanBar;
 import com.bingshanguxue.vector_uikit.widget.TextLabelView;
-import com.manfenjiayuan.business.presenter.ChainGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.presenter.ChainGoodsSkuPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IChainGoodsSkuView;
+import com.manfenjiayuan.business.mvp.view.IChainGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
@@ -106,7 +106,8 @@ public class InvSendIoInspectFragment extends PDAScanFragment
         super.initViews(rootView);
 
         mToolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
-        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
+        mScanBar = (ScanBar) rootView.findViewById(R.id.scanBar);
+        queryCheckbox = (AppCompatCheckBox) rootView.findViewById(R.id.checkbox);
         labelBarcode = (TextLabelView) rootView.findViewById(R.id.label_barcode);
         labelProductName = (TextLabelView) rootView.findViewById(R.id.label_productName);
         labelPrice = (EditLabelView) rootView.findViewById(R.id.label_price);
@@ -114,7 +115,7 @@ public class InvSendIoInspectFragment extends PDAScanFragment
         labelSignQuantity = (EditLabelView) rootView.findViewById(R.id.label_sign_quantity);
         btnSubmit = (FloatingActionButton) rootView.findViewById(R.id.fab_submit);
         btnSweep = (FloatingActionButton) rootView.findViewById(R.id.fab_scan);
-        
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -132,10 +133,9 @@ public class InvSendIoInspectFragment extends PDAScanFragment
             }
         });
 
-        if (SharedPrefesManagerFactory.isCameraSweepEnabled()){
+        if (SharedPrefesManagerFactory.isCameraSweepEnabled()) {
             btnSweep.setVisibility(View.VISIBLE);
-        }
-        else{
+        } else {
             btnSweep.setVisibility(View.GONE);
         }
     }

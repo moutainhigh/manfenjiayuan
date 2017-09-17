@@ -254,7 +254,7 @@ public class ScOrderPaymentDialog extends CommonDialog {
         }
 
         CommonUserAccountApiImpl.scAccountPay(BizType.SC, orderIds,
-                MfhLoginService.get().getCurrentGuId(),
+                MfhLoginService.get().getHumanId(),
                 pwdStr, responseCallback);
     }
 

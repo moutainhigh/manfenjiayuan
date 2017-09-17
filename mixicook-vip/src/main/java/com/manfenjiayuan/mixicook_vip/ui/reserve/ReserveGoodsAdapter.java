@@ -18,11 +18,12 @@ import com.manfenjiayuan.mixicook_vip.database.PurchaseShopcartService;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.uikit.recyclerview.RegularAdapter;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.greenrobot.event.EventBus;
 
 /**
  * 生鲜预定商品

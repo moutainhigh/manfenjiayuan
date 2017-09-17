@@ -59,7 +59,6 @@ public class CashierSwipAdapter
         public CashierViewHolder(final View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
 //            itemView.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {

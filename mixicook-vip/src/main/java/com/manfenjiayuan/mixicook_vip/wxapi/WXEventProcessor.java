@@ -4,14 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.tencent.mm.sdk.modelbase.BaseReq;
-import com.tencent.mm.sdk.modelbase.BaseResp;
+import com.tencent.mm.sdk.openapi.BaseReq;
+import com.tencent.mm.sdk.openapi.BaseResp;
 import com.tencent.mm.sdk.openapi.IWXAPIEventHandler;
+
 
 /**
  * Created by bingshanguxue on 2015/6/5.
  */
-public class WXEventProcessor extends BroadcastReceiver implements IWXAPIEventHandler{
+public class WXEventProcessor extends BroadcastReceiver implements IWXAPIEventHandler {
     //override broadcast receiver
     @Override
     public void onReceive(Context context, Intent intent) {

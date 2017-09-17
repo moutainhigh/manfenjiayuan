@@ -38,7 +38,7 @@ import com.manfenjiayuan.business.utils.MUtils;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.WayType;
@@ -299,8 +299,6 @@ public class CashierPayFragment extends BasePayStepFragment {
             break;
             //支付处理中
             case PayStep1Event.PAY_ACTION_PAYSTEP_PROCESS: {
-                activeMode(false);
-
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
                         .getSerializable(PayActionEvent.KEY_PAYMENT_INFO);
                 onPayStepProcess(paymentInfo);
@@ -308,8 +306,6 @@ public class CashierPayFragment extends BasePayStepFragment {
             break;
             //支付失败
             case PayStep1Event.PAY_ACTION_PAYSTEP_FAILED: {
-                activeMode(true);
-
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
                         .getSerializable(PayActionEvent.KEY_PAYMENT_INFO);
                 String errMsg = event.getArgs().getString(PayActionEvent.KEY_ERROR_MESSAGE);
@@ -318,14 +314,40 @@ public class CashierPayFragment extends BasePayStepFragment {
             break;
             //支付成功
             case PayStep1Event.PAY_ACTION_PAYSTEP_FINISHED: {
-                activeMode(true);
-
                 PaymentInfo paymentInfo = (PaymentInfo) event.getArgs()
                         .getSerializable(PayActionEvent.KEY_PAYMENT_INFO);
                 onUpdate(paymentInfo);
+
+//                activeMode(true);
             }
             break;
         }
+    }
+
+    @Override
+    public void onPayStepProcess(PaymentInfo paymentInfo) {
+        super.onPayStepProcess(paymentInfo);
+        activeMode(false);
+    }
+
+    @Override
+    public void onPayStepFailed(PaymentInfo paymentInfo, String errMsg) {
+        super.onPayStepFailed(paymentInfo, errMsg);
+        activeMode(true);
+    }
+
+    @Override
+    public void onPayStepFinish() {
+        super.onPayStepFinish();
+
+        activeMode(true);
+        notifyPayInfoChanged(paySlidingTabStrip.getCurrentPosition());
+    }
+
+    @Override
+    public void onPayFinished() {
+        super.onPayFinished();
+        activeMode(true);
     }
 
     @Override

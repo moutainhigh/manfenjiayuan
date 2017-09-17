@@ -11,7 +11,7 @@ import com.manfenjiayuan.pda_supermarket.cashier.model.CashierOrderInfo;
 import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.HangupOrder;
 import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.OrderPayInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.core.utils.MathCompact;

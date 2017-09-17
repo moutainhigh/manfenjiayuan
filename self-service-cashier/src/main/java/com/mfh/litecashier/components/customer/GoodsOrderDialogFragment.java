@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.rxapi.bean.GoodsOrder;
 import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -68,13 +68,17 @@ public class GoodsOrderDialogFragment extends DialogFragment {
 //        getDialog().setTitle("查询会员");
 
         //3 在此处设置 无标题 对话框背景色
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
-        // //对话框背景色
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            // //对话框背景色
 //        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.RED));
 //        getDialog().getWindow().setDimAmount(0.5f);//背景黑暗度
 
-        //不能在此处设置style
-        // setStyle(DialogFragment.STYLE_NORMAL,R.style.Mdialog);//在此处设置主题样式不
+            //不能在此处设置style
+            // setStyle(DialogFragment.STYLE_NORMAL,R.style.Mdialog);//在此处设置主题样式不
+        }
+
 
         try {
             rootView = inflater.inflate(R.layout.dialog_googsorder_items, container, false);

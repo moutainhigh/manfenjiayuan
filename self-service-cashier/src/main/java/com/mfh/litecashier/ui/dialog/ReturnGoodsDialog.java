@@ -33,11 +33,11 @@ import com.bingshanguxue.cashier.model.PaymentInfo;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
-import com.manfenjiayuan.business.presenter.CustomerPresenter;
+import com.manfenjiayuan.business.mvp.presenter.CustomerPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.ICustomerView;
+import com.manfenjiayuan.business.mvp.view.ICustomerView;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PosType;
@@ -368,7 +368,9 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
         options.put("humanId", String.valueOf(human.getId()));
         options.put("amount", MUtils.formatDouble(amount, ""));
         options.put("bizType", String.valueOf(BizType.POS));
-        options.put("orderId", CashierFactory.genTradeNo(orderEntity.getId(), true));
+        if (orderEntity != null) {
+            options.put("orderId", CashierFactory.genTradeNo(orderEntity.getId(), true));
+        }
         options.put("officeId", String.valueOf(MfhLoginService.get().getCurOfficeId()));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
@@ -407,6 +409,11 @@ public class ReturnGoodsDialog extends CommonDialog implements ICashierView, ICu
 //                PosOrderPayEntity.PAY_STATUS_FINISH,
 //                cashierOrderInfo.getFinalAmount(), 0D, 0D - cashierOrderInfo.getFinalAmount(),
 //                null);
+        if (cashierOrderInfo == null) {
+            DialogUtil.showHint("订单信息无效");
+            payBayCustomerStep4();
+            return;
+        }
         PayAmount payAmount = cashierOrderInfo.getPayAmount();
 
         CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),

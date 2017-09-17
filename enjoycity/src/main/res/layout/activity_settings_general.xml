@@ -54,7 +54,6 @@
                 android:layout_height="@dimen/setting_item_height"
                 android:layout_marginTop="@dimen/default_margin_top"
                 android:layout_marginBottom="@dimen/default_margin_bottom"
-                app:src="@drawable/material_housekeeping"
                 app:text="@string/label_settings_clearcache"
                 app:subText="@string/label_settings_clearcache_description"/>
         </LinearLayout>

@@ -13,6 +13,7 @@ import com.bingshanguxue.vector_uikit.SettingsItem;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
@@ -20,9 +21,9 @@ import butterknife.Bind;
  * Created by Nat.ZZN(bingshanguxue)
  */
 public class AboutActivity extends BaseActivity {
-    @Bind(R.id.tool_bar)
+    @BindView(R.id.tool_bar)
     Toolbar toolbar;
-    @Bind({R.id.item_app_description, R.id.item_licience})
+    @BindView({R.id.item_app_description, R.id.item_licience})
     List<SettingsItem> btnItems;
 
     @Override

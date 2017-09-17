@@ -1,6 +1,6 @@
 package com.mfh.framework.rxapi.http;
 
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.rxapi.entity.MResponse;

@@ -21,15 +21,16 @@ import com.mfh.framework.uikit.UIHelper;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 
 
 /**
  * 地址管理
  * */
 public class AddressManagerActivity extends BaseActivity {
-    @Bind(R.id.tool_bar)
+    @BindView(R.id.tool_bar)
     Toolbar toolbar;
-    @Bind(R.id.listView)
+    @BindView(R.id.listView)
     ListView listView;
     private AddressAdapter addressAdapter;
 

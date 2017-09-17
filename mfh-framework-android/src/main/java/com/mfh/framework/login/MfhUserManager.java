@@ -90,15 +90,18 @@ public class MfhUserManager {
     public void updateModules(){
         String[] moduleNames = MfhLoginService.get().getModuleNameArray();
         if (moduleNames != null){
+            ZLogger.d("find " + moduleNames.length + " modules");
             mCurrentModules = Arrays.asList(moduleNames);
         }
         else{
+            ZLogger.d("no modules exist");
             mCurrentModules = new ArrayList<>();
         }
     }
 
     public boolean containsModule(String moduleName){
         if (mCurrentModules == null){
+            ZLogger.w("no modules exist");
             return false;
         }
 

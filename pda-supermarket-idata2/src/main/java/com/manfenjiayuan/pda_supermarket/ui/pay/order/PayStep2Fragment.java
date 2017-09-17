@@ -34,7 +34,7 @@ import com.manfenjiayuan.pda_supermarket.cashier.model.wrapper.CouponRule;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.bean.TimeCursor;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.cashier.MarketRulesWrapper;
 import com.mfh.framework.api.commonuseraccount.PayAmount;
 import com.mfh.framework.api.constant.WayType;

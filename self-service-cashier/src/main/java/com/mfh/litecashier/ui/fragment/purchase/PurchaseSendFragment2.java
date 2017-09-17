@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.bingshanguxue.vector_uikit.slideTab.TopFragmentPagerAdapter;
 import com.bingshanguxue.vector_uikit.slideTab.TopSlidingTabStrip;
-import com.manfenjiayuan.business.view.IInvSendOrderView;
+import com.manfenjiayuan.business.mvp.view.IInvSendOrderView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.invOrder.InvOrderApi;

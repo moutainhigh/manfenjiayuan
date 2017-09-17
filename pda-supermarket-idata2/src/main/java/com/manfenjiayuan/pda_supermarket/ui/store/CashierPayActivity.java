@@ -12,7 +12,7 @@ import com.manfenjiayuan.pda_supermarket.ui.pay.PayActionEvent;
 import com.manfenjiayuan.pda_supermarket.ui.pay.order.PayStep1Fragment;
 import com.manfenjiayuan.pda_supermarket.ui.pay.order.PayStep2Fragment;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.uikit.base.BaseActivity;

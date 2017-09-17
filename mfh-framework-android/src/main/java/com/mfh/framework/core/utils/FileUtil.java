@@ -84,6 +84,7 @@ public class FileUtil {
 		File file = new File(pathName);
 
 		try {
+			// TODO: 13/08/2017 permission
 			file.createNewFile();
 		} catch (IOException var4) {
 			//java.io.IOException: open failed: ENOENT (No such file or directory)
@@ -609,6 +610,21 @@ public class FileUtil {
 		}
 
 		return null;
+	}
+
+	/**
+	 * 检查是否安装SD卡
+	 *
+	 * @return
+	 */
+	public static boolean checkExternalStorageExists() {
+		String sDCardStatus = Environment.getExternalStorageState();
+		boolean status;
+		if (sDCardStatus.equals(Environment.MEDIA_MOUNTED)) {
+			status = true;
+		} else
+			status = false;
+		return status;
 	}
 
 	/**

@@ -34,6 +34,7 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.xmlpull.v1.XmlPullParser;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -104,7 +105,7 @@ public class WXUtil {
 			
 			HttpResponse resp = httpClient.execute(httpPost);
 			if (resp.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-				Log.e(TAG, "httpGet fail, status code = " + resp.getStatusLine().getStatusCode());
+				ZLogger.e(TAG, "httpGet fail, status code = " + resp.getStatusLine().getStatusCode());
 				return null;
 			}
 
@@ -377,7 +378,7 @@ public class WXUtil {
 	/**
 	 * 生成签名
 	 */
-	public static String genSian(String raw) {
+	public static String genSign(String raw) {
 		ZLogger.e("raw:" + raw);
 		String sign = MD5Util.getMessageDigest(raw.getBytes()).toUpperCase();
 		ZLogger.e("sign: " + sign);
@@ -447,6 +448,23 @@ public class WXUtil {
 			ZLogger.e(e.toString());
 		}
 		return null;
+	}
+
+	public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+		if (needRecycle) {
+			bmp.recycle();
+		}
+
+		byte[] result = output.toByteArray();
+		try {
+			output.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return result;
 	}
 
 }

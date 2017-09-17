@@ -70,6 +70,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
     }
 
     protected abstract void refresh();
+//    protected abstract void activeMode();
 
     /**
      * 支付处理中
@@ -91,52 +92,50 @@ public abstract class BasePayStepFragment extends BaseFragment {
      * 支付成功，保存支付记录
      */
     public void onUpdate(final PaymentInfo paymentInfo) {
-        if (paymentInfo == null) {
-            return;
-        }
-
         final PayAmount payAmount = cashierOrderInfo.getPayAmount();
 
         Observable.create(new Observable.OnSubscribe<Boolean>() {
             @Override
             public void call(Subscriber<? super Boolean> subscriber) {
-                paymentInfo.setDiscountInfo(payAmount);
-                ZLogger.d(String.format("支付状态更新：\n%s", JSONObject.toJSONString(paymentInfo)));
-
-                //有现金支付时才打开钱箱
-                if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
-                        && paymentInfo.getPaidAmount() > 0) {
-                    PrinterFactory.getPrinterManager().openMoneyBox();
-                }
-
-
-//                ZLogger.df(String.format("支付状态更新：\n%s", JSONObject.toJSONString(cashierOrderInfo.getVipMember())));
-
-                //保存订单支付记录并更新订单
-                // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
-                // 下一次保存支付记录的时候，数据会不准确
-                CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),
-                        cashierOrderInfo.getVipMember(), paymentInfo);
-
-                // TODO: 7/5/16 注意这里需要重新生成订单支付信息，如果允许多次支付的话，可能还需要清空页面优惠券信息。
-                cashierOrderInfo = CashierProvider.createCashierOrderInfo(cashierOrderInfo.getPosTradeNo(),
-                        cashierOrderInfo.getVipMember());
-                cashierOrderInfo.setPayAmount(payAmount);
-
-                //根据实际应用场景，金额小于1分即认为支付完成
-                Double handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
-                ZLogger.d(String.format("%s 支付完成，handleAmount=%f",
-                        WayType.name(curPayType), handleAmount));
-
-                if (handleAmount < 0.01) {
-                    //修改订单支付信息（支付金额，支付状态）
-                    CashierAgent.updateCashierOrder(cashierOrderInfo, payAmount, PosOrderEntity.ORDER_STATUS_FINISH);
-
-                    subscriber.onNext(true);
-                } else {
+                if (paymentInfo == null) {
                     subscriber.onNext(false);
-                }
+                } else {
+                    paymentInfo.setDiscountInfo(payAmount);
+                    ZLogger.d(String.format("支付状态更新：\n%s", JSONObject.toJSONString(paymentInfo)));
 
+                    //有现金支付时才打开钱箱
+                    if ((paymentInfo.getPayType() & WayType.CASH) == WayType.CASH
+                            && paymentInfo.getPaidAmount() > 0) {
+                        PrinterFactory.getPrinterManager().openMoneyBox();
+                    }
+                    //                ZLogger.df(String.format("支付状态更新：\n%s", JSONObject.toJSONString(cashierOrderInfo.getVipMember())));
+
+                    //保存订单支付记录并更新订单
+                    // TODO: 7/1/16 保存完支付记录后必须要立刻更新订单数据，否则如果支持多种支付方式的话，
+                    // 下一次保存支付记录的时候，数据会不准确
+                    CashierAgent.updateCashierOrder(cashierOrderInfo.getPosTradeNo(),
+                            cashierOrderInfo.getVipMember(), paymentInfo);
+
+                    // TODO: 7/5/16 注意这里需要重新生成订单支付信息，如果允许多次支付的话，可能还需要清空页面优惠券信息。
+                    cashierOrderInfo = CashierProvider.createCashierOrderInfo(cashierOrderInfo.getPosTradeNo(),
+                            cashierOrderInfo.getVipMember());
+                    cashierOrderInfo.setPayAmount(payAmount);
+
+                    //根据实际应用场景，金额小于1分即认为支付完成
+                    Double handleAmount = CashierProvider.getHandleAmount(cashierOrderInfo);
+                    ZLogger.d(String.format("%s 支付完成，handleAmount=%f",
+                            WayType.name(curPayType), handleAmount));
+
+                    if (handleAmount < 0.01) {
+                        //修改订单支付信息（支付金额，支付状态）
+                        CashierAgent.updateCashierOrder(cashierOrderInfo, payAmount, PosOrderEntity.ORDER_STATUS_FINISH);
+
+                        subscriber.onNext(true);
+                    } else {
+                        subscriber.onNext(false);
+                    }
+
+                }
                 subscriber.onCompleted();
             }
         })
@@ -205,7 +204,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
 //                || (curPayType & WayType.WX_F2F) == WayType.WX_F2F) {
 //            bindHuman();
 //        } else {
-            back2MainActivity();
+        back2MainActivity();
 //        }
     }
 
@@ -278,6 +277,7 @@ public abstract class BasePayStepFragment extends BaseFragment {
 
 
     public static final String EXTRA_KEY_ORDER_BARCODE = "orderBarcode";
+
     public void back2MainActivity() {
         ZLogger.df(String.format("%s 支付成功：准备关闭支付窗口：\n%s",
                 WayType.getWayTypeName(curPayType),

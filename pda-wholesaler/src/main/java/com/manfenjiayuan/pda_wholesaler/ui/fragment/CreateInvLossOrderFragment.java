@@ -44,11 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscriber;
-
-import static com.igexin.push.core.g.R;
 
 
 /**
@@ -56,17 +54,17 @@ import static com.igexin.push.core.g.R;
  * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
  */
 public class CreateInvLossOrderFragment extends BaseFragment {
-    @Bind(R.id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar mToolbar;
 
-    @Bind(R.id.providerView)
+    @BindView(R.id.providerView)
     NaviAddressView mProviderView;
-    @Bind(R.id.office_list)
+    @BindView(R.id.office_list)
     RecyclerViewEmptySupport goodsRecyclerView;
     private InvLossGoodsAdapter goodsAdapter;
     private ItemTouchHelper itemTouchHelper;
 
-    @Bind(R.id.empty_view)
+    @BindView(R.id.empty_view)
     View emptyView;
 
     private InvLossOrder mInvLossOrder = null;

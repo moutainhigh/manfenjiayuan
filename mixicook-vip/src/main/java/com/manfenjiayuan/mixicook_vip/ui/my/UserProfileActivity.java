@@ -96,7 +96,7 @@ public class UserProfileActivity extends MultimediaActivity {
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
@@ -209,7 +209,7 @@ public class UserProfileActivity extends MultimediaActivity {
         };
 
         JSONObject object = new JSONObject();
-        object.put("id", MfhLoginService.get().getCurrentGuId());
+        object.put("id", MfhLoginService.get().getHumanId());
         object.put("sex", sex);
         UserApiImpl.updateProfile(object.toJSONString(), responseCallback);
     }
@@ -293,7 +293,7 @@ public class UserProfileActivity extends MultimediaActivity {
                     , MfhApplication.getAppContext()) {
             };
 
-            UserApiImpl.uploadUserHeader(MfhLoginService.get().getCurrentGuId(),
+            UserApiImpl.uploadUserHeader(MfhLoginService.get().getHumanId(),
                     file, responseCallback);
         } catch (Exception e) {
 

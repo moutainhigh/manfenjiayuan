@@ -7,8 +7,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.CompanyHuman;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.CompanyHuman;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.account.UserMixInfo;
 import com.mfh.framework.api.posorder.BatchInOrder;
 import com.mfh.framework.api.posorder.BatchInOrdersWrapper;
@@ -283,13 +283,18 @@ public class RxHttpManager {
         toSubscribe(observable, subscriber);
     }
 
+    /**
+     * 针对当前用户所属网点判断是否存在过清分时余额不足情况
+     */
     public void haveNoMoneyEnd(String JSESSIONID, MValueSubscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.haveNoMoneyEnd(JSESSIONID)
                 .map(new MValueResponseFunc<String>());
         toSubscribe(observable, subscriber);
     }
-
+    /**
+     * 判断是否需要锁定pos，由pos端主动发起询问
+     * */
     public void needLockPos(String JSESSIONID, Long netId, Subscriber<String> subscriber) {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.needLockPos(JSESSIONID, netId)
@@ -315,14 +320,6 @@ public class RxHttpManager {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.queryPrivList(JSESSIONID)
                 .map(new MResponseFunc<String>());
-        toSubscribe(observable, subscriber);
-    }
-
-    public void findCompUserPwdInfo(Map<String, String> options,
-                                    MQuerySubscriber<CompanyHuman> subscriber) {
-        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
-        Observable observable = mfhApi.findCompUserPwdInfo(options)
-                .map(new MQueryResponseFunc<CompanyHuman>());
         toSubscribe(observable, subscriber);
     }
 
@@ -429,6 +426,13 @@ public class RxHttpManager {
         RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
         Observable observable = mfhApi.exit(JSESSIONID)
                 .map(new MResponseFunc<String>());
+        toSubscribe(observable, subscriber);
+    }
+
+    public void loginByPrivateCard(Map<String, String> options, Subscriber<MResponse<UserMixInfo>> subscriber) {
+        RxMfhService mfhApi = RxHttpManager.createService(RxMfhService.class);
+        Observable observable = mfhApi.loginByPrivateCard(options);
+//                .map(new MResponseFunc<UserMixInfo>());
         toSubscribe(observable, subscriber);
     }
 

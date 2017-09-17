@@ -20,8 +20,11 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.InitActivity;
+
+import rx.Subscriber;
 
 
 /**
@@ -195,30 +198,24 @@ public class SplashActivity extends InitActivity {
      * 登录状态验证:进入需要登录的功能时需要
      */
     private void validSession() {
-        NetCallBack.NetTaskCallBack responseCallback = new NetCallBack.NetTaskCallBack<String,
-                NetProcessor.Processor<String>>(
-                new NetProcessor.Processor<String>() {
+        RxHttpManager.getInstance().isSessionValid(MfhLoginService.get().getCurrentSessionId(),
+                new Subscriber<String>() {
                     @Override
-                    public void processResult(IResponseData rspData) {
-                        ZLogger.df("登录状态有效 ");
-                        redirectToMain(true);
+                    public void onCompleted() {
+
                     }
 
                     @Override
-                    protected void processFailure(Throwable t, String errMsg) {
-                        super.processFailure(t, errMsg);
-                        ZLogger.df("登录状态已失效, " + errMsg);
-
-                        //已过期，跳转到登录页面
-                        //已过期，自动重登录
-//                        animProgress.setVisibility(View.GONE);
+                    public void onError(Throwable e) {
+                        ZLogger.df("登录状态已失效，准备冲登录" + e.toString());
                         redirectToLogin();
                     }
-                }
-                , String.class
-                , AppContext.getAppContext()) {
-        };
 
-        UserApiImpl.validSession(responseCallback);
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.df(String.format("验证登录状态成功: %s", s));
+                        redirectToMain();
+                    }
+                });
     }
 }

@@ -150,7 +150,8 @@ public class MultimediaActivity extends BaseActivity {
         // If the app has the permission, the app can proceed with the operation.
         // If the app does not have the permission, the app has to explicitly ask the user for permission.
         if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            //Request Permissions
+            // Camera permission has not been granted.
+            // Request Permissions
             if (ActivityCompat.shouldShowRequestPermissionRationale(context,
                     android.Manifest.permission.CAMERA)) {
                 //true -- if the app has requested this permission previously and the user denied the request.
@@ -164,6 +165,7 @@ public class MultimediaActivity extends BaseActivity {
             }
             return;
         }
+        // Camera permissions is already available, show the camera preview.
 //        hasSystemFeature(PackageManager.FEATURE_CAMERA);
 
         try {

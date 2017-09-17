@@ -10,7 +10,8 @@ public class Constants {
     //请同时修改  androidmanifest.xml里面，.PayActivityd里的属性<data android:scheme="wxb4ba3c02aa476ea1"/>为新设置的appid
     public static final String APP_ID = "wx3b34723bc7ff112f";
     //Appsecret APPID对应的接口密码
-    public static final String APP_SECRET = "fed9638da3bfcb444f4347af841ee468";
+    public static final String APP_SECRET = "b8102099386a5f0261d4909bfd84643f";
+    public static final String APP_SIGNATURE = "3befb5a280205b0ff2866ef0faf3c26c";
 
     // 微信支付商户号
     public static final String MCH_ID = "1401109102";

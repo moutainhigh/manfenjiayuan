@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -69,7 +69,7 @@ public class CategoryGridAdapter extends BaseAdapter {
 
 
     static class ViewHolder {
-        @Bind(R.id.iv_menu)
+        @BindView(R.id.iv_menu)
         ImageView ivMenu;
 
         public ViewHolder(View view) {

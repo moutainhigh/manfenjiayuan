@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat;
 import android.widget.TextView;
 
 import com.igexin.sdk.PushManager;
+import com.manfenjiayuan.mixicook_vip.service.DemoIntentService;
 import com.mfh.framework.uikit.base.ResultCode;
 import com.manfenjiayuan.business.ui.SignInActivity;
 import com.manfenjiayuan.mixicook_vip.AppContext;
@@ -87,9 +88,7 @@ public class SplashActivity extends InitActivity {
 
     @Override
     public void doAsyncTask() {
-        if (!requestPermissions()) {
-            return;
-        }
+        requestPermissions();
 
         // SDK初始化，第三方程序启动时，都要进行SDK初始化工作,（注：每个应用程序只能初始化一次SDK，使用一个推送通道）
 //        初始化个推SDK服务，该方法必须在Activity或Service类内调用，不建议在Application继承类中调用。
@@ -215,6 +214,6 @@ public class SplashActivity extends InitActivity {
     private void setupGetui() {
         String cid = PushManager.getInstance().getClientid(AppContext.getAppContext());
         ZLogger.df(String.format("准备初始化个推服务(%s)", cid));
-        PushManager.getInstance().initialize(this.getApplicationContext());
+        PushManager.getInstance().initialize(this.getApplicationContext(), DemoIntentService.class);
     }
 }

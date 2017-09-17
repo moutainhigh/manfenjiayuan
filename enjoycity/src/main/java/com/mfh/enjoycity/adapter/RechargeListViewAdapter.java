@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,8 +27,8 @@ public class RechargeListViewAdapter extends BaseAdapter {
     private int curSelectedId = 0;
 
     static class ViewHolder {
-        @Bind(R.id.tv_title) TextView tvTitle;
-        @Bind(R.id.iv_marker) ImageView ivMarker;
+        @BindView(R.id.tv_title) TextView tvTitle;
+        @BindView(R.id.iv_marker) ImageView ivMarker;
 
         public ViewHolder(View view) {
             ButterKnife.bind(this, view);

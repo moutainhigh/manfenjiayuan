@@ -20,8 +20,8 @@ import com.bingshanguxue.cashier.database.service.ProductCatalogService;
 import com.bingshanguxue.vector_uikit.DividerGridItemDecoration;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
-import com.manfenjiayuan.business.presenter.ScGoodsSkuPresenter;
-import com.manfenjiayuan.business.view.IScGoodsSkuView;
+import com.manfenjiayuan.business.mvp.presenter.ScGoodsSkuPresenter;
+import com.manfenjiayuan.business.mvp.view.IScGoodsSkuView;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.comn.net.data.IResponseData;
 import com.mfh.framework.MfhApplication;
@@ -50,11 +50,14 @@ import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
 import com.mfh.litecashier.database.logic.PosCategoryGodosTempService;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.service.DataDownloadManager;
+import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.activity.FragmentActivity;
 import com.mfh.litecashier.ui.dialog.ActionDialog;
 import com.mfh.litecashier.ui.dialog.FrontCategoryGoodsDialog;
 import com.mfh.litecashier.ui.dialog.ModifyLocalCategoryDialog;
 import com.mfh.litecashier.ui.dialog.TextInputDialog;
+import com.mfh.litecashier.ui.fragment.goods.IImportGoodsView;
+import com.mfh.litecashier.ui.fragment.goods.ImportGoodsPresenter;
 import com.mfh.litecashier.ui.fragment.goods.backend.BackendCategoryGoodsFragment;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
@@ -78,7 +81,8 @@ import rx.schedulers.Schedulers;
  * POS-前台类目
  * Created by bingshanguxue on 15/8/30.
  */
-public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFrontCategoryGoods> implements IScGoodsSkuView {
+public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFrontCategoryGoods>
+        implements IScGoodsSkuView, IImportGoodsView {
     @BindView(R.id.category_list)
     RecyclerViewEmptySupport categoryRecyclerView;
     @BindView(R.id.goods_list)
@@ -92,6 +96,7 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
 
 
     private PosLocalCategoryEntity curCategoryEntity;//当前子类目
+    private String tempBarcode;
 
     private ActionDialog addGoodsDialog = null;
     private NumberInputDialog barcodeInputDialog = null;
@@ -100,6 +105,7 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
     private TextInputDialog mTextInputDialog = null;
 
     private ScGoodsSkuPresenter mScGoodsSkuPresenter;
+    private ImportGoodsPresenter mImportGoodsPresenter;
 
 
     public static FrontendCategoryGoodsFragmentV2 newInstance(Bundle args) {
@@ -129,6 +135,7 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
         initGoodsRecyclerView();
 
         mScGoodsSkuPresenter = new ScGoodsSkuPresenter(this);
+        mImportGoodsPresenter = new ImportGoodsPresenter(this);
         mPageInfo = new PageInfo(PageInfo.PAGENO_NOTINIT, 40);
 
         reload();
@@ -163,6 +170,7 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
         ZLogger.d(String.format("DataDownloadEvent(%d)", event.getEventId()));
         if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED) {
             reload();
+            reloadGoods();
         } else if (event.getEventId() == DataDownloadManager.DataDownloadEvent.EVENT_PRODUCT_CATALOG_UPDATED) {
             reloadGoods();
         }
@@ -171,16 +179,18 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
     private void reloadCategory() {
         try {
 //            Long oldCategoryId = null;
+//            PosLocalCategoryEntity oldCategory = mCategoryAdapter.getCurEntity();
 //            int oldIndex = mCategoryGoodsTabStrip.getCurrentPosition();
 //            ViewPageInfo viewPageInfo = categoryGoodsPagerAdapter.getTab(oldIndex);
 //            if (viewPageInfo != null) {
 //                oldCategoryId = viewPageInfo.args.getLong(FrontendGoodsFragment.KEY_CATEGORY_ID);
 //            }
 //            ZLogger.d(String.format("old id=%d, index=%d", oldCategoryId, oldIndex));
-            mCategoryAdapter.setEntityList(PosLocalCategoryService.get().queryAll(null, null));
+            List<PosLocalCategoryEntity> categoryEntities = PosLocalCategoryService.get().queryAll(null, null);
+            mCategoryAdapter.setEntityList(categoryEntities);
 
 //            ArrayList<ViewPageInfo> mTabs = new ArrayList<>();
-//            for (PosLocalCategoryEntity category : curCategoryList) {
+//            for (PosLocalCategoryEntity category : categoryEntities) {
 //                Bundle args = new Bundle();
 //                args.putLong(FrontendGoodsFragment.KEY_CATEGORY_ID, category.getId());
 //
@@ -625,7 +635,7 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
                         String sqlWhere = String.format("paramValueId = '%d'",
                                 mCategoryAdapter.getCurEntity().getId());
                         List<ProductCatalogEntity> entities = ProductCatalogService.getInstance().queryAll(sqlWhere, pageInfo);
-                        if (entities != null || entities.size() > 0) {
+                        if (entities != null && entities.size() > 0) {
                             ZLogger.d(String.format("共找到%d条类目商品关系(%d/%d-%d)", entities.size(),
                                     pageInfo.getPageNo(), pageInfo.getTotalPage(), pageInfo.getTotalCount()));
 
@@ -902,7 +912,8 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
                 DialogUtil.showHint("删除商品成功");
                 ProductCatalogService.getInstance()
                         .deleteById(String.valueOf(finalCatalogEntity.getId()));
-                reload();
+//                reload();
+                mGoodsAdapter.notifyDataSetChanged();
 
                 hideProgressDialog();
             }
@@ -965,7 +976,6 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
     }
 
 
-
     /**
      * 跳转到前台类目商品库
      */
@@ -995,6 +1005,36 @@ public class FrontendCategoryGoodsFragmentV2 extends BaseListFragment<LocalFront
 
     @Override
     public void onIScGoodsSkuViewSuccess(ScGoodsSku data) {
+        if (data == null) {
+            hideProgressDialog();
 
+            ActivityRoute.redirect2StoreIn(getActivity(), tempBarcode);
+        } else {
+            ZLogger.d("查询成功，准备导入商品到类目中");
+            if (mImportGoodsPresenter != null) {
+                mImportGoodsPresenter.importFromCenterSkus(curCategoryEntity.getId(), String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
+            } else {
+                hideProgressDialog();
+            }
+//            importFromCenterSkus(String.valueOf(data.getProductId()), String.valueOf(data.getProSkuId()));
+        }
+    }
+
+    @Override
+    public void onIImportGoodsViewProcess() {
+        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "请稍候...", false);
+
+    }
+
+    @Override
+    public void onIImportGoodsViewError(String errorMsg) {
+        showProgressDialog(ProgressDialog.STATUS_ERROR, errorMsg, true);
+
+    }
+
+    @Override
+    public void onIImportGoodsViewSuccess() {
+        showProgressDialog(ProgressDialog.STATUS_DONE, "导入商品成功", true);
+//        hideProgressDialog();
     }
 }
