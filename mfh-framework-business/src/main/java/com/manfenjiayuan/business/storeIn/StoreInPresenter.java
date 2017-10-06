@@ -4,7 +4,9 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.constant.StoreType;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,14 +35,19 @@ public class StoreInPresenter {
         options.put("storeType", String.valueOf(StoreType.SUPERMARKET));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
-        ScGoodsSkuHttpManager.getInstance().storeIn(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        ScGoodsSkuHttpManager.getInstance().storeIn(options, new MSubscriber<String>() {
 
-            }
+//
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.e("商品建档失败: " + e.toString());
+//                if (mStoreInView != null) {
+//                    mStoreInView.onIStoreInViewError(e.getMessage());
+//                }
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.e("商品建档失败: " + e.toString());
                 if (mStoreInView != null) {
                     mStoreInView.onIStoreInViewError(e.getMessage());

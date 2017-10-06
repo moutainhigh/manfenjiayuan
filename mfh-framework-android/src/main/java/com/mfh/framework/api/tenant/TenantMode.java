@@ -5,8 +5,10 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.api.MfhApi;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.HashMap;
 import java.util.List;
@@ -62,14 +64,18 @@ public class TenantMode {
         }
 
         RxHttpManager.getInstance().getSaasInfo2(url, id,
-                new Subscriber<SassInfo>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<SassInfo>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef(e.toString());
                         if (listener != null) {
                             listener.onError(e.getMessage());

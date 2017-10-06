@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.mfh.framework.core.utils.DensityUtil;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.framework.core.utils.EncryptUtil;
@@ -139,9 +141,11 @@ public class ResumeMachineDialog extends CommonDialog {
             getWindow().setGravity(Gravity.CENTER);
         }
 
-//        WindowManager m = getWindow().getWindowManager();
-//        Display d = m.getDefaultDisplay();
-//        WindowManager.LayoutParams p = getWindow().getAttributes();
+        WindowManager m = getWindow().getWindowManager();
+        Display d = m.getDefaultDisplay();
+        WindowManager.LayoutParams p = getWindow().getAttributes();
+        p.width = DensityUtil.dip2px(getContext(), 400);
+
 ////        p.width = d.getWidth() * 2 / 3;
 ////        p.y = DensityUtil.dip2px(getContext(), 44);
 //

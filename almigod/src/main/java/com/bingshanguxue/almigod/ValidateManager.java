@@ -19,6 +19,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -314,7 +315,7 @@ public class ValidateManager {
         final String username = MfhLoginService.get().getLoginName();
         final String password = MfhLoginService.get().getPassword();
 
-        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
+        RxHttpManager.getInstance().login(new MSubscriber<UserMixInfo>() {
             @Override
             public void onCompleted() {
                 ZLogger.d("onCompleted");

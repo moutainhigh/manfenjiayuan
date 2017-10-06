@@ -36,7 +36,9 @@ import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.pay.umsips.RequestConstants;
 import com.mfh.framework.pay.umsips.RspCode;
 import com.mfh.framework.pay.umsips.TransType;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
@@ -552,15 +554,16 @@ public class PayByBandcardFragment extends BasePayFragment {
             options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
             RxHttpManager.getInstance().createPayOrder(options,
-                    new Subscriber<String>() {
+                    new MSubscriber<String>() {
+
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            ZLogger.ef("提交支付记录失败:" + e.toString());
+//                            onBarpayFinished(handleAmount, response.getRspChin());
+//                        }
 
                         @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
                             ZLogger.ef("提交支付记录失败:" + e.toString());
                             onBarpayFinished(handleAmount, response.getRspChin());
                         }

@@ -32,7 +32,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.InvLossOrderHttpManager;
+import com.mfh.framework.rxapi.httpmgr.InvLossOrderHttpManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;

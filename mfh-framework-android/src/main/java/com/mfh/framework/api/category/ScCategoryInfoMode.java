@@ -5,7 +5,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScCategoryInfoHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.HashMap;

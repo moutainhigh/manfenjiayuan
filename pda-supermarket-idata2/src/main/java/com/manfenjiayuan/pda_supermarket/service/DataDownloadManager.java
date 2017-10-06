@@ -21,7 +21,7 @@ import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.http.RxHttpManager;
-import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScGoodsSkuHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 

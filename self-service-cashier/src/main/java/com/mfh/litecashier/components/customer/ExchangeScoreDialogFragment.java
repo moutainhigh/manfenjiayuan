@@ -19,7 +19,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.litecashier.BaseDialogFragment;
 import com.mfh.litecashier.CashierApp;

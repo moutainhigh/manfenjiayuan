@@ -87,8 +87,8 @@ public class CashierAgent {
             orderEntity.setBizType(BizType.POS);
             orderEntity.setBarCode(orderBarcode);
             orderEntity.setSellerId(MfhLoginService.get().getSpid());
+            orderEntity.setCreatedBy(String.valueOf(MfhLoginService.get().getHumanId()));
             orderEntity.setSellOffice(MfhLoginService.get().getCurOfficeId());
-            orderEntity.setCreatedBy(MfhLoginService.get().getGuid());
             orderEntity.setPosId(SharedPrefesManagerFactory.getTerminalId());//设备编号
             orderEntity.setFlowId(CashierProvider.nextFlowId());
             orderEntity.setCreatedDate(rightNow);

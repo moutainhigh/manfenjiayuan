@@ -185,7 +185,7 @@ public class SMScaleSyncManager2 extends FTPManager {
      * 上传结束失败
      */
     private void syncFailed(String msg) {
-        ZLogger.ef(msg);
+        ZLogger.wf(msg);
         bSyncInProgress = false;
         EventBus.getDefault().post(new SMScaleSyncManagerEvent(SMScaleSyncManagerEvent.EVENT_ID_SYNC_DATA_FAILED));
     }

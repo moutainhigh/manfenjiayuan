@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,18 +25,20 @@ import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.ResultCode;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
+import com.mfh.litecashier.components.AccountActionDialog;
 import com.mfh.litecashier.database.entity.CompanyHumanEntity;
 import com.mfh.litecashier.event.AffairEvent;
 import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.AdministratorMenuAdapter;
-import com.mfh.litecashier.ui.dialog.AccountDialog;
 import com.mfh.litecashier.ui.dialog.ResumeMachineDialog;
 import com.mfh.litecashier.ui.dialog.SelectCompanyHumanDialog;
 import com.mfh.litecashier.utils.AppHelper;
@@ -69,7 +72,6 @@ public class AdministratorActivity extends BaseActivity {
     private GridLayoutManager mRLayoutManager;
     private AdministratorMenuAdapter menuAdapter;
 
-    private AccountDialog mAccountDialog = null;
     private ResumeMachineDialog resumeMachineDialog = null;
     private SelectCompanyHumanDialog selectCompanyHumanDialog = null;
 
@@ -159,10 +161,6 @@ public class AdministratorActivity extends BaseActivity {
     public void onPause() {
         super.onPause();
 
-        if (mAccountDialog != null) {
-            mAccountDialog.dismiss();
-        }
-
         if (resumeMachineDialog != null) {
             resumeMachineDialog.dismiss();
         }
@@ -175,11 +173,6 @@ public class AdministratorActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        if (mAccountDialog != null) {
-            mAccountDialog.dismiss();
-            mAccountDialog = null;
-        }
 
         if (resumeMachineDialog != null) {
             resumeMachineDialog.dismiss();
@@ -218,35 +211,39 @@ public class AdministratorActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private AccountActionDialog mAccountActionDialog;
+
     /**
      * 单击头像
      */
     @OnClick(R.id.iv_avatar)
-    public void clickAvatarView() {
-        if (mAccountDialog == null) {
-            mAccountDialog = new AccountDialog(this);
-            mAccountDialog.setCancelable(false);
-            mAccountDialog.setCanceledOnTouchOutside(true);
+    public synchronized void showAccountActionDialog() {
+        if (mAccountActionDialog == null) {
+            mAccountActionDialog = new AccountActionDialog();
         }
-        mAccountDialog.init(1, new AccountDialog.DialogClickListener() {
-            @Override
-            public void onLock() {
-                lockMachine();
-            }
-
-            @Override
-            public void onHandOver() {
-                handoverAnalysis();
-            }
-
-            @Override
-            public void onLogout() {
-                logout();
-            }
-        });
-
-        mAccountDialog.show();
+        mAccountActionDialog.config(AccountActionDialog.EVENT_ACCOUNT_MGR, mOnAccountActionListener);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        mAccountActionDialog.show(ft, AccountActionDialog.TAG);
     }
+
+    private AccountActionDialog.OnAccountActionListener mOnAccountActionListener = new AccountActionDialog.OnAccountActionListener() {
+        @Override
+        public void onLock() {
+            lockMachine();
+        }
+
+        @Override
+        public void onHandOver() {
+            handoverAnalysis();
+        }
+
+        @Override
+        public void onLogout() {
+            hideProgressDialog();
+            redirect2Login();
+        }
+    };
 
     /**
      * 锁定机器
@@ -452,39 +449,6 @@ public class AdministratorActivity extends BaseActivity {
 
 
     /**
-     * 退出当前账号
-     */
-    private void logout() {
-        showProgressDialog(ProgressDialog.STATUS_PROCESSING, "正在退出当前账号...", false);
-//                    // 保存统计数据
-//                    MobclickAgent.onKillProcess(CashierApp.getAppContext());
-//
-//                    //退出程序
-//                    android.os.Process.killProcess(android.os.Process.myPid());
-//                    System.exit(0);
-        MfhUserManager.getInstance().logout(new Callback() {
-            @Override
-            public void onSuccess() {
-//                showProgressDialog(ProgressDialog.STATUS_DONE, "正在退出当前账号...", false);
-                hideProgressDialog();
-                redirect2Login();
-            }
-
-            @Override
-            public void onProgress(int progress, String status) {
-
-            }
-
-            @Override
-            public void onError(int code, String message) {
-//                showProgressDialog(ProgressDialog.STATUS_ERROR, "正在退出当前账号...", true);
-                hideProgressDialog();
-                redirect2Login();
-            }
-        });
-    }
-
-    /**
      * 尝试登录
      *
      * @param bSlient 是否静默重试登录
@@ -493,16 +457,23 @@ public class AdministratorActivity extends BaseActivity {
         final String userName = MfhLoginService.get().getLoginName();
         final String password = MfhLoginService.get().getPassword();
 
-        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
-            @Override
-            public void onCompleted() {
-                ZLogger.d("onCompleted");
-            }
+        RxHttpManager.getInstance().login(new MSubscriber<UserMixInfo>() {
+//            @Override
+//            public void onError(Throwable e) {
+////                HTTP 401 Unauthorized
+////                HTTP 500 Internal Server Error
+//                ZLogger.e(e.getMessage());
+//
+//                EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));
+//
+//                if (!bSlient) {
+//                    redirect2Login();
+//                }
+//            }
 
             @Override
-            public void onError(Throwable e) {
-//                HTTP 401 Unauthorized
-//                HTTP 500 Internal Server Error
+            public void onError(ExceptionHandle.ResponeThrowable e) {
+
                 ZLogger.e(e.getMessage());
 
                 EventBus.getDefault().post(new AffairEvent(AffairEvent.EVENT_ID_RESET_CASHIER));

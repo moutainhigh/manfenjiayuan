@@ -18,10 +18,12 @@ import com.mfh.framework.core.utils.SystemUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.alarm.AlarmManagerHelper;
+import com.mfh.litecashier.receiver.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,7 +41,7 @@ import rx.schedulers.Schedulers;
  * <p>进入首页后开始启动验证<br>
  * 1.{@link #batchValidate()} 批量验证<br>
  * 2.{@link #stepValidate(int)} 单步验证 <br>    </p>
- * Created by Nat.ZZN(bingshanguxue) on 15-09-06..
+ * Created by bingshanguxue on 15-09-06..
  */
 public class ValidateManager {
 
@@ -173,15 +175,10 @@ public class ValidateManager {
             nextStep();
         } else {
             RxHttpManager.getInstance().isSessionValid(MfhLoginService.get().getCurrentSessionId(),
-                    new Subscriber<String>() {
+                    new MSubscriber<String>() {
                         @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            ZLogger.ef("登录状态已失效，准备冲登录" + e.toString());
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
+                            ZLogger.ef("登录状态已失效，准备自动重登录" + e.toString());
                             retryLogin();
                         }
 
@@ -200,17 +197,19 @@ public class ValidateManager {
     private void retryLogin() {
         final String username = MfhLoginService.get().getLoginName();
         final String password = MfhLoginService.get().getPassword();
-        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
-            @Override
-            public void onCompleted() {
-                ZLogger.d("onCompleted");
-            }
+        RxHttpManager.getInstance().login(new MSubscriber<UserMixInfo>() {
+//            @Override
+//            public void onError(Throwable e) {
+////                HTTP 401 Unauthorized
+////                HTTP 500 Internal Server Error
+//                ZLogger.ef("登录已失效－－" + e.getMessage());
+//                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
+//                        null, "登录已失效－－" + e.getMessage());
+//            }
 
             @Override
-            public void onError(Throwable e) {
-//                HTTP 401 Unauthorized
-//                HTTP 500 Internal Server Error
-                ZLogger.e("登录已失效－－" + e.getMessage());
+            public void onError(ExceptionHandle.ResponeThrowable e) {
+                ZLogger.ef("登录已失效－－" + e.getMessage());
                 validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_NEED_LOGIN,
                         null, "登录已失效－－" + e.getMessage());
             }
@@ -254,14 +253,22 @@ public class ValidateManager {
             ZLogger.d("注册设备中..." + order.toJSONString());
 
             RxHttpManager.getInstance().posRegisterCreate(order.toJSONString(),
-                    new Subscriber<String>() {
-                        @Override
-                        public void onCompleted() {
+                    new MSubscriber<String>() {
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            ZLogger.ef(String.format("注册设备失败,%s", e.toString()));
+//
+//                            if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
+//                                validateFinished(ValidateManagerEvent.EVENT_ID_INTERRUPT_PLAT_NOT_REGISTER,
+//                                        null, "设备注册失败，需要重新注册");
+//                            } else {
+//                                nextStep();
+//                            }
+//                        }
 
-                        }
-
                         @Override
-                        public void onError(Throwable e) {
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
+
                             ZLogger.ef(String.format("注册设备失败,%s", e.toString()));
 
                             if (StringUtils.isEmpty(SharedPrefesManagerFactory.getTerminalId())) {
@@ -414,15 +421,18 @@ public class ValidateManager {
 
         RxHttpManager.getInstance().needLockPos(MfhLoginService.get().getCurrentSessionId(),
                 MfhLoginService.get().getCurOfficeId(),
-                new Subscriber<String>() {
+                new MSubscriber<String>() {
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef("判读是否锁定POS机失败：" + e.toString());
+//                        nextStep();
+//
+//                        AlarmManagerHelper.triggleNextDailysettle(0);
+//                    }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef("判读是否锁定POS机失败：" + e.toString());
                         nextStep();
 

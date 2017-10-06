@@ -50,7 +50,7 @@ import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.ScOrderHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScOrderHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 

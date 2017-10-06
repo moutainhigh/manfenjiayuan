@@ -6,7 +6,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.bean.CommonAccountFlow;
-import com.mfh.framework.rxapi.http.CommonAccountHistoryHttpManager;
+import com.mfh.framework.rxapi.httpmgr.CommonAccountHistoryHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.HashMap;

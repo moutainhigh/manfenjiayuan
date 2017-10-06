@@ -1,4 +1,4 @@
-package com.mfh.framework.api;
+package com.mfh.framework.rxapi.bean;
 
 import com.mfh.framework.api.abs.MfhEntity;
 
@@ -15,6 +15,7 @@ public class CompanyHuman extends MfhEntity<Long> {
     private String userName; // 登录用户名
     private String password; // 登录密码
     private String salt; // 登录密码
+    private Long privateHumanId;
 
     public String getName() {
         return name;
@@ -62,5 +63,13 @@ public class CompanyHuman extends MfhEntity<Long> {
 
     public void setSalt(String salt) {
         this.salt = salt;
+    }
+
+    public Long getPrivateHumanId() {
+        return privateHumanId;
+    }
+
+    public void setPrivateHumanId(Long privateHumanId) {
+        this.privateHumanId = privateHumanId;
     }
 }

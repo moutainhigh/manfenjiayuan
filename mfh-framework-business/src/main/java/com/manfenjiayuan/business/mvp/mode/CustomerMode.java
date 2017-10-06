@@ -2,7 +2,9 @@ package com.manfenjiayuan.business.mvp.mode;
 
 import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.mvp.OnModeListener;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.Map;
 
@@ -22,14 +24,16 @@ public class CustomerMode {
             listener.onProcess();
         }
         RxHttpManager.getInstance().getCustomerByOther(options,
-                new Subscriber<Human>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<Human>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         if (listener != null) {
                             listener.onError(e.getMessage());
                         }

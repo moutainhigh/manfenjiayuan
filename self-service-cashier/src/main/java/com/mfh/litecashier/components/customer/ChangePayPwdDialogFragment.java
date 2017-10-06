@@ -20,7 +20,9 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.litecashier.BaseDialogFragment;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -341,15 +343,17 @@ public class ChangePayPwdDialogFragment extends BaseDialogFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         CommonUserAccountHttpManager.getInstance().changePwd(options,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+////                        etPayCode.getText().clear();
+//                        DialogUtil.showHint(e.getMessage());
+//                        setCancelable(true);
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
-//                        etPayCode.getText().clear();
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         DialogUtil.showHint(e.getMessage());
                         setCancelable(true);
                     }

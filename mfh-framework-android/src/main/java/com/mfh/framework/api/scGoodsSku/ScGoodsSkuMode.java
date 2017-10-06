@@ -14,8 +14,10 @@ import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.ScGoodsSkuHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -274,14 +276,19 @@ public class ScGoodsSkuMode {
         Map<String, String> options = new HashMap<>();
         options.put("barcode", barcode);
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        ScGoodsSkuHttpManager.getInstance().getByBarcode(options, new Subscriber<ScGoodsSku>() {
-            @Override
-            public void onCompleted() {
+        ScGoodsSkuHttpManager.getInstance().getByBarcode(options, new MSubscriber<ScGoodsSku>() {
 
-            }
+
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.ef("查询失败: " + e.toString());
+//                if (listener != null) {
+//                    listener.onError(e.toString());
+//                }
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.ef("查询失败: " + e.toString());
                 if (listener != null) {
                     listener.onError(e.toString());

@@ -1,8 +1,12 @@
 package com.mfh.framework.rxapi.subscriber;
 
+import android.content.Intent;
+
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.rxapi.entity.MRspQuery;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 
 import java.util.List;
 
@@ -28,6 +32,26 @@ public class MQuerySubscriber<T> extends Subscriber<MRspQuery<T>> {
 
     @Override
     public void onError(Throwable e) {
+        ZLogger.e("MQuerySubscriber.throwable =" + e.toString());
+        ZLogger.e("MQuerySubscriber.throwable =" + e.getMessage());
+
+        ExceptionHandle.ResponeThrowable throwable;
+        if (e instanceof Exception) {
+            ZLogger.d("Exception");
+            //访问获得对应的Exception
+            throwable = ExceptionHandle.handleException(e);
+            if (throwable.code == ExceptionHandle.ERROR.HTTP_ERROR_RETRY_LOGIN) {
+                MfhApplication.getAppContext().sendBroadcast(new Intent("com.mfh.litecashier.service.ACTION_UNAUTHORIZED"));
+            }
+        } else {
+            ZLogger.d("ExceptionHandle");
+            //将Throwable 和 未知错误的status code返回
+            throwable = new ExceptionHandle.ResponeThrowable(e,
+                    ExceptionHandle.ERROR.UNKNOWN);
+            if (throwable.code == ExceptionHandle.ERROR.HTTP_ERROR_RETRY_LOGIN) {
+                MfhApplication.getAppContext().sendBroadcast(new Intent("com.mfh.litecashier.service.ACTION_UNAUTHORIZED"));
+            }
+        }
     }
 
     @Override

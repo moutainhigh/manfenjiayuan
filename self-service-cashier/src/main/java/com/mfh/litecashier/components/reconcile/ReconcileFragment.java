@@ -25,7 +25,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MEntityWrapper;
-import com.mfh.framework.rxapi.http.ProductAggDateHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ProductAggDateHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

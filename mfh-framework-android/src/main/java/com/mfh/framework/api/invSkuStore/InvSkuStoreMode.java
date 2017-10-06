@@ -8,8 +8,10 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.InvSkuStoreHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +25,12 @@ import rx.Subscriber;
 public class InvSkuStoreMode {
     /**
      * 智能订货
+     *
      * @param chainCompanyId
      * @param listener
-     * */
+     */
     public void autoAskSendOrder(Long chainCompanyId,
-                                final OnModeListener<InvSendOrderItemBrief> listener) {
+                                 final OnModeListener<InvSendOrderItemBrief> listener) {
         if (listener != null) {
             listener.onProcess();
         }
@@ -36,19 +39,21 @@ public class InvSkuStoreMode {
         options.put("chainCompanyId", String.valueOf(chainCompanyId));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         InvSkuStoreHttpManager.getInstance().autoAskSendOrder(options,
-                new Subscriber<InvSendOrderItemBrief>() {
+                new MSubscriber<InvSendOrderItemBrief>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
+
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        ZLogger.d("智能订货失败：" + e.toString());
-
+                    public void onError(ExceptionHandle.ResponeThrowable responeThrowable) {
+                        ZLogger.d("智能订货失败：" + responeThrowable.toString());
 
                         if (listener != null) {
-                            listener.onError(e.getMessage());
+                            listener.onError(responeThrowable.getMessage());
                         }
                     }
 
@@ -79,18 +84,23 @@ public class InvSkuStoreMode {
         options.put("barcode", barcode);
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         InvSkuStoreHttpManager.getInstance().getByBarcodeMust(options,
-                new Subscriber<InvSkuGoods>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<InvSkuGoods>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.d("查询商品失败：" + e.toString());
+//
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
-                        ZLogger.d("查询商品失败：" + e.toString());
+                    public void onError(ExceptionHandle.ResponeThrowable throwable) {
+                        ZLogger.d("查询商品失败：" + throwable.toString());
 
                         if (listener != null) {
-                            listener.onError(e.getMessage());
+                            listener.onError(throwable.getMessage());
                         }
                     }
 
@@ -105,7 +115,7 @@ public class InvSkuStoreMode {
 
     /**
      * @param barcode 商品条码或者商品名称
-     * */
+     */
     public void getBeanByBizKeys(String barcode, final OnModeListener<InvSkuBizBean> listener) {
         if (listener != null) {
             listener.onProcess();
@@ -132,14 +142,18 @@ public class InvSkuStoreMode {
 
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         InvSkuStoreHttpManager.getInstance().getBeanByBizKeys(options,
-                new Subscriber<InvSkuBizBean>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<InvSkuBizBean>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.d("查询商品失败：" + e.toString());
+//
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.d("查询商品失败：" + e.toString());
 
                         if (listener != null) {
@@ -158,7 +172,7 @@ public class InvSkuStoreMode {
 
     /**
      * @param skuName 商品名称
-     * */
+     */
     public void listBeans(String skuName, PageInfo pageInfo, final OnPageModeListener<InvSkuBizBean> listener) {
         if (listener != null) {
             listener.onProcess();

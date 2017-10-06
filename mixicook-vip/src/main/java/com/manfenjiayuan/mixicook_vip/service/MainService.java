@@ -766,7 +766,6 @@ public class MainService extends BaseService {
             e.printStackTrace();
             ZLogger.e(e.toString());
         }
-
     }
 
     public void onDestroy() {

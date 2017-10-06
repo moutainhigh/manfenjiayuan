@@ -1,8 +1,10 @@
 package com.mfh.framework.rxapi.func;
 
+import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.entity.MValue;
 import com.mfh.framework.rxapi.http.ApiException;
+import com.mfh.framework.rxapi.http.ErrorCode;
 
 import rx.functions.Func1;
 
@@ -13,10 +15,16 @@ import rx.functions.Func1;
 public class MValueResponseFunc<T> implements Func1<MResponse<MValue<T>>, MValue<T>> {
     @Override
     public MValue<T> call(MResponse<MValue<T>> mRspQueryMResponse) {
-        if (mRspQueryMResponse == null || mRspQueryMResponse.getCode() != 0) {
-            throw new ApiException(mRspQueryMResponse.getMsg(), mRspQueryMResponse.getCode());
+        if (mRspQueryMResponse == null) {
+            throw new ApiException(ApiException.NULL);
         } else {
-            return mRspQueryMResponse.getData();
+            ZLogger.d(mRspQueryMResponse.getCode() + " > " + mRspQueryMResponse.getMsg());
+
+            if (!ErrorCode.SUCCESS.equals(mRspQueryMResponse.getCode())) {
+                throw new ApiException(mRspQueryMResponse.getMsg(), mRspQueryMResponse.getCode());
+            } else {
+                return mRspQueryMResponse.getData();
+            }
         }
     }
 }

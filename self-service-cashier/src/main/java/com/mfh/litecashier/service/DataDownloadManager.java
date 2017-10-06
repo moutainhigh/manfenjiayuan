@@ -1,6 +1,7 @@
 package com.mfh.litecashier.service;
 
 
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 
@@ -17,6 +18,7 @@ import com.manfenjiayuan.business.hostserver.TenantInfoWrapper;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.PageInfo;
+import com.mfh.framework.MfhApplication;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.rxapi.bean.CompanyHuman;
 import com.mfh.framework.api.anon.sc.ProductCatalog;
@@ -36,12 +38,15 @@ import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.CompanyHumanHttpManager;
-import com.mfh.framework.rxapi.http.ProductCatalogManager;
+import com.mfh.framework.rxapi.http.ApiException;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CompanyHumanHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ProductCatalogManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
-import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
-import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScCategoryInfoHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScGoodsSkuHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.rxapi.subscriber.MValueSubscriber;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.database.logic.CompanyHumanService;
@@ -60,6 +65,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -114,7 +120,9 @@ public class DataDownloadManager {
         }
     }
 
-    /**商品档案每页最大同步数量，考虑到增加会员价后同步商品档案时可能会耗时较长，所以这里设置为50条记录*/
+    /**
+     * 商品档案每页最大同步数量，考虑到增加会员价后同步商品档案时可能会耗时较长，所以这里设置为50条记录
+     */
     private static final int MAX_SYNC_PRODUCTS_PAGESIZE = 50;
 
     private PageInfo mPageInfo = new PageInfo(1, MAX_SYNC_PRODUCTS_PAGESIZE);
@@ -647,15 +655,18 @@ public class DataDownloadManager {
         Map<String, String> options = new HashMap<>();
         options.put("cateType", String.valueOf(CateApi.POS));
         options.put("tenantId", String.valueOf(MfhLoginService.get().getSpid()));
-        ScCategoryInfoHttpManager.getInstance().getTopFrontId(options, new Subscriber<CategoryInfo>() {
-            @Override
-            public void onCompleted() {
+        ScCategoryInfoHttpManager.getInstance().getTopFrontId(options, new MSubscriber<CategoryInfo>() {
 
-            }
+
+//            @Override
+//            public void onError(Throwable e) {
+//                onNotifyNext("加载前台根类目失败, " + e.toString());
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 onNotifyNext("加载前台根类目失败, " + e.toString());
+
             }
 
             @Override
@@ -725,39 +736,42 @@ public class DataDownloadManager {
 
         Map<String, String> options = new HashMap<>();
         options.put("parentId", String.valueOf(categoryInfo.getId()));
-        ScCategoryInfoHttpManager.getInstance().getCodeValue(options, new Subscriber<List<CategoryInfo>>() {
-            @Override
-            public void onCompleted() {
+        ScCategoryInfoHttpManager.getInstance().getCodeValue(options,
+                new MSubscriber<List<CategoryInfo>>() {
 
-            }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        onNotifyCompleted("加载前台类目树 失败, " + e.toString());
+//                    }
 
-            @Override
-            public void onError(Throwable e) {
-                onNotifyCompleted("加载前台类目树 失败, " + e.toString());
-            }
+                    @Override
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+                        onNotifyCompleted("加载前台类目树 失败, " + e.getMessage());
 
-            @Override
-            public void onNext(List<CategoryInfo> categoryInfos) {
-                if (categoryInfos != null) {
-                    for (CategoryInfo item : categoryInfos) {
-                        PosLocalCategoryService.get().saveOrUpdate(item);
                     }
-                    //删除无效的数据
-                    PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
-                            PosLocalCategoryEntity.CLOUD_DEACTIVE));
 
-                    int count = PosLocalCategoryService.get().getCount();
-                    int cloudNum = categoryInfos.size();
-                    ZLogger.d(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
-                            cloudNum, count));
-                }
+                    @Override
+                    public void onNext(List<CategoryInfo> categoryInfos) {
+                        if (categoryInfos != null) {
+                            for (CategoryInfo item : categoryInfos) {
+                                PosLocalCategoryService.get().saveOrUpdate(item);
+                            }
+                            //删除无效的数据
+                            PosLocalCategoryService.get().deleteBy(String.format("isCloudActive = '%d'",
+                                    PosLocalCategoryEntity.CLOUD_DEACTIVE));
 
-                //通知刷新前台类目数据
-                EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+                            int count = PosLocalCategoryService.get().getCount();
+                            int cloudNum = categoryInfos.size();
+                            ZLogger.d(String.format("同步前台类目结束,云端类目(%d),本地类目数量(%d)",
+                                    cloudNum, count));
+                        }
 
-                processQueue();
-            }
-        });
+                        //通知刷新前台类目数据
+                        EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_FRONTEND_CATEGORY_UPDATED));
+
+                        processQueue();
+                    }
+                });
     }
 
 
@@ -972,28 +986,32 @@ public class DataDownloadManager {
         options.put("deep", "2");//层级
 //        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
 //        options.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
-        ScCategoryInfoHttpManager.getInstance().comnQuery(options, new Subscriber<CategoryQueryInfo>() {
-            @Override
-            public void onCompleted() {
+        ScCategoryInfoHttpManager.getInstance().comnQuery(options,
+                new MSubscriber<CategoryQueryInfo>() {
 
-            }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.e("加载后台类目树失败, " + e.toString());
+//                        processQueue();
+//                    }
 
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.e("加载后台类目树失败, " + e.toString());
-                processQueue();
-            }
+                    @Override
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
 
-            @Override
-            public void onNext(CategoryQueryInfo categoryQueryInfo) {
-                if (categoryQueryInfo != null) {
-                    //缓存数据
-                    listBackendCategoryStep2(categoryQueryInfo.getOptions());
-                } else {
-                    listBackendCategoryStep2(null);
-                }
-            }
-        });
+                        ZLogger.e("加载后台类目树失败, " + e.toString());
+                        processQueue();
+                    }
+
+                    @Override
+                    public void onNext(CategoryQueryInfo categoryQueryInfo) {
+                        if (categoryQueryInfo != null) {
+                            //缓存数据
+                            listBackendCategoryStep2(categoryQueryInfo.getOptions());
+                        } else {
+                            listBackendCategoryStep2(null);
+                        }
+                    }
+                });
     }
 
     /**
@@ -1029,15 +1047,17 @@ public class DataDownloadManager {
         TenantInfoWrapper hostServer = GlobalInstanceBase.getInstance().getHostServer();
         if (hostServer != null) {
             RxHttpManager.getInstance().getSaasInfo(hostServer.getSaasId(),
-                    new Subscriber<SassInfo>() {
-                        @Override
-                        public void onCompleted() {
+                    new MSubscriber<SassInfo>() {
 
-                        }
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            onNotifyNext(e.toString());
+//                        }
 
                         @Override
-                        public void onError(Throwable e) {
-                            onNotifyNext(e.toString());
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
+                            onNotifyNext(e.getMessage());
+
                         }
 
                         @Override
@@ -1061,15 +1081,17 @@ public class DataDownloadManager {
         EventBus.getDefault().post(new DataDownloadEvent(DataDownloadEvent.EVENT_ID_SYNC_DATA_PROGRESS));
 
         RxHttpManager.getInstance().queryPrivList(MfhLoginService.get().getCurrentSessionId(),
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                new MSubscriber<String>() {
 
                     @Override
                     public void onError(Throwable e) {
                         onNotifyNext(e.toString());
+                    }
+
+                    @Override
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+                        onNotifyNext(e.toString());
+
                     }
 
                     @Override
@@ -1130,7 +1152,7 @@ public class DataDownloadManager {
                     public void onError(Throwable e) {
                         super.onError(e);
 
-                        ZLogger.ef("加载自账号数据失败:" + e.toString());
+                        ZLogger.ef("加载子账号数据失败:" + e.toString());
                         processQueue();
                     }
                 });

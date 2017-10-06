@@ -34,8 +34,8 @@ public class CashierApp extends MfhApplication {
 
     @Override
     protected boolean isReleaseVersion() {
-        return false;
-//        return SharedPrefesManagerFactory.isReleaseVersion();
+//        return false;
+        return SharedPrefesManagerFactory.isReleaseVersion();
     }
 
     @Override

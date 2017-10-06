@@ -41,7 +41,9 @@ import com.mfh.framework.core.utils.ObjectsCompact;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -776,14 +778,17 @@ public class InventoryCostFragment extends BaseProgressFragment
                 Map<String, String> options = new HashMap<>();
                 options.put("jsonStr", jsonObject.toJSONString());
                 options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-                InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                InvSkuStoreHttpManager.getInstance().update(options, new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        DialogUtil.showHint(e.getMessage());
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         ZLogger.ef(e.toString());
                         DialogUtil.showHint(e.getMessage());
                     }
@@ -834,14 +839,17 @@ public class InventoryCostFragment extends BaseProgressFragment
                 Map<String, String> options = new HashMap<>();
                 options.put("jsonStr", jsonObject.toJSONString());
                 options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-                InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                InvSkuStoreHttpManager.getInstance().update(options, new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        DialogUtil.showHint(e.getMessage());
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         ZLogger.ef(e.toString());
                         DialogUtil.showHint(e.getMessage());
                     }

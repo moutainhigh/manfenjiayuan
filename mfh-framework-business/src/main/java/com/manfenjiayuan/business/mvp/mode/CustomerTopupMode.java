@@ -2,7 +2,9 @@ package com.manfenjiayuan.business.mvp.mode;
 
 import com.mfh.framework.api.account.UserAccount;
 import com.mfh.framework.mvp.OnModeListener;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.Map;
 
@@ -23,15 +25,16 @@ public class CustomerTopupMode {
         }
 
         CommonUserAccountHttpManager.getInstance().transferFromMyAccount(options,
-                new Subscriber<UserAccount>() {
+                new MSubscriber<UserAccount>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         if (listener != null) {
                             listener.onError(e.getMessage());
                         }

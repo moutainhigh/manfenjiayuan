@@ -48,10 +48,12 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
-import com.mfh.framework.rxapi.http.PmcStockHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.httpmgr.PmcStockHttpManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
 import com.mfh.framework.uikit.widget.CustomViewPager;
@@ -543,15 +545,17 @@ public class CashierPayFragment extends BasePayStepFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         options.put("humanId", String.valueOf(mMemberInfo.getId()));
         RxHttpManager.getInstance().getCustomerByOther(options,
-                new Subscriber<Human>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<Human>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+
                     }
 
                     @Override
@@ -674,14 +678,20 @@ public class CashierPayFragment extends BasePayStepFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         CommonUserAccountHttpManager.getInstance().getPayAmountByOrderInfo(options,
-                new Subscriber<PayAmount>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<PayAmount>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        if (couponRule != null) {
+//                            couponRule.toggleSelected();
+//                            couponAdapter.notifyDataSetChanged();
+//                        }
+//                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef(e.toString());
                         if (couponRule != null) {
                             couponRule.toggleSelected();

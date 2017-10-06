@@ -18,7 +18,9 @@ import com.mfh.framework.api.category.CategoryOption;
 import com.mfh.framework.api.category.CategoryQueryInfo;
 import com.mfh.framework.core.utils.ACache;
 import com.mfh.framework.core.utils.NetworkUtils;
-import com.mfh.framework.rxapi.http.ScCategoryInfoHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.ScCategoryInfoHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -224,14 +226,18 @@ public class BackendCategoryListFragment extends BaseListFragment<CategoryOption
         options.put("deep", "2");//层级
 //        params.put("tenantId", MfhLoginService.get().getSpid() == null ? "0" : String.valueOf(MfhLoginService.get().getSpid()));
 //        options.put("tenantId", CATEGORY_TENANT_ID);//使用类目专属ID
-        ScCategoryInfoHttpManager.getInstance().comnQuery(options, new Subscriber<CategoryQueryInfo>() {
-            @Override
-            public void onCompleted() {
+        ScCategoryInfoHttpManager.getInstance().comnQuery(options, new MSubscriber<CategoryQueryInfo>() {
 
-            }
+
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.ef("加载后台类目树失败, " + e.toString());
+//                onLoadFinished();
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
+
                 ZLogger.ef("加载后台类目树失败, " + e.toString());
                 onLoadFinished();
             }

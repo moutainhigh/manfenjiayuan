@@ -40,7 +40,9 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.ResultCode;
 
@@ -228,24 +230,29 @@ public class SignInActivity extends SkinBaseActivity {
         // perform the user login attempt.
         showProgress(true);
 
-        RxHttpManager.getInstance().login(new Subscriber<UserMixInfo>() {
-            @Override
-            public void onCompleted() {
-                ZLogger.d("onCompleted");
-            }
+        RxHttpManager.getInstance().login(new MSubscriber<UserMixInfo>() {
+
+//            @Override
+//            public void onError(Throwable e) {
+////                HTTP 401 Unauthorized
+////                HTTP 500 Internal Server Error
+//                ZLogger.ef(e.getMessage());
+//
+//                //登录失败
+//                DialogUtil.showHint(e.getMessage());
+//                showProgress(false);
+//
+////                Snackbar.make(etUserName, e.getMessage(), Snackbar.LENGTH_SHORT)
+////                        .setAction("Action", null).show();
+//            }
 
             @Override
-            public void onError(Throwable e) {
-//                HTTP 401 Unauthorized
-//                HTTP 500 Internal Server Error
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.ef(e.getMessage());
 
                 //登录失败
                 DialogUtil.showHint(e.getMessage());
                 showProgress(false);
-
-//                Snackbar.make(etUserName, e.getMessage(), Snackbar.LENGTH_SHORT)
-//                        .setAction("Action", null).show();
             }
 
             @Override

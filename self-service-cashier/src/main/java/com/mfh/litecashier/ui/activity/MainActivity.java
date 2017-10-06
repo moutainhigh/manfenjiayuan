@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.hardware.display.DisplayManager;
 import android.media.MediaRouter;
 import android.os.Bundle;
@@ -45,17 +46,19 @@ import com.bingshanguxue.cashier.view.ICashierView;
 import com.bingshanguxue.vector_uikit.EditInputType;
 import com.bingshanguxue.vector_uikit.SyncButton;
 import com.bingshanguxue.vector_uikit.dialog.NumberInputDialog;
+import com.bingshanguxue.vector_uikit.widget.AvatarView;
 import com.bingshanguxue.vector_uikit.widget.MultiLayerLabel;
 import com.igexin.sdk.PushManager;
-import com.manfenjiayuan.business.presenter.ScOrderPresenter;
+import com.manfenjiayuan.business.mvp.presenter.ScOrderPresenter;
 import com.manfenjiayuan.business.utils.MUtils;
-import com.manfenjiayuan.business.view.IScOrderView;
+import com.manfenjiayuan.business.mvp.view.IScOrderView;
 import com.manfenjiayuan.im.constants.IMBizType;
 import com.manfenjiayuan.im.database.service.EmbMsgService;
 import com.mfh.comn.bean.PageInfo;
 import com.mfh.framework.BizConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
-import com.mfh.framework.api.account.Human;
+import com.mfh.framework.rxapi.bean.CompanyHuman;
+import com.mfh.framework.rxapi.bean.Human;
 import com.mfh.framework.api.constant.BizType;
 import com.mfh.framework.api.constant.PosType;
 import com.mfh.framework.api.constant.PriceType;
@@ -71,7 +74,9 @@ import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.UIHelper;
 import com.mfh.framework.uikit.base.BaseActivity;
 import com.mfh.framework.uikit.base.ResultCode;
@@ -82,9 +87,11 @@ import com.mfh.framework.uikit.recyclerview.MyItemTouchHelper;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
 import com.mfh.litecashier.R;
-import com.mfh.litecashier.alarm.AlarmManagerHelper;
+import com.mfh.litecashier.receiver.AlarmManagerHelper;
 import com.mfh.litecashier.bean.wrapper.LocalFrontCategoryGoods;
+import com.mfh.litecashier.components.AccountActionDialog;
 import com.mfh.litecashier.components.cashier.ResourcesManager;
+import com.mfh.litecashier.components.company.CompanyHumanQueryDialog;
 import com.mfh.litecashier.components.customer.ChangePayPwdDialogFragment;
 import com.mfh.litecashier.components.customer.CustomerQueryDialogFragment;
 import com.mfh.litecashier.components.customer.ExchangeScoreDialogFragment;
@@ -97,6 +104,7 @@ import com.mfh.litecashier.hardware.SMScale.SMScaleSyncManager2;
 import com.mfh.litecashier.service.DataDownloadManager;
 import com.mfh.litecashier.service.DataUploadManager;
 import com.mfh.litecashier.service.DemoPushService;
+import com.mfh.litecashier.service.MainService;
 import com.mfh.litecashier.service.ValidateManager;
 import com.mfh.litecashier.ui.ActivityRoute;
 import com.mfh.litecashier.ui.adapter.CashierMenuAdapter;
@@ -146,6 +154,8 @@ import rx.schedulers.Schedulers;
 public class MainActivity extends CashierActivity
         implements ICashierView, IScOrderView, QueryGoodsFragment.OnFragmentListener {
 
+    @BindView(R.id.iv_cashier_avatar)
+    AvatarView ivCashierAvatar;
     @BindView(R.id.slideMenu)
     RecyclerView menuRecyclerView;
     private CashierMenuAdapter menuAdapter;
@@ -248,6 +258,9 @@ public class MainActivity extends CashierActivity
 
         setupGetui();
 
+        ivCashierAvatar.setBorderWidth(3);
+        ivCashierAvatar.setBorderColor(Color.parseColor("#e8e8e8"));
+
         initMenuRecyclerView();
         initBarCodeInput();
         initCashierRecyclerView();
@@ -282,7 +295,6 @@ public class MainActivity extends CashierActivity
 //            btnPrepareOrder.setVisibility(View.VISIBLE);
         }
 
-
         reload();
 
         initPresentation();
@@ -294,6 +306,7 @@ public class MainActivity extends CashierActivity
         AlarmManagerHelper.registerBuglyUpgrade(this);
         AlarmManagerHelper.triggleNextDailysettle(0);
 
+        startService(new Intent(MainActivity.this, MainService.class));
 //        MfhUserManager.getInstance().updateModules();
     }
 
@@ -449,6 +462,68 @@ public class MainActivity extends CashierActivity
         }
     }
 
+
+    private AccountActionDialog mAccountActionDialog;
+
+    /**
+     * 显示收银员账号对话框
+     */
+    private synchronized void showAccountActionDialog(int event) {
+        if (mAccountActionDialog == null) {
+            mAccountActionDialog = new AccountActionDialog();
+        }
+        mAccountActionDialog.config(event, mOnAccountActionListener);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        mAccountActionDialog.show(ft, AccountActionDialog.TAG);
+    }
+
+    private AccountActionDialog.OnAccountActionListener mOnAccountActionListener = new AccountActionDialog.OnAccountActionListener() {
+        @Override
+        public void onLock() {
+
+        }
+
+        @Override
+        public void onHandOver() {
+
+        }
+
+        @Override
+        public void onLogout() {
+            showCompanyHumanQueryDialog(CompanyHumanQueryDialog.TARGET_CASHIER_SIGNIN);
+        }
+    };
+    
+    private CompanyHumanQueryDialog mCompanyHumanQueryDialog;
+
+    /**
+     * 显示查询收银员对话框
+     */
+    private synchronized void showCompanyHumanQueryDialog(int target) {
+        if (mCompanyHumanQueryDialog == null) {
+            mCompanyHumanQueryDialog = new CompanyHumanQueryDialog();
+        }
+        mCompanyHumanQueryDialog.setTargetAndListener(target, mOnCompanyHumanQueryListener);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        mCompanyHumanQueryDialog.show(ft, CompanyHumanQueryDialog.TAG);
+    }
+
+    private CompanyHumanQueryDialog.OnCompanyHumanQueryListener mOnCompanyHumanQueryListener = new CompanyHumanQueryDialog.OnCompanyHumanQueryListener() {
+        @Override
+        public void onQuerySuccess(int target, CompanyHuman companyHuman) {
+            switch (target) {
+                case CompanyHumanQueryDialog.TARGET_CASHIER_SIGNIN:
+                    // TODO: 16/09/2017
+//                    settleStep3(type, human);
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
     /**
      * 显示查询会员对话框
      */
@@ -459,7 +534,7 @@ public class MainActivity extends CashierActivity
         mCustomerQueryDialogFragment.setTargetAndListener(target, querySettleCustomerListener);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        mCustomerQueryDialogFragment.show(ft, "queryCustomer");
+        mCustomerQueryDialogFragment.show(ft, CustomerQueryDialogFragment.TAG);
     }
 
     private CustomerQueryDialogFragment.OnCustomerQueryListener querySettleCustomerListener = new CustomerQueryDialogFragment.OnCustomerQueryListener() {
@@ -526,7 +601,10 @@ public class MainActivity extends CashierActivity
      */
     @OnClick(R.id.frame_lastorder)
     public void printLastOrder() {
+        sendBroadcast(new Intent(MainService.ACTION_UNAUTHORIZED));
+
         if (mLastOrderInfo == null) {
+            ZLogger.d("Last order info is null");
             return;
         }
 
@@ -753,6 +831,8 @@ public class MainActivity extends CashierActivity
      */
     private void reload() {
         try {
+            ivCashierAvatar.setAvatarUrl(MfhLoginService.get().getHeadimage());
+
             if (inlvBarcode != null) {
                 inlvBarcode.clear();
                 inlvBarcode.requestFocusEnd();
@@ -763,7 +843,6 @@ public class MainActivity extends CashierActivity
             //刷新上一单数据
             refreshLastOrder(null);
             CashierBenchObservable.getInstance().setCashierOrderInfo(null);
-
 
             //加载订单
             if (!StringUtils.isEmpty(curPosTradeNo)) {
@@ -1210,7 +1289,7 @@ public class MainActivity extends CashierActivity
                     CashierShopcartService.getInstance()
                             .deleteBy(String.format("posTradeNo = '%s'", posTradeNo));
 
-                    Integer bizType = cashierOrderInfo.getBizType();
+//                    Integer bizType = cashierOrderInfo.getBizType();
 //                    ZLogger.df(String.format("%s支付，流水编号：%s\n%s",
 //                            WayType.name(bizType), posTradeNo,
 //                            JSONObject.toJSONString(cashierOrderInfo)));
@@ -2031,14 +2110,16 @@ public class MainActivity extends CashierActivity
         Map<String, String> options = new HashMap<>();
         options.put("jsonStr", jsonObject.toJSONString());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
+        InvSkuStoreHttpManager.getInstance().update(options, new MSubscriber<String>() {
 
             @Override
             public void onError(Throwable e) {
+                ZLogger.ef(e.toString());
+                DialogUtil.showHint(e.getMessage());
+            }
+
+            @Override
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.ef(e.toString());
                 DialogUtil.showHint(e.getMessage());
             }
@@ -2177,7 +2258,7 @@ public class MainActivity extends CashierActivity
      */
     private void initPresentation() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            boolean isMultiWindowSupported = isInMultiWindowMode();
+//            boolean isMultiWindowSupported = isInMultiWindowMode();
         }
 
         DisplayManager displayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
@@ -2290,6 +2371,15 @@ public class MainActivity extends CashierActivity
 
         String cid = PushManager.getInstance().getClientid(CashierApp.getAppContext());
         ZLogger.i("当前应用的cid = " + cid);
+    }
+
+    @OnClick(R.id.iv_cashier_avatar)
+    public void clickCashierAvatar() {
+        if (MfhLoginService.get().haveLogined()) {
+            showAccountActionDialog(AccountActionDialog.EVENT_CHANGE_ACCOUNT);
+        } else {
+            showCompanyHumanQueryDialog(CompanyHumanQueryDialog.TARGET_CASHIER_SIGNIN);
+        }
     }
 
     /**

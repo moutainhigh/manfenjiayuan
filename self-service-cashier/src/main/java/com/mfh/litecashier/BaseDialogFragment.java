@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +57,11 @@ public abstract class BaseDialogFragment extends DialogFragment {
 
 
 //3 在此处设置 无标题 对话框背景色
-        getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            window.requestFeature(Window.FEATURE_NO_TITLE);
+        }
+
         // //对话框背景色
 //        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.RED));
 //        getDialog().getWindow().setDimAmount(0.5f);//背景黑暗度
@@ -80,23 +85,25 @@ public abstract class BaseDialogFragment extends DialogFragment {
         ZLogger.d("onStart");
         //控制Dialog的宽和高
         Window window = getDialog().getWindow();
-        WindowManager m = window.getWindowManager();
-        Display d = m.getDefaultDisplay();
-        WindowManager.LayoutParams p = window.getAttributes();
-        if (getDialogType() == DIALOG_TYPE_SMALL) {
-            p.width = DensityUtil.dip2px(getContext(), 400);
+        if (window != null) {
+            WindowManager m = window.getWindowManager();
+            Display d = m.getDefaultDisplay();
+            WindowManager.LayoutParams p = window.getAttributes();
+            if (getDialogType() == DIALOG_TYPE_SMALL) {
+                p.width = DensityUtil.dip2px(getContext(), 400);
 //        p.y = d.getHeight();
 
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
-            window.setAttributes(p);
-        } else if (getDialogType() == DIALOG_TYPE_MIDDLE) {
-            p.width = d.getWidth() * 2 / 3;
+                window.setAttributes(p);
+            } else if (getDialogType() == DIALOG_TYPE_MIDDLE) {
+                p.width = d.getWidth() * 2 / 3;
 //        p.y = d.getHeight();
 
 //        final TypedArray a = getContext().obtainStyledAttributes(ATTRS);
 //        p.y = (int)a.getDimension(0, 44);
-            window.setAttributes(p);
+                window.setAttributes(p);
+            }
         }
     }
 
@@ -111,5 +118,9 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
         ZLogger.d("onCancel");
+    }
+
+    public void simulateKeyDown(int keycode) {
+        getDialog().dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, keycode));
     }
 }

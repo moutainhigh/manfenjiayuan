@@ -17,7 +17,9 @@ import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,14 +42,19 @@ public class PosRegisterMode {
         order.put("netId", netId);
 
         RxHttpManager.getInstance().posRegisterCreate(order.toJSONString(),
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(String.format("注册设备失败,%s", e.toString()));
+//
+//                        if (listener != null) {
+//                            listener.onError(e.toString());
+//                        }
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef(String.format("注册设备失败,%s", e.toString()));
 
                         if (listener != null) {

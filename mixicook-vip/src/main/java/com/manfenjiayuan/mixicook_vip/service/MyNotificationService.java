@@ -1,12 +1,9 @@
 package com.manfenjiayuan.mixicook_vip.service;
 
-import android.app.Notification;
-import android.content.Intent;
 import android.os.Build;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 
-import com.manfenjiayuan.mixicook_vip.BuildConfig;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 
 public class MyNotificationService extends NotificationListenerService {

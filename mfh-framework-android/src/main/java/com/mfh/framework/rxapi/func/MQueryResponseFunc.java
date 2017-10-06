@@ -4,6 +4,7 @@ import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.rxapi.entity.MRspQuery;
 import com.mfh.framework.rxapi.entity.MResponse;
 import com.mfh.framework.rxapi.http.ApiException;
+import com.mfh.framework.rxapi.http.ErrorCode;
 
 import rx.functions.Func1;
 
@@ -14,17 +15,23 @@ import rx.functions.Func1;
 public class MQueryResponseFunc<T> implements Func1<MResponse<MRspQuery<T>>, MRspQuery<T>> {
     @Override
     public MRspQuery<T> call(MResponse<MRspQuery<T>> mRspQueryMResponse) {
-        if (mRspQueryMResponse == null || mRspQueryMResponse.getCode() != 0) {
-            throw new ApiException(mRspQueryMResponse.getMsg(), mRspQueryMResponse.getCode());
+        if (mRspQueryMResponse == null) {
+            throw new ApiException(ApiException.NULL);
         } else {
-            MRspQuery<T> rspQuery = mRspQueryMResponse.getData();
-            if (rspQuery != null) {
-                ZLogger.d(String.format("返回查询结果：total=%d", rspQuery.getTotal()));
-            } else {
-                ZLogger.d("返回查询结果为空");
-            }
+            ZLogger.d(mRspQueryMResponse.getCode() + " > " + mRspQueryMResponse.getMsg());
 
-            return rspQuery;
+            if (!ErrorCode.SUCCESS.equals(mRspQueryMResponse.getCode())) {
+                throw new ApiException(mRspQueryMResponse.getMsg(), mRspQueryMResponse.getCode());
+            } else {
+                MRspQuery<T> rspQuery = mRspQueryMResponse.getData();
+                if (rspQuery != null) {
+                    ZLogger.d(String.format("返回查询结果：total=%d", rspQuery.getTotal()));
+                } else {
+                    ZLogger.d("返回查询结果为空");
+                }
+
+                return rspQuery;
+            }
         }
     }
 }

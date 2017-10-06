@@ -14,7 +14,7 @@ import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.rxapi.http.ScChainGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScChainGoodsSkuHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.ArrayList;

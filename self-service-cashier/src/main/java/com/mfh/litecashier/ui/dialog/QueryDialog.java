@@ -25,7 +25,9 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.SysHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.SysHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.R;
 
@@ -344,14 +346,17 @@ public class QueryDialog extends CommonDialog {
         Map<String, String> options = new HashMap<>();
         options.put("mobile", phoneNumber);
         SysHttpManager.getInstance().getHumanByIdentity(options,
-                new Subscriber<Human>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<Human>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        btnSubmit.setEnabled(false);
+//                        mHuman = null;
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         btnSubmit.setEnabled(false);
                         mHuman = null;
                     }

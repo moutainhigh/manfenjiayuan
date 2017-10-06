@@ -20,7 +20,7 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MEntityWrapper;
-import com.mfh.framework.rxapi.http.ScProductConvertHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScProductConvertHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;

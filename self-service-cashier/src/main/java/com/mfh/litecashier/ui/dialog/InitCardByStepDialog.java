@@ -33,7 +33,9 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -544,14 +546,17 @@ public class InitCardByStepDialog extends CommonDialog implements ICustomerView 
 //                options.put("ownerId", String.valueOf(mHuman.getId()));
                 options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
                 CommonUserAccountHttpManager.getInstance().activateAccount(options,
-                        new Subscriber<UserAccount>() {
+                        new MSubscriber<UserAccount>() {
                             @Override
-                            public void onCompleted() {
-
+                            public void onError(Throwable e) {
+                                ZLogger.ef(String.format("开卡失败:%s", e.toString()));
+                                btnSubmit.setEnabled(true);
+                                progressBar.setVisibility(View.GONE);
                             }
 
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError(ExceptionHandle.ResponeThrowable e) {
+
                                 ZLogger.ef(String.format("开卡失败:%s", e.toString()));
                                 btnSubmit.setEnabled(true);
                                 progressBar.setVisibility(View.GONE);

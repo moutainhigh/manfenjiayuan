@@ -12,7 +12,9 @@ import com.mfh.framework.mvp.OnModeListener;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
-import com.mfh.framework.rxapi.http.ScOrderHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.ScOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -99,14 +101,18 @@ public class ScOrderMode {
         options.put("needDetail", String.valueOf(isNeedDetail));
 
         ScOrderHttpManager.getInstance().getByCode(options,
-                new Subscriber<ScOrder>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<ScOrder>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef("查询失败: " + e.toString());
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef("查询失败: " + e.toString());
                         if (listener != null) {
                             listener.onError(e.getMessage());

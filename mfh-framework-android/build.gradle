@@ -17,6 +17,7 @@ android {
 
         multiDexEnabled true
 
+//        自定义BuildConfig
         buildConfigField "String", "SDK_BUILD_TIME", "\"" +  getCurrentTime() + "\""
         buildConfigField "String", "SDK_BUILD_HOST", "\"" +  getUserName() + "\""
         buildConfigField "String", "SDK_BUILD_OS", "\"" +  getOSName() + "\""

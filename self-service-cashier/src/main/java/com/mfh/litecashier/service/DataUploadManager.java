@@ -30,7 +30,9 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetCallBack;
 import com.mfh.framework.network.NetProcessor;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.utils.SharedPreferencesUltimate;
 
@@ -107,7 +109,7 @@ public class DataUploadManager {
             }
 
             // 要做的事情
-             super.handleMessage(msg);
+            super.handleMessage(msg);
         }
     };
 
@@ -141,7 +143,7 @@ public class DataUploadManager {
 
 
     /**
-     * 下载更新POS数据库
+     * 上传POS数据库
      */
     public synchronized void syncDefault() {
         sync(7);
@@ -256,14 +258,21 @@ public class DataUploadManager {
 
         if (RxHttpManager.isUseRx) {
             RxHttpManager.getInstance().commintCashAndTrigDateEnd(topupEntity.getOutTradeNo(),
-                    new Subscriber<String>() {
-                        @Override
-                        public void onCompleted() {
+                    new MSubscriber<String>() {
 
-                        }
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            ZLogger.e("提交清分充值支付记录失败：" + e.toString());
+//                            if (incomeDistributionPageInfo.hasNextPage()) {
+//                                incomeDistributionPageInfo.moveToNext();
+//                                commintCashAndTrigDateEnd();
+//                            } else {
+//                                processQueue();
+//                            }
+//                        }
 
                         @Override
-                        public void onError(Throwable e) {
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
                             ZLogger.e("提交清分充值支付记录失败：" + e.toString());
                             if (incomeDistributionPageInfo.hasNextPage()) {
                                 incomeDistributionPageInfo.moveToNext();
@@ -411,8 +420,8 @@ public class DataUploadManager {
 
     /**
      * 上传未同步的已完成订单
-     * */
-    public void uploadPosOrders(){
+     */
+    public void uploadPosOrders() {
         queue ^= POS_ORDER;
 
         List<PosOrderEntity> orderEntities = DataManagerHelper.getSyncPosOrders(PosOrderEntity.SYNC_STATUS_NONE);
@@ -580,15 +589,17 @@ public class DataUploadManager {
 
         final Date finalNewCursor = newCursor;
         RxHttpManager.getInstance().batchInOrders(MfhLoginService.get().getCurrentSessionId(),
-                orders,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                orders, new MSubscriber<String>() {
 
-                    }
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        onNotifyNext(String.format("上传POS订单失败: %s", e.getMessage()));
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef(e.toString());
                         onNotifyNext(String.format("上传POS订单失败: %s", e.getMessage()));
                     }
@@ -641,16 +652,20 @@ public class DataUploadManager {
 //            options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 //            options.put("jsonStr", orders.toJSONString());
         RxHttpManager.getInstance().batchInOrders(MfhLoginService.get().getCurrentSessionId(),
-                orders,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                orders, new MSubscriber<String>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_ERROR);
+////                        orderEntity.setUpdatedDate(new Date());
+//                        PosOrderService.get().saveOrUpdate(orderEntity);
+//                        uploadPosOrders();
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
-                        ZLogger.ef(e.toString());
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
+                        ZLogger.ef("订单上传成功：" + e.toString());
                         orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_ERROR);
 //                        orderEntity.setUpdatedDate(new Date());
                         PosOrderService.get().saveOrUpdate(orderEntity);
@@ -669,8 +684,10 @@ public class DataUploadManager {
                 });
     }
 
-    /**同步单个异常订单，同步完成后的流程和正常订单的流程不一致*/
-    public void uploadErrorOrder(final PosOrderEntity orderEntity) {
+    /**
+     * 同步单个异常订单，同步完成后的流程和正常订单的流程不一致
+     */
+    private void uploadErrorOrder(final PosOrderEntity orderEntity) {
         if (orderEntity == null) {
             onNotifyNext("订单无效，不需要同步...");
             return;
@@ -700,14 +717,20 @@ public class DataUploadManager {
 //            options.put("jsonStr", orders.toJSONString());
         RxHttpManager.getInstance().batchInOrders(MfhLoginService.get().getCurrentSessionId(),
                 orders,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//                        //同步失败两次不会再同步
+//                        orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_FATAL);
+////                        orderEntity.setUpdatedDate(new Date());
+//                        PosOrderService.get().saveOrUpdate(orderEntity);
+//                        uploadErrorPosOrders(true);
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef(e.toString());
                         //同步失败两次不会再同步
                         orderEntity.setSyncStatus(PosOrderEntity.SYNC_STATUS_FATAL);

@@ -7,7 +7,7 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.ScGoodsSkuHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ScGoodsSkuHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 import com.mfh.litecashier.bean.wrapper.SearchParamsWrapper;
 

@@ -23,8 +23,10 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MEntityWrapper;
-import com.mfh.framework.rxapi.http.AnalysisHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.AnalysisHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseProgressFragment;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -342,16 +344,17 @@ public class DailySettleFragment extends BaseProgressFragment {
         options.put("date", TimeUtil.format(mDailysettleInfo.getCreatedDate(), TimeUtil.FORMAT_YYYYMMDD));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         AnalysisHttpManager.getInstance().autoDateEnd(options,
-                new Subscriber<String>() {
-
-                    @Override
-                    public void onCompleted() {
-
-                    }
+                new MSubscriber<String>() {
 
                     @Override
                     public void onError(Throwable e) {
                         onLoadError(e.getMessage());
+                    }
+
+                    @Override
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+                        onLoadError(e.getMessage());
+
                     }
 
                     @Override

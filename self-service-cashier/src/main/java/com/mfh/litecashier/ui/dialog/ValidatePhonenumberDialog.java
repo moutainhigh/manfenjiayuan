@@ -26,7 +26,9 @@ import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.EmbWxUserRegisterHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.EmbWxUserRegisterHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -388,14 +390,17 @@ public class ValidatePhonenumberDialog extends CommonDialog {
             options.put("jsonStr", jsonObject.toJSONString());
 
             EmbWxUserRegisterHttpManager.getInstance().beginAuthenBysms(options,
-                    new Subscriber<Long>() {
-                        @Override
-                        public void onCompleted() {
+                    new MSubscriber<Long>() {
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            ZLogger.e(String.format("发送验证码失败:%s", e.toString()));
+//                            DialogUtil.showHint("发送验证码失败");
+//                            progressBar.setVisibility(View.GONE);
+//                        }
 
-                        }
-
                         @Override
-                        public void onError(Throwable e) {
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
+
                             ZLogger.e(String.format("发送验证码失败:%s", e.toString()));
                             DialogUtil.showHint("发送验证码失败");
                             progressBar.setVisibility(View.GONE);
@@ -420,14 +425,17 @@ public class ValidatePhonenumberDialog extends CommonDialog {
             options.put("jsonStr", jsonObject.toJSONString());
 
             EmbWxUserRegisterHttpManager.getInstance().retryAuthenBysms(options,
-                    new Subscriber<String>() {
-                        @Override
-                        public void onCompleted() {
+                    new MSubscriber<String>() {
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            ZLogger.e(String.format("发送验证码失败:%s", e.toString()));
+//                            DialogUtil.showHint("发送验证码失败");
+//                            progressBar.setVisibility(View.GONE);
+//                        }
 
-                        }
-
                         @Override
-                        public void onError(Throwable e) {
+                        public void onError(ExceptionHandle.ResponeThrowable e) {
+
                             ZLogger.e(String.format("发送验证码失败:%s", e.toString()));
                             DialogUtil.showHint("发送验证码失败");
                             progressBar.setVisibility(View.GONE);
@@ -484,14 +492,19 @@ public class ValidatePhonenumberDialog extends CommonDialog {
         options.put("jsonStr", jsonObject.toJSONString());
 
         EmbWxUserRegisterHttpManager.getInstance().doAuthenBysms(options,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.e(String.format("短信码验证验证失败:%s", e.toString()));
+//                        DialogUtil.showHint(e.getMessage());
+//                        progressBar.setVisibility(View.GONE);
+//                        secondStep();
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         ZLogger.e(String.format("短信码验证验证失败:%s", e.toString()));
                         DialogUtil.showHint(e.getMessage());
                         progressBar.setVisibility(View.GONE);

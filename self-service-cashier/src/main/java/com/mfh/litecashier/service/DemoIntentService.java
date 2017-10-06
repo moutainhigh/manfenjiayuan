@@ -25,7 +25,7 @@ import com.mfh.framework.core.utils.TimeUtil;
 import com.mfh.framework.login.MfhUserManager;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.litecashier.CashierApp;
-import com.mfh.litecashier.alarm.AlarmManagerHelper;
+import com.mfh.litecashier.receiver.AlarmManagerHelper;
 import com.mfh.litecashier.event.AffairEvent;
 import com.tencent.bugly.beta.Beta;
 

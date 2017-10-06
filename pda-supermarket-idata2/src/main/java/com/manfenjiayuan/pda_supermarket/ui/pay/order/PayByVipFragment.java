@@ -26,7 +26,7 @@ import com.mfh.framework.core.utils.DeviceUtils;
 import com.mfh.framework.core.utils.DialogUtil;
 import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
-import com.mfh.framework.rxapi.http.SysHttpManager;
+import com.mfh.framework.rxapi.httpmgr.SysHttpManager;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 
 import org.greenrobot.eventbus.EventBus;

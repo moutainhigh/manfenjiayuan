@@ -36,7 +36,7 @@
     <string name="hint_backcard_tradeno">请输入银行单号</string>
     <string name="hint_pay_password">请输入支付密码</string>
     <string name="hint_customer_empty">会员帐号不能为空</string>
-
+    <string name="hint_change_cashier">支持 IC卡/会员码/手机号 登录</string>
 
     <string name="toast_login_username_empty">用户名不能为空!</string>
     <string name="toast_login_password_empty">密码不能为空!</string>
@@ -129,6 +129,7 @@
     <string name="title_query_cashier">切换账号</string>
     <string name="title_query_customer">查询会员</string>
     <string name="title_goods_detail">商品详情</string>
+    <string name="title_cashier_login">账号登录</string>
     <!--<string name="title_query_cashier">切换账号</string>-->
     <!--<string name="title_query_cashier">切换账号</string>-->
 

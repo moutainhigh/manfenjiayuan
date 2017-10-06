@@ -24,7 +24,9 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.widget.CustomViewPager;
 import com.mfh.framework.uikit.widget.ViewPageInfo;
 import com.mfh.litecashier.BaseDialogFragment;
@@ -427,17 +429,19 @@ public class TransferDialogFragment extends BaseDialogFragment {
 
         //{"code":"1","msg":"个人代充值必须是当前登录用户!","data":null,"version":1}
         CommonUserAccountHttpManager.getInstance().transferFromMyAccount(options,
-                new Subscriber<UserAccount>() {
+                new MSubscriber<UserAccount>() {
+
+
+//                    @Override
+//                    public void onError(Throwable e) {
+////                        etPayCode.getText().clear();
+//                        onLoadError(e.getMessage());
+//                    }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-//                        etPayCode.getText().clear();
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         onLoadError(e.getMessage());
+
                     }
 
                     @Override

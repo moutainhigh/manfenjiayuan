@@ -8,8 +8,10 @@ import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.bean.GroupBuyActivity;
 import com.mfh.framework.rxapi.bean.GroupBuyOrder;
-import com.mfh.framework.rxapi.http.GroupBuyOrderHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.GroupBuyOrderHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.HashMap;
 import java.util.List;
@@ -118,15 +120,19 @@ public class GroupBuyOrderMode {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         GroupBuyOrderHttpManager.getInstance().notifyHumanTakeGood(options,
-                new Subscriber<String>() {
+                new MSubscriber<String>() {
+
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.e("加载报团购活动列表失败:" + e.toString());
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.e("加载报团购活动列表失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.getMessage());
@@ -155,15 +161,18 @@ public class GroupBuyOrderMode {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         GroupBuyOrderHttpManager.getInstance().notifyTakeGoods(options,
-                new Subscriber<String>() {
+                new MSubscriber<String>() {
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.e("加载报团购活动列表失败:" + e.toString());
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.e("加载报团购活动列表失败:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.getMessage());
@@ -192,15 +201,18 @@ public class GroupBuyOrderMode {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         GroupBuyOrderHttpManager.getInstance().receiveAndFinishOrder(options,
-                new Subscriber<String>() {
+                new MSubscriber<String>() {
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.e("门店人员通知单个订单客户提货:" + e.toString());
+//                        if (listener != null) {
+//                            listener.onError(e.getMessage());
+//                        }
+//                    }
 
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.e("门店人员通知单个订单客户提货:" + e.toString());
                         if (listener != null) {
                             listener.onError(e.getMessage());

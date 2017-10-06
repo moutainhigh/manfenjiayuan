@@ -28,7 +28,9 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.ScOrderHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.ScOrderHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.LineItemDecoration;
@@ -243,14 +245,18 @@ public class PrepareStep2Fragment extends BaseFragment {
         options.put("jsonStr", jsonArray.toJSONString());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
         ScOrderHttpManager.getInstance().updateCommitInfo(options,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<String>() {
 
-                    }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        DialogUtil.showHint(e.getMessage());
+//                        btnSubmit.setEnabled(true);
+//                        hideProgressDialog();
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         DialogUtil.showHint(e.getMessage());
                         btnSubmit.setEnabled(true);
                         hideProgressDialog();
@@ -289,14 +295,18 @@ public class PrepareStep2Fragment extends BaseFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         ScOrderHttpManager.getInstance().prepareOrder(options,
-                new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<String>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef(e.toString());
+//
+//                        btnSubmit.setEnabled(true);
+//                        showProgressDialog(ProgressDialog.STATUS_ERROR, e.getMessage(), true);
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         ZLogger.ef(e.toString());
 
                         btnSubmit.setEnabled(true);

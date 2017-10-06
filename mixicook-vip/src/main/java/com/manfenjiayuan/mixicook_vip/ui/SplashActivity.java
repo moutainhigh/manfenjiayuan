@@ -44,7 +44,7 @@ import butterknife.BindView;
 
 /**
  * 欢迎页面
- * Created by Nat.ZZN(bingshanguxue) on 2015/9/13.
+ * Created by bingshanguxue on 2015/9/13.
  */
 public class SplashActivity extends InitActivity {
 

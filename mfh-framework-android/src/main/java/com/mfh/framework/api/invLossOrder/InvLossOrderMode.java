@@ -6,7 +6,7 @@ import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.mvp.OnPageModeListener;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MEntityWrapper;
-import com.mfh.framework.rxapi.http.InvLossOrderHttpManager;
+import com.mfh.framework.rxapi.httpmgr.InvLossOrderHttpManager;
 import com.mfh.framework.rxapi.subscriber.MQuerySubscriber;
 
 import java.util.ArrayList;

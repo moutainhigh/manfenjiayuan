@@ -25,8 +25,10 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
-import com.mfh.framework.rxapi.http.ProductCatalogManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ProductCatalogManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.base.BaseListFragment;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.framework.uikit.recyclerview.RecyclerViewEmptySupport;
@@ -517,14 +519,17 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
         Map<String, String> options = new HashMap<>();
         options.put("jsonStr", jsonObject.toJSONString());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        InvSkuStoreHttpManager.getInstance().update(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
-
-            }
+        InvSkuStoreHttpManager.getInstance().update(options, new MSubscriber<String>() {
 
             @Override
             public void onError(Throwable e) {
+                ZLogger.e("修改零售价失败, " + e.toString());
+                DialogUtil.showHint("修改零售价失败");
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.e("修改零售价失败, " + e.toString());
                 DialogUtil.showHint("修改零售价失败");
                 hideProgressDialog();
@@ -577,14 +582,18 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
         Map<String, String> options = new HashMap<>();
         options.put("id", String.valueOf(catalogEntity.getId()));
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        ProductCatalogManager.getInstance().delete(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        ProductCatalogManager.getInstance().delete(options, new MSubscriber<String>() {
 
-            }
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.e("删除商品失败, " + e.toString());
+//                DialogUtil.showHint("删除商品失败");
+//                hideProgressDialog();
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
+
                 ZLogger.e("删除商品失败, " + e.toString());
                 DialogUtil.showHint("删除商品失败");
                 hideProgressDialog();
@@ -629,14 +638,18 @@ public class QueryGoodsFragment extends BaseListFragment<PosProductEntity> {
         options.put("status", String.valueOf(newStatus));
         options.put("barcode", goods.getBarcode());
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        InvSkuStoreHttpManager.getInstance().updateStatus(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        InvSkuStoreHttpManager.getInstance().updateStatus(options, new MSubscriber<String>() {
 
-            }
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.d("更新商品失败, " + e.toString());
+//                DialogUtil.showHint("更新商品失败");
+//                hideProgressDialog();
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
+
                 ZLogger.d("更新商品失败, " + e.toString());
                 DialogUtil.showHint("更新商品失败");
                 hideProgressDialog();

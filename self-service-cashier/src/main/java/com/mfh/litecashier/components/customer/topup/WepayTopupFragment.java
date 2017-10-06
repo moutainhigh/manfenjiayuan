@@ -28,8 +28,11 @@ import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.network.NetProcessor;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
 import com.mfh.framework.rxapi.entity.MResponse;
-import com.mfh.framework.rxapi.http.AliPayHttpManager;
-import com.mfh.framework.rxapi.http.WePayHttpManager;
+import com.mfh.framework.rxapi.http.ErrorCode;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.AliPayHttpManager;
+import com.mfh.framework.rxapi.httpmgr.WePayHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.dialog.ProgressDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.Constants;
@@ -297,14 +300,17 @@ public class WepayTopupFragment extends BaseTopupFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         WePayHttpManager.getInstance().wepayBarPay(options,
-                new Subscriber<MResponse<String>>() {
+                new MSubscriber<MResponse<String>>() {
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
+                        ZLogger.e("微信条码支付异常:" + e.toString());
 
+                        onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
+                                AppHelper.getErrorTextColor(), true);
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.e("微信条码支付异常:" + e.toString());
 
                         onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
@@ -322,7 +328,7 @@ public class WepayTopupFragment extends BaseTopupFragment {
                         switch (stringMResponse.getCode()) {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
-                            case 0: {
+                            case ErrorCode.SUCCESS: {
                                 onPayFinished(lastPaidAmount, "支付成功", AppHelper.getOkTextColor());
                             }
                             break;
@@ -332,7 +338,7 @@ public class WepayTopupFragment extends BaseTopupFragment {
                             //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
                             // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户微信钱包在线则会唤起微信钱包的快捷收银台，
                             // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
-                            case 1: {
+                            case ErrorCode.PAY_PASSWORD: {
                                 queryOrder(outTradeNo, lastPaidAmount);
                             }
                             break;
@@ -367,14 +373,19 @@ public class WepayTopupFragment extends BaseTopupFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         WePayHttpManager.getInstance().query(options,
-                new Subscriber<MResponse<String>>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<MResponse<String>>() {
 
-                    }
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef("微信条码支付状态查询:" + e.toString());
+//                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+//                        onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
+//                                AppHelper.getErrorTextColor(), true);
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef("微信条码支付状态查询:" + e.toString());
                         //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
                         onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
@@ -392,12 +403,12 @@ public class WepayTopupFragment extends BaseTopupFragment {
                         switch (stringMResponse.getCode()) {
                             //业务处理成功
                             // 10000--"trade_status": "TRADE_SUCCESS",交易支付成功
-                            case 0:
+                            case ErrorCode.SUCCESS:
                                 onPayFinished(paidAmount, "支付成功", AppHelper.getOkTextColor());
                                 break;
                             //{"code":"-1","msg":"Success","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
-                            case -1:
+                            case ErrorCode.PAY_ERROR:
                                 onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION,
                                         stringMResponse.getMsg(), AppHelper.getErrorTextColor(), true);
                                 break;
@@ -435,14 +446,19 @@ public class WepayTopupFragment extends BaseTopupFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         AliPayHttpManager.getInstance().cancelOrder(options,
-                new Subscriber<MResponse<String>>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<MResponse<String>>() {
 
-                    }
+
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.ef("撤单失败:" + e.toString());
+//                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+//                        onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
+//                                AppHelper.getErrorTextColor(), true);
+//                    }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.ef("撤单失败:" + e.toString());
                         //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
                         onPayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(),
@@ -459,7 +475,7 @@ public class WepayTopupFragment extends BaseTopupFragment {
                         ZLogger.i(String.format("微信条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
-                            case 0:
+                            case ErrorCode.SUCCESS:
                                 onPayFailed(PosOrderPayEntity.PAY_STATUS_CANCELED, "订单已取消",
                                         AppHelper.getErrorTextColor(), false);
                                 break;

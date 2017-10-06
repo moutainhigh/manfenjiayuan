@@ -6,7 +6,9 @@ import com.mfh.framework.core.utils.NetworkUtils;
 import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.Callback;
 import com.mfh.framework.login.logic.MfhLoginService;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,14 +63,18 @@ public class MfhUserManager {
             return;
         }
 
-        RxHttpManager.getInstance().exit(sessionId, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        RxHttpManager.getInstance().exit(sessionId, new MSubscriber<String>() {
+//              @Override
+//            public void onError(Throwable e) {
+//                ZLogger.ef("退出登录失败:" + e.toString());
+//
+//                if (callback != null) {
+//                    callback.onError(-2, e.toString());
+//                }
+//            }
 
-            }
-
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.ef("退出登录失败:" + e.toString());
 
                 if (callback != null) {

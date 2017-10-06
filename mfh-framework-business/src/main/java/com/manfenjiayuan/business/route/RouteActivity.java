@@ -17,7 +17,7 @@ import com.mfh.framework.uikit.base.ResultCode;
 
 /**
  * 路由
- * Created by Nat.ZZN(bingshanguxue) on 15/8/30.
+ * Created by bingshanguxue on 15/8/30.
  */
 public class RouteActivity extends BaseActivity implements ResultCode, BackHandledInterface {
     public static final String EXTRA_KEY_FRAGMENT_TYPE = "EXTRA_KEY_FRAGMENT_TYPE";

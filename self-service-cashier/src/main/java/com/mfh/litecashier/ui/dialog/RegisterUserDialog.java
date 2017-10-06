@@ -29,8 +29,10 @@ import com.mfh.framework.core.utils.StringUtils;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.prefs.SharedPrefesManagerFactory;
-import com.mfh.framework.rxapi.http.CommonUserAccountHttpManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.CommonUserAccountHttpManager;
 import com.mfh.framework.rxapi.http.RxHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 import com.mfh.framework.uikit.dialog.CommonDialog;
 import com.mfh.litecashier.CashierApp;
 import com.mfh.litecashier.R;
@@ -399,14 +401,17 @@ public class RegisterUserDialog extends CommonDialog {
                 options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
                 CommonUserAccountHttpManager.getInstance().registerUser(options,
-                        new Subscriber<Human>() {
-                            @Override
-                            public void onCompleted() {
+                        new MSubscriber<Human>() {
+//                            @Override
+//                            public void onError(Throwable e) {
+//                                ZLogger.e(String.format("注册失败:%s", e.toString()));
+//                                btnSubmit.setEnabled(true);
+//                                progressBar.setVisibility(View.GONE);
+//                            }
 
-                            }
-
                             @Override
-                            public void onError(Throwable e) {
+                            public void onError(ExceptionHandle.ResponeThrowable e) {
+
                                 ZLogger.e(String.format("注册失败:%s", e.toString()));
                                 btnSubmit.setEnabled(true);
                                 progressBar.setVisibility(View.GONE);
@@ -458,14 +463,23 @@ public class RegisterUserDialog extends CommonDialog {
         params.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         RxHttpManager.getInstance().createParamDirect(options,
-                new Subscriber<String>() {
+                new MSubscriber<String>() {
                     @Override
-                    public void onCompleted() {
+                    public void onError(Throwable e) {
+                        ZLogger.e(String.format("服务网点绑定失败:%s", e.toString()));
+                        btnSubmit.setEnabled(true);
+                        progressBar.setVisibility(View.GONE);
 
+                        if (mRegisterListener != null){
+                            mRegisterListener.onSuccess(human);
+                        }
+
+                        dismiss();
                     }
 
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+
                         ZLogger.e(String.format("服务网点绑定失败:%s", e.toString()));
                         btnSubmit.setEnabled(true);
                         progressBar.setVisibility(View.GONE);

@@ -10,7 +10,10 @@ import com.mfh.framework.api.constant.WayType;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
 import com.mfh.framework.rxapi.entity.MResponse;
-import com.mfh.framework.rxapi.http.WePayHttpManager;
+import com.mfh.framework.rxapi.http.ErrorCode;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.WePayHttpManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -70,16 +73,18 @@ public class BaseWepayFragment extends BasePayFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         WePayHttpManager.getInstance().wepayBarPay(options,
-                new Subscriber<MResponse<String>>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<MResponse<String>>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.w("微信条码支付异常:" + e.toString());
+//                        onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(), getErrorTextColor(), true);
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.w("微信条码支付异常:" + e.toString());
                         onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(), getErrorTextColor(), true);
+
                     }
 
                     @Override
@@ -92,7 +97,7 @@ public class BaseWepayFragment extends BasePayFragment {
                         switch (stringMResponse.getCode()) {
                             //{"code":"0","msg":"Success","version":"1","data":""}
                             //10000--业务处理成功（订单支付成功）
-                            case 0: {
+                            case ErrorCode.SUCCESS: {
                                 onBarpayFinished(lastPaidAmount, "支付成功", getOkTextColor());
                             }
                             break;
@@ -102,7 +107,7 @@ public class BaseWepayFragment extends BasePayFragment {
                             //10003，业务处理中,该结果码只有在条码支付请求 API 时才返回，代表付款还在进行中，需要调用查询接口查询最终的支付结果
                             // 条码支付请求 API 返回支付处理中(返回码 10003)时，此时若用户支付宝钱包在线则会唤起支付宝钱包的快捷收银台，
                             // 用户可输入密码支付。商户需要在设定的轮询时间内，通过订单查询 API 查询订单状态，若返回付款成功，则表示支付成功。
-                            case 1: {
+                            case ErrorCode.PAY_PASSWORD: {
                                 queryOrder(outTradeNo, lastPaidAmount);
                             }
                             break;
@@ -138,14 +143,16 @@ public class BaseWepayFragment extends BasePayFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         WePayHttpManager.getInstance().query(options,
-                new Subscriber<MResponse<String>>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<MResponse<String>>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.w("查询订单状态失败:" + e.toString());
+//                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+//                        onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(), getErrorTextColor(), true);
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.w("查询订单状态失败:" + e.toString());
                         //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
                         onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(), getErrorTextColor(), true);
@@ -160,12 +167,12 @@ public class BaseWepayFragment extends BasePayFragment {
                         ZLogger.d(String.format("微信条码支付状态查询:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
-                            case 0:
+                            case ErrorCode.SUCCESS:
                                 onBarpayFinished(paidAmount, "支付成功", getOkTextColor());
                                 break;
                             //{"code":"-1","msg":"继续查询","version":"1","data":""}
                             // 支付结果不明确，需要收银员继续查询或撤单
-                            case -1: //-1
+                            case ErrorCode.PAY_ERROR: //-1
                                 onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, stringMResponse.getMsg(), getErrorTextColor(), true);
                                 break;
                             //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款
@@ -197,14 +204,16 @@ public class BaseWepayFragment extends BasePayFragment {
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
 
         WePayHttpManager.getInstance().cancelOrder(options,
-                new Subscriber<MResponse<String>>() {
-                    @Override
-                    public void onCompleted() {
+                new MSubscriber<MResponse<String>>() {
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.w("撤单失败:" + e.toString());
+//                        //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
+//                        onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(), getErrorTextColor(), true);
+//                    }
 
-                    }
-
                     @Override
-                    public void onError(Throwable e) {
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
                         ZLogger.w("撤单失败:" + e.toString());
                         //TODO 调用微信支付接口时未返回明确的返回结果(如由于系统错误或网络异常导致无返回结果)，需要将交易进行撤销。
                         onBarpayFailed(PosOrderPayEntity.PAY_STATUS_EXCEPTION, e.getMessage(), getErrorTextColor(), true);
@@ -219,7 +228,7 @@ public class BaseWepayFragment extends BasePayFragment {
                         ZLogger.d(String.format("微信条码支付取消订单:%s--%s", stringMResponse.getCode(), stringMResponse.getMsg()));
 
                         switch (stringMResponse.getCode()) {
-                            case 0:
+                            case ErrorCode.SUCCESS:
                                 onBarpayFailed(PosOrderPayEntity.PAY_STATUS_FAILED, "订单已取消", getOkTextColor(), false);
                                 break;
                             //10000--"trade_status": "WAIT_BUYER_PAY",交易创建，等待买家付款

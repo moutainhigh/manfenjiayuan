@@ -3,8 +3,10 @@ package com.mfh.litecashier.ui.fragment.goods;
 import com.mfh.framework.anlaysis.logger.ZLogger;
 import com.mfh.framework.login.logic.MfhLoginService;
 import com.mfh.framework.network.NetFactory;
-import com.mfh.framework.rxapi.http.InvSkuStoreHttpManager;
-import com.mfh.framework.rxapi.http.ProductCatalogManager;
+import com.mfh.framework.rxapi.http.ExceptionHandle;
+import com.mfh.framework.rxapi.httpmgr.InvSkuStoreHttpManager;
+import com.mfh.framework.rxapi.httpmgr.ProductCatalogManager;
+import com.mfh.framework.rxapi.subscriber.MSubscriber;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,27 +35,33 @@ public class ImportGoodsPresenter {
         Map<String, String> options = new HashMap<>();
         options.put("proSkuIds", proSkuIds);
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        InvSkuStoreHttpManager.getInstance().importFromCenterSkus(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        InvSkuStoreHttpManager.getInstance().importFromCenterSkus(options,
+                new MSubscriber<String>() {
 
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                ZLogger.e("导入商品到本店仓储失败, " + e.toString());
-                if (mIImportGoodsView != null) {
-                    mIImportGoodsView.onIImportGoodsViewError(e.getMessage());
-                }
-            }
+//                    @Override
+//                    public void onError(Throwable e) {
+//                        ZLogger.e("导入商品到本店仓储失败, " + e.toString());
+//                        if (mIImportGoodsView != null) {
+//                            mIImportGoodsView.onIImportGoodsViewError(e.getMessage());
+//                        }
+//                    }
 
-            @Override
-            public void onNext(String s) {
-                ZLogger.d("导入商品到本店仓储成功");
-                add2Category(categoryId, productIds);
-            }
+                    @Override
+                    public void onError(ExceptionHandle.ResponeThrowable e) {
+                        ZLogger.e("导入商品到本店仓储失败, " + e.toString());
+                        if (mIImportGoodsView != null) {
+                            mIImportGoodsView.onIImportGoodsViewError(e.getMessage());
+                        }
+                    }
 
-        });
+                    @Override
+                    public void onNext(String s) {
+                        ZLogger.d("导入商品到本店仓储成功");
+                        add2Category(categoryId, productIds);
+                    }
+
+                });
     }
 
     /**
@@ -64,14 +72,19 @@ public class ImportGoodsPresenter {
         options.put("groupIds", String.valueOf(categoryId));
         options.put("productIds", productIds);
         options.put(NetFactory.KEY_JSESSIONID, MfhLoginService.get().getCurrentSessionId());
-        ProductCatalogManager.getInstance().addToCatalog(options, new Subscriber<String>() {
-            @Override
-            public void onCompleted() {
+        ProductCatalogManager.getInstance().addToCatalog(options, new MSubscriber<String>() {
 
-            }
+
+//            @Override
+//            public void onError(Throwable e) {
+//                ZLogger.e("导入前台类目商品失败, " + e.toString());
+//                if (mIImportGoodsView != null) {
+//                    mIImportGoodsView.onIImportGoodsViewError(e.getMessage());
+//                }
+//            }
 
             @Override
-            public void onError(Throwable e) {
+            public void onError(ExceptionHandle.ResponeThrowable e) {
                 ZLogger.e("导入前台类目商品失败, " + e.toString());
                 if (mIImportGoodsView != null) {
                     mIImportGoodsView.onIImportGoodsViewError(e.getMessage());

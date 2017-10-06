@@ -303,10 +303,6 @@ public class ZLogger {
         }
     }
 
-
-
-
-
     /**
      * 刷新显示线程
      */

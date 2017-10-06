@@ -199,13 +199,6 @@
             android:screenOrientation="landscape"
             android:theme="@style/DialogActivity"/>
         <activity
-            android:name=".ui.activity.CashierPayActivity"
-            android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
-            android:launchMode="singleTop"
-            android:screenOrientation="landscape"
-            android:theme="@style/DialogActivity"/>
-
-        <activity
             android:name=".components.pay.CashierPayActivity"
             android:configChanges="keyboardHidden|keyboard|orientation|screenSize"
             android:launchMode="singleTop"
@@ -249,18 +242,26 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppBaseTheme_Light.Transparent"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"/>
-
+        <activity
+            android:name=".ui.activity.UnauthorizedActivity"
+            android:configChanges="keyboardHidden|keyboard|orientation|screenSize|touchscreen"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppBaseTheme_Light.Transparent"
+            android:windowSoftInputMode="adjustResize"/>
 
         <!--自定义Service-->
+        <service android:name=".service.MainService"/>
+        <service android:name=".service.TrushService"/>
         <service android:name=".service.TtsService"/>
         <service android:name=".service.PeripheralService"/>
 
-        <receiver android:name=".alarm.DailysettleReceiver">
+        <receiver android:name=".receiver.DailysettleReceiver">
             <intent-filter>
                 <action android:name="manfenjiayuan.intent.action.DAILYSETTLE"/>
             </intent-filter>
         </receiver>
-        <receiver android:name=".alarm.KeepAlarmLiveReceiver">
+        <receiver android:name=".receiver.KeepAlarmLiveReceiver">
             <intent-filter>
                 <!--屏幕解锁-->
                 <action android:name="android.intent.action.USER_PRESENT"/>
@@ -312,8 +313,6 @@
         <!-- Bugly SDK配置开始 -->
 
 
-        <service android:name=".service.TrushService">
-        </service>
         <service
             android:name="com.gprinter.service.GpPrintService"
             android:enabled="true"
